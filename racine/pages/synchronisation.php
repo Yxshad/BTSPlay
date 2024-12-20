@@ -36,11 +36,8 @@ function synchronisation(){
 	$COLLECT_MPEG = [];
 
     echo("<h2> Lancement de l'algorithme </h2>");
-
-	
 	//-----------------------   répertoire NAS_PAD      ------------------------
 	$COLLECT_PAD = recupererCollectNAS($URI_NAS_PAD, $URI_ESPACE_LOCAL_PAD, $COLLECT_PAD);
-
 	//-----------------------   répertoire NAS_ARCH      ------------------------
 	$COLLECT_ARCH = recupererCollectNAS($URI_NAS_ARCH, $URI_ESPACE_LOCAL_ARCH, $COLLECT_ARCH);
 
