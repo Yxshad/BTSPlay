@@ -52,6 +52,7 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
     preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
     preg_match("/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/", $meta, $duree);
     //preg_match("/(\d+:\d+)\s/", $meta, $format);
+    // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
     $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
     $liste = [MTD_TITRE => $fichier,
                 MTD_FPS => $fps[0],
