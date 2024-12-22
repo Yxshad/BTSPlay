@@ -117,7 +117,7 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
 					MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
 					MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
-					//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+					MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
 					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
@@ -143,7 +143,7 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 			MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
 			MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
 			MTD_URI_NAS_ARCH => null,
-			//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+			MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
 			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
@@ -155,7 +155,7 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 			MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
 			MTD_URI_NAS_PAD => null,
 			MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
-			//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+			MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
 			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]

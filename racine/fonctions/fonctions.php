@@ -47,18 +47,18 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
     exec($command, $output);
     $meta = implode($output);
     // #RISQUE : Changment des REGEX selon les vidéos
-    preg_match("/Input #0, .+?, from '(.*?)':/", $meta, $nom);
+    preg_match("/'[^']*\/(.*)'/",$meta,$nom);
     preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
     preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
-    preg_match("/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/", $meta, $duree);
-    //preg_match("/(\d+:\d+)\s/", $meta, $format);
+    preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
+    preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
     // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
     $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
     $liste = [MTD_TITRE => $fichier,
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
                 MTD_DUREE => $dureeFormatee,
-                //MTD_FORMAT => $format[0]
+                MTD_FORMAT => $format[1]
                 ];
     return $liste;
 }
@@ -70,7 +70,7 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
  */
 function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
     if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
-        //&& $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
+        && $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
         && $video_1[MTD_FPS] == $video_2[MTD_FPS]
         && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
         && $video_1[MTD_DUREE] == $video_2[MTD_DUREE] ){
