@@ -48,7 +48,7 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
     $meta = implode($output);
     // #RISQUE : Changment des REGEX selon les vidéos
     preg_match("/Input #0, .+?, from '(.*?)':/", $meta, $nom);
-    preg_match("/(\d+(\.\d+)?) fps/", $meta, $fps);
+    preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
     preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
     preg_match("/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/", $meta, $duree);
     //preg_match("/(\d+:\d+)\s/", $meta, $format);
