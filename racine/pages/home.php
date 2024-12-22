@@ -7,9 +7,9 @@ $local_file = '../videos/videosAAnalyser/'.$ftp_file;
 
 require '../fonctions/ftp.php';
 
-echo "Page d'accueil, connexion au NAS ARCH  <br>";
+echo "Page d'accueil, connexion au NAS MPEG  <br>";
 
-$conn_id = connexionFTP_NAS("NAS_ARCH", "user2", "pass2");
+$conn_id = connexionFTP_NAS("NAS_MPEG", "user3", "pass3");
 
 //telechargerFichier($conn_id, $local_file,  $ftp_file);
 

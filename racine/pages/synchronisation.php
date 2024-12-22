@@ -93,6 +93,9 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 			}
 		}
     }
+
+	ftp_close($conn_id);
+
 	return $COLLECT_NAS;
 }
 

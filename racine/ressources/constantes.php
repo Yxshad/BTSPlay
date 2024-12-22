@@ -4,6 +4,7 @@
 	// #RISQUE : Changement des répertoires des NAS
     const URI_NAS_PAD = '/';
     const URI_NAS_ARCH = '/';
+    const URI_NAS_MPEG = '/';
 
     const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
 
@@ -31,4 +32,6 @@
     const MTD_URI_NAS_PAD = 'URI NAS PAD';
     const MTD_URI_NAS_ARCH = 'URI NAS ARCH';
 
+    //CONSTANTES DE LA FONCTION DE RECONCILIATION
+    const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
 ?>

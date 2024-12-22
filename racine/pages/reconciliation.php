@@ -1,76 +1,158 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Algorithme de réconciliation</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fonction de réconciliation</title>
 </head>
 <body>
 
-<h1> Algorithme de réconciliation </h1>
+<h1> Fonction de réconciliation </h1>
 
+<!-- Formulaire pour choisir les NAS -->
 <form method="post">
-	<button type="submit" name="declencherReconciliation">Réconciliation</button>
+    <h2>Choisissez les NAS à comparer :</h2>
+
+    <label for="NAS_choisi_1">Sélectionnez le premier NAS :</label>
+    <select name="NAS_choisi_1" id="NAS_choisi_1">
+        <option value="NAS_PAD">NAS PAD</option>
+        <option value="NAS_ARCH">NAS ARCH</option>
+        <option value="NAS_MPEG">NAS MPEG</option>
+    </select>
+
+    <label for="NAS_choisi_2">Sélectionnez le deuxième NAS :</label>
+    <select name="NAS_choisi_2" id="NAS_choisi_2">
+        <option value="NAS_PAD">NAS PAD</option>
+        <option value="NAS_ARCH">NAS ARCH</option>
+        <option value="NAS_MPEG">NAS MPEG</option>
+    </select>
+
+    <button type="submit" name="declencherReconciliation">Réconciliation</button>
+	<br> <br>
 </form>
+
 </body>
 </html>
 
 <?php
 
+require '../fonctions/fonctions.php';
+require '../fonctions/ftp.php';
+require '../ressources/constantes.php';
+
 if (isset($_POST['declencherReconciliation'])) {
-	reconciliation();
+    if (isset($_POST['NAS_choisi_1']) && isset($_POST['NAS_choisi_2'])) {
+        $NASChoisi1 = $_POST['NAS_choisi_1'];
+        $NASChoisi2 = $_POST['NAS_choisi_2'];
+
+        // Lancer la réconciliation entre les NAS sélectionnés
+        reconciliation($NASChoisi1, $NASChoisi2);
+    }
 }
 
-function reconciliation() {
+function reconciliation($NASChoisi1, $NASChoisi2) {
 	// Algorithme qui vérifie la présence des vidéos dans les 2 NAS.
 	// Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
 
-	// #RISQUE : Changement des répertoires des NAS
-	$URI_NAS_PAD = "./NAS/NAS_PAD";
-	$URI_NAS_ARCH = "./NAS/NAS_ARCH";
+	// #RISQUE : Incomprehension sur les spec de la fonction de réconciliation
 
 	// SelectALL en BD pour récupérer tous les noms des vidéos -- Dans les faits on les récupère dans les NAS
-	$nomsVideos_PAD = [];
-	$nomsVideos_ARCH = [];
+	$listeVideos_NAS_1 = [];
+	$listeVideos_NAS_2 = [];
 
-	$nomsVideos_PAD = recupererCollectNAS($URI_NAS_PAD, $nomsVideos_PAD);
-	$nomsVideos_ARCH = recupererCollectNAS($URI_NAS_ARCH, $nomsVideos_ARCH);
+	    // Initialisation des paramètres du NAS 1
+		switch ($NASChoisi1) {
+			case "NAS_PAD":
+				$server_1 = NAS_PAD;
+				$nomNAS_1 = NAS_PAD;
+				$login_1 = LOGIN_NAS_PAD;
+				$password_1 = PASSWORD_NAS_PAD;
+				$uri_1 = URI_NAS_PAD;
+				break;
+			case "NAS_ARCH":
+				$server_1 = NAS_ARCH;
+				$nomNAS_1 = NAS_ARCH;
+				$login_1 = LOGIN_NAS_ARCH;
+				$password_1 = PASSWORD_NAS_ARCH;
+				$uri_1 = URI_NAS_ARCH;
+				break;
+			case "NAS_MPEG":
+				$server_1 = NAS_MPEG;
+				$nomNAS_1 = NAS_MPEG;
+				$login_1 = LOGIN_NAS_MPEG;
+				$password_1 = PASSWORD_NAS_MPEG;
+				$uri_1 = URI_NAS_MPEG;
+				break;
+		}
+	
+		// Initialisation des paramètres du NAS 2
+		switch ($NASChoisi2) {
+			case "NAS_PAD":
+				$server_2 = NAS_PAD;
+				$nomNAS_2 = NAS_PAD;
+				$login_2 = LOGIN_NAS_PAD;
+				$password_2 = PASSWORD_NAS_PAD;
+				$uri_2 = URI_NAS_PAD;
+				break;
+			case "NAS_ARCH":
+				$server_2 = NAS_ARCH;
+				$nomNAS_2 = NAS_ARCH;
+				$login_2 = LOGIN_NAS_ARCH;
+				$password_2 = PASSWORD_NAS_ARCH;
+				$uri_2 = URI_NAS_ARCH;
+				break;
+			case "NAS_MPEG":
+				$server_2 = NAS_MPEG;
+				$nomNAS_2 = NAS_MPEG;
+				$login_2 = LOGIN_NAS_MPEG;
+				$password_2 = PASSWORD_NAS_MPEG;
+				$uri_2 = URI_NAS_MPEG;
+				break;
+		}
 
-	echo "<h2>Vidéos présentes sur NAS PAD :</h2>";
-	echo "<pre>" . print_r($nomsVideos_PAD, true) . "</pre>";
+		$listeVideos_NAS_1 = recupererNomsVideosNAS($server_1, $login_1, $password_1, $uri_1, $listeVideos_NAS_1);
+		$listeVideos_NAS_2 = recupererNomsVideosNAS($server_2, $login_2, $password_2, $uri_2, $listeVideos_NAS_2);
 
-	echo "<h2>Vidéos présentes sur NAS ARCH :</h2>";
-	echo "<pre>" . print_r($nomsVideos_ARCH, true) . "</pre>";
+		echo "<h2>Vidéos présentes sur " .$nomNAS_1.": </h2>";
+	echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+
+	echo "<h2>Vidéos présentes sur " .$nomNAS_2.": </h2>";
+	echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
 
 	$listeVideosManquantes = [];
-	$listeVideosManquantes = trouverVideosManquantes($nomsVideos_PAD, $nomsVideos_ARCH, $listeVideosManquantes);
+	$listeVideosManquantes = trouverVideosManquantes($nomNAS_1, $nomNAS_2, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosManquantes);
 
-	afficherListeVideosManquantes($listeVideosManquantes);
+	afficherVideosManquantes($listeVideosManquantes);
 }
 
-function recupererCollectNAS($URI_NAS, $nomsVideos_NAS){
-	// Pour chaque fichier dans le répertoire NAS
-	$fichiers_NAS = scandir($URI_NAS);
+function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS){
+	
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
-    foreach ($fichiers_NAS as $fichier) {
-		if ($fichier !== '.' && $fichier !== '..') {
-			$nomsVideos_NAS[] = $fichier;
+	// Lister les fichiers sur le serveur FTP
+    $fichiers_NAS = ftp_nlist($conn_id, $URI_NAS);
+
+	foreach ($fichiers_NAS as $fichier) {
+        $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
+		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
+
+			$nomsVideos_NAS[] = $nom_fichier;
 		}
     }
+
+	ftp_close($conn_id);
 	return $nomsVideos_NAS;
 }
 
 
-function trouverVideosManquantes($nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
+function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
 
     foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {
         $videoManquanteDansNAS2 = true;
 
         foreach ($nomsVideos_NAS2 as $key2 => $nomVideoNAS2) {
 
-			//On compare les fichiers sans tenir compte de leur extension (video.mp4 = video.mxf)
-			//(pathinfo pour ne pas tenir compte de l'extension)
-            if (pathinfo($nomVideoNAS1, PATHINFO_FILENAME) == pathinfo($nomVideoNAS2, PATHINFO_FILENAME)) {
+            if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
 				unset($nomsVideos_NAS1[$key1]);
                 unset($nomsVideos_NAS2[$key2]);
                 $videoManquanteDansNAS2 = false;
@@ -80,8 +162,8 @@ function trouverVideosManquantes($nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideo
 
 		if ($videoManquanteDansNAS2) {
             $listeVideosManquantes[] = [
-                'video' => $nomVideoNAS1,
-                'manqueDans' => 'NAS ARCH'
+                MTD_TITRE => $nomVideoNAS1,
+                EMPLACEMENT_MANQUANT => $nomNAS_2
             ];
 			unset($nomsVideos_NAS1[$key1]);
         }
@@ -90,38 +172,31 @@ function trouverVideosManquantes($nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideo
     // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
     foreach ($nomsVideos_NAS2 as $nomVideoNAS2Restant) {
         $listeVideosManquantes[] = [
-            'video' => $nomVideoNAS2Restant,
-            'manqueDans' => 'NAS PAD'
+            MTD_TITRE => $nomVideoNAS2Restant,
+            EMPLACEMENT_MANQUANT => $nomNAS_1
         ];
     }
 
     return $listeVideosManquantes;
 }
 
-function afficherListeVideosManquantes($listeVideosManquantes) {
+function afficherVideosManquantes($listeVideosManquantes) {
     echo "<h2>Tableau des vidéos manquantes :</h2>";
-
     echo "<table border='1' cellpadding='5' cellspacing='0'>";
-    
-	#RISQUE : Nom des NAS statique
-    echo "<tr>";
-		echo "<th>Nom Vidéo</th>";
-		echo "<th> NAS </th>";
+	echo "<tr>";
+		echo "<th>".MTD_TITRE."</th>";
+		echo "<th>".EMPLACEMENT_MANQUANT."</th>";
     echo "</tr>";
-
     // Parcours de la liste des vidéos manquantes
     foreach ($listeVideosManquantes as $video) {
-
-		$videoName = $video['video'];
-        $manqueDans = $video['manqueDans'];
-
+		$nomVideo = $video[MTD_TITRE];
+        $emplacementManquant = $video[EMPLACEMENT_MANQUANT];
 		//Lignes pour chaque élément
-			echo "<tr>";
-			echo "<td>$videoName</td>";
-			echo "<td>$manqueDans</td>";
-			echo "</tr>";
+		echo "<tr>";
+		echo "<td>$nomVideo</td>";
+		echo "<td>$emplacementManquant</td>";
+		echo "</tr>";
     }
-
     echo "</table>";
 }
 

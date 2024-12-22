@@ -65,6 +65,7 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
 /**
  * Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
+ * (pathinfo pour ne pas tenir compte de l'extension)
  */
 function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
     if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
@@ -72,6 +73,20 @@ function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
         && $video_1[MTD_FPS] == $video_2[MTD_FPS]
         && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
         && $video_1[MTD_DUREE] == $video_2[MTD_DUREE] ){
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+/**
+ * Fonction qui vérifie la correspondance des noms des 2 vidéos passées en paramètre
+ * On compare les noms des fichiers sans tenir compte de leur extension (video.mp4 = video.mxf)
+ * (pathinfo pour ne pas tenir compte de l'extension)
+ */
+function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2){
+    if (pathinfo($nomVideo_1, PATHINFO_FILENAME) == pathinfo($nomVideo_2, PATHINFO_FILENAME)){
         return true;
     }
     else {
