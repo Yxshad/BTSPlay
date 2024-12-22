@@ -18,6 +18,8 @@
 <?php
 
 require '../fonctions/fonctions.php';
+require '../fonctions/ftp.php';
+require '../ressources/constantes.php';
 
 if (isset($_POST['declencherSynchro'])) {
 	synchronisation();
@@ -25,21 +27,17 @@ if (isset($_POST['declencherSynchro'])) {
 
 function synchronisation(){
 
-	// #RISQUE : Changement des répertoires des NAS
-	$URI_NAS_PAD = "./NAS/NAS_PAD";
-	$URI_NAS_ARCH = "./NAS/NAS_ARCH";
-	$URI_NAS_MPEG = "./NAS/NAS_MPEG";
-	$URI_ESPACE_LOCAL_PAD = './espaceLocal_PAD';
-	$URI_ESPACE_LOCAL_ARCH = './espaceLocal_ARCH';
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
 	$COLLECT_MPEG = [];
 
     echo("<h2> Lancement de l'algorithme </h2>");
+
 	//-----------------------   répertoire NAS_PAD      ------------------------
-	$COLLECT_PAD = recupererCollectNAS($URI_NAS_PAD, $URI_ESPACE_LOCAL_PAD, $COLLECT_PAD);
+	$COLLECT_PAD = recupererCollectNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_VIDEOS_A_ANALYSER, $COLLECT_PAD, URI_NAS_PAD);
+
 	//-----------------------   répertoire NAS_ARCH      ------------------------
-	$COLLECT_ARCH = recupererCollectNAS($URI_NAS_ARCH, $URI_ESPACE_LOCAL_ARCH, $COLLECT_ARCH);
+	$COLLECT_ARCH = recupererCollectNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_VIDEOS_A_ANALYSER, $COLLECT_ARCH, URI_NAS_ARCH);
 
 	afficherCollect("COLLECT_PAD", $COLLECT_PAD);
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
@@ -58,57 +56,44 @@ function synchronisation(){
 /*
 - Fonction qui récupère l'ensemble des métadonnées techniques des vidéos d'un NAS (collectPAD ou collectARCH)
 
-- On télécharge les vidéos dans un $URI_ESPACE_LOCAL si celles-ci ne sont pas présentes dans la BD
+- On télécharge les vidéos dans un $URI_VIDEOS_A_ANALYSER si celles-ci ne sont pas présentes dans la BD
 - On remplit CollectNAS pour chaque vidéo
-- On vide le répertoire local $URI_ESPACE_LOCAL
+- On vide le répertoire local $URI_VIDEOS_A_ANALYSER
 */
-function recupererCollectNAS($URI_NAS, $URI_ESPACE_LOCAL, $COLLECT_NAS){
+function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_ANALYSER, $COLLECT_NAS, $URI_NAS){
 
-	// Pour chaque fichier dans le répertoire NAS
-	$fichiers_NAS = scandir($URI_NAS);
 
-    foreach ($fichiers_NAS as $fichier) {
-		if ($fichier !== '.' && $fichier !== '..') {
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
-			//Si le fichier n'est pas présent en base
-			if(!fichierEnBase($fichier)){
+	// Lister les fichiers sur le serveur FTP
+    $fichiers_NAS = ftp_nlist($conn_id, $URI_NAS);
 
-				//Copie du fichier dans le repertoire local ----Dans les faits, téléchargement via FTP
-				copierFichier($fichier, $URI_NAS, $URI_ESPACE_LOCAL);
+	foreach ($fichiers_NAS as $fichier) {
+        $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
 
-				//Récupérer les métadonnées techniques du $fichier et les ajouter dans collectNAS
-				$listeMetadonneesVideos = recupererMetadonnees($fichier, $URI_ESPACE_LOCAL);
+		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
 
-				$COLLECT_NAS[] = array_merge($listeMetadonneesVideos[0], ['URI' => $URI_NAS]);
+			// Si le fichier n'est pas présent en base
+			if (!fichierEnBase($nom_fichier)) {
 
-				//Vider le fichier de l'espace local
-				$cheminFichier = $URI_ESPACE_LOCAL . '/' . $fichier;
-				unlink($cheminFichier);
-			};
+				// Chemin local et distant
+				$local_file = $URI_VIDEOS_A_ANALYSER . '/' . $nom_fichier;
+				$ftp_file = $nom_fichier;
+
+				// Télécharger le fichier via FTP
+				telechargerFichier($conn_id, $local_file, $ftp_file);
+
+				// Récupérer les métadonnées techniques du fichier et les ajouter dans collectNAS
+				$listeMetadonneesVideos = recupererMetadonnees($nom_fichier, $URI_VIDEOS_A_ANALYSER);
+
+				$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $URI_NAS]);
+
+				// Supprimer le fichier local après traitement
+				unlink($local_file);
+			}
 		}
     }
 	return $COLLECT_NAS;
-}
-
-/*
-Fonction qui copie un $fichier situé dans $URI_NAS et le colle dans $URI_ESPACE_LOCAL
-*/
-function copierFichier($fichier, $URI_NAS, $URI_ESPACE_LOCAL) {
-
-	$fichier_source = $URI_NAS . '/' . $fichier;
-	$fichier_destination = $URI_ESPACE_LOCAL . '/' . $fichier;
-
-	if (file_exists($fichier_source) && !file_exists($fichier_destination)) {
-
-		if (copy($fichier_source, $fichier_destination)) {
-			echo "Fichier $fichier copié avec succès vers l'espace local. <br>";
-		}
-		else {
-			echo "Erreur lors de la copie de $fichier. <br>";
-		}
-	} else {
-		echo "Le fichier $fichier n'existe pas dans $URI_NAS ou existe deja dans $URI_ESPACE_LOCAL. <br> ";
-	}
 }
 
 /*
@@ -121,18 +106,18 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 
 	foreach ($COLLECT_PAD as $key_PAD => $ligneCollect_PAD) {
 		foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
-
 			//Si les deux $ligneCollect correspondent exactement (hors URI) (pathinfo pour ne pas tenir compte de l'extension)
 			if (verifierCorrespondanceMdtTechVideos($ligneCollect_PAD, $ligneCollect_ARCH)){
 
 				//Remplir $COLLECT_MPEG
 				$COLLECT_MPEG[] = [
-					'TITRE' => $ligneCollect_PAD['TITRE'],
-					'URI_NAS_PAD' => $ligneCollect_PAD['URI'],
-					'URI_NAS_ARCH' => $ligneCollect_ARCH['URI'],
-					'FORMAT' => $ligneCollect_PAD['FORMAT'],
-					'RESOLUTION' => $ligneCollect_PAD['RESOLUTION'],
-					'DUREE' => $ligneCollect_PAD['DUREE']
+					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
+					MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
+					MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
+					//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
+					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
+					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
 				];
 
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
@@ -152,23 +137,25 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 
 	foreach ($COLLECT_PAD as $key_PAD => $ligneCollect_PAD) {
 		$COLLECT_MPEG[] = [
-			'TITRE' => $ligneCollect_PAD['TITRE'],
-			'URI_NAS_PAD' => $ligneCollect_PAD['URI'],
-			'URI_NAS_ARCH' => null,
-			'FORMAT' => $ligneCollect_PAD['FORMAT'],
-			'RESOLUTION' => $ligneCollect_PAD['RESOLUTION'],
-			'DUREE' => $ligneCollect_PAD['DUREE']
+			MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
+			MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
+			MTD_URI_NAS_ARCH => null,
+			//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
+			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
+			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
 		];
 		unset($COLLECT_PAD[$key_PAD]);
 	}
 	foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
 		$COLLECT_MPEG[] = [
-			'TITRE' => $ligneCollect_ARCH['TITRE'],
-			'URI_NAS_PAD' => null,
-			'URI_NAS_ARCH' => $ligneCollect_ARCH['URI'],
-			'FORMAT' => $ligneCollect_ARCH['FORMAT'],
-			'RESOLUTION' => $ligneCollect_ARCH['RESOLUTION'],
-			'DUREE' => $ligneCollect_ARCH['DUREE']
+			MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
+			MTD_URI_NAS_PAD => null,
+			MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
+			//'FORMAT' => $ligneCollect_PAD['FORMAT'],
+			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
+			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
+			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
 		];
 
 		unset($COLLECT_ARCH[$key_ARCH]);
@@ -183,7 +170,6 @@ function fichierEnBase($fichier){
 }
 
 function insertionCollect_MPEG($COLLECT_MPEG){
-	
 	return;
 }
 

@@ -8,7 +8,7 @@
 function afficherCollect($titre, $COLLECT_NAS) {
     echo "<h2>$titre</h2>";
     if (empty($COLLECT_NAS)) {
-        echo "<p>Tableau videos</p>";
+        echo "<p>Tableau vide</p>";
         return;
     }
     $first_item = reset($COLLECT_NAS); //Récupère le 1er élément, merci le chat j'avais une erreur
@@ -47,17 +47,18 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
     exec($command, $output);
     $meta = implode($output);
     // #RISQUE : Changment des REGEX selon les vidéos
-    preg_match("/'[^']/(.)'/",$meta,$nom);
-    preg_match("/[0-9](?= fps)/",$meta,$fps);
-    preg_match("/(?<=yuv420p(progressive), )[0-9]x[0-9]/",$meta,$resolution);
-    preg_match("/(?<=Duration: )[0-9]:[0-9]:[0-9].[0-9]/",$meta,$duree);
-    preg_match("/(?<=DAR)[0-9]:[0-9]*/",$meta,$format);
-    $liste = ["nom" => $nom[1],
-                "fps" => $fps[0],
-                "resolution" => $resolution[0],
-                "duree" => $duree[0],
-                "format" => $format[0]];
-
+    preg_match("/Input #0, .+?, from '(.*?)':/", $meta, $nom);
+    preg_match("/(\d+(\.\d+)?) fps/", $meta, $fps);
+    preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
+    preg_match("/Duration: (\d{2}:\d{2}:\d{2}\.\d{2})/", $meta, $duree);
+    //preg_match("/(\d+:\d+)\s/", $meta, $format);
+    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
+    $liste = [MTD_TITRE => $fichier,
+                MTD_FPS => $fps[0],
+                MTD_RESOLUTION => $resolution[0],
+                MTD_DUREE => $dureeFormatee,
+                //MTD_FORMAT => $format[0]
+                ];
     return $liste;
 }
 
@@ -65,12 +66,12 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
  * Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
  */
-function verifierCorrespondanceMdtTechVideos($Video_1, $video_2){
-    if (pathinfo($Video_1['TITRE'], PATHINFO_FILENAME) == pathinfo($video_2['TITRE'], PATHINFO_FILENAME)
-        && $Video_1['FORMAT'] == $video_2['FORMAT']
-        //&& $Video_1['FPS'] == $video_2['FPS']
-        && $Video_1['RESOLUTION'] == $video_2['RESOLUTION']
-        && $Video_1['DUREE'] == $video_2['DUREE'] ){
+function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
+    if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
+        //&& $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
+        && $video_1[MTD_FPS] == $video_2[MTD_FPS]
+        && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
+        && $video_1[MTD_DUREE] == $video_2[MTD_DUREE] ){
         return true;
     }
     else {

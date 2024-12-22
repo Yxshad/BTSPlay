@@ -8,12 +8,12 @@
 function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
     $conn_id = ftp_connect($ftp_server);
     if (!$conn_id) {
-        die("Impossible de se connecter au serveur FTP : $ftp_server\n");
+        die("Impossible de se connecter au serveur FTP : $ftp_server<br>");
     }
     if (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
-        die("Échec de la connexion pour l'utilisateur $ftp_user\n");
+        die("Échec de la connexion pour l'utilisateur $ftp_user<br>");
     }
-    echo "Connexion réussie à $ftp_server\n";
+    echo "Connexion réussie à $ftp_server<br>";
     return $conn_id;
 }
 
@@ -23,10 +23,10 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
     if (ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY)) {
-        echo "Le fichier a été téléchargé avec succès.\n";
+        echo "Le fichier a été téléchargé avec succès.<br>";
     }
     else {
-        echo "Échec du téléchargement du fichier.\n";
+        echo "Échec du téléchargement du fichier.<br>";
     }
 }
 
