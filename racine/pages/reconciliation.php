@@ -60,60 +60,60 @@ function reconciliation($NASChoisi1, $NASChoisi2) {
 	$listeVideos_NAS_1 = [];
 	$listeVideos_NAS_2 = [];
 
-	    // Initialisation des paramètres du NAS 1
-		switch ($NASChoisi1) {
-			case "NAS_PAD":
-				$server_1 = NAS_PAD;
-				$nomNAS_1 = NAS_PAD;
-				$login_1 = LOGIN_NAS_PAD;
-				$password_1 = PASSWORD_NAS_PAD;
-				$uri_1 = URI_NAS_PAD;
-				break;
-			case "NAS_ARCH":
-				$server_1 = NAS_ARCH;
-				$nomNAS_1 = NAS_ARCH;
-				$login_1 = LOGIN_NAS_ARCH;
-				$password_1 = PASSWORD_NAS_ARCH;
-				$uri_1 = URI_NAS_ARCH;
-				break;
-			case "NAS_MPEG":
-				$server_1 = NAS_MPEG;
-				$nomNAS_1 = NAS_MPEG;
-				$login_1 = LOGIN_NAS_MPEG;
-				$password_1 = PASSWORD_NAS_MPEG;
-				$uri_1 = URI_NAS_MPEG;
-				break;
-		}
-	
-		// Initialisation des paramètres du NAS 2
-		switch ($NASChoisi2) {
-			case "NAS_PAD":
-				$server_2 = NAS_PAD;
-				$nomNAS_2 = NAS_PAD;
-				$login_2 = LOGIN_NAS_PAD;
-				$password_2 = PASSWORD_NAS_PAD;
-				$uri_2 = URI_NAS_PAD;
-				break;
-			case "NAS_ARCH":
-				$server_2 = NAS_ARCH;
-				$nomNAS_2 = NAS_ARCH;
-				$login_2 = LOGIN_NAS_ARCH;
-				$password_2 = PASSWORD_NAS_ARCH;
-				$uri_2 = URI_NAS_ARCH;
-				break;
-			case "NAS_MPEG":
-				$server_2 = NAS_MPEG;
-				$nomNAS_2 = NAS_MPEG;
-				$login_2 = LOGIN_NAS_MPEG;
-				$password_2 = PASSWORD_NAS_MPEG;
-				$uri_2 = URI_NAS_MPEG;
-				break;
-		}
+	// Initialisation des paramètres du NAS 1
+	switch ($NASChoisi1) {
+		case "NAS_PAD":
+			$server_1 = NAS_PAD;
+			$nomNAS_1 = NAS_PAD;
+			$login_1 = LOGIN_NAS_PAD;
+			$password_1 = PASSWORD_NAS_PAD;
+			$URI_1 = URI_RACINE_NAS_PAD;
+			break;
+		case "NAS_ARCH":
+			$server_1 = NAS_ARCH;
+			$nomNAS_1 = NAS_ARCH;
+			$login_1 = LOGIN_NAS_ARCH;
+			$password_1 = PASSWORD_NAS_ARCH;
+			$URI_1 = URI_RACINE_NAS_ARCH;
+			break;
+		case "NAS_MPEG":
+			$server_1 = NAS_MPEG;
+			$nomNAS_1 = NAS_MPEG;
+			$login_1 = LOGIN_NAS_MPEG;
+			$password_1 = PASSWORD_NAS_MPEG;
+			$URI_1 = URI_RACINE_NAS_MPEG;
+			break;
+	}
 
-		$listeVideos_NAS_1 = recupererNomsVideosNAS($server_1, $login_1, $password_1, $uri_1, $listeVideos_NAS_1);
-		$listeVideos_NAS_2 = recupererNomsVideosNAS($server_2, $login_2, $password_2, $uri_2, $listeVideos_NAS_2);
+	// Initialisation des paramètres du NAS 2
+	switch ($NASChoisi2) {
+		case "NAS_PAD":
+			$server_2 = NAS_PAD;
+			$nomNAS_2 = NAS_PAD;
+			$login_2 = LOGIN_NAS_PAD;
+			$password_2 = PASSWORD_NAS_PAD;
+			$URI_2 = URI_RACINE_NAS_PAD;
+			break;
+		case "NAS_ARCH":
+			$server_2 = NAS_ARCH;
+			$nomNAS_2 = NAS_ARCH;
+			$login_2 = LOGIN_NAS_ARCH;
+			$password_2 = PASSWORD_NAS_ARCH;
+			$URI_2 = URI_RACINE_NAS_ARCH;
+			break;
+		case "NAS_MPEG":
+			$server_2 = NAS_MPEG;
+			$nomNAS_2 = NAS_MPEG;
+			$login_2 = LOGIN_NAS_MPEG;
+			$password_2 = PASSWORD_NAS_MPEG;
+			$URI_2 = URI_RACINE_NAS_MPEG;
+			break;
+	}
 
-		echo "<h2>Vidéos présentes sur " .$nomNAS_1.": </h2>";
+	$listeVideos_NAS_1 = recupererNomsVideosNAS($server_1, $login_1, $password_1, $URI_1, $listeVideos_NAS_1);
+	$listeVideos_NAS_2 = recupererNomsVideosNAS($server_2, $login_2, $password_2, $URI_2, $listeVideos_NAS_2);
+
+	echo "<h2>Vidéos présentes sur " .$nomNAS_1.": </h2>";
 	echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
 
 	echo "<h2>Vidéos présentes sur " .$nomNAS_2.": </h2>";
@@ -130,13 +130,14 @@ function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $no
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
 	// Lister les fichiers sur le serveur FTP
-    $fichiers_NAS = ftp_nlist($conn_id, $URI_NAS);
+    //$fichiers_NAS = ftp_nlist($conn_id, $URI_NAS);
+	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS);
 
 	foreach ($fichiers_NAS as $fichier) {
         $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
 		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
 
-			$nomsVideos_NAS[] = $nom_fichier;
+			$nomsVideos_NAS[] = $fichier;
 		}
     }
 
@@ -146,10 +147,8 @@ function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $no
 
 
 function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
-
     foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {
         $videoManquanteDansNAS2 = true;
-
         foreach ($nomsVideos_NAS2 as $key2 => $nomVideoNAS2) {
 
             if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
@@ -159,7 +158,6 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVi
                 break;
             }
         }
-
 		if ($videoManquanteDansNAS2) {
             $listeVideosManquantes[] = [
                 MTD_TITRE => $nomVideoNAS1,
@@ -168,7 +166,6 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVi
 			unset($nomsVideos_NAS1[$key1]);
         }
     }
-
     // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
     foreach ($nomsVideos_NAS2 as $nomVideoNAS2Restant) {
         $listeVideosManquantes[] = [
@@ -176,7 +173,6 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVi
             EMPLACEMENT_MANQUANT => $nomNAS_1
         ];
     }
-
     return $listeVideosManquantes;
 }
 

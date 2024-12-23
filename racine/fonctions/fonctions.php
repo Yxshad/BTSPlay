@@ -108,12 +108,19 @@ function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
  * Fonction qui vérifie la correspondance des noms des 2 vidéos passées en paramètre
  * On compare les noms des fichiers sans tenir compte de leur extension (video.mp4 = video.mxf)
  * (pathinfo pour ne pas tenir compte de l'extension)
+ * On prend cependant compte du chemin du fichier
  */
-function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2){
-    if (pathinfo($nomVideo_1, PATHINFO_FILENAME) == pathinfo($nomVideo_2, PATHINFO_FILENAME)){
+function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2) {
+
+    $cheminFichier_1 = pathinfo($nomVideo_1, PATHINFO_DIRNAME);
+    $cheminFichier_2 = pathinfo($nomVideo_2, PATHINFO_DIRNAME);
+
+    $nomFichier_1 = pathinfo($nomVideo_1, PATHINFO_FILENAME);
+    $nomFichier_2 = pathinfo($nomVideo_2, PATHINFO_FILENAME);
+
+    if ($cheminFichier_1 == $cheminFichier_2 && $nomFichier_1 == $nomFichier_2) {
         return true;
-    }
-    else {
+    } else {
         return false;
     }
 }
