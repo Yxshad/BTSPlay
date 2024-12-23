@@ -66,8 +66,6 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	// Lister les fichiers sur le serveur FTP
 	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
 
-	print_r($fichiers_NAS);
-
 	foreach ($fichiers_NAS as $fichier) {
         $nom_fichier = basename($fichier);
 
