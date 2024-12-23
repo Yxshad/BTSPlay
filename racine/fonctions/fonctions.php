@@ -35,18 +35,39 @@ function afficherCollect($titre, $COLLECT_NAS) {
     echo "</table><br><br>";
 }
 
-
 /**
  * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
+ * Vidéo située sur un espace local
  * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
  * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
  */
-function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
+function recupererMetadonneesVideoLocale($fichier, $URI_ESPACE_LOCAL){
 	$fichier_source = $URI_ESPACE_LOCAL . '/' . $fichier;
     $command = "ffmpeg -i $fichier_source 2>&1";
     exec($command, $output);
     $meta = implode($output);
-    // #RISQUE : Changment des REGEX selon les vidéos
+    return recupererMetadonnees($meta, $fichier);
+}
+
+/**
+ * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
+ * Vidéo située sur un NAS distant, connexion via FTP
+ * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
+ * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
+ */
+function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier) {
+    $fileUrl = "ftp://$ftp_user:$ftp_pass@$ftp_server/$cheminFichier/$nomFichier";
+    $command = "ffmpeg -i \"$fileUrl\" 2>&1";
+    exec($command, $output);
+    $meta = implode($output);
+    return recupererMetadonnees($meta, $nomFichier);
+}
+
+/**
+ * Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
+ * #RISQUE : Changment des REGEX selon les vidéos
+ */
+function recupererMetadonnees($meta, $fichier){
     preg_match("/'[^']*\/(.*)'/",$meta,$nom);
     preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
     preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
@@ -69,11 +90,13 @@ function recupererMetadonnees($fichier, $URI_ESPACE_LOCAL){
  * (pathinfo pour ne pas tenir compte de l'extension)
  */
 function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
+    
     if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
         && $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
         && $video_1[MTD_FPS] == $video_2[MTD_FPS]
         && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
-        && $video_1[MTD_DUREE] == $video_2[MTD_DUREE] ){
+        && $video_1[MTD_DUREE] == $video_2[MTD_DUREE]
+        && $video_1[MTD_URI] == $video_2[MTD_URI]) {
         return true;
     }
     else {

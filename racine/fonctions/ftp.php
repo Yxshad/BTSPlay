@@ -30,4 +30,46 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
     }
 }
 
+
+/**
+ * Fonction qui retourne un tableau de fichiers avec les chemins complets.
+ * Prend en paramètre l'id de connexion et le repertoire à partir duquel analyser (normalement la racine).
+ * exemple : 2024-2025/video.mp4
+ * Si une vidéo est située à la racine, elle se nomme video.mp4
+ */
+function listerFichiersCompletFTP($conn_id, $repertoire) {
+    $pile = [$repertoire];
+    $fichiersComplet = [];
+    while (!empty($pile)) {
+        $dossierCourant = array_pop($pile); 
+        $elements = ftp_nlist($conn_id, $dossierCourant);
+        foreach ($elements as $element) {
+
+            // Vérifier si le répertoire courant est la racine
+            if ($dossierCourant === '/') {
+                // Si on est à la racine, on enlève le slash initial du fichier
+                $elementComplet = ltrim($element, '/');
+            }
+            else {
+                // Si ce n'est pas la racine, on concatène le dossier courant avec le fichier
+                $elementComplet = rtrim($dossierCourant, '/') . '/' . ltrim($element, '/');
+            }
+            $nomFichier = basename($elementComplet);
+
+            if ($nomFichier === '.' || $nomFichier === '..') {
+                continue;
+            }
+
+            if (ftp_size($conn_id, $elementComplet) == -1) {
+                $pile[] = $elementComplet;
+            }
+            else {
+                $fichiersComplet[] = $elementComplet;
+            }
+        }
+    }
+        return $fichiersComplet;
+}
+
+
 ?>

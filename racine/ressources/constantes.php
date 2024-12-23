@@ -2,9 +2,9 @@
 
     //CONSTANTES DES URIS
 	// #RISQUE : Changement des répertoires des NAS
-    const URI_NAS_PAD = '/';
-    const URI_NAS_ARCH = '/';
-    const URI_NAS_MPEG = '/';
+    const URI_RACINE_NAS_PAD = '/';
+    const URI_RACINE_NAS_ARCH = '/';
+    const URI_RACINE_NAS_MPEG = '/';
 
     const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
 
