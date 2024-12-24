@@ -13,7 +13,6 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
     if (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
         die("Échec de la connexion pour l'utilisateur $ftp_user<br>");
     }
-    echo "Connexion réussie à $ftp_server<br>";
     return $conn_id;
 }
 
@@ -22,11 +21,50 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
  * Prend en paramètre l'id de connexion, le fichier à obtenir en local et le fichier sutué dans le NAS
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
-    if (ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY)) {
-        echo "Le fichier a été téléchargé avec succès.<br>";
-    }
-    else {
+    if (!(ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY))) {
         echo "Échec du téléchargement du fichier.<br>";
+    }
+}
+
+/**
+ * Fonction qui exporte un fichier vidéo local vers le NAS MPEG.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG.
+ */
+function exporterVideoVersNAS($fichierLocal, $cheminDistantNAS, $ftp_server, $ftp_user, $ftp_pass) {
+    $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+
+    // Extraire le chemin du dossier distant
+    $cheminDossierDistant = dirname($cheminDistantNAS);
+    // Vérifier et créer le dossier distant si nécessaire
+    if (!@ftp_chdir($conn_id, $cheminDossierDistant)) {
+        creerDossierFTP($conn_id, $cheminDossierDistant);
+    }
+    ftp_chdir($conn_id, URI_RACINE_NAS_MPEG);
+
+    if (!(ftp_put($conn_id, $cheminDistantNAS, $fichierLocal, FTP_BINARY))) {
+        echo "Échec de l'export du fichier '$fichierLocal' vers '$cheminDistantNAS'<br>";
+    }
+    ftp_close($conn_id);
+}
+
+
+/**
+ * Fonction qui permet de créer un dossier via FTP
+ */
+function creerDossierFTP($conn_id, $cheminDossier) {
+    $cheminDossier = rtrim($cheminDossier, '/');
+    $dossiers = explode('/', $cheminDossier);
+    $cheminCourant = '';
+
+    foreach ($dossiers as $dossier) {
+        $cheminCourant .= $dossier . '/';
+        // Vérifie si le dossier existe, sinon le crée
+        if (!@ftp_chdir($conn_id, $cheminCourant)) {
+            if (!(ftp_mkdir($conn_id, $cheminCourant))) {
+                echo "Erreur lors de la création du dossier : $cheminCourant<br>";
+                return false;
+            }
+        }
     }
 }
 

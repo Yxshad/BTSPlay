@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php'; //Appel du header ?>
+<?php include '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="colonnes">

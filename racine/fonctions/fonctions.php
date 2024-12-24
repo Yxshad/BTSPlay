@@ -76,4 +76,25 @@ function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2) {
     }
 }
 
+/**
+ * Fonction qui récupère les noms des vidéos situées dans un NAS ($ftp_server). Créé une connexion FTP
+ */
+function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS){
+	
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+
+	// Lister les fichiers sur le serveur FTP
+	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS);
+
+	foreach ($fichiers_NAS as $fichier) {
+        $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
+		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
+
+			$nomsVideos_NAS[] = $fichier;
+		}
+    }
+	ftp_close($conn_id);
+	return $nomsVideos_NAS;
+}
+
 ?>

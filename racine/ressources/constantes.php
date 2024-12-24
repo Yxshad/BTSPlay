@@ -35,6 +35,9 @@
 
     //CONSTANTES DES REPERTOIRES DES VIDEOS
     const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
-    const URI_VIDEOS_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
-    const URI_VIDEOS_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';
+    const URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
+    const URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';
+
+    const URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION = '../videos/videosAUpload/coursDeConversion/';
+    const URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD = '../videos/videosAUpload/attenteDUpload/';
 ?>

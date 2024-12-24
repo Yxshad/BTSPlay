@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php'; //Appel du header ?>
+<?php include '../ressources/Templates/header.php';?>
 
 <div class="filtres">
     
@@ -33,7 +33,7 @@
 
 <div class="container">
     <?php for ($i=0; $i < 5; $i++) { ?>
-        <a href="#" class="video">
+        <a href="video.php" class="video">
             <div class="miniature"></div>
             <div class="description">
                 <h2 class="titre">Video <?php echo $i; ?></h2>
@@ -45,30 +45,4 @@
 
 <div class="voile"></div>
 
-<script>
-    document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
-        console.log('salut');
-        let filtres = document.querySelector('.filtres');
-        let voile = document.querySelector('.voile');
-        if(filtres.classList.contains('afficher')){
-            filtres.classList.remove('afficher');
-            voile.classList.remove('afficher');
-
-        }
-        else{
-            filtres.classList.add('afficher');
-            voile.classList.add('afficher');
-        }
-    });
-
-    const swiperVideo = new Swiper('.swiperVideo', {
-        speed: 400,
-        spaceBetween: 100,
-        slidesPerView: 3,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-    });
-
-</script>
+<script src="../ressources/Script/script.js"></script>

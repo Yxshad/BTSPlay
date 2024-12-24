@@ -16,7 +16,7 @@
     <h1>Reconciliation</h1>
     
     <div class="bouton">
-        <a class="btn" href="#">Lancer la reconciliation</a>
+        <a class="btn" href="fonction_reconciliation.php">Lancer la reconciliation</a>
     </div>
     
     <div class="logs">

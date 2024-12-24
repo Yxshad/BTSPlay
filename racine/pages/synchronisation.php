@@ -6,12 +6,10 @@
 	<title>Algorithme de synchronisation</title>
 </head>
 <body>
-
-<h1> Algorithme de synchronisation </h1>
-
-<form method="post">
-	<button type="submit" name="declencherSynchro">Synchro</button>
-</form>
+	<h1> Algorithme de synchronisation </h1>
+	<form method="post">
+		<button type="submit" name="declencherSynchro">Synchro</button>
+	</form>
 </body>
 </html>
 
@@ -51,7 +49,6 @@ function synchronisation(){
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 
 	//Alimenter le NAS MPEG
-	echo("Alimenter le NAS MPEG");
 	alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
@@ -164,7 +161,7 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 
 	foreach($COLLECT_MPEG as $video){
 		//Téléchargement du fichier dans le répertoire local
-		$fichierDesination = URI_VIDEOS_EN_ATTENTE_DE_CONVERSION . '/' . $video[MTD_TITRE];
+		$fichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $video[MTD_TITRE];
 
 		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
 		if($video[MTD_URI_NAS_ARCH] != null){
@@ -172,20 +169,35 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 			$fichierSource = $video[MTD_URI_NAS_ARCH] . '/' . $video[MTD_TITRE];
 			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
 			ftp_close($conn_id);
+			$URI_NAS = $video[MTD_URI_NAS_ARCH];
 		}
 		elseif($video[MTD_URI_NAS_PAD] != null){
 			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
 			$fichierSource = $video[MTD_URI_NAS_PAD] . '/' . $video[MTD_TITRE];
 			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
 			ftp_close($conn_id);
+			$URI_NAS = $video[MTD_URI_NAS_PAD];
 		}
 		else{
 			echo("Erreur système, Données incorrectes. Contacter votre administrateur");
 		}
 		
-		decouperVideo($video[MTD_TITRE] , $video[MTD_DUREE]);
+		decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
 		convertirVideo($video[MTD_TITRE]);
 		fusionnerVideo($video[MTD_TITRE]);
+
+		// Forcer l'extension à .mp4
+		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);
+		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
+
+		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+		$fichierDestination = URI_RACINE_NAS_MPEG .$URI_NAS. $video[MTD_TITRE];
+
+		//Export de la vidéo dans le NAS MPEG
+		exporterVideoVersNAS($fichierSource, $fichierDestination, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+
+		//Supprimer la vidéo de l'espace local
+		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE]);
 	}
 }
 

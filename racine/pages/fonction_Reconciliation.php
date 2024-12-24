@@ -126,26 +126,6 @@ function reconciliation($NASChoisi1, $NASChoisi2) {
 	afficherVideosManquantes($listeVideosManquantes);
 }
 
-function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS){
-	
-	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-
-	// Lister les fichiers sur le serveur FTP
-    //$fichiers_NAS = ftp_nlist($conn_id, $URI_NAS);
-	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS);
-
-	foreach ($fichiers_NAS as $fichier) {
-        $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
-		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
-
-			$nomsVideos_NAS[] = $fichier;
-		}
-    }
-
-	ftp_close($conn_id);
-	return $nomsVideos_NAS;
-}
-
 
 function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
     foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {

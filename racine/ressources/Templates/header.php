@@ -3,7 +3,7 @@
 <body>
     <header>
         <div class="container">
-            <a href="#">
+            <a href="home.php">
                 <div class="logo-bts">
                     <img src="../ressources/Images/logo_BTS_Play.png" alt="logo">
                 </div>
