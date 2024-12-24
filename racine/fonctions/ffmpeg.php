@@ -50,21 +50,6 @@ function recupererMetadonnees($meta, $fichier){
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /**
  * Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
  * Prend en paramètre le titre et la durée d'une vidéo
@@ -74,10 +59,18 @@ function decouperVideo($titre, $duree) {
     $minutes = (int)substr($duree, 3, 2);
     $secondes = (int)substr($duree, 6, 2);
     $milisecondes = (int)substr($duree, 9, 2);
+
     // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 100;
-    // Durée de chaque partie
-    $part_duration = $total / 100;
+    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+
+    // Vérifier si la durée totale est inférieure à 100 secondes
+    if ($total < 100) {
+        $part_duration = 2; // Durée de chaque partie en secondes
+        $num_parts = ceil($total / $part_duration); // Nombre total de parties
+    } else {
+        $num_parts = 100; // Diviser en 100 parties
+        $part_duration = $total / $num_parts; // Durée de chaque partie
+    }
 
     // Créer le dossier de sortie
     $chemin_dossier = URI_VIDEOS_EN_COURS_DE_CONVERSION . $titre . '_parts';
@@ -85,29 +78,41 @@ function decouperVideo($titre, $duree) {
         mkdir($chemin_dossier, 0777, true);
     }
 
-    for ($i = 0; $i < 100; $i++) {
+    for ($i = 0; $i < $num_parts; $i++) {
         // Calculer le temps de début pour chaque partie
         $start_time = $i * $part_duration;
 
-        // Formater le temps de début avec une précision correcte avec des fonctions obscures que je comprend pas
+        // Formater le temps de début avec une précision correcte
         $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
 
+        // Déterminer la durée effective de la partie (dernier segment peut être plus court)
+        $current_part_duration = ($i == $num_parts - 1) ? max(($total - $start_time), 0.01) : $part_duration;
+
         // Chemin de sortie pour l'extrait
-        $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+        if (substr($titre, -1) == "4" ) {
+            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+        } else{
+            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
+        }
+        
 
         // Construire la commande ffmpeg
         $command = "ffmpeg -i \"" . URI_VIDEOS_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
                    " -ss " . $start_time_formatted .
-                   " -t " . $part_duration .
+                   " -t " . $current_part_duration .
                    " -c copy \"" . $output_path . "\" -y";
 
         // Exécuter la commande ffmpeg
         exec($command, $output, $return_var);
 
-        if ($return_var !== 0) {
+        // #RISQUEB
+        if ($return_var == 1) {
             echo "Erreur lors du traitement de la partie " . ($i + 1) . "\n";
         }
     }
+
+    // Supprimer le fichier original
+    unlink(URI_VIDEOS_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
 }
 
 
@@ -115,7 +120,7 @@ function decouperVideo($titre, $duree) {
 
 function convertirVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
-    $chemin_dossier_origine = '../videos/videosAConvertir/coursDeConversion/' . $video . '_parts';
+    $chemin_dossier_origine = URI_VIDEOS_EN_COURS_DE_CONVERSION . $video . '_parts';
     $chemin_dossier_destination = "../videos/videosAUpload/coursDeConversion/" . $video . "_parts";
 
     // Création du dossier qui va stocker les morceaux de videos compressées    
@@ -129,17 +134,25 @@ function convertirVideo($video){
         if($file != '.' && $file != '..'){
             $command = "ffmpeg -i " . ($chemin_dossier_origine . '/' . $file) .
                         " -vcodec mpeg4 -preset ultrafast -b:v 1k " .
-                        ( $chemin_dossier_destination . "/" . $file);
+                        ( $chemin_dossier_destination . "/" . substr($file, 0, -3) . "mp4");
             exec($command, $output, $return_var);
 
-            if ($return_var !== 0) {
+            if ($return_var == 1) {
                 echo "Erreur lors du traitement de la partie " . ($file + 1) . "\n";
             }
         }
     }
 
     // On supprime le dossier des morceaux de vidéos à convertir 
-    exec("rm -rf" . $chemin_dossier_origine);
+    // On supprime le dossier qui contient les morceaux convertis
+    $files = scandir($chemin_dossier_origine);
+    foreach ($files as $file) {
+        if ($file != "." && $file != "..") {
+            unlink($chemin_dossier_origine . "/" . $file);
+        }
+        
+    }
+    rmdir($chemin_dossier_origine);
 }
 
 function fusionnerVideo($video){
@@ -169,13 +182,19 @@ function fusionnerVideo($video){
     $outputFile = $chemin_dossier_destination . "/" . $video;
 
     $command = "ffmpeg -v verbose -f concat -safe 0 -i " . $fileListPath .
-               " -c copy " . $outputFile;
+               " -c copy " . substr($outputFile, 0, -3) . "mp4";
 
     exec($command, $output, $returnVar);
     
     // On supprime le dossier qui contient les morceaux convertis
-    exec("rm -rf" . $chemin_dossier_origine);
-    // On supprime le fichier txt
-    unset($fileListPath);
+    $files = scandir($chemin_dossier_origine);
+    foreach ($files as $file) {
+        if ($file != "." && $file != "..") {
+            echo($chemin_dossier_origine . $file);
+            unlink($chemin_dossier_origine . "/" . $file);
+        }
+        
+    }
+    rmdir($chemin_dossier_origine);
 }
 ?>

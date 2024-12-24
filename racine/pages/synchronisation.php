@@ -51,6 +51,7 @@ function synchronisation(){
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 
 	//Alimenter le NAS MPEG
+	echo("Alimenter le NAS MPEG");
 	alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
@@ -162,7 +163,6 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 function alimenterNAS_MPEG($COLLECT_MPEG){
 
 	foreach($COLLECT_MPEG as $video){
-
 		//Téléchargement du fichier dans le répertoire local
 		$fichierDesination = URI_VIDEOS_EN_ATTENTE_DE_CONVERSION . '/' . $video[MTD_TITRE];
 
@@ -182,7 +182,7 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		else{
 			echo("Erreur système, Données incorrectes. Contacter votre administrateur");
 		}
-
+		
 		decouperVideo($video[MTD_TITRE] , $video[MTD_DUREE]);
 		convertirVideo($video[MTD_TITRE]);
 		fusionnerVideo($video[MTD_TITRE]);
