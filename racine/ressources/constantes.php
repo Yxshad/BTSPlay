@@ -6,8 +6,6 @@
     const URI_RACINE_NAS_ARCH = '/';
     const URI_RACINE_NAS_MPEG = '/';
 
-    const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
-
     //CONSTANTES DES CONNEXIONS FTP
     const NAS_PAD = 'NAS_PAD';
     const LOGIN_NAS_PAD = 'user1';
@@ -34,4 +32,9 @@
 
     //CONSTANTES DE LA FONCTION DE RECONCILIATION
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
+
+    //CONSTANTES DES REPERTOIRES DES VIDEOS
+    const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
+    const URI_VIDEOS_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
+    const URI_VIDEOS_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';
 ?>

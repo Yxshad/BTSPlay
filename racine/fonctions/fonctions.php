@@ -36,55 +36,6 @@ function afficherCollect($titre, $COLLECT_NAS) {
 }
 
 /**
- * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
- * Vidéo située sur un espace local
- * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
- * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
- */
-function recupererMetadonneesVideoLocale($fichier, $URI_ESPACE_LOCAL){
-	$fichier_source = $URI_ESPACE_LOCAL . '/' . $fichier;
-    $command = "ffmpeg -i $fichier_source 2>&1";
-    exec($command, $output);
-    $meta = implode($output);
-    return recupererMetadonnees($meta, $fichier);
-}
-
-/**
- * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
- * Vidéo située sur un NAS distant, connexion via FTP
- * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
- * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
- */
-function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier) {
-    $fileUrl = "ftp://$ftp_user:$ftp_pass@$ftp_server/$cheminFichier/$nomFichier";
-    $command = "ffmpeg -i \"$fileUrl\" 2>&1";
-    exec($command, $output);
-    $meta = implode($output);
-    return recupererMetadonnees($meta, $nomFichier);
-}
-
-/**
- * Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
- * #RISQUE : Changment des REGEX selon les vidéos
- */
-function recupererMetadonnees($meta, $fichier){
-    preg_match("/'[^']*\/(.*)'/",$meta,$nom);
-    preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
-    preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
-    preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
-    preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
-    // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
-    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
-    $liste = [MTD_TITRE => $fichier,
-                MTD_FPS => $fps[0],
-                MTD_RESOLUTION => $resolution[0],
-                MTD_DUREE => $dureeFormatee,
-                MTD_FORMAT => $format[1]
-                ];
-    return $liste;
-}
-
-/**
  * Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
  * (pathinfo pour ne pas tenir compte de l'extension)

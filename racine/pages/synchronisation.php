@@ -20,6 +20,7 @@
 require '../fonctions/fonctions.php';
 require '../fonctions/ftp.php';
 require '../ressources/constantes.php';
+require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherSynchro'])) {
 	synchronisation();
@@ -48,6 +49,9 @@ function synchronisation(){
 	afficherCollect("COLLECT_MPEG", $COLLECT_MPEG);
 	afficherCollect("COLLECT_PAD", $COLLECT_PAD);
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
+
+	//Alimenter le NAS MPEG
+	alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);
@@ -80,7 +84,7 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 				//RECUPERATION VIA TELECHARGEMENT FTP --ABANDONNE CAR BESOIN DE TELECHARGER LA VIDEO
 				/*$fichierDesination = $URI_VIDEOS_A_ANALYSER . '/' . $nom_fichier;
 				telechargerFichier($conn_id, $fichierDesination, $fichier);
-				$listeMetadonneesVideos = recupererMetadonneesVideoLocale($nom_fichier, $URI_VIDEOS_A_ANALYSER);
+				$listeMetadonneesVideos = recupererMetadonneesViaVideoLocale($nom_fichier, $URI_VIDEOS_A_ANALYSER);
 				unlink($fichierDesination);*/
 
 				//RECUPERATION VIA LECTURE FTP
@@ -121,10 +125,6 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 				unset($COLLECT_PAD[$key_PAD]);
                 unset($COLLECT_ARCH[$key_ARCH]);
 
-				//Ajouter un id unique à un média
-
-				//Traiter la compression
-
 				break;
 			}
 		}
@@ -157,6 +157,36 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 		unset($COLLECT_ARCH[$key_ARCH]);
 	}
 	return $COLLECT_MPEG;
+}
+
+function alimenterNAS_MPEG($COLLECT_MPEG){
+
+	foreach($COLLECT_MPEG as $video){
+
+		//Téléchargement du fichier dans le répertoire local
+		$fichierDesination = URI_VIDEOS_EN_ATTENTE_DE_CONVERSION . '/' . $video[MTD_TITRE];
+
+		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
+		if($video[MTD_URI_NAS_ARCH] != null){
+			$conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+			$fichierSource = $video[MTD_URI_NAS_ARCH] . '/' . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			ftp_close($conn_id);
+		}
+		elseif($video[MTD_URI_NAS_PAD] != null){
+			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+			$fichierSource = $video[MTD_URI_NAS_PAD] . '/' . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			ftp_close($conn_id);
+		}
+		else{
+			echo("Erreur système, Données incorrectes. Contacter votre administrateur");
+		}
+
+		decouperVideo($video[MTD_TITRE] , $video[MTD_DUREE]);
+		convertirVideo($video[MTD_TITRE]);
+		fusionnerVideo($video[MTD_TITRE]);
+	}
 }
 
 
