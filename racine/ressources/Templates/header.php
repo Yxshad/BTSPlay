@@ -19,7 +19,7 @@
             </form>
             
             <div class="compte">
-                <a href="#">
+                <a href="compte.php">
                     Se connecter
                     <div class="logo-compte">
                         <img src="../ressources/Images/account.png" alt="Compte">
