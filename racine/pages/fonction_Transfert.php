@@ -3,12 +3,12 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Algorithme de synchronisation</title>
+	<title>Fonction de transfert</title>
 </head>
 <body>
-	<h1> Algorithme de synchronisation </h1>
+	<h1> Fonction de transfert </h1>
 	<form method="post">
-		<button type="submit" name="declencherSynchro">Synchro</button>
+		<button type="submit" name="declencherTransfert">Déclencher la fonction de transfert</button>
 	</form>
 </body>
 </html>
@@ -20,11 +20,11 @@ require '../fonctions/ftp.php';
 require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 
-if (isset($_POST['declencherSynchro'])) {
-	synchronisation();
+if (isset($_POST['declencherTransfert'])) {
+	transfert();
 }
 
-function synchronisation(){
+function transfert(){
 
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
