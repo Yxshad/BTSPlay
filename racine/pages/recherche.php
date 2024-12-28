@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
-    <link href="../ressources/Style/home.css" rel="stylesheet">
+    <link href="../ressources/Style/recherche.css" rel="stylesheet">
     <script src="../ressources/Script/scripts.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
@@ -32,29 +32,17 @@
 </div>
 
 <div class="container">
-    <div class="sliderVideo">
-        <h2>Videos !!!</h2>
-        <div class="swiperVideo">
-            <div class="swiper-wrapper">
-                <?php for ($i=0; $i < 30; $i++) { ?>
-                    <div class="swiper-slide">
-                        <a href="video.php">
-                            <div class="miniature"></div>
-                            <h3>Titre</h3>
-                        </a>
-                    </div>
-                <?php } ?> 
+    <?php for ($i=0; $i < 5; $i++) { ?>
+        <a href="video.php" class="video">
+            <div class="miniature"></div>
+            <div class="description">
+                <h2 class="titre">Video <?php echo $i; ?></h2>
+                <p class="description"> Métadonnées : Lorem Ipsum</p>
             </div>
-        </div>
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-    </div>
+        </a>
+    <?php } ?>
 </div>
 
 <div class="voile"></div>
-
-<footer>
-<?php include '../ressources/Templates/footer.php';?>
-</footer>
 
 <script src="../ressources/Script/script.js"></script>
