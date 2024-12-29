@@ -98,16 +98,6 @@ function insertionDonneesTechniques($listeMetadonnees)
 
 
 /**
-* @Nom : getMetadonneesEdito
-* @Description : sélectionne les métadonnées éditoriales insérées par l'utilisateur
- */
-
- function getMetadonneesEdito()
- {
-        //A voir plus tard, dépendra de ce que j'ai sur le onClick de l'autre page
- }
-
-/**
 * @Nom : insertionDonneesEditoriales
 * @Description : insère les métadonnées éditoriales sur la vidéo concernée
 * @$listeMetadonnees : liste des metadonnées editoriales à insérer
@@ -222,8 +212,8 @@ function insertionDonneesTechniques($listeMetadonnees)
  function getProjet($video)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteProf = $connexion->prepare('SELECT mtd_edito_projet 
-    FROM Media
+    $requeteProf = $connexion->prepare('SELECT libelle 
+    FROM Projet JOIN Participer ON Projet.id = Participer.idProjet
     WHERE idVideo = ?');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
     try{
         $requeteProf->execute([$video]);
