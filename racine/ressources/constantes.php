@@ -6,6 +6,8 @@
     const URI_RACINE_NAS_ARCH = '/';
     const URI_RACINE_NAS_MPEG = '/';
 
+    const PREFIXE_DOSSIER_VIDEO = '/_BTSPLAY_';
+
     //CONSTANTES DES CONNEXIONS FTP
     const NAS_PAD = 'NAS_PAD';
     const LOGIN_NAS_PAD = 'user1';
