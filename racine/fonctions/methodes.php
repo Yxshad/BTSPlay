@@ -31,22 +31,58 @@ function connexionBD()
   * @Nom : insertionDonneesTechniques*
   * @Description : crée la vidéo en base de données et insère les métadonnées techniques associées 
   * @$listeMetadonnees : liste des metadonnées techniques à insérer
-  *
-  *
   */
 function insertionDonneesTechniques($listeMetadonnees)
 {
     $connexion = connexionBD();
-    $videoAAjouter = $connexion->prepare('INSERT INTO Media (URI_NAS_PAD, URI_NAS_ARCH, URI_NAS_MPEG, URI_DOSSIER_CHAPITRAGE, ) Values ()');
+    $videoAAjouter = $connexion->prepare('INSERT INTO Media (URI_RACINE_NAS_PAD, 
+    URI_RACINE_NAS_ARCH, 
+    URI_RACINE_NAS_MPEG, 
+    URI_DOSSIER_CHAPITRAGE, 
+    mtd_tech_titre,
+    mtd_tech_duree,
+    mtd_tech_resolution,
+    mtd_tech_fps,
+    mtd_tech_format) Values (?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    try{
+        $videoAAjouter->execute([
+            $URI_NAS_PAD, 
+            $URI_NAS_ARCH, 
+            $URI_NAS_MPEG,
+            PATHINFO_FILENAME,
+            $listeMetadonnees[MTD_TITRE],
+            $listeMetadonnees[MTD_DUREE],
+            $listeMetadonnees[MTD_RESOLUTION],
+            $listeMetadonnees[MTD_FPS],
+            $listeMetadonnees[MTD_FORMAT]]);
+            $connexion->commit();
+    }
+    catch(Exception e)
+    {
+        $connexion->rollback();
+    }
+    
 }
 
 
 /**
- * $liste = [MTD_TITRE => $fichier,
- *             MTD_FPS => $fps[0],
-*              MTD_RESOLUTION => $resolution[0],
- *             MTD_DUREE => $dureeFormatee,
- *             MTD_FORMAT => $format[1]
- *             ];
+* @Nom : getMetadonneesEdito
+* @Description : sélectionne les métadonnées éditoriales insérées par l'utilisateur
  */
+
+ function getMetadonneesEdito()
+ {
+
+ }
+
+/**
+* @Nom : insertionDonneesEditoriales
+* @Description : insère les métadonnées éditoriales sur la vidéo concernée
+* @$listeMetadonnees : liste des metadonnées editoriales à insérer
+ */
+
+ function insertionDonneesEditoriales($listeEdito)
+ {
+
+ }
 ?>
