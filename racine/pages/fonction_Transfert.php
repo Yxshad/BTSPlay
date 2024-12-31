@@ -21,10 +21,10 @@ require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherTransfert'])) {
-	transfert();
+	transfertAffche();
 }
 
-function transfert(){
+function transfertAffche(){
 
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
@@ -53,6 +53,10 @@ function transfert(){
 
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);
+
+	$COLLECT_MPEG_après_alimentation = [];
+	$COLLECT_MPEG_après_alimentation = recupererCollectNAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG, URI_VIDEOS_A_ANALYSER, $COLLECT_MPEG_après_alimentation, URI_RACINE_NAS_MPEG);
+	afficherCollect("NAS MPEG après remplissage", $COLLECT_MPEG_après_alimentation);
 }
 
 /**
