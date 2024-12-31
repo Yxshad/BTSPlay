@@ -21,10 +21,10 @@ require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherTransfert'])) {
-	transfertAffche();
+	transfertAffiche();
 }
 
-function transfertAffche(){
+function transfertAffiche(){
 
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
