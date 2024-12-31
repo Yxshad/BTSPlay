@@ -28,7 +28,7 @@
             } ?>
         </div>
         <div class="colonne-2">
-            <a href="#" class="btnVideo">
+            <a href="./bamboulo.mp4" download="bamboulo.mp4" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>

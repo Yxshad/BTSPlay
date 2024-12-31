@@ -17,14 +17,12 @@
     <select name="NAS_choisi_1" id="NAS_choisi_1">
         <option value="NAS_PAD">NAS PAD</option>
         <option value="NAS_ARCH">NAS ARCH</option>
-        <option value="NAS_MPEG">NAS MPEG</option>
     </select>
 
     <label for="NAS_choisi_2">Sélectionnez le deuxième NAS :</label>
     <select name="NAS_choisi_2" id="NAS_choisi_2">
         <option value="NAS_PAD">NAS PAD</option>
         <option value="NAS_ARCH">NAS ARCH</option>
-        <option value="NAS_MPEG">NAS MPEG</option>
     </select>
 
     <button type="submit" name="declencherReconciliation">Réconciliation</button>
@@ -77,13 +75,6 @@ function reconciliation($NASChoisi1, $NASChoisi2) {
 			$password_1 = PASSWORD_NAS_ARCH;
 			$URI_1 = URI_RACINE_NAS_ARCH;
 			break;
-		case "NAS_MPEG":
-			$server_1 = NAS_MPEG;
-			$nomNAS_1 = NAS_MPEG;
-			$login_1 = LOGIN_NAS_MPEG;
-			$password_1 = PASSWORD_NAS_MPEG;
-			$URI_1 = URI_RACINE_NAS_MPEG;
-			break;
 	}
 
 	// Initialisation des paramètres du NAS 2
@@ -101,13 +92,6 @@ function reconciliation($NASChoisi1, $NASChoisi2) {
 			$login_2 = LOGIN_NAS_ARCH;
 			$password_2 = PASSWORD_NAS_ARCH;
 			$URI_2 = URI_RACINE_NAS_ARCH;
-			break;
-		case "NAS_MPEG":
-			$server_2 = NAS_MPEG;
-			$nomNAS_2 = NAS_MPEG;
-			$login_2 = LOGIN_NAS_MPEG;
-			$password_2 = PASSWORD_NAS_MPEG;
-			$URI_2 = URI_RACINE_NAS_MPEG;
 			break;
 	}
 
