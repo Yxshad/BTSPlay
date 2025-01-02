@@ -100,17 +100,37 @@ function insertionDonneesTechniques($listeMetadonnees)
 /**
 * @Nom : insertionProfesseur
 * @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
+* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
  */
-function insertionProfesseur($video, $listeEdito)
+function insertionProfesseur($video, $nomProf, $prenomProf)
 {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $videoAAjouter = $connexion->prepare('UPDATE media 
-    SET professeurReferent = ?,
-    WHERE id = ? ');                             
+    $connexion = connexionBD();                     
     try{
-        $videoAAjouter->execute([
-            $video]);                                                               //Ajout des paramètres
-        $connexion->commit();
+        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?')  
+        $profAAjouter= $verif->execute([
+            $nomProf, $prenomProf]); 
+        
+        //ON VERIFIE SI ON A DEJA LE PROFESSEUR EN BD
+
+        if ($profAAjouter.length == 0) {
+            $verif = $connexion->prepare('INSERT INTO Professeur (nom, prenom) VALUES (?, ?)')  
+            $profAAjouter->execute([$nomProf, $prenomProf]); 
+            $connexion->commit();
+        }
+
+        //C'est dégueulasse, il est 22h10 un jeudi je modifierai ça PLUS TARD
+
+        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?')  
+        $profAAjouter= $verif->execute([
+            $nomProf, $prenomProf]); 
+        
+        $setIDProf = $connexion->prepare('UPDATE media 
+        SET professeurReferent = ?,
+        WHERE id = ? ');      
+        $setIDProf->execute([
+            $profAAjouter[id]
+            $video]);          
+        $connexion->commit();  
         $connexion = null;
     }
     catch(Exception e)
@@ -127,15 +147,10 @@ function insertionProfesseur($video, $listeEdito)
 
  function insertionDonneesEditoriales($video, $listeEdito)
  {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $videoAAjouter = $connexion->prepare('UPDATE media 
-    SET professeurReferent = ?,
-    WHERE id = ? ');                             
+    insertionProfesseur($video, $listeEdito[NOMPROF], $listeEdito[PRENOMPROF]);
+
     try{
-        $videoAAjouter->execute([
-            $video]);                                                               //Ajout des paramètres
-        $connexion->commit();
-        $connexion = null;
+        
     }
     catch(Exception e)
     {
@@ -251,6 +266,20 @@ function insertionProfesseur($video, $listeEdito)
 
 
  /* TESTS RAPIDES */
-insertionDonneesTechniques()
+ $liste = [MTD_TITRE =>  "23_6h_JIN_Fermetur.mxf",
+ MTD_FPS => 25,
+ MTD_RESOLUTION => "1920x1080",
+ MTD_DUREE => "00:00:15",
+ MTD_FORMAT => "16:9"
+ ];
+
+ $liste2 = ['Titre' =>  "23_6h_JIN_Fermetur.mxf",
+                'FPS' => 25,
+                'Durée' => "1920x1080",
+                'Resolution' => "00:00:15",
+                'Format' => "16:9"
+                ];
+
+insertionDonneesTechniques($liste);
 
 ?>
