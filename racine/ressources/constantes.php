@@ -42,4 +42,13 @@
 
     const URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION = '../videos/videosAUpload/coursDeConversion/';
     const URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD = '../videos/videosAUpload/attenteDUpload/';
+
+    //CONSTANTES DES CODES DES LOGS 
+    const LOG_SUCCESS = 'SUCCESS';
+    const LOG_WARN = 'WARNING';
+    const LOG_FAIL = 'FAIL';
+    const LOG_CRITICAL = 'CRITICAL';
+    //URI du fichier de log
+    const URI_FICHIER_LOG = '../ressources/';
+    const NOM_FICHIER_LOG = 'historique.log';
 ?>
