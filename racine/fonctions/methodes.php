@@ -7,6 +7,7 @@
  *  @COLLABORATEURS : Elsa Lavergne
  */
 
+ require '../ressources/constantes.php'
 
 /**
  *  @Nom : connexion
@@ -96,12 +97,32 @@ function insertionDonneesTechniques($listeMetadonnees)
     }
 }
 
+/**
+* @Nom : insertionProfesseur
+* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
+ */
+function insertionProfesseur($video, $listeEdito)
+{
+    $connexion = connexionBD();                                                         // Connexion à la BD
+    $videoAAjouter = $connexion->prepare('UPDATE media 
+    SET professeurReferent = ?,
+    WHERE id = ? ');                             
+    try{
+        $videoAAjouter->execute([
+            $video]);                                                               //Ajout des paramètres
+        $connexion->commit();
+        $connexion = null;
+    }
+    catch(Exception e)
+    {
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+}
 
 /**
 * @Nom : insertionDonneesEditoriales
 * @Description : insère les métadonnées éditoriales sur la vidéo concernée
-* @$listeMetadonnees : liste des metadonnées editoriales à insérer
-* @$video : l'id de la video qu'on aimerait éditer ? (je sais pas si on part sur l'id hmmmmmmmmmmmmm)
  */
 
  function insertionDonneesEditoriales($video, $listeEdito)
@@ -204,20 +225,20 @@ function insertionDonneesTechniques($listeMetadonnees)
  }
 
  /**
-* @Nom : getRealisateur
-* @Description : renvoie la liste des réalisateurs d'une vidéo
+* @Nom : getProjet
+* @Description : renvoie le projet lié à une vidéo
 * @video : id de la vidéo concernée
  */
 
  function getProjet($video)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteProf = $connexion->prepare('SELECT libelle 
-    FROM Projet JOIN Participer ON Projet.id = Participer.idProjet
-    WHERE idVideo = ?');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
+    $requeteProj = $connexion->prepare('SELECT libelle 
+    FROM Projet JOIN Media ON Projet.id = Media.projet
+    WHERE Media.id = ?');                                                 
     try{
-        $requeteProf->execute([$video]);
-        $projet = $requeteProf->fetchAll();
+        $requeteProj->execute([$video]);
+        $projet = $requeteProj->fetchAll();
         $connexion = null;
         return $projet;
     }
@@ -227,5 +248,9 @@ function insertionDonneesTechniques($listeMetadonnees)
         $connexion = null;
     }
  }
+
+
+ /* TESTS RAPIDES */
+insertionDonneesTechniques()
 
 ?>
