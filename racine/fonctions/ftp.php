@@ -60,7 +60,6 @@ function exporterVideoVersNAS($fichierLocal, $cheminDistantNAS, $ftp_server, $ft
         ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal envoyé avec succès dans le serveur $ftp_server ( $cheminCompletDistant ).");
     }
     else{
-        echo "Échec de l'export du fichier $fichierLocal vers $cheminCompletDistant";
         ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal dans le serveur $ftp_server ( $cheminCompletDistant ).");
     }
     ftp_close($conn_id);
