@@ -55,12 +55,9 @@ function recupererMetadonnees($meta, $fichier){
  * Prend en paramètre le titre et la durée d'une vidéo
  */
 function decouperVideo($titre, $duree) {
-    $heures = (int)substr($duree, 0, 2);
-    $minutes = (int)substr($duree, 3, 2);
-    $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
     // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    $total = timecodeToSecondes($duree);
+
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         $dureePartie = 2; // Durée de chaque partie en secondes
@@ -147,7 +144,10 @@ function convertirVideo($video){
 function fusionnerVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
     $chemin_dossier_origine = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . '_parts';
-    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD;
+    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video;
+
+    mkdir($chemin_dossier_destination, 0777, true);
+
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
@@ -166,6 +166,8 @@ function fusionnerVideo($video){
     $command = "ffmpeg -v verbose -f concat -safe 0 -i " . $fileListPath .
                " -c copy " . substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
+
+
     // On supprime le dossier qui contient les morceaux convertis
     $files = scandir($chemin_dossier_origine);
     foreach ($files as $file) {
@@ -174,5 +176,32 @@ function fusionnerVideo($video){
         }
     }
     rmdir($chemin_dossier_origine);
+}
+
+//génère une miniature à partir d'une vidéo compressé
+function genererMiniature($video, $duree){
+    // Convertir la durée totale en secondes
+    $total = timecodeToSecondes($duree);
+
+    $timecode = floor($total / 2);
+
+    $videoMP4 = substr($video, 0, -3) . "mp4";
+
+    $command = "ffmpeg -i " . URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video . "/" . $videoMP4 . 
+               " -ss " . $timecode . 
+               " -vframes 1 " . URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video . "/" . $videoMP4 . "_miniature.png";
+    
+    var_dump($command);           
+    
+    exec($command, $output, $returnVar);
+    
+}
+
+function timecodeToSecondes($duree){
+    $heures = (int)substr($duree, 0, 2);
+    $minutes = (int)substr($duree, 3, 2);
+    $secondes = (int)substr($duree, 6, 2);
+    $milisecondes = (int)substr($duree, 9, 2);
+    return ($heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;)
 }
 ?>

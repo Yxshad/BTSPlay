@@ -1,3 +1,11 @@
+<?php 
+
+session_start(); 
+ if(isset($_POST["username"])){
+    $_SESSION["username"] = $_POST["username"];
+}
+
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
