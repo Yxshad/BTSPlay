@@ -96,7 +96,7 @@ function decouperVideo($titre, $duree) {
         exec($command, $output, $return_var);
         // #RISQUE
         if ($return_var == 1) {
-            echo "Erreur lors du traitement de la partie " . ($i + 1) . "\n";
+            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
         }
     }
     // Supprimer le fichier original
@@ -125,7 +125,7 @@ function convertirVideo($video){
                         ( $chemin_dossier_destination . "/" . substr($file, 0, -3) . "mp4");
             exec($command, $output, $return_var);
             if ($return_var == 1) {
-                echo "Erreur lors du traitement de la partie " . ($file + 1) . "\n";
+                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
             }
         }
     }
