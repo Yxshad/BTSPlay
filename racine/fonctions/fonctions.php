@@ -165,17 +165,25 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$cheminDestination = URI_RACINE_NAS_MPEG .$URI_NAS;
 		$fichierDestination = $video[MTD_TITRE];
 
+		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
+		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
+		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
+		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		creerDossierFTP($conn_id, $cheminDestination);
+		creerDossierFTP($conn_id, $dossierVideo);
+		ftp_close($conn_id);
 
 		//Export de la vidéo dans le NAS MPEG
-		exporterFichierVersNAS($fichierSource, $cheminDestination, TYPE_FICHIER_VIDEO, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Générer la miniature de la vidéo
 		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
-		exporterFichierVersNAS($miniature, $cheminDestination, TYPE_FICHIER_IMAGE, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Supprimer la vidéo de l'espace local et sa miniature
 		unlink($fichierSource);
-		unlink($miniature);
+		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 	}
 }
 

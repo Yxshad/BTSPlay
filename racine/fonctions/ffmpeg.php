@@ -201,6 +201,7 @@ function genererMiniature($video, $duree){
         
     exec($command, $output, $returnVar);
     ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
+    $miniature = basename($miniature);
     return $miniature;
 }
 ?>
