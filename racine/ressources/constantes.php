@@ -52,8 +52,14 @@
     //URI DU FICHIER DE LOG
     const URI_FICHIER_LOG = '../ressources/';
     const NOM_FICHIER_LOG = 'historique.log';
+    
+    //CONSTANTES DES NOM UTILISATEURS ET DES MOTS DE PASSE
+    const ETUDIANT = "etudiant";
+    const ETUDIANT_MDP = "1234";
 
-    //TYPES DE FICHIERS
-    const TYPE_FICHIER_VIDEO = "video";
-    const TYPE_FICHIER_IMAGE = "image";
+    const PROF = "prof";
+    const PROF_MDP = "1234";
+
+    const ADMIN = "admin";
+    const ADMIN_MDP = "1234";
 ?>

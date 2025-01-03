@@ -1,4 +1,4 @@
-    <link href="../ressources/Style/header.css" rel="stylesheet">
+<link href="../ressources/Style/header.css" rel="stylesheet">
 </head>
 <body>
     <header>
@@ -20,7 +20,15 @@
             
             <div class="compte">
                 <a href="compte.php">
-                    Se connecter
+
+                    <?php 
+                    if(isset($_SESSION["username"])){
+                        echo $_SESSION["username"] ;
+                    }else{
+                        echo "Se connecter";
+                    }
+                    ?>
+                    
                     <div class="logo-compte">
                         <img src="../ressources/Images/account.png" alt="Compte">
                     </div>
@@ -28,4 +36,3 @@
             </div>
         </div>
     </header>
-
