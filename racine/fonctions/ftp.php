@@ -34,33 +34,39 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
     }
 }
 
+
 /**
- * Fonction qui exporte un fichier vidéo local vers le NAS MPEG.
+ * Fonction qui exporte un fichier  local vers le NAS MPEG.
  * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG.
  * Créé un répertoire au nom de la vidéo si celui-ci n'existe pas déjà.
  */
-function exporterVideoVersNAS($fichierLocal, $cheminDistantNAS, $ftp_server, $ftp_user, $ftp_pass) {
+function exporterFichierVersNAS($fichierLocal, $cheminDistantNAS, $typeFichier, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
-    // Extraire le chemin du dossier distant
-    $cheminDossierDistant = dirname($cheminDistantNAS);
-    //$nomFichier = basename($fichierLocal);
-    $nomFichierSansExtension = pathinfo($fichierLocal, PATHINFO_FILENAME);
-    // Créer le chemin pour le dossier spécifique à la vidéo
-    $dossierVideoACreer = $cheminDossierDistant . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
-
     // Créer le dossier parent et le sous dossier
-    creerDossierFTP($conn_id, $cheminDossierDistant);
-    creerDossierFTP($conn_id, $dossierVideoACreer);
+    creerDossierFTP($conn_id, $cheminDistantNAS);
+
+    if($typeFichier == TYPE_FICHIER_VIDEO){
+        $nomFichierSansExtension = pathinfo($fichierLocal, PATHINFO_FILENAME);
+        $dossierACreer = $cheminDistantNAS . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
+        creerDossierFTP($conn_id, $dossierACreer);
+    }
+    elseif ($typeFichier == TYPE_FICHIER_IMAGE){
+        $nomFichierSansExtension = pathinfo($fichierLocal, PATHINFO_FILENAME);
+        // Si le nom du fichier se termine par "_miniature", on l'enlève
+        if (substr($nomFichierSansExtension, -10) === "_miniature") {
+            $nomFichierSansExtension = substr($nomFichierSansExtension, 0, -10);
+        }
+        $dossierACreer = $cheminDistantNAS . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
+    }
 
     // Construire le chemin complet de destination pour le fichier
-    $cheminCompletDistant = $dossierVideoACreer . '/' . basename($fichierLocal);
+    $fichierDestination = basename($fichierLocal);
+    $cheminCompletFichier = $dossierACreer . '/' . $fichierDestination;
+
     // Envoyer le fichier
-    if ((ftp_put($conn_id, $cheminCompletDistant, $fichierLocal, FTP_BINARY))){
-        ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal envoyé avec succès dans le serveur $ftp_server ( $cheminCompletDistant ).");
-    }
-    else{
-        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal dans le serveur $ftp_server ( $cheminCompletDistant ).");
+    if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
+        echo "Échec de l'export du fichier '$fichierLocal' vers '$dossierACreer'<br>";
     }
     ftp_close($conn_id);
 }

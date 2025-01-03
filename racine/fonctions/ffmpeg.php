@@ -175,4 +175,32 @@ function fusionnerVideo($video){
     }
     rmdir($chemin_dossier_origine);
 }
+
+/**
+ * Fonction qui créé une miniature dans un espace local.
+ * Prend en paramètre une vidéo et sa durée
+ * Retourne le nom de la miniature
+ */
+function genererMiniature($video, $duree){
+    $heures = (int)substr($duree, 0, 2);
+    $minutes = (int)substr($duree, 3, 2);
+    $secondes = (int)substr($duree, 6, 2);
+    $milisecondes = (int)substr($duree, 9, 2);
+    // Convertir la durée totale en secondes
+    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+
+    $timecode = floor($total / 2);
+
+    $videoSansExtension = rtrim($video, ".mp4");
+
+    $miniature = $videoSansExtension . "_miniature.png";
+
+    $command = "ffmpeg -i " . $video . 
+               " -ss " . $timecode . 
+               " -vframes 1 " . $miniature;
+        
+    exec($command, $output, $returnVar);
+    ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
+    return $miniature;
+}
 ?>

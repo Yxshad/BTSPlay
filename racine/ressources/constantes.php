@@ -48,7 +48,12 @@
     const LOG_WARN = 'WARNING';
     const LOG_FAIL = 'FAIL';
     const LOG_CRITICAL = 'CRITICAL';
-    //URI du fichier de log
+
+    //URI DU FICHIER DE LOG
     const URI_FICHIER_LOG = '../ressources/';
     const NOM_FICHIER_LOG = 'historique.log';
+
+    //TYPES DE FICHIERS
+    const TYPE_FICHIER_VIDEO = "video";
+    const TYPE_FICHIER_IMAGE = "image";
 ?>
