@@ -1,7 +1,5 @@
-
-
-
 document.addEventListener("DOMContentLoaded", function(event) {
+
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
         let filtres = document.querySelector('.filtres');
         let voile = document.querySelector('.voile');
@@ -25,4 +23,5 @@ document.addEventListener("DOMContentLoaded", function(event) {
             prevEl: '.swiper-button-prev',
         },
     });
+    
 });

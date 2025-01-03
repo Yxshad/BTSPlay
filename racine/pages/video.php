@@ -6,12 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+    
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <?php include '../ressources/Templates/header.php';?>
 
@@ -62,8 +63,7 @@
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-      const player = new Plyr('#player', {
+const player = new Plyr('#player', {
         controls: [
           'play-large', // The large play button in the center
           'restart', // Restart playback
@@ -85,9 +85,8 @@ document.addEventListener('DOMContentLoaded', () => {
         settings: ['captions', 'quality', 'speed', 'loop'],
         captions: {
           active: true,
-          language: 'fr', // Default language
+          language: 'fr',
           update: true,
         },
       });
-    });
-<script>
+</script>
