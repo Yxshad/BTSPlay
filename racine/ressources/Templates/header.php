@@ -19,20 +19,34 @@
             </form>
             
             <div class="compte">
-                <a href="compte.php">
-
-                    <?php 
-                    if(isset($_SESSION["username"])){
-                        echo $_SESSION["username"] ;
-                    }else{
-                        echo "Se connecter";
-                    }
-                    ?>
-                    
-                    <div class="logo-compte">
-                        <img src="../ressources/Images/account.png" alt="Compte">
+                <?php if(!isset($_SESSION["username"])){ ?>
+                    <a href="compte.php">                 
+                        Se connecter
+                        <div class="logo-compte">
+                            <img src="../ressources/Images/account.png" alt="Compte">
+                        </div>
+                    </a>
+                <?php }else{ ?>
+                    <a class="btnSousMenu">
+                        <?php echo $_SESSION["username"]; ?>
+                        <div class="logo-compte">
+                            <img src="../ressources/Images/account.png" alt="Compte">
+                        </div>
+                    </a>
+                    <div class="sousMenu">
+                        <a href="">Transfert</a>
+                        <a href="">Sauvegarde</a>
+                        <a href="">Réconciliation</a>
+                        <a href="">Logs</a>
+                        <hr/>
+                        <a href="logout.php">
+                            <div class="logo-compte">
+                                <img src="../ressources/Images/logout.png" alt="Compte">
+                            </div>
+                            Déconnecter
+                        </a>
                     </div>
-                </a>
+                <?php } ?>
             </div>
         </div>
     </header>

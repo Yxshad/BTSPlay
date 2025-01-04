@@ -23,5 +23,14 @@ document.addEventListener("DOMContentLoaded", function(event) {
             prevEl: '.swiper-button-prev',
         },
     });
-    
+
+    let sousMenu = document.querySelector('.sousMenu');
+    sousMenu.hidden = true;
+    document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
+        if (sousMenu.hidden == true) {
+            sousMenu.hidden = false;
+        } else {
+            sousMenu.hidden = true;
+        }
+    })
 });
