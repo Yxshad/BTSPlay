@@ -1,9 +1,4 @@
-<?php 
-    session_start(); 
-    if(isset($_POST["username"])){
-    $_SESSION["username"] = $_POST["username"];
-    }
-?>
+<?php session_start(); ?>
 
 <!DOCTYPE html>
 <html lang="fr">
