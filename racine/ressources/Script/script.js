@@ -58,15 +58,18 @@ function initLectureVideo(){
 }
 
 
-//Fonctions spécifiques au header.php
+//Fonctions spécifiques au header.php.
 function affichageSousMenu(){
     let sousMenu = document.querySelector('.sousMenu');
-    sousMenu.hidden = true;
-    document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
+    //Si le sous menu n'a pas été chargé car l'utilisateur est déconnecté, on ne fait rien
+    if(!(sousMenu == null)){
+        sousMenu.hidden = true;
+        document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
         if (sousMenu.hidden == true) {
             sousMenu.hidden = false;
         } else {
             sousMenu.hidden = true;
         }
-    })
+        })
+    }
 }
