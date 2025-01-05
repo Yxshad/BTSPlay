@@ -11,7 +11,6 @@
 
 <!-- Formulaire pour choisir les NAS -->
 <form method="post">
-    <h2>Choisissez les NAS à comparer :</h2>
     <button type="submit" name="declencherReconciliation">Réconciliation</button>
 	<br> <br>
 </form>

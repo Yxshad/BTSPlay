@@ -55,12 +55,9 @@ function recupererMetadonnees($meta, $fichier){
  * Prend en paramètre le titre et la durée d'une vidéo
  */
 function decouperVideo($titre, $duree) {
-    $heures = (int)substr($duree, 0, 2);
-    $minutes = (int)substr($duree, 3, 2);
-    $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
-    // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    
+    $total = formaterDuree($duree);
+    
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         $dureePartie = 2; // Durée de chaque partie en secondes
@@ -96,7 +93,7 @@ function decouperVideo($titre, $duree) {
         exec($command, $output, $return_var);
         // #RISQUE
         if ($return_var == 1) {
-            echo "Erreur lors du traitement de la partie " . ($i + 1) . "\n";
+            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
         }
     }
     // Supprimer le fichier original
@@ -125,7 +122,7 @@ function convertirVideo($video){
                         ( $chemin_dossier_destination . "/" . substr($file, 0, -3) . "mp4");
             exec($command, $output, $return_var);
             if ($return_var == 1) {
-                echo "Erreur lors du traitement de la partie " . ($file + 1) . "\n";
+                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
             }
         }
     }
@@ -174,5 +171,46 @@ function fusionnerVideo($video){
         }
     }
     rmdir($chemin_dossier_origine);
+}
+
+/**
+ * Fonction qui créé une miniature dans un espace local.
+ * Prend en paramètre une vidéo et sa durée
+ * Retourne le nom de la miniature
+ */
+function genererMiniature($video, $duree){
+
+    $total = formaterDuree($duree);
+
+    $timecode = floor($total / 2);
+
+    $videoSansExtension = rtrim($video, ".mp4");
+
+    $miniature = $videoSansExtension . "_miniature.png";
+
+    $command = "ffmpeg -i " . $video . 
+               " -ss " . $timecode . 
+               " -vframes 1 " . $miniature;
+        
+    exec($command, $output, $returnVar);
+    ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
+    $miniature = basename($miniature);
+    return $miniature;
+}
+
+/**
+ * Fonction qui permet de convertir une durée totale en secondes
+ * Prend en paramètre une $duree sous la forme hh:mm:ss.mm
+ * Retourne la durée totale en seconde
+ */
+function formaterDuree($duree){
+    $heures = (int)substr($duree, 0, 2);
+    $minutes = (int)substr($duree, 3, 2);
+    $secondes = (int)substr($duree, 6, 2);
+    $milisecondes = (int)substr($duree, 9, 2);
+
+    // Convertir la durée totale en secondes
+    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    return $total;
 }
 ?>

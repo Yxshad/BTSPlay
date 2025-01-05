@@ -38,7 +38,11 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	foreach ($fichiers_NAS as $fichier) {
         $nom_fichier = basename($fichier);
 
-		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
+		$extension = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
+
+		//Si le fichier est une vidéo
+		if ($nom_fichier !== '.' && $nom_fichier !== '..'
+			&& ($extension == 'mxf' || $extension == 'mp4')) {
 
 			// Si le fichier n'est pas présent en base
 			if (!fichierEnBase($nom_fichier)) {
@@ -158,13 +162,28 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
 
 		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$fichierDestination = URI_RACINE_NAS_MPEG .$URI_NAS. $video[MTD_TITRE];
+		$cheminDestination = URI_RACINE_NAS_MPEG .$URI_NAS;
+		$fichierDestination = $video[MTD_TITRE];
+
+		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
+		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
+		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
+		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		creerDossierFTP($conn_id, $cheminDestination);
+		creerDossierFTP($conn_id, $dossierVideo);
+		ftp_close($conn_id);
 
 		//Export de la vidéo dans le NAS MPEG
-		exporterVideoVersNAS($fichierSource, $fichierDestination, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
-		//Supprimer la vidéo de l'espace local
-		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE]);
+		//Générer la miniature de la vidéo
+		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
+
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+
+		//Supprimer la vidéo de l'espace local et sa miniature
+		unlink($fichierSource);
+		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 	}
 }
 

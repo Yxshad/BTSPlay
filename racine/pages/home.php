@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,16 +7,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
 <?php include '../ressources/Templates/header.php';?>
 
-<div class="filtres">
+<aside class="filtres">
     
-    <form action="">
+    <form action="recherche.php">
         <div>
             <label>Année</label>
             <input type="number">
@@ -28,8 +30,8 @@
         <input value="Rechercher" type="submit">
     </form>
 
-    <button class="afficherFiltres">></button>
-</div>
+    <button class="afficherFiltres"> > </button>
+</aside>
 
 <div class="container">
     <div class="sliderVideo">
@@ -57,4 +59,9 @@
 <?php include '../ressources/Templates/footer.php';?>
 </footer>
 
-<script src="../ressources/Script/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        affichageFiltres();
+        initCarrousel();
+    });
+</script>

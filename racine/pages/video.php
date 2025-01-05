@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,17 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+    
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 <?php include '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="lecteurVideo">
-        <video src=""></video>
-    </div>
+    <video class="player" id="player" playsinline controls>
+        <source src="../videos/videosALire/bobo.mp4" type="video/mp4"/>
+    </video>
+</div>
     <h1 class="titre">Titre de la video</h1>
     <div class="colonnes">
         <div class="colonne-1">
@@ -54,5 +60,10 @@
             </a>
         </div>
     </div>
-   
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        initLectureVideo();
+    });
+</script>
