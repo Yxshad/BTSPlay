@@ -1,21 +1,3 @@
-document.addEventListener("DOMContentLoaded", function(event) {
-
-
-    let sousMenu = document.querySelector('.sousMenu');
-    sousMenu.hidden = true;
-    document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
-        if (sousMenu.hidden == true) {
-            sousMenu.hidden = false;
-        } else {
-            sousMenu.hidden = true;
-        }
-    })
-    
-
-});
-
-
-
 //Fonctions spécifiques à la page home.php
 function affichageFiltres(){
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
@@ -73,4 +55,18 @@ function initLectureVideo(){
           update: true,
         },
     });
+}
+
+
+//Fonctions spécifiques au header.php
+function affichageSousMenu(){
+    let sousMenu = document.querySelector('.sousMenu');
+    sousMenu.hidden = true;
+    document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
+        if (sousMenu.hidden == true) {
+            sousMenu.hidden = false;
+        } else {
+            sousMenu.hidden = true;
+        }
+    })
 }

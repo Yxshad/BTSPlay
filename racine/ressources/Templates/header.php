@@ -50,3 +50,9 @@
             </div>
         </div>
     </header>
+
+    <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        affichageSousMenu();
+    });
+    </script>

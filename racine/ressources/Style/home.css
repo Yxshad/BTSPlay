@@ -1,4 +1,4 @@
-div.filtres{
+aside.filtres{
     display: flex;
     align-items: center;
     width: calc(20% + 50px);
@@ -10,7 +10,7 @@ div.filtres{
     z-index:11
 }
 
-div.filtres.afficher{
+aside.filtres.afficher{
     transform: translate(0,0);
 }
 
@@ -29,7 +29,7 @@ div.filtres.afficher{
     display: block;
 }
 
-div.filtres form{
+aside.filtres form{
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -41,7 +41,7 @@ div.filtres form{
     justify-content: center;
 }
 
-div.filtres .afficherFiltres{
+aside.filtres .afficherFiltres{
     background: grey;
     font-size: 2.5em;
     width: 50px;

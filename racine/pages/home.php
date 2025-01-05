@@ -1,4 +1,10 @@
-<?php session_start(); ?>
+<?php 
+    session_start(); 
+    if(isset($_POST["username"])){
+    $_SESSION["username"] = $_POST["username"];
+    }
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,7 +19,7 @@
 
 <?php include '../ressources/Templates/header.php';?>
 
-<div class="filtres">
+<aside class="filtres">
     
     <form action="">
         <div>
@@ -29,8 +35,8 @@
         <input value="Rechercher" type="submit">
     </form>
 
-    <button class="afficherFiltres"></button>
-</div>
+    <button class="afficherFiltres"> > </button>
+</aside>
 
 <div class="container">
     <div class="sliderVideo">

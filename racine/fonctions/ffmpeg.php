@@ -55,12 +55,9 @@ function recupererMetadonnees($meta, $fichier){
  * Prend en paramètre le titre et la durée d'une vidéo
  */
 function decouperVideo($titre, $duree) {
-    $heures = (int)substr($duree, 0, 2);
-    $minutes = (int)substr($duree, 3, 2);
-    $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
-    // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    
+    $total = formaterDuree($duree);
+    
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         $dureePartie = 2; // Durée de chaque partie en secondes
@@ -182,12 +179,8 @@ function fusionnerVideo($video){
  * Retourne le nom de la miniature
  */
 function genererMiniature($video, $duree){
-    $heures = (int)substr($duree, 0, 2);
-    $minutes = (int)substr($duree, 3, 2);
-    $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
-    // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+
+    $total = formaterDuree($duree);
 
     $timecode = floor($total / 2);
 
@@ -203,5 +196,21 @@ function genererMiniature($video, $duree){
     ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
     $miniature = basename($miniature);
     return $miniature;
+}
+
+/**
+ * Fonction qui permet de convertir une durée totale en secondes
+ * Prend en paramètre une $duree sous la forme hh:mm:ss.mm
+ * Retourne la durée totale en seconde
+ */
+function formaterDuree($duree){
+    $heures = (int)substr($duree, 0, 2);
+    $minutes = (int)substr($duree, 3, 2);
+    $secondes = (int)substr($duree, 6, 2);
+    $milisecondes = (int)substr($duree, 9, 2);
+
+    // Convertir la durée totale en secondes
+    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    return $total;
 }
 ?>
