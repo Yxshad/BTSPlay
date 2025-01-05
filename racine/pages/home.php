@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
@@ -29,7 +29,7 @@
         <input value="Rechercher" type="submit">
     </form>
 
-    <button class="afficherFiltres">></button>
+    <button class="afficherFiltres"></button>
 </div>
 
 <div class="container">
@@ -58,4 +58,9 @@
 <?php include '../ressources/Templates/footer.php';?>
 </footer>
 
-<script src="../ressources/Script/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        affichageFiltres();
+        initCarrousel();
+    });
+</script>
