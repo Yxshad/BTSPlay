@@ -54,12 +54,12 @@
     const NOM_FICHIER_LOG = 'historique.log';
     
     //CONSTANTES DES NOM UTILISATEURS ET DES MOTS DE PASSE
-    const ETUDIANT = "etudiant";
+    const ETUDIANT = "Etudiant";
     const ETUDIANT_MDP = "1234";
 
-    const PROF = "prof";
+    const PROF = "Prof";
     const PROF_MDP = "1234";
 
-    const ADMIN = "admin";
+    const ADMIN = "Admin";
     const ADMIN_MDP = "1234";
 ?>

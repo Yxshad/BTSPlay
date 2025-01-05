@@ -16,7 +16,7 @@
 
 <aside class="filtres">
     
-    <form action="">
+    <form action="recherche.php">
         <div>
             <label>Année</label>
             <input type="number">
