@@ -68,7 +68,7 @@ function decouperVideo($titre, $duree) {
     }
     // Créer le dossier de sortie
     $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier);
+    creerDossier($chemin_dossier, false);
     for ($i = 0; $i < $nombreParties; $i++) {
         // Calculer le temps de début pour chaque partie
         $start_time = $i * $dureePartie;
@@ -109,7 +109,7 @@ function convertirVideo($video){
     $chemin_dossier_origine = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $video . '_parts';
     $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . "_parts";
     // Création du dossier qui va stocker les morceaux de videos compressées    
-    creerDossier($chemin_dossier_destination);
+    creerDossier($chemin_dossier_destination, false);
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
     // Pour chaque fichier on le converti en MPEG

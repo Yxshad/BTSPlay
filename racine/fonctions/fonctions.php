@@ -383,9 +383,11 @@ function trouverNomMiniature($titreVideo) {
 
 /**
  * Fonction qui permet de créer un dossier local sans erreur
- * Prend en paramètre l'URI du dossier à créer
+ * Prend en paramètre l'URI du dossier à créer, et un booléen qui indique si on créé de manière incrémentale
+ * Création incrémentale : si le dossier "nomDossier" existe deja, on créé le dossier "nomDossier(1)"
  */
-function creerDossier($cheminDossier){
+function creerDossier(&$cheminDossier, $creationIncrementale){
+	
 	// Vérifie si le dossier existe, sinon le crée
 	if (!is_dir($cheminDossier)) {
 		if (!(mkdir($cheminDossier, 0777, true))) {
@@ -393,6 +395,23 @@ function creerDossier($cheminDossier){
 			exit();
 		}
 	}
+	//Si le dossier n'existe pas, on regarde si on créé de manière incrémentale
+	else {
+        if ($creationIncrementale) {
+            $i = 1;
+            $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            while (is_dir($nouveauChemin)) {
+                $i++;
+                $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            }
+            if (!(mkdir($nouveauChemin, 0777, true))) {
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $nouveauChemin.");
+                exit();
+            }
+			//Pour le passage par référence
+			$cheminDossier = $nouveauChemin;
+        }
+    }
 }
 
 
@@ -433,13 +452,14 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	//Définition du chemin complet de la miniature
 	$miniature = trouverNomMiniature($titreVideo);
-	$cheminDistantComplet = $uriServeurNAS.$miniature;
+	$cheminDistantComplet = $uriServeurNAS . $miniature;
 
 	//Création d'un dossier dans l'espace local
 	$nomSansExtension = basename($titreVideo);
+	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
 	$cheminDossier = URI_VIDEOS_A_LIRE . $nomSansExtension;
 
-	creerDossier($cheminDossier);
+	creerDossier($cheminDossier, true);
 	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
 	
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
