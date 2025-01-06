@@ -26,6 +26,12 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
  * Prend en paramètre l'id de connexion, le fichier à obtenir en local et le fichier sutué dans le NAS
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
+
+    if (file_exists($local_file)) {
+        ajouterLog(LOG_INFORM, "Le fichier $local_file existe déjà. Téléchargement ignoré.");
+        return;
+    }
+
     if ((ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY))) {
         ajouterLog(LOG_SUCCESS, "Fichier $ftp_file téléchargé avec succès dans $local_file.");
     }
