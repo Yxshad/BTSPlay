@@ -119,20 +119,17 @@ function insertionProfesseur($video, $prof)
 {
     $connexion = connexionBD();                     
     try{
-        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?');
-        $profAAjouter= $verif->execute([
-            $nomProf, $prenomProf]); 
-        
-        //ON VERIFIE SI ON A DEJA LE PROFESSEUR EN BD
-
-        if (count($profAAjouter) == 0) {
-            $verif = $connexion->prepare('INSERT INTO Professeur (nom, prenom) VALUES (?, ?)');
-            $profAAjouter->execute([$nomProf, $prenomProf]); 
+        if(!profInBD($prof))
+        {
+            $ajoutProfesseur = $connexion->prepare('INSERT INTO Professeur (nomComplet) VALUES (?)');
+            $ajoutProfesseur->execute([$prof]); 
             $connexion->commit();
         }
-
-        //Sinon rien à faire
-        $connexion = null;
+        else {
+            //Sinon rien à faire
+            $connexion = null;
+        }
+        
     }
     catch(Exception $e)
     {
@@ -149,28 +146,58 @@ function insertionProfesseur($video, $prof)
  * prof : nomComplet du professeur
  */
 
- function assignerProfReferent($idVideo, $prof){
-    try{
-        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?');
-        $profAAjouter= $verif->execute([
-            $nomProf, $prenomProf]); 
-        
+ function assignerProfReferent($idVideo, $prof) {
+    $connexion = connexionBD(); // Connexion à la BD
+    $connexion->beginTransaction(); // Démarrage de la transaction
+    try {
+        // Rechercher le professeur par nom complet
+        $profAAjouter = $connexion->prepare('SELECT id FROM Professeur WHERE nomComplet = ?');
+        $profAAjouter->execute([$prof]); 
+        $profAjoute = $profAAjouter->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+
+        // Debugging
+        var_dump($profAjoute, "||||", $idVideo);
+
+        // Vérifiez si le professeur existe
+        if (!$profAjoute || !isset($profAjoute['id'])) {
+            throw new Exception("Professeur non trouvé ou ID manquant pour : $prof");
+        }
+
+        // Debug : Vérifier les données avant l'UPDATE
+        var_dump("Professeur trouvé :", $profAjoute['id'], "ID vidéo :", $idVideo);
+
+        // Vérification des types (éviter l'erreur Array to string conversion)
+        if (!is_scalar($profAjoute['id']) || !is_scalar($idVideo)) {
+            throw new Exception("Les données fournies ne sont pas scalaires (idProf ou idVideo).");
+        }
+
+        // Mettre à jour la table `media` avec l'ID du professeur
         $setIDProf = $connexion->prepare('UPDATE media 
-        SET professeurReferent = ?,
-        WHERE id = ? ');      
+                                          SET professeurReferent = ?
+                                          WHERE id = ?');
+        
+        // Exécution de la mise à jour
         $setIDProf->execute([
-            $profAAjouter[id],
-            $video]);          
-        $connexion->commit();  
+            $profAjoute['id'], // Utilisation de l'ID du professeur récupéré
+            $idVideo
+        ]);
+
+        // Commit de la transaction
+        $connexion->commit();
+        $connexion = null;
+
+        echo "Professeur référent assigné avec succès.\n";
+    } catch (Exception $e) {
+        // Gestion des erreurs
+        echo 'Erreur : ',  $e->getMessage(), "\n";
+        if ($connexion) {
+            $connexion->rollback(); // Annule la transaction en cas d'erreur
+        }
         $connexion = null;
     }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
- }
+}
+
+
 
 /**
 * @Nom : insertionEleve
@@ -243,13 +270,15 @@ function insertionEleve($video, $eleve)
 * @Description : insère les métadonnées éditoriales sur la vidéo concernée
  */
 
- function insertionDonneesEditoriales($video, $listeEdito)
+ function insertionDonneesEditoriales($videoTitre, $listeEdito)
  {
-    
+    $connexion = connexionBD(); // Connexion à la BD
+    $connexion->beginTransaction(); // Démarrage de la transaction
     try{
-        // insertionProfesseur($video, $listeEdito[NOMCOMPLET]);
-        // assignerProfReferent($video, $listeEdito[NOMCOMPLET]);
-        // assignerCadreur($video, $listeEdito[CADREURS]);
+        $idVid = getVideo($videoTitre);           //Permet d'obtenir l'id exact de la vidéo à partir du titre 
+        insertionProfesseur($idVid, $listeEdito['prof']);
+        assignerProfReferent($idVid, $listeEdito['prof']);
+        assignerCadreur($video, $listeEdito['CADREURS']);
         
 
     }
@@ -279,9 +308,10 @@ function insertionEleve($video, $eleve)
     WHERE idVideo = ? AND idRole = 2');                                                 // #RISQUE : j'ai mis 2 en estimant que ce serait l'id des réalisateurs mais bon hein :v 
     try{
         $requeteReal->execute([$video]);
-        $listeReal = $requeteReal->fetchAll();
+        $listeReal = $requeteReal->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+        
         $connexion = null;
-        return $projet;
+        return $listeReal;
     }
     catch(Exception $e)
     {
@@ -306,7 +336,7 @@ function insertionEleve($video, $eleve)
     WHERE idVideo = ? AND idRole = 1');                                                 // #RISQUE : j'ai mis 1 en estimant que ce serait l'id des cadreurs mais bon hein :v                  
     try{
         $requeteCadreur->execute([$video]);
-        $listeCadreurs = $requeteCadreur->fetchAll();
+        $listeCadreurs = $requeteCadreur->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
         return $listeCadreurs;
     }
@@ -332,7 +362,7 @@ function insertionEleve($video, $eleve)
     WHERE idVideo = ? AND idRole = 3');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
     try{
         $requeteResponsable->execute([$video]);
-        $listeResponsable = $requeteResponsable->fetchAll();
+        $listeResponsable = $requeteResponsable->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatifs
         $connexion = null;
         return $listeResponsable;
     }
@@ -358,7 +388,7 @@ function insertionEleve($video, $eleve)
     WHERE Media.id = ?');                                                 
     try{
         $requeteProj->execute([$video]);
-        $projet = $requeteProj->fetchAll();
+        $projet = $requeteProj->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
         return $projet;
     }
@@ -383,9 +413,9 @@ function insertionEleve($video, $eleve)
     WHERE nomComplet = ?');                                                 
     try{
         $requeteProj->execute([$video]);
-        $eleveCherche = $requeteProj->fetchAll();
+        $eleveCherche = $requeteProj->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
-        return $eleveCherche[id];
+        return $eleveCherche['id'];
     }
     catch(Exception $e)
     {
@@ -394,6 +424,36 @@ function insertionEleve($video, $eleve)
         $connexion = null;
     }
  }
+
+ /**
+ * getVideo
+ * renvoie l'id d'une vidéo
+ * $titre : nom de la vidéo
+ */
+function getVideo($videoTitre)
+{
+   $connexion = connexionBD();                                                         // Connexion à la BD
+   $requeteVid = $connexion->prepare('SELECT id 
+   FROM Media
+   WHERE mtd_tech_titre = ?');                                                 
+   try{
+       $requeteVid->execute([$videoTitre]);
+       $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+       var_dump("VIDEO ID :",$vidID['id']);
+       $connexion = null;
+       if ($vidID) {
+       } else {
+           echo "Aucune vidéo trouvée pour le titre donné.\n";
+       }
+       return $vidID['id'];
+   }
+   catch(Exception $e)
+   {
+       echo 'Caught exception: ',  $e->getMessage(), "\n";
+       $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+       $connexion = null;
+   }
+}
 
 /**###########################
   *     TRUE / FALSE
@@ -476,12 +536,17 @@ function insertionEleve($video, $eleve)
                 ];
 
 $listeEditoriale = ['prof' => 'Michael Jackson',
-                    'cadreur' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
+                    'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
                     'projet' => 'Projet de Fin dannée 2024'];
 
 
 //insertionDonneesTechniques($liste2);
-eleveInBD('Michael Jackson');
-profInBD('Michael Jackson');
+//var_dump(eleveInBD('Michael Jackson'));
+//var_dump(profInBD('Michael Jackson'));
+
+
+
+insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale)
+
 
 ?>
