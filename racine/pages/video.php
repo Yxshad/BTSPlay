@@ -29,6 +29,7 @@
 
     //Téléchargement de la vidéo
         //On récupère le chemin complet de la miniature, on le remplace par celui de la vidéo
+        $cheminCompletMiniature = $cheminLocalComplet;
         $miniature = basename($cheminLocalComplet);
         $fichierVideo = trouverNomVideo($miniature);
 
@@ -45,7 +46,7 @@
 
 <div class="container">
     <div class="lecteurVideo">
-    <video class="player" id="player" playsinline controls>
+    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminCompletMiniature; ?>>
         <source src="<?php echo $cheminLocalComplet; ?>" type="video/mp4"/>
     </video>
 </div>
