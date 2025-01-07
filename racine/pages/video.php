@@ -41,16 +41,6 @@
         $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
         telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
         ftp_close($conn_id);
-
-/*
-        $cheminLocalComplet = rectifConversion($cheminLocalComplet);
-        if ($cheminLocalComplet == false) {
-            echo "La conversion de la vidéo a échoué.";
-        } else {
-            echo "Vidéo convertie avec succès.";
-        }
-        $mimeType = mime_content_type($cheminLocalComplet);
-        echo "Type MIME : " . $mimeType;*/
 ?>
 
 <div class="container">

@@ -115,9 +115,15 @@ function convertirVideo($video){
     // Pour chaque fichier on le converti en MPEG
     foreach ($files as $file) {
         if($file != '.' && $file != '..'){
-            $command = "ffmpeg -i " . ($chemin_dossier_origine . '/' . $file) .
-                        " -vcodec mpeg4 -preset ultrafast -b:v 1k " .
-                        ( $chemin_dossier_destination . "/" . substr($file, 0, -3) . "mp4");
+            $chemin_fichier_origine = $chemin_dossier_origine . '/' . $file;
+            $chemin_fichier_destination = $chemin_dossier_destination . '/' . pathinfo($file, PATHINFO_FILENAME) . '.mp4';
+            
+            // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
+            $command = "ffmpeg -i \"$chemin_fichier_origine\" " .
+                       "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                       "-c:a aac -b:a 64k " .                      // Bitrate audio réduit à 64 kbps
+                       "-movflags +faststart " .                   // Optimisation pour le streaming
+                       "\"$chemin_fichier_destination\"";
             exec($command, $output, $return_var);
             if ($return_var == 1) {
                 ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
