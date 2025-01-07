@@ -8,6 +8,7 @@
 
     const PREFIXE_DOSSIER_VIDEO = '_BTSPLAY_';
     const SUFFIXE_MINIATURE_VIDEO = '_miniature.png';
+    const SUFFIXE_VIDEO = '.mp4';
 
     //CONSTANTES DES CONNEXIONS FTP
     const NAS_PAD = 'NAS_PAD';

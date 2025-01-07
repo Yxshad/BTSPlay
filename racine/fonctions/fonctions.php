@@ -381,6 +381,18 @@ function trouverNomMiniature($titreVideo) {
     return $nomSansExtension . SUFFIXE_MINIATURE_VIDEO;
 }
 
+
+/**
+ * Fonction qui permet de trouver le nom d'une vidéo à partir d'une miniature
+ * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
+ * Renvoie le nom de la vidéo
+ */
+function trouverNomVideo($titreMiniature) {
+    $nomSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $titreMiniature);
+    return $nomSansExtension . SUFFIXE_VIDEO;
+}
+
+
 /**
  * Fonction qui permet de créer un dossier local sans erreur
  * Prend en paramètre l'URI du dossier à créer, et un booléen qui indique si on créé de manière incrémentale
@@ -455,10 +467,11 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 	$cheminDistantComplet = $uriServeurNAS . $miniature;
 
 	//Création d'un dossier dans l'espace local
-	$nomSansExtension = basename($titreVideo);
 	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
 	$cheminDossier = URI_VIDEOS_A_LIRE . $nomSansExtension;
 
+	// # RISQUE : On peut créer énormément de dossiers similaires.
+	// On pourrait plutôt comparer les mtd des vidéos dans les dossiers pour voir si identiques
 	creerDossier($cheminDossier, true);
 	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
 	

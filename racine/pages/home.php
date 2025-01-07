@@ -49,17 +49,24 @@
                     $tabURIS = recupererURIEtTitreVideos($nbVideosARecuperer);
                     for ($i=0; $i < $nbVideosARecuperer; $i++) {
 
-                        $uri = $tabURIS[$i][0];
+                        $uriNAS = $tabURIS[$i][0];
                         $titre = $tabURIS[$i][1];
-                        $cheminLocalComplet = chargerMiniature($uri, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+                        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
+                        // Formulaire caché pour passer l'URI NAS
                         echo("<div class='swiper-slide'>");
-                            echo("<a href='video.php'>");
-                                echo("<div class='miniature'>");
-                                    echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
-                                echo("</div>");
-                                echo("<h3>$titre</h3>");
-                            echo("</a>");
+                        echo("<form action='video.php' method='POST' id='formVideo_$i' style='display: none;'>");
+                        echo("<input type='hidden' name='uriNAS' value='$uriNAS'>");
+                        echo("<input type='hidden' name='cheminLocalComplet' value='$cheminLocalComplet'>");
+                        echo("</form>");
+                        
+                        // Lien qui renvoie à la validation du formulaire
+                        echo("<a href='#' onclick='document.getElementById(\"formVideo_$i\").submit();'>");
+                            echo("<div class='miniature'>");
+                                echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
+                            echo("</div>");
+                            echo("<h3>$titre</h3>");
+                        echo("</a>");
                         echo("</div>");
                     }
                 ?>
