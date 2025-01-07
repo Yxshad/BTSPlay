@@ -7,7 +7,7 @@
  *  @COLLABORATEURS : Elsa Lavergne
  */
 
- require '../ressources/constantes.php'
+ require '../ressources/constantes.php';
 
 /**
  *  @Nom : connexion
@@ -35,6 +35,7 @@ function connexion($username, $password)
     }
     catch (Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion = null;
         die('Erreur : ' . $e->getMessage());
     }
@@ -50,7 +51,7 @@ function connexionBD()
     try
     {
         // #RISQUE : Changement de l'utilisateur BD
-        $mysqlClient = new PDO('mysql:host=localhost;dbname=mydatabase;charset=utf8', 'myuser', 'mypassword');
+        $mysqlClient = new PDO('mysql:host=mysql_BTSPlay;port=3306:3306;dbname=mydatabase', 'myuser', 'mypassword');
         return $mysqlClient;
     }
     catch (Exception $e)
@@ -65,62 +66,92 @@ function connexionBD()
   * @Description : crée la vidéo en base de données et insère les métadonnées techniques associées 
   * @$listeMetadonnees : liste des metadonnées techniques à insérer
   */
-function insertionDonneesTechniques($listeMetadonnees)
-{
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $videoAAjouter = $connexion->prepare('INSERT INTO Media (
-    URI_RACINE_NAS_PAD, 
-    URI_RACINE_NAS_ARCH, 
-    URI_RACINE_NAS_MPEG,
-    mtd_tech_titre,
-    mtd_tech_duree,
-    mtd_tech_resolution,
-    mtd_tech_fps,
-    mtd_tech_format) Values (?, ?, ?, ?, ?, ?, ?, ?)');                              //Construction de la requête
-    try{
-        $videoAAjouter->execute([
-            $URI_NAS_PAD, 
-            $URI_NAS_ARCH, 
-            $URI_NAS_MPEG,
-            $listeMetadonnees[MTD_TITRE],
-            $listeMetadonnees[MTD_DUREE],
-            $listeMetadonnees[MTD_RESOLUTION],
-            $listeMetadonnees[MTD_FPS],
-            $listeMetadonnees[MTD_FORMAT]]);                                            //Ajout des paramètres - #RISQUE : Variables éventuellement fausses pour les liens NAS ?
-            $connexion->commit();
-            $connexion = null;
-    }
-    catch(Exception e)
-    {
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
-}
+  function insertionDonneesTechniques($listeMetadonnees)
+  {
+      $connexion = connexionBD(); // Connexion à la BD
+      $connexion->beginTransaction(); // Démarrage de la transaction
+      
+      // Construction de la requête
+      $videoAAjouter = $connexion->prepare(
+          'INSERT INTO Media (
+              URI_RACINE_NAS_PAD, 
+              URI_RACINE_NAS_ARCH, 
+              URI_RACINE_NAS_MPEG,
+              mtd_tech_titre,
+              mtd_tech_duree,
+              mtd_tech_resolution,
+              mtd_tech_fps,
+              mtd_tech_format
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+      );
+  
+      try {
+          // Ajout des paramètres
+          $videoAAjouter->execute([
+              URI_RACINE_NAS_PAD, 
+              URI_RACINE_NAS_ARCH, 
+              URI_RACINE_NAS_MPEG,
+              $listeMetadonnees['Titre'],
+              $listeMetadonnees['Duree'],
+              $listeMetadonnees['Resolution'],
+              $listeMetadonnees['FPS'],
+              $listeMetadonnees['Format']
+          ]);
+          $connexion->commit(); // Valider la transaction
+          $connexion = null; // Fermeture de la connexion
+      } catch (Exception $e) {
+          echo 'Caught exception: ',  $e->getMessage(), "\n";
+          $connexion->rollback(); // Annuler la transaction
+          $connexion = null;
+      }
+  }
+
+/** NOM : Alejandro Boufarti 
+ * Prenom : 
+*/
 
 /**
 * @Nom : insertionProfesseur
 * @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
 * @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
  */
-function insertionProfesseur($video, $nomProf, $prenomProf)
+function insertionProfesseur($video, $prof)
 {
     $connexion = connexionBD();                     
     try{
-        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?')  
+        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?');
         $profAAjouter= $verif->execute([
             $nomProf, $prenomProf]); 
         
         //ON VERIFIE SI ON A DEJA LE PROFESSEUR EN BD
 
-        if ($profAAjouter.length == 0) {
-            $verif = $connexion->prepare('INSERT INTO Professeur (nom, prenom) VALUES (?, ?)')  
+        if (count($profAAjouter) == 0) {
+            $verif = $connexion->prepare('INSERT INTO Professeur (nom, prenom) VALUES (?, ?)');
             $profAAjouter->execute([$nomProf, $prenomProf]); 
             $connexion->commit();
         }
 
-        //C'est dégueulasse, il est 22h10 un jeudi je modifierai ça PLUS TARD
+        //Sinon rien à faire
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+}
 
-        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?')  
+/**
+ * assignerProfReferent
+ * Permet d'assigner un professeur référent au projet
+ * idVideo : l'id de la vidéo à laquelle on assigne le professeur
+ * prof : nomComplet du professeur
+ */
+
+ function assignerProfReferent($idVideo, $prof){
+    try{
+        $verif = $connexion->prepare('SELECT * from Professeur where nom = ? and prenom=?');
         $profAAjouter= $verif->execute([
             $nomProf, $prenomProf]); 
         
@@ -128,17 +159,84 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
         SET professeurReferent = ?,
         WHERE id = ? ');      
         $setIDProf->execute([
-            $profAAjouter[id]
+            $profAAjouter[id],
             $video]);          
         $connexion->commit();  
         $connexion = null;
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
+
+/**
+* @Nom : insertionEleve
+* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
+* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
+ */
+function insertionEleve($video, $eleve)
+{
+    $connexion = connexionBD();                     
+    try{
+        $verif = $connexion->prepare('SELECT * from Eleve where nomComplet = ?');
+        $eleveAAjouter= $verif->execute([
+            $eleve]);          
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
 }
+
+/**
+ * assignerCadreur
+ * Permet d'assigner un ou des cadreurs au projet
+ * idVideo : l'id de la vidéo à laquelle on assigne le professeur
+ * listeCadreurs : supposément une chaîne de caractères contenant tous les cadreurs
+ */
+
+ function assignerCadreur($idVideo, $listeCadreurs){
+    $connexion = connexionBD();
+    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+    $tabCadreur = preg_split('/,\s/', $listeCadreurs);
+    console.log($tabCadreur);
+    try{
+        for ($i=0; $i < count($tabCadreur); $i++) { 
+            if(!eleveInBD($tabCadreur[i]))
+            {
+                insertionEleve($idVideo, $tabCadreur[i]);
+                $idEleve = getIdEleve($listeCadreur[i]);
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idVideo, idEleve, idRole) 
+                SET idVideo = ?,
+                idEleve = ?,
+                idRole = ?');
+                $cadreur -> execute([$idVideo, $idEleve, 1]);
+            }
+            else {
+                $cadreur = $connexion->prepare('UPDATE Participer 
+                SET idEleve = ?,
+                WHERE idVideo = ? AND idRole = ?');
+                $cadreur -> execute([$idEleve, $idVideo, 1]);
+            }
+            
+        }
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
 
 /**
 * @Nom : insertionDonneesEditoriales
@@ -147,13 +245,17 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
 
  function insertionDonneesEditoriales($video, $listeEdito)
  {
-    insertionProfesseur($video, $listeEdito[NOMPROF], $listeEdito[PRENOMPROF]);
-
+    
     try{
+        // insertionProfesseur($video, $listeEdito[NOMCOMPLET]);
+        // assignerProfReferent($video, $listeEdito[NOMCOMPLET]);
+        // assignerCadreur($video, $listeEdito[CADREURS]);
         
+
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -181,8 +283,9 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
         $connexion = null;
         return $projet;
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -207,8 +310,9 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
         $connexion = null;
         return $listeCadreurs;
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -232,8 +336,9 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
         $connexion = null;
         return $listeResponsable;
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -257,29 +362,126 @@ function insertionProfesseur($video, $nomProf, $prenomProf)
         $connexion = null;
         return $projet;
     }
-    catch(Exception e)
+    catch(Exception $e)
     {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
  }
 
+/**
+ * getIdEleve
+ * renvoie l'id d'un élève
+ * Ce code est catastrophique bref
+ */
+ function getIdEleve($eleve)
+ {
+    $connexion = connexionBD();                                                         // Connexion à la BD
+    $requeteProj = $connexion->prepare('SELECT id 
+    FROM Eleve
+    WHERE nomComplet = ?');                                                 
+    try{
+        $requeteProj->execute([$video]);
+        $eleveCherche = $requeteProj->fetchAll();
+        $connexion = null;
+        return $eleveCherche[id];
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
 
- /* TESTS RAPIDES */
- $liste = [MTD_TITRE =>  "23_6h_JIN_Fermetur.mxf",
- MTD_FPS => 25,
- MTD_RESOLUTION => "1920x1080",
- MTD_DUREE => "00:00:15",
- MTD_FORMAT => "16:9"
+/**###########################
+  *     TRUE / FALSE
+  ############################*/
+
+  /**   eleveInBD
+   *  Renvoie un boléen si l'élève est dans la base de données
+   */
+    function eleveInBD($eleve)
+    {
+        $connexion = connexionBD(); 
+        $requeteEleve = $connexion->prepare('SELECT nomComplet 
+        FROM Eleve
+        WHERE eleve.nomComplet = ?');                                                 
+        try{
+            $requeteEleve->execute([$eleve]);
+            $resultatEleve = $requeteEleve->fetchAll();
+            $connexion = null;
+            if(count($resultatEleve) == 0 ){
+                return False;
+            }
+            else {
+                return True;
+            }
+        }
+        catch(Exception $e)
+        {
+            echo 'Caught exception: ',  $e->getMessage(), "\n";
+            $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+            $connexion = null;
+        }
+    }
+
+/** profInBD
+ *  Renvoie un booléen si le professeur est dans la base
+ * 
+ */
+
+ function profInBD($prof)
+ {
+    $connexion = connexionBD();                     
+    try{
+        $requeteProf = $connexion->prepare('SELECT nomComplet 
+        FROM Professeur
+        WHERE Professeur.nomComplet = ?');   
+        $requeteProf->execute([$prof]);
+            $resultatProf = $requeteProf->fetchAll();
+            $connexion = null;
+            if(count($resultatProf) == 0 ){
+                return False;
+            }
+            else {
+                return True;
+            }
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
+
+ /**###########################
+  *     TESTS
+  ############################*/
+
+ $liste = ['MTD_TITRE' =>  "23_6h_JIN_Fermetur.mxf",
+ 'MTD_FPS' => 25,
+ 'MTD_RESOLUTION' => "1920x1080",
+ 'MTD_DUREE' => "00:00:15",
+ 'MTD_FORMAT' => "16:9"
  ];
 
  $liste2 = ['Titre' =>  "23_6h_JIN_Fermetur.mxf",
                 'FPS' => 25,
-                'Durée' => "1920x1080",
-                'Resolution' => "00:00:15",
+                'Resolution' => "1920x1080",
+                'Duree' => "00:00:15",
                 'Format' => "16:9"
                 ];
 
-insertionDonneesTechniques($liste);
+$listeEditoriale = ['prof' => 'Michael Jackson',
+                    'cadreur' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
+                    'projet' => 'Projet de Fin dannée 2024'];
+
+
+//insertionDonneesTechniques($liste2);
+eleveInBD('Michael Jackson');
+profInBD('Michael Jackson');
 
 ?>
