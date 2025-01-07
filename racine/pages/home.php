@@ -12,7 +12,12 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php';?>
+<?php
+    require '../ressources/Templates/header.php';
+    require '../fonctions/fonctions.php';
+    require '../fonctions/ftp.php';
+    require '../ressources/constantes.php';
+?>
 
 <aside class="filtres">
     
@@ -35,17 +40,36 @@
 
 <div class="container">
     <div class="sliderVideo">
-        <h2>Videos !!!</h2>
+        <h2>Vos vidéos</h2>
         <div class="swiperVideo">
             <div class="swiper-wrapper">
-                <?php for ($i=0; $i < 30; $i++) { ?>
-                    <div class="swiper-slide">
-                        <a href="video.php">
-                            <div class="miniature"></div>
-                            <h3>Titre</h3>
-                        </a>
-                    </div>
-                <?php } ?> 
+                <?php
+                    // # RISQUE : Changer le nombre de vidéos à récupérer
+                    $nbVideosARecuperer = 4;
+                    $tabURIS = recupererURIEtTitreVideos($nbVideosARecuperer);
+                    for ($i=0; $i < $nbVideosARecuperer; $i++) {
+
+                        $uriNAS = $tabURIS[$i][0];
+                        $titre = $tabURIS[$i][1];
+                        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+
+                        // Formulaire caché pour passer l'URI NAS
+                        echo("<div class='swiper-slide'>");
+                        echo("<form action='video.php' method='POST' id='formVideo_$i' style='display: none;'>");
+                        echo("<input type='hidden' name='uriNAS' value='$uriNAS'>");
+                        echo("<input type='hidden' name='cheminLocalComplet' value='$cheminLocalComplet'>");
+                        echo("</form>");
+                        
+                        // Lien qui renvoie à la validation du formulaire
+                        echo("<a href='#' onclick='document.getElementById(\"formVideo_$i\").submit();'>");
+                            echo("<div class='miniature'>");
+                                echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
+                            echo("</div>");
+                            echo("<h3>$titre</h3>");
+                        echo("</a>");
+                        echo("</div>");
+                    }
+                ?>
             </div>
         </div>
         <div class="swiper-button-next"></div>
@@ -56,7 +80,7 @@
 <div class="voile"></div>
 
 <footer>
-<?php include '../ressources/Templates/footer.php';?>
+<?php require '../ressources/Templates/footer.php';?>
 </footer>
 
 <script>

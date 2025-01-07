@@ -371,6 +371,61 @@ function ajouterLog($typeLog, $message){
     fclose($handleFichier);
 }
 
+/**
+ * Fonction qui permet de trouver le nom de la miniature d'une vidéo
+ * Prend en paramètre le nom de la vidéo à trouver
+ * Renvoie le nom de la miniature
+ */
+function trouverNomMiniature($titreVideo) {
+    $nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
+    return $nomSansExtension . SUFFIXE_MINIATURE_VIDEO;
+}
+
+
+/**
+ * Fonction qui permet de trouver le nom d'une vidéo à partir d'une miniature
+ * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
+ * Renvoie le nom de la vidéo
+ */
+function trouverNomVideo($titreMiniature) {
+    $nomSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $titreMiniature);
+    return $nomSansExtension . SUFFIXE_VIDEO;
+}
+
+
+/**
+ * Fonction qui permet de créer un dossier local sans erreur
+ * Prend en paramètre l'URI du dossier à créer, et un booléen qui indique si on créé de manière incrémentale
+ * Création incrémentale : si le dossier "nomDossier" existe deja, on créé le dossier "nomDossier(1)"
+ */
+function creerDossier(&$cheminDossier, $creationIncrementale){
+	
+	// Vérifie si le dossier existe, sinon le crée
+	if (!is_dir($cheminDossier)) {
+		if (!(mkdir($cheminDossier, 0777, true))) {
+			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminCourant.");
+			exit();
+		}
+	}
+	//Si le dossier n'existe pas, on regarde si on créé de manière incrémentale
+	else {
+        if ($creationIncrementale) {
+            $i = 1;
+            $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            while (is_dir($nouveauChemin)) {
+                $i++;
+                $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            }
+            if (!(mkdir($nouveauChemin, 0777, true))) {
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $nouveauChemin.");
+                exit();
+            }
+			//Pour le passage par référence
+			$cheminDossier = $nouveauChemin;
+        }
+    }
+}
+
 
 function fichierEnBase($fichier){
 	return false;
@@ -378,6 +433,61 @@ function fichierEnBase($fichier){
 
 function insertionCollect_MPEG($COLLECT_MPEG){
 	return;
+}
+
+
+/**
+ * Fonction qui permet de récupérer des URIS et titre de X vidéos situées dans le NAS MPEG
+ * Prend en paramètre le nombre d'URIS et titres à récupérer
+ * Retourne un tableau d'URIS
+ */
+function recupererURIEtTitreVideos($nbVideosARecuperer){
+
+	// # RISQUE : Oublie au moment du lien front-back
+	// fonction en base qui récupère les URIS -- Pour l'instant elles sont récupérées statiquement.
+	$tabURIsEtTitres = [
+        ["_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
+        ["2024-2025/_BTSPLAY_jeanjean/", "jeanjean.mp4"],
+        ["2024-2025/_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
+        ["2012-2013/_BTSPLAY_baptoulou/", "baptoulou.mp4"],
+    ];
+	return $tabURIsEtTitres;
+}
+
+/**
+ * Fonction qui permet de charger une miniature dans l'espace local
+ * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
+ * 	pour laquelle trouver l'URI et les logins FTP
+ * Retourne le cheminLocalComplet de la miniature
+ */
+function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $ftp_pass){
+
+	//Définition du chemin complet de la miniature
+	$miniature = trouverNomMiniature($titreVideo);
+	$cheminDistantComplet = $uriServeurNAS . $miniature;
+
+	//Création d'un dossier dans l'espace local
+	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
+	$cheminDossier = URI_VIDEOS_A_LIRE . $nomSansExtension;
+
+	// # RISQUE : On peut créer énormément de dossiers similaires.
+	// On pourrait plutôt comparer les mtd des vidéos dans les dossiers pour voir si identiques
+	creerDossier($cheminDossier, true);
+	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
+	
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+	telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
+    ftp_close($conn_id);
+
+	return $cheminLocalComplet;
+}
+
+/**
+ * Fonction qui permet de charger une vidéo complètement (métadonnées + téléchargement de la vidéo en espace local)
+ * Prend en paramètre 
+ */
+function chargerVideo(){
+
 }
 
 ?>
