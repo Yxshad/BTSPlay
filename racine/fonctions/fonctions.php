@@ -472,6 +472,8 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	// # RISQUE : On peut créer énormément de dossiers similaires.
 	// On pourrait plutôt comparer les mtd des vidéos dans les dossiers pour voir si identiques
+
+	//Avant de créer le dossier, on regarde si on a la vidéo dans l'espace local
 	creerDossier($cheminDossier, true);
 	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
 	
