@@ -206,9 +206,10 @@ function insertionProfesseur($video, $prof)
  */
 function insertionEleve($video, $eleve)
 {
-    $connexion = connexionBD();                     
+    $connexion = connexionBD();  
+    $connexion->beginTransaction(); // Démarrage de la transaction             
     try{
-        $verif = $connexion->prepare('SELECT * from Eleve where nomComplet = ?');
+        $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
         $eleveAAjouter= $verif->execute([
             $eleve]);          
         $connexion->commit();  
@@ -231,25 +232,25 @@ function insertionEleve($video, $eleve)
 
  function assignerCadreur($idVideo, $listeCadreurs){
     $connexion = connexionBD();
+    $connexion->beginTransaction(); // Démarrage de la transaction      
     // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
     $tabCadreur = preg_split('/,\s/', $listeCadreurs);
-    console.log($tabCadreur);
+    var_dump($tabCadreur);
     try{
         for ($i=0; $i < count($tabCadreur); $i++) { 
-            if(!eleveInBD($tabCadreur[i]))
+            if(!eleveInBD($tabCadreur[$i]))
             {
-                insertionEleve($idVideo, $tabCadreur[i]);
-                $idEleve = getIdEleve($listeCadreur[i]);
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idVideo, idEleve, idRole) 
-                SET idVideo = ?,
-                idEleve = ?,
-                idRole = ?');
+                insertionEleve($idVideo, $tabCadreur[$i]);
+                $idEleve = getIdEleve($tabCadreur[$i]);
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                VALUES (?, ?, ?)');
                 $cadreur -> execute([$idVideo, $idEleve, 1]);
             }
             else {
+                $idEleve = getIdEleve($tabCadreur[$i]);
                 $cadreur = $connexion->prepare('UPDATE Participer 
-                SET idEleve = ?,
-                WHERE idVideo = ? AND idRole = ?');
+                SET idEleve = ?
+                WHERE idMedia = ? AND idRole = ?');
                 $cadreur -> execute([$idEleve, $idVideo, 1]);
             }
             
@@ -278,7 +279,7 @@ function insertionEleve($video, $eleve)
         $idVid = getVideo($videoTitre);           //Permet d'obtenir l'id exact de la vidéo à partir du titre 
         insertionProfesseur($idVid, $listeEdito['prof']);
         assignerProfReferent($idVid, $listeEdito['prof']);
-        assignerCadreur($video, $listeEdito['CADREURS']);
+        assignerCadreur($idVid, $listeEdito['cadreurs']);
         
 
     }
@@ -303,7 +304,7 @@ function insertionEleve($video, $eleve)
  function getRealisateur($video)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteReal = $connexion->prepare('SELECT nom, prenom 
+    $requeteReal = $connexion->prepare('SELECT nomComplet 
     FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
     WHERE idVideo = ? AND idRole = 2');                                                 // #RISQUE : j'ai mis 2 en estimant que ce serait l'id des réalisateurs mais bon hein :v 
     try{
@@ -331,7 +332,7 @@ function insertionEleve($video, $eleve)
  function getCadreurs($video)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteCadreur = $connexion->prepare('SELECT nom, prenom 
+    $requeteCadreur = $connexion->prepare('SELECT nomComplet
     FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
     WHERE idVideo = ? AND idRole = 1');                                                 // #RISQUE : j'ai mis 1 en estimant que ce serait l'id des cadreurs mais bon hein :v                  
     try{
@@ -357,12 +358,12 @@ function insertionEleve($video, $eleve)
  function getResponsableSon($video)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteResponsable = $connexion->prepare('SELECT nom, prenom 
+    $requeteResponsable = $connexion->prepare('SELECT nomComplet 
     FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
     WHERE idVideo = ? AND idRole = 3');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
     try{
         $requeteResponsable->execute([$video]);
-        $listeResponsable = $requeteResponsable->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatifs
+        $listeResponsable = $requeteResponsable->fetch(PDO::FETCH_ASSOC);               // Récupère une seule ligne sous forme de tableau associatifs
         $connexion = null;
         return $listeResponsable;
     }
@@ -408,13 +409,14 @@ function insertionEleve($video, $eleve)
  function getIdEleve($eleve)
  {
     $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteProj = $connexion->prepare('SELECT id 
+    $requeteEleve = $connexion->prepare('SELECT id 
     FROM Eleve
     WHERE nomComplet = ?');                                                 
     try{
-        $requeteProj->execute([$video]);
-        $eleveCherche = $requeteProj->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+        $requeteEleve->execute([$eleve]);
+        $eleveCherche = $requeteEleve->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
+        var_dump("AAAAh", $eleveCherche);
         return $eleveCherche['id'];
     }
     catch(Exception $e)
@@ -470,9 +472,9 @@ function getVideo($videoTitre)
         WHERE eleve.nomComplet = ?');                                                 
         try{
             $requeteEleve->execute([$eleve]);
-            $resultatEleve = $requeteEleve->fetchAll();
+            $resultatEleve = $requeteEleve->fetch(PDO::FETCH_ASSOC);
             $connexion = null;
-            if(count($resultatEleve) == 0 ){
+            if(!$resultatEleve){
                 return False;
             }
             else {
