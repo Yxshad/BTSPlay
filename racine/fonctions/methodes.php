@@ -3,44 +3,11 @@
  *  @NOM : methodes.php
  *  @DESCRIPTION : Fonctions php liées aux manipulations (insertions, suppressions...) sur la base de données
  *  @CREATION : 19/12/2024
- *  @DERNIERE MODIFICATION : 29/12/2024 - XXHXX
+ *  @DERNIERE MODIFICATION : 08/01/2025 - XXHXX
  *  @COLLABORATEURS : Elsa Lavergne
  */
 
  require '../ressources/constantes.php';
-
-/**
- *  @Nom : connexion
-  * @Description : Permet de se connecter sur le MAM
- */
-function connexion($username, $password)
-{
-    $connexionSurBD = connexionBD();
-    try
-    {
-    // #RISQUE : TABLE PAS ENCORE OFFICIELLE POUR LA CONNEXION - JE CALE COMME ÇA POUR L'INSTANT.......
-        $videoAAjouter = $connexion->prepare('SELECT username from utilisateurs WHERE username = ? AND password = ?');
-        $videoAAjouter->execute([$username, $password]);
-
-        //Check si le mot de passe est correct post select
-        if($videoAAjouter > 0)
-        {
-            //Jsp je fais juste la form générale là :insane:
-            $connexion = null;
-        }
-        else{
-            throw new Exception("Mauvais mot de passe ou nom d'utilisateur", 1);
-            
-        }
-    }
-    catch (Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion = null;
-        die('Erreur : ' . $e->getMessage());
-    }
-}
-
 
 /**
  *  @Nom : connexionBD
@@ -52,6 +19,8 @@ function connexionBD()
     {
         // #RISQUE : Changement de l'utilisateur BD
         $mysqlClient = new PDO('mysql:host=mysql_BTSPlay;port=3306:3306;dbname=mydatabase', 'myuser', 'mypassword');
+        $mysqlClient->beginTransaction(); // Ne pas réassigner à $connexion ici !
+        $mysqlClient->exec("SET NAMES 'utf8mb4'");
         return $mysqlClient;
     }
     catch (Exception $e)
@@ -61,6 +30,12 @@ function connexionBD()
 }
 
 
+/**#########################################
+ *
+ *           INSERTIONS DANS LA BD
+ * 
+ */########################################
+
  /**
   * @Nom : insertionDonneesTechniques
   * @Description : crée la vidéo en base de données et insère les métadonnées techniques associées 
@@ -69,7 +44,6 @@ function connexionBD()
   function insertionDonneesTechniques($listeMetadonnees)
   {
       $connexion = connexionBD(); // Connexion à la BD
-      $connexion->beginTransaction(); // Démarrage de la transaction
       
       // Construction de la requête
       $videoAAjouter = $connexion->prepare(
@@ -116,9 +90,9 @@ function connexionBD()
 * @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
 * @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
  */
-function insertionProfesseur($video, $prof)
+function insertionProfesseur($prof)
 {
-    $connexion = connexionBD();                     
+    $connexion = connexionBD();     
     try{
         if(!profInBD($prof))
         {
@@ -141,6 +115,139 @@ function insertionProfesseur($video, $prof)
 }
 
 /**
+ * @Nom : insertionProjet
+ * @Description : gère l'insertion des projets et lie le projet à un/des médias
+ */
+function insertionProjet($projet)
+{
+    $connexion = connexionBD();     
+    try{
+        if(!getProjet($projet))
+        {
+            $ajoutProjet = $connexion->prepare('INSERT INTO Projet (Intitule) VALUES (?)');
+            $ajoutProjet->execute([$projet]); 
+            $connexion->commit();
+        }
+        else {
+            //Sinon rien à faire
+            $connexion = null;
+        }
+        
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+}
+
+/**
+* @Nom : insertionEleve
+* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
+* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
+ */
+function insertionEleve($video, $eleve)
+{
+    $connexion = connexionBD();  
+    try{
+        $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
+        $eleveAAjouter= $verif->execute([
+            $eleve]);          
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+}
+
+/**
+* @Nom : insertionDonneesEditoriales
+* @Description : insère les métadonnées éditoriales sur la vidéo concernée
+ */
+
+ function insertionDonneesEditoriales($videoTitre, $listeEdito)
+ {
+    $connexion = connexionBD(); // Connexion à la BD
+    try{
+        $idVid = getVideo($videoTitre);           //Permet d'obtenir l'id exact de la vidéo à partir du titre 
+        insertionProfesseur($listeEdito['prof']);
+        assignerProfReferent($idVid, $listeEdito['prof']);
+        assignerCadreur($idVid, $listeEdito['cadreurs']);
+        assignerResponsable($idVid, $listeEdito['responsables']);
+        assignerRealisateur($idVid, $listeEdito['realisateurs']);
+        insertionProjet($listeEdito['projet']);
+        assignerProjet($idVid, $listeEdito['projet']);
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
+
+/**#########################################
+ *
+ *           ASSIGNER DANS LA BD
+ * 
+ */########################################
+
+/**
+ * assignerProjet
+ * Permet d'assigner un projet au média
+ * idVideo : l'id de la vidéo à laquelle on assigne le projet
+ * projet : libelle du projet
+ */
+
+ function assignerProjet($idVideo, $projet) {
+    $connexion = connexionBD(); // Connexion à la BD
+    try {
+        // Rechercher le projet par intitule
+        $projetAAjouter = $connexion->prepare('SELECT id FROM Projet WHERE intitule = ?');
+        $projetAAjouter->execute([$projet]); 
+        $projetAjouter = $projetAAjouter->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+        var_dump($projet, $projetAjouter);
+        // Vérifiez si le professeur existe
+        if (!$projetAjouter || !isset($projetAjouter['id'])) {
+            throw new Exception("Projet non trouvé ou ID manquant pour : $projet");
+        }
+
+        // Vérification des types (éviter l'erreur Array to string conversion)
+        if (!is_scalar($projetAjouter['id']) || !is_scalar($idVideo)) {
+            throw new Exception("Les données fournies ne sont pas scalaires (idProjet ou idVideo).");
+        }
+
+        // Mettre à jour la table `media` avec l'ID du professeur
+        $setIDProjet = $connexion->prepare('UPDATE media 
+                                          SET projet = ?
+                                          WHERE id = ?');
+        
+        // Exécution de la mise à jour
+        $setIDProjet->execute([
+            $projetAjouter['id'], // Utilisation de l'ID du professeur récupéré
+            $idVideo
+        ]);
+
+        // Commit de la transaction
+        $connexion->commit();
+        $connexion = null;
+
+    } catch (Exception $e) {
+        // Gestion des erreurs
+        echo 'Erreur : ',  $e->getMessage(), "\n";
+        if ($connexion) {
+            $connexion->rollback(); // Annule la transaction en cas d'erreur
+        }
+        $connexion = null;
+    }
+}
+
+/**
  * assignerProfReferent
  * Permet d'assigner un professeur référent au projet
  * idVideo : l'id de la vidéo à laquelle on assigne le professeur
@@ -149,7 +256,6 @@ function insertionProfesseur($video, $prof)
 
  function assignerProfReferent($idVideo, $prof) {
     $connexion = connexionBD(); // Connexion à la BD
-    $connexion->beginTransaction(); // Démarrage de la transaction
     try {
         // Rechercher le professeur par nom complet
         $profAAjouter = $connexion->prepare('SELECT id FROM Professeur WHERE nomComplet = ?');
@@ -192,32 +298,6 @@ function insertionProfesseur($video, $prof)
     }
 }
 
-
-
-/**
-* @Nom : insertionEleve
-* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
-* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
- */
-function insertionEleve($video, $eleve)
-{
-    $connexion = connexionBD();  
-    $connexion->beginTransaction(); // Démarrage de la transaction             
-    try{
-        $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
-        $eleveAAjouter= $verif->execute([
-            $eleve]);          
-        $connexion->commit();  
-        $connexion = null;
-    }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
-}
-
 /**
  * assignerCadreur
  * Permet d'assigner un ou des cadreurs au projet
@@ -227,7 +307,6 @@ function insertionEleve($video, $eleve)
 
  function assignerCadreur($idVideo, $listeCadreurs){
     $connexion = connexionBD();
-    $connexion->beginTransaction(); 
 
     // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
     // Normaliser et séparer les cadreurs
@@ -274,7 +353,6 @@ function insertionEleve($video, $eleve)
 
  function assignerResponsable($idVideo, $listeResponsable){
     $connexion = connexionBD();
-    $connexion->beginTransaction(); 
 
     // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
     // Normaliser et séparer les cadreurs
@@ -321,7 +399,6 @@ function insertionEleve($video, $eleve)
 
  function assignerRealisateur($idVideo, $listeRealisateurs){
     $connexion = connexionBD();
-    $connexion->beginTransaction(); 
 
     // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
     // Normaliser et séparer les cadreurs
@@ -359,137 +436,42 @@ function insertionEleve($video, $eleve)
     }
  }
 
-/**
-* @Nom : insertionDonneesEditoriales
-* @Description : insère les métadonnées éditoriales sur la vidéo concernée
- */
-
- function insertionDonneesEditoriales($videoTitre, $listeEdito)
- {
-    $connexion = connexionBD(); // Connexion à la BD
-    $connexion->beginTransaction(); // Démarrage de la transaction
-    try{
-        $idVid = getVideo($videoTitre);           //Permet d'obtenir l'id exact de la vidéo à partir du titre 
-        insertionProfesseur($idVid, $listeEdito['prof']);
-        assignerProfReferent($idVid, $listeEdito['prof']);
-        assignerCadreur($idVid, $listeEdito['cadreurs']);
-        assignerResponsable($idVid, $listeEdito['responsables']);
-        assignerRealisateur($idVid, $listeEdito['realisateurs']);
-    }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
- }
-
 /** #################################################
+ * 
  *    FONCTIONS "GETTERS" DE RECHERCHE SUR LES TABLES
+ * 
  *####################################################*/
-
- /**
-* @Nom : getRealisateur
-* @Description : renvoie la liste des réalisateurs d'une vidéo
-* @video : id de la vidéo concernée
- */
-
- function getRealisateur($video)
- {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteReal = $connexion->prepare('SELECT nomComplet 
-    FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
-    WHERE idVideo = ? AND idRole = 2');                                                 // #RISQUE : j'ai mis 2 en estimant que ce serait l'id des réalisateurs mais bon hein :v 
-    try{
-        $requeteReal->execute([$video]);
-        $listeReal = $requeteReal->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
-        
-        $connexion = null;
-        return $listeReal;
-    }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
- }
-
-
- /**
-* @Nom : getCadreurs
-* @Description : renvoie la liste des cadreurs d'une vidéo
-* @video : id de la vidéo concernée
- */
-
- function getCadreurs($video)
- {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteCadreur = $connexion->prepare('SELECT nomComplet
-    FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
-    WHERE idMedia = ? AND idRole = 1');                                                 // #RISQUE : j'ai mis 1 en estimant que ce serait l'id des cadreurs mais bon hein :v                  
-    try{
-        $requeteCadreur->execute([$video]);
-        $listeCadreurs = $requeteCadreur->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
-        $connexion = null;
-        return $listeCadreurs;
-    }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
- }
-
-/**
-* @Nom : getResponsableSon
-* @Description : renvoie la liste des responsables sons d'une vidéo
-* @video : id de la vidéo concernée
- */
-
- function getResponsableSon($video)
- {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteResponsable = $connexion->prepare('SELECT nomComplet 
-    FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
-    WHERE idMedia = ? AND idRole = 3');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
-    try{
-        $requeteResponsable->execute([$video]);
-        $listeResponsable = $requeteResponsable->fetch(PDO::FETCH_ASSOC);               // Récupère une seule ligne sous forme de tableau associatifs
-        $connexion = null;
-        return $listeResponsable;
-    }
-    catch(Exception $e)
-    {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
-    }
- }
 
  /**
 * @Nom : getProjet
 * @Description : renvoie le projet lié à une vidéo
-* @video : id de la vidéo concernée
+* @projet : nom du projet
  */
 
- function getProjet($video)
+ function getProjet($projet)
  {
-    $connexion = connexionBD();                                                         // Connexion à la BD
-    $requeteProj = $connexion->prepare('SELECT libelle 
-    FROM Projet JOIN Media ON Projet.id = Media.projet
-    WHERE Media.id = ?');                                                 
+    //connexion
+    $connexion = connexionBD();
+    
+    $requeteProj = $connexion->prepare('SELECT * 
+    FROM Projet
+    WHERE Projet.intitule = ?');                                                 
     try{
-        $requeteProj->execute([$video]);
+        $requeteProj->execute([$projet]);
         $projet = $requeteProj->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+
         $connexion = null;
-        return $projet;
+        if ($projet) {
+            return $projet['id'];
+           } 
+           else {
+               echo "Aucun projet trouvé pour le titre donné.\n";
+               return False;
+           }
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        echo 'Caught exception: ',  $e->getMessage(), "\n";                                                    //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
  }
@@ -615,20 +597,12 @@ function getVideo($videoTitre)
  /**###########################
   *     TESTS
   ############################*/
-
- $liste = ['MTD_TITRE' =>  "23_6h_JIN_Fermetur.mxf",
- 'MTD_FPS' => 25,
- 'MTD_RESOLUTION' => "1920x1080",
- 'MTD_DUREE' => "00:00:15",
- 'MTD_FORMAT' => "16:9"
- ];
-
- $liste2 = ['Titre' =>  "23_6h_JIN_Fermetur.mxf",
-                'FPS' => 25,
-                'Resolution' => "1920x1080",
-                'Duree' => "00:00:15",
-                'Format' => "16:9"
-                ];
+  $liste2 = ['Titre' =>  "23_6h_JIN_Fermetur.mxf",
+  'FPS' => 25,
+  'Resolution' => "1920x1080",
+  'Duree' => "00:00:15",
+  'Format' => "16:9"
+  ];
 
 $liste3 = ['Titre' =>  "AAAAAAAAAH.mxf",
 'FPS' => 25,
@@ -638,25 +612,35 @@ $liste3 = ['Titre' =>  "AAAAAAAAAH.mxf",
 ];
 
 $listeEditoriale = ['prof' => 'Michael Jackson',
-                    'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
-                    'responsables' => 'Solène Martin',
-                    'realisateurs' => 'Julien Loridant',
-                    'projet' => 'Projet de Fin dannée 2024'];
+      'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
+      'responsables' => 'Solène Martin',
+      'realisateurs' => 'Julien Loridant',
+      'projet' => 'Projet de Fin dannée 2024'];
 
 $listeEditoriale2 = ['prof' => 'Michael Jackson',
-                'cadreurs' => 'Michael Jackson',
-                'responsables' => 'Axel Marrier',
-                'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
-                'projet' => 'Projet de Fin dannée 2024'];
+  'cadreurs' => 'Michael Jackson',
+  'responsables' => 'Axel Marrier',
+  'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
+  'projet' => 'Projet de Fin dannée 2024'];
 
 
 insertionDonneesTechniques($liste2);
 insertionDonneesTechniques($liste3);
-//var_dump(eleveInBD('Michael Jackson'));
-//var_dump(profInBD('Michael Jackson'));
 
+
+$listeEditoriale = ['prof' => 'Michael Jackson',
+'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
+'responsables' => 'Solène Martin',
+'realisateurs' => 'Julien Loridant',
+'projet' => 'Projet de Fin dannée 2024'];
+
+$listeEditoriale2 = ['prof' => 'Michael Jackson',
+'cadreurs' => 'Michael Jackson',
+'responsables' => 'Axel Marrier',
+'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
+'projet' => 'Projet de Fin dannée 2024'];
 
 insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale);
-insertionDonneesEditoriales("TEST.mxf", $listeEditoriale2);
+insertionDonneesEditoriales("AAAAAAAAAH.mxf", $listeEditoriale2);
 
 ?>
