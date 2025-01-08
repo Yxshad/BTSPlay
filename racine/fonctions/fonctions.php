@@ -468,13 +468,12 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	//Création d'un dossier dans l'espace local
 	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
-	$cheminDossier = URI_VIDEOS_A_LIRE . $nomSansExtension;
+	$cheminDossier = URI_VIDEOS_A_LIRE . $uriServeurNAS;
 
-	// # RISQUE : On peut créer énormément de dossiers similaires.
-	// On pourrait plutôt comparer les mtd des vidéos dans les dossiers pour voir si identiques
+	// #RISQUE : On peut créer énormément de dossiers similaires. --Problème résolu normalement
 
-	//Avant de créer le dossier, on regarde si on a la vidéo dans l'espace local
-	creerDossier($cheminDossier, true);
+	//Pas de création de dossier incrementale
+	creerDossier($cheminDossier, false);
 	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
 	
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
@@ -482,14 +481,7 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
     ftp_close($conn_id);
 
 	return $cheminLocalComplet;
-}
-
-/**
- * Fonction qui permet de charger une vidéo complètement (métadonnées + téléchargement de la vidéo en espace local)
- * Prend en paramètre 
- */
-function chargerVideo(){
-
+	exit();
 }
 
 ?>
