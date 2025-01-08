@@ -86,6 +86,7 @@ function connexionBD()
       );
   
       try {
+        if(!getVideo($listeMetadonnees['Titre']))
           // Ajout des paramètres
           $videoAAjouter->execute([
               URI_RACINE_NAS_PAD, 
@@ -265,6 +266,100 @@ function insertionEleve($video, $eleve)
  }
 
 /**
+ * assignerResponsable
+ * Permet d'assigner un ou des responsables sons
+ * idVideo : l'id de la vidéo à laquelle on assigne l'élève
+ * listeResponsable : supposément une chaîne de caractères contenant tous les cadreurs
+ */
+
+ function assignerResponsable($idVideo, $listeResponsable){
+    $connexion = connexionBD();
+    $connexion->beginTransaction(); 
+
+    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+    // Normaliser et séparer les cadreurs
+    $listeResponsable = trim(preg_replace('/\s*,\s*/', ', ', $listeResponsable));
+    $tabResponsable = explode(', ', $listeResponsable);
+
+    try{
+
+        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+        $cadreur = $connexion->prepare('DELETE FROM Participer 
+                    WHERE (idMedia = ? AND idRole = ?)');
+                $cadreur->execute([$idVideo, 3]);
+
+        for ($i=0; $i < count($tabResponsable); $i++) { 
+            if(!eleveInBD($tabResponsable[$i]))
+            {
+                insertionEleve($idVideo, $tabResponsable[$i]);
+            }
+                // Récupérer l'ID de l'élève
+            $idEleve = getIdEleve($tabResponsable[$i]);
+
+            // Insertion si non existant
+            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                VALUES (?, ?, ?)');
+            $cadreur->execute([$idVideo, $idEleve, 3]);
+        }
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
+
+ /**
+ * assignerRealisateur
+ * Permet d'assigner un ou des réalisateurs
+ * idVideo : l'id de la vidéo à laquelle on assigne l'élève
+ * listeRealisateur : supposément une chaîne de caractères contenant tous les cadreurs
+ */
+
+ function assignerRealisateur($idVideo, $listeRealisateurs){
+    $connexion = connexionBD();
+    $connexion->beginTransaction(); 
+
+    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+    // Normaliser et séparer les cadreurs
+    $listeRealisateurs = trim(preg_replace('/\s*,\s*/', ', ', $listeRealisateurs));
+    $tabRealisateur = explode(', ', $listeRealisateurs);
+
+    try{
+
+        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+        $cadreur = $connexion->prepare('DELETE FROM Participer 
+                    WHERE (idMedia = ? AND idRole = ?)');
+                $cadreur->execute([$idVideo, 2]);
+
+        for ($i=0; $i < count($tabRealisateur); $i++) { 
+            if(!eleveInBD($tabRealisateur[$i]))
+            {
+                insertionEleve($idVideo, $tabRealisateur[$i]);
+            }
+                // Récupérer l'ID de l'élève
+            $idEleve = getIdEleve($tabRealisateur[$i]);
+
+            // Insertion si non existant
+            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                VALUES (?, ?, ?)');
+            $cadreur->execute([$idVideo, $idEleve, 2]);
+        }
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        echo 'Caught exception: ',  $e->getMessage(), "\n";
+        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+ }
+
+/**
 * @Nom : insertionDonneesEditoriales
 * @Description : insère les métadonnées éditoriales sur la vidéo concernée
  */
@@ -278,8 +373,8 @@ function insertionEleve($video, $eleve)
         insertionProfesseur($idVid, $listeEdito['prof']);
         assignerProfReferent($idVid, $listeEdito['prof']);
         assignerCadreur($idVid, $listeEdito['cadreurs']);
-        
-
+        assignerResponsable($idVid, $listeEdito['responsables']);
+        assignerRealisateur($idVid, $listeEdito['realisateurs']);
     }
     catch(Exception $e)
     {
@@ -440,10 +535,12 @@ function getVideo($videoTitre)
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
        if ($vidID) {
-       } else {
+        return $vidID['id'];
+       } 
+       else {
            echo "Aucune vidéo trouvée pour le titre donné.\n";
        }
-       return $vidID['id'];
+       
    }
    catch(Exception $e)
    {
@@ -533,7 +630,7 @@ function getVideo($videoTitre)
                 'Format' => "16:9"
                 ];
 
-$liste3 = ['Titre' =>  "TEST.mxf",
+$liste3 = ['Titre' =>  "AAAAAAAAAH.mxf",
 'FPS' => 25,
 'Resolution' => "1920x1080",
 'Duree' => "00:00:15",
@@ -542,13 +639,18 @@ $liste3 = ['Titre' =>  "TEST.mxf",
 
 $listeEditoriale = ['prof' => 'Michael Jackson',
                     'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
+                    'responsables' => 'Solène Martin',
+                    'realisateurs' => 'Julien Loridant',
                     'projet' => 'Projet de Fin dannée 2024'];
 
 $listeEditoriale2 = ['prof' => 'Michael Jackson',
                 'cadreurs' => 'Michael Jackson',
+                'responsables' => 'Axel Marrier',
+                'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
                 'projet' => 'Projet de Fin dannée 2024'];
 
 
+insertionDonneesTechniques($liste2);
 insertionDonneesTechniques($liste3);
 //var_dump(eleveInBD('Michael Jackson'));
 //var_dump(profInBD('Michael Jackson'));
