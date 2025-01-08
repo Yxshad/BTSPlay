@@ -1,5 +1,15 @@
 <?php
 
+if (isset($_POST["action"])) {
+	if ($_POST["action"] == "scanDecoupe") {
+		header('Content-Type: application/json');
+		$result = scan_decoupe(); 
+        echo json_encode($result);
+		exit();
+	}
+}
+
+
 /**
  * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le NAS MPEG
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
@@ -359,6 +369,16 @@ function fichierEnBase($fichier){
 
 function insertionCollect_MPEG($COLLECT_MPEG){
 	return;
+}
+
+/*
+* Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+* Ne prend aucun paramètre
+* Retourne une liste avec les noms des vidéos en train de se faire découper
+*/
+function scan_decoupe(){
+	$listeVideo = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..']);
+	return ["salut"];
 }
 
 ?>

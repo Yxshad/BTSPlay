@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/transfert.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
@@ -22,10 +22,10 @@
                     <?php for ($i=0; $i < 5; $i++) { ?>
                         <div class="ligne">
                             <div class="fleches">
-                                <a href="" class="fleche-haut">
+                                <a class="fleche-haut">
                                     <img src="../ressources/Images/arrow.png" alt="flèche">
                                 </a>
-                                <a href="" class="fleche-bas">
+                                <a class="fleche-bas">
                                     <img src="../ressources/Images/arrow.png" alt="flèche">
                                 </a>
                             </div>
@@ -33,14 +33,15 @@
                                 <img src="../ressources/Images/imgVideo.png" alt="">
                             </div>
                             <div class="info">
-                                <p class="nomVideo">video.mpeg</p>
+                                <p class="nomVideo">video.mpeg<?php echo $i; ?></p>
                                 <p class="poidsVideo">20 go</p>
                             </div>
-                            <div class="progress-bar">
-                                <div class="progress"></div>
+                            <div class="progress">
+                                <div class="valeur">0</div>
+                                %
                             </div>
                             <div class="bouton">
-                                <a href="#" class="pause">
+                                <a class="pause">
                                     <img src="../ressources/Images/pause.png" alt="pause">
                                 </a>
                             </div>
@@ -76,3 +77,27 @@
         </div>
     </div>
 </div>
+
+<script>
+const data = new URLSearchParams();
+data.append('action', 'scanDecoupe');
+fetch('../fonctions/fonctions.php', {
+        method: 'POST',
+        body: data
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+    })
+    .then(result => {
+        console.log(result); // Afficher le résultat dans la console
+        // Traitez le résultat comme nécessaire
+    })
+    .catch(error => {
+        console.error('Erreur lors de la requête:', error);
+    });
+
+
+</script>
