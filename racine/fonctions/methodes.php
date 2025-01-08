@@ -155,16 +155,10 @@ function insertionProfesseur($video, $prof)
         $profAAjouter->execute([$prof]); 
         $profAjoute = $profAAjouter->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
 
-        // Debugging
-        var_dump($profAjoute, "||||", $idVideo);
-
         // Vérifiez si le professeur existe
         if (!$profAjoute || !isset($profAjoute['id'])) {
             throw new Exception("Professeur non trouvé ou ID manquant pour : $prof");
         }
-
-        // Debug : Vérifier les données avant l'UPDATE
-        var_dump("Professeur trouvé :", $profAjoute['id'], "ID vidéo :", $idVideo);
 
         // Vérification des types (éviter l'erreur Array to string conversion)
         if (!is_scalar($profAjoute['id']) || !is_scalar($idVideo)) {
@@ -232,31 +226,32 @@ function insertionEleve($video, $eleve)
 
  function assignerCadreur($idVideo, $listeCadreurs){
     $connexion = connexionBD();
-    $connexion->beginTransaction(); // Démarrage de la transaction      
+    $connexion->beginTransaction(); 
+
     // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
-    $tabCadreur = preg_split('/,\s/', $listeCadreurs);
-    var_dump($tabCadreur);
+    // Normaliser et séparer les cadreurs
+    $listeCadreurs = trim(preg_replace('/\s*,\s*/', ', ', $listeCadreurs));
+    $tabCadreur = explode(', ', $listeCadreurs);
+
     try{
+
+        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+        $cadreur = $connexion->prepare('DELETE FROM Participer 
+                    WHERE (idMedia = ? AND idRole = ?)');
+                $cadreur->execute([$idVideo, 1]);
+
         for ($i=0; $i < count($tabCadreur); $i++) { 
             if(!eleveInBD($tabCadreur[$i]))
             {
                 insertionEleve($idVideo, $tabCadreur[$i]);
-                $idEleve = getIdEleve($tabCadreur[$i]);
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+            }
+                // Récupérer l'ID de l'élève
+            $idEleve = getIdEleve($tabCadreur[$i]);
+
+            // Insertion si non existant
+            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
                 VALUES (?, ?, ?)');
-            }
-            else if (getCadreurs($tabCadreur[$i]) == False) {
-                $idEleve = getIdEleve($tabCadreur[$i]);
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
-                VALUES (?, ?, ?)');
-            }
-            else {
-                $idEleve = getIdEleve($tabCadreur[$i]);
-                $cadreur = $connexion->prepare('UPDATE Participer 
-                SET idEleve = ?
-                WHERE idMedia = ? AND idRole = ?');
-            }
-            $cadreur -> execute([$idEleve, $idVideo, 1]);
+            $cadreur->execute([$idVideo, $idEleve, 1]);
         }
         $connexion->commit();  
         $connexion = null;
@@ -419,7 +414,6 @@ function insertionEleve($video, $eleve)
         $requeteEleve->execute([$eleve]);
         $eleveCherche = $requeteEleve->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
-        var_dump("AAAAh", $eleveCherche);
         return $eleveCherche['id'];
     }
     catch(Exception $e)
@@ -444,7 +438,6 @@ function getVideo($videoTitre)
    try{
        $requeteVid->execute([$videoTitre]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
-       var_dump("VIDEO ID :",$vidID['id']);
        $connexion = null;
        if ($vidID) {
        } else {
@@ -540,18 +533,28 @@ function getVideo($videoTitre)
                 'Format' => "16:9"
                 ];
 
+$liste3 = ['Titre' =>  "TEST.mxf",
+'FPS' => 25,
+'Resolution' => "1920x1080",
+'Duree' => "00:00:15",
+'Format' => "16:9"
+];
+
 $listeEditoriale = ['prof' => 'Michael Jackson',
                     'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
                     'projet' => 'Projet de Fin dannée 2024'];
 
+$listeEditoriale2 = ['prof' => 'Michael Jackson',
+                'cadreurs' => 'Michael Jackson',
+                'projet' => 'Projet de Fin dannée 2024'];
 
-//insertionDonneesTechniques($liste2);
+
+insertionDonneesTechniques($liste3);
 //var_dump(eleveInBD('Michael Jackson'));
 //var_dump(profInBD('Michael Jackson'));
 
 
-
 insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale);
+insertionDonneesEditoriales("TEST.mxf", $listeEditoriale2);
 
-var_dump(getCadreurs(1));
 ?>
