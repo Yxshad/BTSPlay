@@ -244,16 +244,19 @@ function insertionEleve($video, $eleve)
                 $idEleve = getIdEleve($tabCadreur[$i]);
                 $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
                 VALUES (?, ?, ?)');
-                $cadreur -> execute([$idVideo, $idEleve, 1]);
+            }
+            else if (getCadreurs($tabCadreur[$i]) == False) {
+                $idEleve = getIdEleve($tabCadreur[$i]);
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                VALUES (?, ?, ?)');
             }
             else {
                 $idEleve = getIdEleve($tabCadreur[$i]);
                 $cadreur = $connexion->prepare('UPDATE Participer 
                 SET idEleve = ?
                 WHERE idMedia = ? AND idRole = ?');
-                $cadreur -> execute([$idEleve, $idVideo, 1]);
             }
-            
+            $cadreur -> execute([$idEleve, $idVideo, 1]);
         }
         $connexion->commit();  
         $connexion = null;
@@ -334,7 +337,7 @@ function insertionEleve($video, $eleve)
     $connexion = connexionBD();                                                         // Connexion à la BD
     $requeteCadreur = $connexion->prepare('SELECT nomComplet
     FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
-    WHERE idVideo = ? AND idRole = 1');                                                 // #RISQUE : j'ai mis 1 en estimant que ce serait l'id des cadreurs mais bon hein :v                  
+    WHERE idMedia = ? AND idRole = 1');                                                 // #RISQUE : j'ai mis 1 en estimant que ce serait l'id des cadreurs mais bon hein :v                  
     try{
         $requeteCadreur->execute([$video]);
         $listeCadreurs = $requeteCadreur->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
@@ -360,7 +363,7 @@ function insertionEleve($video, $eleve)
     $connexion = connexionBD();                                                         // Connexion à la BD
     $requeteResponsable = $connexion->prepare('SELECT nomComplet 
     FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve
-    WHERE idVideo = ? AND idRole = 3');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
+    WHERE idMedia = ? AND idRole = 3');                                                 // #RISQUE : j'ai mis 3 en estimant que ce serait l'id des responsablesSons mais bon hein :v 
     try{
         $requeteResponsable->execute([$video]);
         $listeResponsable = $requeteResponsable->fetch(PDO::FETCH_ASSOC);               // Récupère une seule ligne sous forme de tableau associatifs
@@ -548,7 +551,7 @@ $listeEditoriale = ['prof' => 'Michael Jackson',
 
 
 
-insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale)
+insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale);
 
-
+var_dump(getCadreurs(1));
 ?>
