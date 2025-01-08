@@ -37,7 +37,7 @@
                         <a href="transfert.php">Transfert</a>
                         <a href="sauvegarde.php">Sauvegarde</a>
                         <a href="reconciliation.php">Réconciliation</a>
-                        <a href="#">Logs</a>
+                        <a href="../ressources/historique.log">Logs</a>
                         <hr/>
                         <a href="logout.php">
                             <div class="logo-compte">

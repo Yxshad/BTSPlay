@@ -63,8 +63,9 @@ aside.filtres .afficherFiltres{
 
 .sliderVideo .swiper-slide .miniature{
     background: grey;
-    height: 200px;
+    display: flex;
     border-radius: 20px;
+    overflow: hidden;
 }
 
 .swiper-button-next, 

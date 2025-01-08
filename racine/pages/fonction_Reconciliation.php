@@ -1,11 +1,21 @@
+<?php session_start();?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fonction de réconciliation</title>
-</head>
-<body>
+    <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/video.css" rel="stylesheet">
+    <script src="../ressources/Script/script.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+    
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
+	
+<?php require '../ressources/Templates/header.php';?>
 
 <h1> Fonction de réconciliation </h1>
 
@@ -15,15 +25,13 @@
 	<br> <br>
 </form>
 
-</body>
 </html>
 
 <?php
-
-require '../fonctions/fonctions.php';
-require '../fonctions/ftp.php';
-require '../ressources/constantes.php';
-require '../fonctions/ffmpeg.php';
+	require '../fonctions/fonctions.php';
+	require '../fonctions/ftp.php';
+	require '../ressources/constantes.php';
+	require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherReconciliation'])) {
 	fonctionReconciliationAffichee();
@@ -50,6 +58,8 @@ function fonctionReconciliationAffichee() {
 	afficherVideosManquantes($listeVideosManquantes);
 
 	ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
+
+	require '../ressources/Templates/footer.php';
 }
 
 ?>
