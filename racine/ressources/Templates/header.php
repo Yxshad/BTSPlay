@@ -35,6 +35,7 @@
                     </a>
                     <div class="sousMenu">
                         <a href="transfert.php">Transfert</a>
+                        <a href="fonction_transfert.php">Transfert DEMO</a>
                         <a href="sauvegarde.php">Sauvegarde</a>
                         <a href="reconciliation.php">Réconciliation</a>
                         <a href="../ressources/historique.log">Logs</a>

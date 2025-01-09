@@ -448,10 +448,7 @@ function insertionCollect_MPEG($COLLECT_MPEG){
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS
  */
-function recupererURIEtTitreVideos($nbVideosARecuperer){
-
-	// # RISQUE : Oublie au moment du lien front-back
-	// fonction en base qui récupère les URIS -- Pour l'instant elles sont récupérées statiquement.
+function recupererURIEtTitreVideos(){
 	$tabURIsEtTitres = getUriNASetTitreMPEG();
 	return $tabURIsEtTitres;
 }

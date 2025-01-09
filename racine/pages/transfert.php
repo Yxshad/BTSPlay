@@ -50,6 +50,7 @@
                 <div class="commande">
                     <p>Commande de conversion</p>
                     <input type="text" placeholder="ffmpeg -i $video 2>&1">
+                    <a class="btn" onclick="lancerConvertion()">Lancer conversion</a>
                 </div>
                 
             </div>
