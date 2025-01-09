@@ -7,8 +7,6 @@
  *  @COLLABORATEURS : Elsa Lavergne
  */
 
- require '../ressources/constantes.php';
-
 /**
  *  @Nom : connexionBD
   * @Description : Permet de se connecter en base de données et de checker au passage s'il y a eu des erreurs de connexion
@@ -48,9 +46,9 @@ function connexionBD()
       // Construction de la requête
       $videoAAjouter = $connexion->prepare(
           'INSERT INTO Media (
-              URI_RACINE_NAS_PAD, 
-              URI_RACINE_NAS_ARCH, 
-              URI_RACINE_NAS_MPEG,
+              URI_NAS_PAD, 
+              URI_NAS_ARCH, 
+              URI_NAS_MPEG,
               mtd_tech_titre,
               mtd_tech_duree,
               mtd_tech_resolution,
@@ -60,14 +58,14 @@ function connexionBD()
       );
   
       try {
-        if(!getVideo($listeMetadonnees['Titre']))
+        if(!getVideo($listeMetadonnees[MTD_URI_NAS_MPEG]))
           // Ajout des paramètres
           $videoAAjouter->execute([
-              URI_RACINE_NAS_PAD, 
-              URI_RACINE_NAS_ARCH, 
-              URI_RACINE_NAS_MPEG,
+            $listeMetadonnees[MTD_URI_NAS_PAD],
+            $listeMetadonnees[MTD_URI_NAS_ARCH],
+              $listeMetadonnees[MTD_URI_NAS_MPEG],
               $listeMetadonnees['Titre'],
-              $listeMetadonnees['Duree'],
+              $listeMetadonnees['Durée'],
               $listeMetadonnees['Resolution'],
               $listeMetadonnees['FPS'],
               $listeMetadonnees['Format']
@@ -75,7 +73,6 @@ function connexionBD()
           $connexion->commit(); // Valider la transaction
           $connexion = null; // Fermeture de la connexion
       } catch (Exception $e) {
-          echo 'Caught exception: ',  $e->getMessage(), "\n";
           $connexion->rollback(); // Annuler la transaction
           $connexion = null;
       }
@@ -108,7 +105,6 @@ function insertionProfesseur($prof)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -136,7 +132,6 @@ function insertionProjet($projet)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -159,7 +154,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -185,7 +179,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -239,7 +232,6 @@ function insertionEleve($video, $eleve)
 
     } catch (Exception $e) {
         // Gestion des erreurs
-        echo 'Erreur : ',  $e->getMessage(), "\n";
         if ($connexion) {
             $connexion->rollback(); // Annule la transaction en cas d'erreur
         }
@@ -287,10 +279,8 @@ function insertionEleve($video, $eleve)
         $connexion->commit();
         $connexion = null;
 
-        echo "Professeur référent assigné avec succès.\n";
     } catch (Exception $e) {
         // Gestion des erreurs
-        echo 'Erreur : ',  $e->getMessage(), "\n";
         if ($connexion) {
             $connexion->rollback(); // Annule la transaction en cas d'erreur
         }
@@ -338,7 +328,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -384,7 +373,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -430,7 +418,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -465,13 +452,11 @@ function insertionEleve($video, $eleve)
             return $projet['id'];
            } 
            else {
-               echo "Aucun projet trouvé pour le titre donné.\n";
                return False;
            }
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";                                                    //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
  }
@@ -495,7 +480,6 @@ function insertionEleve($video, $eleve)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
@@ -504,32 +488,72 @@ function insertionEleve($video, $eleve)
  /**
  * getVideo
  * renvoie l'id d'une vidéo
- * $titre : nom de la vidéo
+ * $path : chemin NAS MPEG de la vidéo
  */
-function getVideo($videoTitre)
+function getVideo($path)
 {
    $connexion = connexionBD();                                                         // Connexion à la BD
    $requeteVid = $connexion->prepare('SELECT id 
    FROM Media
-   WHERE mtd_tech_titre = ?');                                                 
+   WHERE URI_NAS_MPEG = ?');                                                 
    try{
-       $requeteVid->execute([$videoTitre]);
+       $requeteVid->execute([$path]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
        if ($vidID) {
         return $vidID['id'];
        } 
        else {
-           echo "Aucune vidéo trouvée pour le titre donné.\n";
+           return false;
        }
        
    }
    catch(Exception $e)
    {
-       echo 'Caught exception: ',  $e->getMessage(), "\n";
        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
        $connexion = null;
    }
+}
+
+
+/**
+ * @getUriNASMPEG
+ * @return array|false Renvoie la liste des URI NAS MPEG ou false en cas d'échec
+ */
+function getUriNASMPEG() {
+    try {
+        // Connexion à la base de données
+        $connexion = connexionBD();
+
+        // Préparation de la requête
+        $requeteVid = $connexion->prepare('SELECT URI_NAS_MPEG FROM Media');
+        
+        // Exécution de la requête
+        $requeteVid->execute();
+
+        // Récupérer toutes les lignes sous forme de tableau associatif
+        $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+
+        // Fermer la connexion
+        $connexion = null;
+
+        // Vérifier si des résultats existent
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        // Gestion des erreurs
+        if ($connexion) {
+            $connexion->rollback(); // Annule toute transaction si nécessaire
+        }
+        $connexion = null;
+
+        // Journaliser l'erreur (ou afficher en mode développement)
+        error_log('Erreur dans getUriNASMPEG: ' . $e->getMessage());
+        return false; // Retourne false en cas d'erreur
+    }
 }
 
 /**###########################
@@ -558,7 +582,6 @@ function getVideo($videoTitre)
         }
         catch(Exception $e)
         {
-            echo 'Caught exception: ',  $e->getMessage(), "\n";
             $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
             $connexion = null;
         }
@@ -588,59 +611,9 @@ function getVideo($videoTitre)
     }
     catch(Exception $e)
     {
-        echo 'Caught exception: ',  $e->getMessage(), "\n";
         $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
         $connexion = null;
     }
  }
-
- /**###########################
-  *     TESTS
-  ############################*/
-  $liste2 = ['Titre' =>  "23_6h_JIN_Fermetur.mxf",
-  'FPS' => 25,
-  'Resolution' => "1920x1080",
-  'Duree' => "00:00:15",
-  'Format' => "16:9"
-  ];
-
-$liste3 = ['Titre' =>  "AAAAAAAAAH.mxf",
-'FPS' => 25,
-'Resolution' => "1920x1080",
-'Duree' => "00:00:15",
-'Format' => "16:9"
-];
-
-$listeEditoriale = ['prof' => 'Michael Jackson',
-      'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
-      'responsables' => 'Solène Martin',
-      'realisateurs' => 'Julien Loridant',
-      'projet' => 'Projet de Fin dannée 2024'];
-
-$listeEditoriale2 = ['prof' => 'Michael Jackson',
-  'cadreurs' => 'Michael Jackson',
-  'responsables' => 'Axel Marrier',
-  'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
-  'projet' => 'Projet de Fin dannée 2024'];
-
-
-insertionDonneesTechniques($liste2);
-insertionDonneesTechniques($liste3);
-
-
-$listeEditoriale = ['prof' => 'Michael Jackson',
-'cadreurs' => 'Michael Jackson, Lyxandre TktJeChercheLeNom',
-'responsables' => 'Solène Martin',
-'realisateurs' => 'Julien Loridant',
-'projet' => 'Projet de Fin dannée 2024'];
-
-$listeEditoriale2 = ['prof' => 'Michael Jackson',
-'cadreurs' => 'Michael Jackson',
-'responsables' => 'Axel Marrier',
-'realisateurs' => 'Nicolas Conguisti, Nicolo Canguisti',
-'projet' => 'Projet de Fin dannée 2024'];
-
-insertionDonneesEditoriales("23_6h_JIN_Fermetur.mxf", $listeEditoriale);
-insertionDonneesEditoriales("AAAAAAAAAH.mxf", $listeEditoriale2);
 
 ?>
