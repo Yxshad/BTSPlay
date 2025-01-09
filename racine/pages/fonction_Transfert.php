@@ -19,6 +19,7 @@ require '../fonctions/fonctions.php';
 require '../fonctions/ftp.php';
 require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
+require '../fonctions/modele.php';
 
 if (isset($_POST['declencherTransfert'])) {
 	fonctionTransfertAffiche();
@@ -49,7 +50,7 @@ function fonctionTransfertAffiche(){
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 
 	//Alimenter le NAS MPEG
-	alimenterNAS_MPEG($COLLECT_MPEG);
+	$COLLECT_MPEG = alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);

@@ -33,6 +33,7 @@
     const MTD_URI = 'URI';
     const MTD_URI_NAS_PAD = 'URI NAS PAD';
     const MTD_URI_NAS_ARCH = 'URI NAS ARCH';
+    const MTD_URI_NAS_MPEG = 'URI NAS MPEG';
 
     //CONSTANTES DE LA FONCTION DE RECONCILIATION
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
