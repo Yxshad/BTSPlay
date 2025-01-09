@@ -17,6 +17,7 @@
     require '../fonctions/fonctions.php';
     require '../fonctions/ftp.php';
     require '../ressources/constantes.php';
+    require '../fonctions/modele.php';
 ?>
 
 <aside class="filtres">
@@ -49,8 +50,8 @@
                     $tabURIS = recupererURIEtTitreVideos($nbVideosARecuperer);
                     for ($i=0; $i < $nbVideosARecuperer; $i++) {
 
-                        $uriNAS = $tabURIS[$i][0];
-                        $titre = $tabURIS[$i][1];
+                        $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
+                        $titre = $tabURIS[$i]['mtd_tech_titre'];
                         $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
                         // Formulaire caché pour passer l'URI NAS
