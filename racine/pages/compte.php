@@ -11,8 +11,8 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php';?>
-<?php include '../ressources/constantes.php';?>
+<?php include_once '../ressources/Templates/header.php';?>
+<?php include_once '../ressources/constantes.php';?>
 
 <div class="container">
     <div>

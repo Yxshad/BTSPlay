@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php';?>
+<?php include_once '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="colonnes">
@@ -24,6 +24,7 @@
                 <div class="commande">
                     <p>Commande de conversion</p>
                     <input type="text" placeholder="ffmpeg -i $video 2>&1">
+                    <a class="btn" onclick="lancerConvertion()">Lancer conversion</a>
                 </div>
                 
             </div>
@@ -52,6 +53,18 @@
 </div>
 
 <script>
+function lancerConvertion() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/fonctions.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=lancerConvertion");
+}
+
 function ajax() {
   const xhttp = new XMLHttpRequest();
   xhttp.onload = function() {

@@ -1,6 +1,6 @@
 <?php
 
-require "../ressources/constantes.php";
+require_once "../ressources/constantes.php";
 
 /**
  * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
@@ -204,6 +204,6 @@ function timecodeToSecondes($duree){
     $minutes = (int)substr($duree, 3, 2);
     $secondes = (int)substr($duree, 6, 2);
     $milisecondes = (int)substr($duree, 9, 2);
-    return ($heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;)
+    return ($heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000);
 }
 ?>

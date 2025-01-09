@@ -15,10 +15,10 @@
 
 <?php
 
-require '../fonctions/fonctions.php';
-require '../fonctions/ftp.php';
+include_once '../fonctions/fonctions.php';
+include_once '../fonctions/ftp.php';
 require_once '../ressources/constantes.php';
-require '../fonctions/ffmpeg.php';
+include_once '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherTransfert'])) {
 	transfertAffiche();

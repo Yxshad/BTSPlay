@@ -62,7 +62,7 @@ session_start();
 <div class="voile"></div>
 
 <footer>
-<?php include '../ressources/Templates/footer.php';?>
+<?php include_once '../ressources/Templates/footer.php';?>
 </footer>
 
 <script src="../ressources/Script/script.js"></script>

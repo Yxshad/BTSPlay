@@ -1,12 +1,17 @@
 <?php
 
-require "../ressources/constantes.php";
+require_once "../ressources/constantes.php";
+require_once "ftp.php";
+require_once "ffmpeg.php";
 
 if (isset($_POST["action"])) {
 	if ($_POST["action"] == "scanDecoupe") {
 		header('Content-Type: application/json');
 		scan_decoupe(); 
 		exit();
+	}
+	if ($_POST["action"] == "lancerConvertion") {
+		fonctionTransfert();
 	}
 }
 

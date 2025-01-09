@@ -1,6 +1,6 @@
 <?php
 
-require "../ressources/constantes.php";
+require_once "../ressources/constantes.php";
 
 /**
  * Fonction qui établit une connexion FTP.
