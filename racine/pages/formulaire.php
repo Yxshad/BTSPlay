@@ -11,7 +11,12 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include_once '../ressources/Templates/header.php';?>
+<?php
+    require_once '../ressources/Templates/header.php';
+    require_once '../fonctions/fonctions.php';
+    require_once '../fonctions/ftp.php';
+    require_once '../ressources/constantes.php';
+?>
 
 
 <div class="container">
@@ -20,8 +25,8 @@
 
     <div class="colonnes">
         <div class="colonne-1">
-            <div class="video">
-                <video src=""></video>
+            <div class='miniature'>
+                <img src=<?php  ?> alt='Miniature de la vidéo' class='imageMiniature'/>
             </div>
             <h2>Titre de la video</h2>
             <p class="duree">duree : </p>

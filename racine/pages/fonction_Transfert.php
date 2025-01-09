@@ -49,7 +49,7 @@ function transfertAffiche(){
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 
 	//Alimenter le NAS MPEG
-	alimenterNAS_MPEG($COLLECT_MPEG);
+	$COLLECT_MPEG = alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);

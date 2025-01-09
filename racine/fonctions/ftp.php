@@ -50,7 +50,7 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
 function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
     // Construire le chemin complet de destination pour le fichier
-    $cheminCompletFichier = $cheminDistantNAS . '/' . $nomFichier;
+    $cheminCompletFichier = $cheminDistantNAS . $nomFichier;
     $fichierLocal = $cheminLocal . $nomFichier;
     // Envoyer le fichier
     if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
