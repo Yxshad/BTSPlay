@@ -452,12 +452,7 @@ function recupererURIEtTitreVideos($nbVideosARecuperer){
 
 	// # RISQUE : Oublie au moment du lien front-back
 	// fonction en base qui récupère les URIS -- Pour l'instant elles sont récupérées statiquement.
-	$tabURIsEtTitres = [
-        ["_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
-        ["2024-2025/_BTSPLAY_jeanjean/", "jeanjean.mp4"],
-        ["2024-2025/_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
-        ["2012-2013/_BTSPLAY_baptoulou/", "baptoulou.mp4"],
-    ];
+	$tabURIsEtTitres = getUriNASetTitreMPEG();
 	return $tabURIsEtTitres;
 }
 
