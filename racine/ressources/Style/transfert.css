@@ -20,6 +20,11 @@ h1, h2{
     padding: 40px;
 }
 
+.lignes{
+    display: flex;
+    flex-direction: column;
+}
+
 .ligne{
     display: flex;
     gap: 20px;
@@ -33,6 +38,7 @@ h1, h2{
 
 .ligne .fleches a{
     width: 20px;
+    cursor: pointer;
 }
 
 .ligne .fleches .fleche-haut{
@@ -66,17 +72,8 @@ h1, h2{
     font-size: 2em;
 }
 
-.ligne .progress-bar,
-.ligne .progress-bar .progress{
-    height: 30px;
-    width: 150px;
-    background: grey;
-    border-radius: 15px;
-}
-
-.ligne .progress-bar .progress{
-    width: 60%;
-    background: #000;
+.progress{
+    display: flex;
 }
 
 .ligne .bouton .pause{
@@ -90,6 +87,21 @@ h1, h2{
     position: relative;
     width: fit-content;
 }
+
+.btn{
+    display: block;
+    background: red;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.btn:hover{
+    transform: scale(1.05);
+}
+
 /* #endregion COLONNE DE GAUCHE*/
 
 div.symbole{
@@ -134,5 +146,3 @@ div.dates{
     display: flex;
     justify-content: space-evenly;
 }
-
-/* #endregion COLONNE DE DROITE*/

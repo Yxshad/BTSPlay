@@ -45,9 +45,13 @@
         <div class="swiperVideo">
             <div class="swiper-wrapper">
                 <?php
-                    // # RISQUE : Changer le nombre de vidéos à récupérer
-                    $nbVideosARecuperer = 4;
-                    $tabURIS = recupererURIEtTitreVideos($nbVideosARecuperer);
+                    $tabURIS = recupererURIEtTitreVideos();
+                    if(!($tabURIS)){
+                        $nbVideosARecuperer = 0;
+                    }
+                    else{
+                        $nbVideosARecuperer = count($tabURIS);
+                    }
                     for ($i=0; $i < $nbVideosARecuperer; $i++) {
 
                         $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];

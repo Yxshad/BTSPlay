@@ -1,8 +1,12 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/home.css" rel="stylesheet">
+	<script src="../ressources/Script/script.js"></script>
 	<title>Fonction de transfert</title>
 </head>
 <body>
@@ -20,6 +24,8 @@ require '../fonctions/ftp.php';
 require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 require '../fonctions/modele.php';
+require '../ressources/Templates/header.php';
+
 
 if (isset($_POST['declencherTransfert'])) {
 	fonctionTransfertAffiche();

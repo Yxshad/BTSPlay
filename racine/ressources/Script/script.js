@@ -73,3 +73,15 @@ function affichageSousMenu(){
         })
     }
 }
+
+function lancerConvertion() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/fonctions.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=lancerConvertion");
+}
