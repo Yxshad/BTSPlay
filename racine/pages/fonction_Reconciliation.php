@@ -36,7 +36,7 @@
 
 require '../fonctions/fonctions.php';
 require '../fonctions/ftp.php';
-require '../ressources/constantes.php';
+require_once '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherReconciliation'])) {

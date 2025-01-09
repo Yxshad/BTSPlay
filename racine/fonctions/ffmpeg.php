@@ -1,5 +1,7 @@
 <?php
 
+require "../ressources/constantes.php";
+
 /**
  * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
  * Vidéo située sur un espace local

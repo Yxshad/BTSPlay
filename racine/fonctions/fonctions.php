@@ -1,14 +1,14 @@
 <?php
 
+require "../ressources/constantes.php";
+
 if (isset($_POST["action"])) {
 	if ($_POST["action"] == "scanDecoupe") {
 		header('Content-Type: application/json');
-		$result = scan_decoupe(); 
-        echo json_encode($result);
+		scan_decoupe(); 
 		exit();
 	}
 }
-
 
 /**
  * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le NAS MPEG
@@ -377,8 +377,37 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 * Retourne une liste avec les noms des vidéos en train de se faire découper
 */
 function scan_decoupe(){
-	$listeVideo = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..']);
-	return ["salut"];
+	$listeVideo = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	foreach ($listeVideo as $video) {
+		// #RISQUE : appel de base pour récupérer bdd
+		?>  <div class="ligne">
+				<div class="fleches">
+					<a class="fleche-haut">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+					<a class="fleche-bas">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+				</div>
+				<div class="imgVideo">
+					<img src="../ressources/Images/imgVideo.png" alt="">
+				</div>
+				<div class="info">
+					<p class="nomVideo"><?php echo $video; ?></p>
+					<p class="poidsVideo">20 go</p>
+				</div>
+				<div class="progress">
+					<div class="valeur">0</div>
+					%
+				</div>
+				<div class="bouton">
+					<a class="pause">
+						<img src="../ressources/Images/pause.png" alt="pause">
+					</a>
+				</div>
+			</div> <?php
+		
+	}
 }
 
 ?>

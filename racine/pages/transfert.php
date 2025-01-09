@@ -19,34 +19,7 @@
             <h1>Transferts</h1>
             <div class="transferts">
                 <div class="lignes">
-                    <?php for ($i=0; $i < 5; $i++) { ?>
-                        <div class="ligne">
-                            <div class="fleches">
-                                <a class="fleche-haut">
-                                    <img src="../ressources/Images/arrow.png" alt="flèche">
-                                </a>
-                                <a class="fleche-bas">
-                                    <img src="../ressources/Images/arrow.png" alt="flèche">
-                                </a>
-                            </div>
-                            <div class="imgVideo">
-                                <img src="../ressources/Images/imgVideo.png" alt="">
-                            </div>
-                            <div class="info">
-                                <p class="nomVideo">video.mpeg<?php echo $i; ?></p>
-                                <p class="poidsVideo">20 go</p>
-                            </div>
-                            <div class="progress">
-                                <div class="valeur">0</div>
-                                %
-                            </div>
-                            <div class="bouton">
-                                <a class="pause">
-                                    <img src="../ressources/Images/pause.png" alt="pause">
-                                </a>
-                            </div>
-                        </div>
-                    <?php } ?>
+                    <!-- Résultat ajax -->
                 </div>
                 <div class="commande">
                     <p>Commande de conversion</p>
@@ -79,25 +52,20 @@
 </div>
 
 <script>
-const data = new URLSearchParams();
-data.append('action', 'scanDecoupe');
-fetch('../fonctions/fonctions.php', {
-        method: 'POST',
-        body: data
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response.json();
-    })
-    .then(result => {
-        console.log(result); // Afficher le résultat dans la console
-        // Traitez le résultat comme nécessaire
-    })
-    .catch(error => {
-        console.error('Erreur lors de la requête:', error);
-    });
+function ajax() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    document.querySelector('.transferts .lignes').innerHTML = this.responseText;
+  }
+  xhttp.open("POST", "../fonctions/fonctions.php");
+  
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
+  xhttp.send("action=scanDecoupe");
+}
+
+ajax();
+
+setInterval( ajax , 5000);
 
 </script>
