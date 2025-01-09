@@ -53,7 +53,11 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	foreach ($fichiers_NAS as $fichier) {
         $nom_fichier = basename($fichier);
 
-		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
+		$extension = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
+
+		//Si le fichier est une vidéo
+		if ($nom_fichier !== '.' && $nom_fichier !== '..'
+			&& ($extension == 'mxf' || $extension == 'mp4')) {
 
 			// Si le fichier n'est pas présent en base
 			if (!fichierEnBase($nom_fichier)) {
@@ -173,13 +177,28 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
 
 		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$fichierDestination = URI_RACINE_NAS_MPEG .$URI_NAS. $video[MTD_TITRE];
+		$cheminDestination = URI_RACINE_NAS_MPEG .$URI_NAS;
+		$fichierDestination = $video[MTD_TITRE];
+
+		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
+		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
+		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
+		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		creerDossierFTP($conn_id, $cheminDestination);
+		creerDossierFTP($conn_id, $dossierVideo);
+		ftp_close($conn_id);
 
 		//Export de la vidéo dans le NAS MPEG
-		exporterVideoVersNAS($fichierSource, $fichierDestination, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
-		//Supprimer la vidéo de l'espace local
-		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE]);
+		//Générer la miniature de la vidéo
+		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
+
+		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+
+		//Supprimer la vidéo de l'espace local et sa miniature
+		unlink($fichierSource);
+		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 	}
 }
 
@@ -367,6 +386,61 @@ function ajouterLog($typeLog, $message){
     fclose($handleFichier);
 }
 
+/**
+ * Fonction qui permet de trouver le nom de la miniature d'une vidéo
+ * Prend en paramètre le nom de la vidéo à trouver
+ * Renvoie le nom de la miniature
+ */
+function trouverNomMiniature($titreVideo) {
+    $nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
+    return $nomSansExtension . SUFFIXE_MINIATURE_VIDEO;
+}
+
+
+/**
+ * Fonction qui permet de trouver le nom d'une vidéo à partir d'une miniature
+ * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
+ * Renvoie le nom de la vidéo
+ */
+function trouverNomVideo($titreMiniature) {
+    $nomSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $titreMiniature);
+    return $nomSansExtension . SUFFIXE_VIDEO;
+}
+
+
+/**
+ * Fonction qui permet de créer un dossier local sans erreur
+ * Prend en paramètre l'URI du dossier à créer, et un booléen qui indique si on créé de manière incrémentale
+ * Création incrémentale : si le dossier "nomDossier" existe deja, on créé le dossier "nomDossier(1)"
+ */
+function creerDossier(&$cheminDossier, $creationIncrementale){
+	
+	// Vérifie si le dossier existe, sinon le crée
+	if (!is_dir($cheminDossier)) {
+		if (!(mkdir($cheminDossier, 0777, true))) {
+			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminCourant.");
+			exit();
+		}
+	}
+	//Si le dossier n'existe pas, on regarde si on créé de manière incrémentale
+	else {
+        if ($creationIncrementale) {
+            $i = 1;
+            $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            while (is_dir($nouveauChemin)) {
+                $i++;
+                $nouveauChemin = $cheminDossier . '(' . $i . ')';
+            }
+            if (!(mkdir($nouveauChemin, 0777, true))) {
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $nouveauChemin.");
+                exit();
+            }
+			//Pour le passage par référence
+			$cheminDossier = $nouveauChemin;
+        }
+    }
+}
+
 
 function fichierEnBase($fichier){
 	return false;
@@ -413,6 +487,54 @@ function scan_decoupe(){
 			</div> <?php
 		
 	}
+}
+
+/**
+ * Fonction qui permet de récupérer des URIS et titre de X vidéos situées dans le NAS MPEG
+ * Prend en paramètre le nombre d'URIS et titres à récupérer
+ * Retourne un tableau d'URIS
+ */
+function recupererURIEtTitreVideos($nbVideosARecuperer){
+
+	// # RISQUE : Oublie au moment du lien front-back
+	// fonction en base qui récupère les URIS -- Pour l'instant elles sont récupérées statiquement.
+	$tabURIsEtTitres = [
+        ["_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
+        ["2024-2025/_BTSPLAY_jeanjean/", "jeanjean.mp4"],
+        ["2024-2025/_BTSPLAY_23_6h_JIN_PUB_OUT/", "23_6h_JIN_PUB_OUT.mp4"],
+        ["2012-2013/_BTSPLAY_baptoulou/", "baptoulou.mp4"],
+    ];
+	return $tabURIsEtTitres;
+}
+
+/**
+ * Fonction qui permet de charger une miniature dans l'espace local
+ * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
+ * 	pour laquelle trouver l'URI et les logins FTP
+ * Retourne le cheminLocalComplet de la miniature
+ */
+function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $ftp_pass){
+
+	//Définition du chemin complet de la miniature
+	$miniature = trouverNomMiniature($titreVideo);
+	$cheminDistantComplet = $uriServeurNAS . $miniature;
+
+	//Création d'un dossier dans l'espace local
+	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
+	$cheminDossier = URI_VIDEOS_A_LIRE . $uriServeurNAS;
+
+	// #RISQUE : On peut créer énormément de dossiers similaires. --Problème résolu normalement
+
+	//Pas de création de dossier incrementale
+	creerDossier($cheminDossier, false);
+	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
+	
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+	telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
+    ftp_close($conn_id);
+
+	return $cheminLocalComplet;
+	exit();
 }
 
 ?>

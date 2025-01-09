@@ -6,7 +6,9 @@
     const URI_RACINE_NAS_ARCH = '/';
     const URI_RACINE_NAS_MPEG = '/';
 
-    const PREFIXE_DOSSIER_VIDEO = '/_BTSPLAY_';
+    const PREFIXE_DOSSIER_VIDEO = '_BTSPLAY_';
+    const SUFFIXE_MINIATURE_VIDEO = '_miniature.png';
+    const SUFFIXE_VIDEO = '.mp4';
 
     //CONSTANTES DES CONNEXIONS FTP
     const NAS_PAD = 'NAS_PAD';
@@ -36,7 +38,8 @@
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
 
     //CONSTANTES DES REPERTOIRES DES VIDEOS
-    const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser';
+    const URI_VIDEOS_A_LIRE = '../videos/videosALire/';
+    const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser/';
     const URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
     const URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';
 
@@ -46,9 +49,21 @@
     //CONSTANTES DES CODES DES LOGS 
     const LOG_SUCCESS = 'SUCCESS';
     const LOG_WARN = 'WARNING';
+    const LOG_INFORM = 'INFO';
     const LOG_FAIL = 'FAIL';
     const LOG_CRITICAL = 'CRITICAL';
-    //URI du fichier de log
+
+    //URI DU FICHIER DE LOG
     const URI_FICHIER_LOG = '../ressources/';
     const NOM_FICHIER_LOG = 'historique.log';
+    
+    //CONSTANTES DES NOM UTILISATEURS ET DES MOTS DE PASSE
+    const ETUDIANT = "Etudiant";
+    const ETUDIANT_MDP = "1234";
+
+    const PROF = "Prof";
+    const PROF_MDP = "1234";
+
+    const ADMIN = "Admin";
+    const ADMIN_MDP = "1234";
 ?>

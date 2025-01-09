@@ -1,35 +1,30 @@
+<?php session_start();?>
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fonction de réconciliation</title>
-</head>
-<body>
+    <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/video.css" rel="stylesheet">
+    <script src="../ressources/Script/script.js"></script>
+
+    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
+    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+    
+    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+
+	
+<?php require '../ressources/Templates/header.php';?>
 
 <h1> Fonction de réconciliation </h1>
 
 <!-- Formulaire pour choisir les NAS -->
 <form method="post">
-    <h2>Choisissez les NAS à comparer :</h2>
-
-    <label for="NAS_choisi_1">Sélectionnez le premier NAS :</label>
-    <select name="NAS_choisi_1" id="NAS_choisi_1">
-        <option value="NAS_PAD">NAS PAD</option>
-        <option value="NAS_ARCH">NAS ARCH</option>
-    </select>
-
-    <label for="NAS_choisi_2">Sélectionnez le deuxième NAS :</label>
-    <select name="NAS_choisi_2" id="NAS_choisi_2">
-        <option value="NAS_PAD">NAS PAD</option>
-        <option value="NAS_ARCH">NAS ARCH</option>
-    </select>
-
     <button type="submit" name="declencherReconciliation">Réconciliation</button>
 	<br> <br>
 </form>
 
-</body>
 </html>
 
 <?php
@@ -110,55 +105,9 @@ function reconciliation($NASChoisi1, $NASChoisi2) {
 	afficherVideosManquantes($listeVideosManquantes);
 }
 
+	ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
 
-function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
-    foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {
-        $videoManquanteDansNAS2 = true;
-        foreach ($nomsVideos_NAS2 as $key2 => $nomVideoNAS2) {
+	require '../ressources/Templates/footer.php';
 
-            if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
-				unset($nomsVideos_NAS1[$key1]);
-                unset($nomsVideos_NAS2[$key2]);
-                $videoManquanteDansNAS2 = false;
-                break;
-            }
-        }
-		if ($videoManquanteDansNAS2) {
-            $listeVideosManquantes[] = [
-                MTD_TITRE => $nomVideoNAS1,
-                EMPLACEMENT_MANQUANT => $nomNAS_2
-            ];
-			unset($nomsVideos_NAS1[$key1]);
-        }
-    }
-    // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
-    foreach ($nomsVideos_NAS2 as $nomVideoNAS2Restant) {
-        $listeVideosManquantes[] = [
-            MTD_TITRE => $nomVideoNAS2Restant,
-            EMPLACEMENT_MANQUANT => $nomNAS_1
-        ];
-    }
-    return $listeVideosManquantes;
-}
-
-function afficherVideosManquantes($listeVideosManquantes) {
-    echo "<h2>Tableau des vidéos manquantes :</h2>";
-    echo "<table border='1' cellpadding='5' cellspacing='0'>";
-	echo "<tr>";
-		echo "<th>".MTD_TITRE."</th>";
-		echo "<th>".EMPLACEMENT_MANQUANT."</th>";
-    echo "</tr>";
-    // Parcours de la liste des vidéos manquantes
-    foreach ($listeVideosManquantes as $video) {
-		$nomVideo = $video[MTD_TITRE];
-        $emplacementManquant = $video[EMPLACEMENT_MANQUANT];
-		//Lignes pour chaque élément
-		echo "<tr>";
-		echo "<td>$nomVideo</td>";
-		echo "<td>$emplacementManquant</td>";
-		echo "</tr>";
-    }
-    echo "</table>";
-}
 
 ?>

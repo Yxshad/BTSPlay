@@ -28,6 +28,12 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
  * Prend en paramètre l'id de connexion, le fichier à obtenir en local et le fichier sutué dans le NAS
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
+
+    if (file_exists($local_file)) {
+        ajouterLog(LOG_INFORM, "Le fichier $local_file existe déjà. Téléchargement ignoré.");
+        return;
+    }
+
     if ((ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY))) {
         ajouterLog(LOG_SUCCESS, "Fichier $ftp_file téléchargé avec succès dans $local_file.");
     }
@@ -36,33 +42,19 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
     }
 }
 
+
 /**
- * Fonction qui exporte un fichier vidéo local vers le NAS MPEG.
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG.
- * Créé un répertoire au nom de la vidéo si celui-ci n'existe pas déjà.
+ * Fonction qui exporte un fichier  local vers le NAS MPEG.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG et nom du fichier.
  */
-function exporterVideoVersNAS($fichierLocal, $cheminDistantNAS, $ftp_server, $ftp_user, $ftp_pass) {
+function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-
-    // Extraire le chemin du dossier distant
-    $cheminDossierDistant = dirname($cheminDistantNAS);
-    //$nomFichier = basename($fichierLocal);
-    $nomFichierSansExtension = pathinfo($fichierLocal, PATHINFO_FILENAME);
-    // Créer le chemin pour le dossier spécifique à la vidéo
-    $dossierVideoACreer = $cheminDossierDistant . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension;
-
-    // Créer le dossier parent et le sous dossier
-    creerDossierFTP($conn_id, $cheminDossierDistant);
-    creerDossierFTP($conn_id, $dossierVideoACreer);
-
     // Construire le chemin complet de destination pour le fichier
-    $cheminCompletDistant = $dossierVideoACreer . '/' . basename($fichierLocal);
+    $cheminCompletFichier = $cheminDistantNAS . '/' . $nomFichier;
+    $fichierLocal = $cheminLocal . $nomFichier;
     // Envoyer le fichier
-    if ((ftp_put($conn_id, $cheminCompletDistant, $fichierLocal, FTP_BINARY))){
-        ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal envoyé avec succès dans le serveur $ftp_server ( $cheminCompletDistant ).");
-    }
-    else{
-        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal dans le serveur $ftp_server ( $cheminCompletDistant ).");
+    if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
+        echo "Échec de l'export du fichier '$fichierLocal' vers '$cheminDistantNAS'<br>";
     }
     ftp_close($conn_id);
 }

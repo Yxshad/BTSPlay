@@ -57,9 +57,9 @@ function recupererMetadonnees($meta, $fichier){
  * Prend en paramètre le titre et la durée d'une vidéo
  */
 function decouperVideo($titre, $duree) {
-    // Convertir la durée totale en secondes
-    $total = timecodeToSecondes($duree);
-
+    
+    $total = formaterDuree($duree);
+    
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         $dureePartie = 2; // Durée de chaque partie en secondes
@@ -70,9 +70,7 @@ function decouperVideo($titre, $duree) {
     }
     // Créer le dossier de sortie
     $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    if (!file_exists($chemin_dossier)) {
-        mkdir($chemin_dossier, 0777, true);
-    }
+    creerDossier($chemin_dossier, false);
     for ($i = 0; $i < $nombreParties; $i++) {
         // Calculer le temps de début pour chaque partie
         $start_time = $i * $dureePartie;
@@ -95,7 +93,7 @@ function decouperVideo($titre, $duree) {
         exec($command, $output, $return_var);
         // #RISQUE
         if ($return_var == 1) {
-            echo "Erreur lors du traitement de la partie " . ($i + 1) . "\n";
+            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
         }
     }
     // Supprimer le fichier original
@@ -113,18 +111,24 @@ function convertirVideo($video){
     $chemin_dossier_origine = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $video . '_parts';
     $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . "_parts";
     // Création du dossier qui va stocker les morceaux de videos compressées    
-    mkdir($chemin_dossier_destination, 0777, true);
+    creerDossier($chemin_dossier_destination, false);
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
     // Pour chaque fichier on le converti en MPEG
     foreach ($files as $file) {
         if($file != '.' && $file != '..'){
-            $command = "ffmpeg -i " . ($chemin_dossier_origine . '/' . $file) .
-                        " -vcodec mpeg4 -preset ultrafast -b:v 1k " .
-                        ( $chemin_dossier_destination . "/" . substr($file, 0, -3) . "mp4");
+            $chemin_fichier_origine = $chemin_dossier_origine . '/' . $file;
+            $chemin_fichier_destination = $chemin_dossier_destination . '/' . pathinfo($file, PATHINFO_FILENAME) . '.mp4';
+            
+            // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
+            $command = "ffmpeg -i \"$chemin_fichier_origine\" " .
+                       "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                       "-c:a aac -b:a 64k " .                      // Bitrate audio réduit à 64 kbps
+                       "-movflags +faststart " .                   // Optimisation pour le streaming
+                       "\"$chemin_fichier_destination\"";
             exec($command, $output, $return_var);
             if ($return_var == 1) {
-                echo "Erreur lors du traitement de la partie " . ($file + 1) . "\n";
+                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
             }
         }
     }
@@ -180,30 +184,44 @@ function fusionnerVideo($video){
     rmdir($chemin_dossier_origine);
 }
 
-//génère une miniature à partir d'une vidéo compressé
+/**
+ * Fonction qui créé une miniature dans un espace local.
+ * Prend en paramètre une vidéo et sa durée
+ * Retourne le nom de la miniature
+ */
 function genererMiniature($video, $duree){
-    // Convertir la durée totale en secondes
-    $total = timecodeToSecondes($duree);
+
+    $total = formaterDuree($duree);
 
     $timecode = floor($total / 2);
 
-    $videoMP4 = substr($video, 0, -3) . "mp4";
+    $videoSansExtension = rtrim($video, ".mp4");
 
-    $command = "ffmpeg -i " . URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video . "/" . $videoMP4 . 
+    $miniature = $videoSansExtension . SUFFIXE_MINIATURE_VIDEO;
+
+    $command = "ffmpeg -i " . $video . 
                " -ss " . $timecode . 
-               " -vframes 1 " . URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video . "/" . $videoMP4 . "_miniature.png";
-    
-    var_dump($command);           
-    
+               " -vframes 1 " . $miniature;
+        
     exec($command, $output, $returnVar);
-    
+    ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
+    $miniature = basename($miniature);
+    return $miniature;
 }
 
-function timecodeToSecondes($duree){
+/**
+ * Fonction qui permet de convertir une durée totale en secondes
+ * Prend en paramètre une $duree sous la forme hh:mm:ss.mm
+ * Retourne la durée totale en seconde
+ */
+function formaterDuree($duree){
     $heures = (int)substr($duree, 0, 2);
     $minutes = (int)substr($duree, 3, 2);
     $secondes = (int)substr($duree, 6, 2);
     $milisecondes = (int)substr($duree, 9, 2);
-    return ($heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000);
+
+    // Convertir la durée totale en secondes
+    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    return $total;
 }
 ?>
