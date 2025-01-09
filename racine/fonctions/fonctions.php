@@ -472,7 +472,7 @@ function scan_decoupe(){
 					<img src="../ressources/Images/imgVideo.png" alt="">
 				</div>
 				<div class="info">
-					<p class="nomVideo"><?php echo $video; ?></p>
+					<p class="nomVideo"><?php echo rtrim($video, "_parts"); ?></p>
 					<p class="poidsVideo">20 go</p>
 				</div>
 				<div class="progress">
