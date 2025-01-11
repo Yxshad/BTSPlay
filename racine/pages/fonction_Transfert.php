@@ -1,8 +1,12 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/home.css" rel="stylesheet">
+	<script src="../ressources/Script/script.js"></script>
 	<title>Fonction de transfert</title>
 </head>
 <body>
@@ -15,16 +19,18 @@
 
 <?php
 
-require '../fonctions/fonctions.php';
-require '../fonctions/ftp.php';
-require '../ressources/constantes.php';
-require '../fonctions/ffmpeg.php';
+include_once '../fonctions/fonctions.php';
+include_once '../fonctions/ftp.php';
+require_once '../ressources/constantes.php';
+include_once '../fonctions/ffmpeg.php';
+require_once '../fonctions/modele.php';
+require '../ressources/Templates/header.php';
 
 if (isset($_POST['declencherTransfert'])) {
-	transfert();
+	transfertAffiche();
 }
 
-function transfert(){
+function transfertAffiche(){
 
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
@@ -49,10 +55,14 @@ function transfert(){
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 
 	//Alimenter le NAS MPEG
-	alimenterNAS_MPEG($COLLECT_MPEG);
+	$COLLECT_MPEG = alimenterNAS_MPEG($COLLECT_MPEG);
 
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);
+
+	$COLLECT_MPEG_après_alimentation = [];
+	$COLLECT_MPEG_après_alimentation = recupererCollectNAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG, URI_VIDEOS_A_ANALYSER, $COLLECT_MPEG_après_alimentation, URI_RACINE_NAS_MPEG);
+	afficherCollect("NAS MPEG après remplissage", $COLLECT_MPEG_après_alimentation);
 }
 
 /**
@@ -185,6 +195,7 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
 		convertirVideo($video[MTD_TITRE]);
 		fusionnerVideo($video[MTD_TITRE]);
+		genererMiniature($video[MTD_TITRE], $video[MTD_DUREE]);
 
 		// Forcer l'extension à .mp4
 		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);

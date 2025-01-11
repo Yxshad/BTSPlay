@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/sauvegarde.css" rel="stylesheet">
-    <script src="../ressources/Script/scripts.js"></script>
+    <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php';?>
+<?php include_once '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="colonnes">

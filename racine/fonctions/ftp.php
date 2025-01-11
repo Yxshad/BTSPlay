@@ -1,5 +1,7 @@
 <?php
 
+require_once "../ressources/constantes.php";
+
 /**
  * Fonction qui établit une connexion FTP.
  * Prend en paramètre : nom du serveur / login / password (ex : NAS_H264, user2, pass2)
@@ -8,10 +10,15 @@
 function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
     $conn_id = ftp_connect($ftp_server);
     if (!$conn_id) {
-        die("Impossible de se connecter au serveur FTP : $ftp_server<br>");
+        ajouterLog(LOG_FAIL, "Impossible de se connecter au serveur FTP : $ftp_server.");
+        exit();
     }
-    if (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
-        die("Échec de la connexion pour l'utilisateur $ftp_user<br>");
+    elseif (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
+        ajouterLog(LOG_FAIL, "Échec de la connexion pour l'utilisateur $ftp_user.");
+        exit();
+    }
+    else{
+        ajouterLog(LOG_SUCCESS, "Connexion réussie pour l'utilisateur $ftp_user.");
     }
     return $conn_id;
 }
@@ -21,27 +28,32 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
  * Prend en paramètre l'id de connexion, le fichier à obtenir en local et le fichier sutué dans le NAS
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
-    if (!(ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY))) {
-        echo "Échec du téléchargement du fichier.<br>";
+
+    if (file_exists($local_file)) {
+        ajouterLog(LOG_INFORM, "Le fichier $local_file existe déjà. Téléchargement ignoré.");
+        return;
+    }
+
+    if ((ftp_get($conn_id, $local_file, $ftp_file, FTP_BINARY))) {
+        ajouterLog(LOG_SUCCESS, "Fichier $ftp_file téléchargé avec succès dans $local_file.");
+    }
+    else{
+        ajouterLog(LOG_FAIL, "Échec du téléchargement du fichier $ftp_file.");
     }
 }
 
+
 /**
- * Fonction qui exporte un fichier vidéo local vers le NAS MPEG.
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG.
+ * Fonction qui exporte un fichier  local vers le NAS MPEG.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG et nom du fichier.
  */
-function exporterVideoVersNAS($fichierLocal, $cheminDistantNAS, $ftp_server, $ftp_user, $ftp_pass) {
+function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-
-    // Extraire le chemin du dossier distant
-    $cheminDossierDistant = dirname($cheminDistantNAS);
-    // Vérifier et créer le dossier distant si nécessaire
-    if (!@ftp_chdir($conn_id, $cheminDossierDistant)) {
-        creerDossierFTP($conn_id, $cheminDossierDistant);
-    }
-    ftp_chdir($conn_id, URI_RACINE_NAS_MPEG);
-
-    if (!(ftp_put($conn_id, $cheminDistantNAS, $fichierLocal, FTP_BINARY))) {
+    // Construire le chemin complet de destination pour le fichier
+    $cheminCompletFichier = $cheminDistantNAS . $nomFichier;
+    $fichierLocal = $cheminLocal . $nomFichier;
+    // Envoyer le fichier
+    if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
         echo "Échec de l'export du fichier '$fichierLocal' vers '$cheminDistantNAS'<br>";
     }
     ftp_close($conn_id);
@@ -61,8 +73,8 @@ function creerDossierFTP($conn_id, $cheminDossier) {
         // Vérifie si le dossier existe, sinon le crée
         if (!@ftp_chdir($conn_id, $cheminCourant)) {
             if (!(ftp_mkdir($conn_id, $cheminCourant))) {
-                echo "Erreur lors de la création du dossier : $cheminCourant<br>";
-                return false;
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminCourant.");
+                exit();
             }
         }
     }
@@ -107,6 +119,28 @@ function listerFichiersCompletFTP($conn_id, $repertoire) {
         }
     }
         return $fichiersComplet;
+}
+
+
+/**
+ * Fonction qui récupère les noms des vidéos situées dans un NAS ($ftp_server). Créé une connexion FTP
+ */
+function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS){
+	
+	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+
+	// Lister les fichiers sur le serveur FTP
+	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS);
+
+	foreach ($fichiers_NAS as $fichier) {
+        $nom_fichier = basename($fichier); // Récupérer uniquement le nom du fichier
+		if ($nom_fichier !== '.' && $nom_fichier !== '..') {
+
+			$nomsVideos_NAS[] = $fichier;
+		}
+    }
+	ftp_close($conn_id);
+	return $nomsVideos_NAS;
 }
 
 

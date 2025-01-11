@@ -1,3 +1,14 @@
+<<<<<<< HEAD
+=======
+<?php 
+
+session_start(); 
+ if(isset($_POST["username"])){
+    $_SESSION["username"] = $_POST["username"];
+}
+
+?>
+>>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -5,16 +16,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
+<<<<<<< HEAD
     <script src="../ressources/Script/scripts.js"></script>
+=======
+    <script src="../ressources/Script/script.js"></script>
+>>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
+<<<<<<< HEAD
 <?php include '../ressources/Templates/header.php';?>
 
 <div class="filtres">
     
     <form action="">
+=======
+    
+<?php
+    require '../ressources/Templates/header.php';
+    require_once '../fonctions/fonctions.php';
+    require_once '../fonctions/ftp.php';
+    require_once '../ressources/constantes.php';
+    require_once '../fonctions/modele.php';
+?>
+
+<aside class="filtres">
+    
+    <form action="recherche.php">
+>>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
         <div>
             <label>Année</label>
             <input type="number">
@@ -28,22 +58,40 @@
         <input value="Rechercher" type="submit">
     </form>
 
-    <button class="afficherFiltres">></button>
-</div>
+    <button class="afficherFiltres"> > </button>
+</aside>
 
 <div class="container">
     <div class="sliderVideo">
-        <h2>Videos !!!</h2>
+        <h2>Vos vidéos</h2>
         <div class="swiperVideo">
             <div class="swiper-wrapper">
-                <?php for ($i=0; $i < 30; $i++) { ?>
-                    <div class="swiper-slide">
-                        <a href="video.php">
-                            <div class="miniature"></div>
-                            <h3>Titre</h3>
-                        </a>
-                    </div>
-                <?php } ?> 
+                <?php
+                    $tabURIS = recupererURIEtTitreVideosEtId();
+                    if(!($tabURIS)){
+                        $nbVideosARecuperer = 0;
+                    }
+                    else{
+                        $nbVideosARecuperer = count($tabURIS);
+                    }
+                    for ($i=0; $i < $nbVideosARecuperer; $i++) {
+
+                        $id = $tabURIS[$i]['id'];
+                        $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
+                        $titre = $tabURIS[$i]['mtd_tech_titre'];
+                        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+                        $titre = substr($titre,0,-4); //retire l'extension du nom de la vidéo pour l'affichage
+
+                        echo("<div class='swiper-slide'>");
+                            echo("<a href='video.php?v=$id'>");
+                                echo("<div class='miniature'>");
+                                    echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
+                                echo("</div>");
+                                echo("<h3>$titre</h3>");
+                            echo("</a>");
+                        echo("</div>");
+                    }
+                ?>
             </div>
         </div>
         <div class="swiper-button-next"></div>
@@ -54,7 +102,12 @@
 <div class="voile"></div>
 
 <footer>
-<?php include '../ressources/Templates/footer.php';?>
+<?php require_once '../ressources/Templates/footer.php';?>
 </footer>
 
-<script src="../ressources/Script/script.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        affichageFiltres();
+        initCarrousel();
+    });
+</script>
