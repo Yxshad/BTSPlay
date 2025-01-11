@@ -20,13 +20,13 @@
     require_once '../fonctions/ftp.php';
     require_once '../ressources/constantes.php';
     require_once '../fonctions/ffmpeg.php';
+    require_once '../fonctions/modele.php';
 
     //Récupération de l'URI NAS de la vidéo
-    if (isset($_POST['uriNAS']) && isset($_POST['cheminLocalComplet'])) {
-        $uriNAS = $_POST['uriNAS'];
-        $cheminLocalComplet = $_POST['cheminLocalComplet'];
+    if (isset($_GET['v'])) {
+        $id = $_GET['v'];
     }
-
+    /*
     //Téléchargement de la vidéo
         //On récupère le chemin complet de la miniature, on le remplace par celui de la vidéo
         $cheminCompletMiniature = $cheminLocalComplet;
@@ -42,19 +42,36 @@
         $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
         telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
         ftp_close($conn_id);
-?>
+    */
+    $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
+    $video = $video[0];
+    $titre = substr($video["mtd_tech_titre"], 0, -4);
+    
+    //charge la minitature
+    $miniature = $titre . "_miniature.png";
+    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
 
+    //prépare la video
+    $cheminLocal = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
+    $cheminDistant = URI_RACINE_NAS_MPEG . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"]; 
+    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
+    ftp_close($conn_id);
+
+    var_dump($video);
+
+?>
 <div class="container">
     <div class="lecteurVideo">
-    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminCompletMiniature; ?>>
-        <source src="<?php echo $cheminLocalComplet; ?>" type="video/mp4"/>
+    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniature; ?>>
+        <source src="<?php echo $cheminLocal; ?>" type="video/mp4"/>
     </video>
 </div>
-    <h1 class="titre">Titre de la video</h1>
+    <h1 class="titre"><?php echo $titre; ?></h1>
     <div class="colonnes">
         <div class="colonne-1">
-            <p class="description">Lorem ipsum</p>
-            <p class="meta">15 fps, 1920x1080, 16:9</p>
+            <p class="description"><?php echo $video["Description"]; ?></p>
+            <p class="meta"><?php echo $video["mtd_tech_fps"]; ?> fps, <?php echo $video["mtd_tech_resolution"]; ?>, <?php echo $video["mtd_tech_format"]; ?>, <?php echo $video["mtd_tech_duree"]; ?></p>
             <?php $i = 0;
             while($i < 3){ //tant qu'on trouve des metadonnées editoriales ?>
                 <p>Acteur : José</p>

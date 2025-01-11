@@ -502,12 +502,13 @@ function scan_decoupe(){
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS
  */
-function recupererURIEtTitreVideos($nbVideosARecuperer){
-
-	// # RISQUE : Oublie au moment du lien front-back
-	// fonction en base qui récupère les URIS -- Pour l'instant elles sont récupérées statiquement.
+function recupererURIEtTitreVideos(){
 	$tabURIsEtTitres = getUriNASetTitreMPEG();
 	return $tabURIsEtTitres;
+}
+
+function recupererURIEtTitreVideosEtId(){
+	return getUriNASetTitreMPEGEtId();
 }
 
 /**
@@ -538,6 +539,45 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	return $cheminLocalComplet;
 	exit();
+}
+
+/*
+* Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+* Ne prend aucun paramètre
+* Retourne une liste avec les noms des vidéos en train de se faire découper
+*/
+function scan_decoupe(){
+	$listeVideoConvertion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	foreach ($listeVideo as $video) {
+		// #RISQUE : appel de base pour récupérer bdd
+		?>  <div class="ligne">
+				<div class="fleches">
+					<a class="fleche-haut">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+					<a class="fleche-bas">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+				</div>
+				<div class="imgVideo">
+					<img src="../ressources/Images/imgVideo.png" alt="">
+				</div>
+				<div class="info">
+					<p class="nomVideo"><?php echo substr($video, 0, -10); ?></p>
+					<p class="poidsVideo">20 go</p>
+				</div>
+				<div class="progress">
+					En cours de découpe
+				</div>
+				<div class="bouton">
+					<a class="pause">
+						<img src="../ressources/Images/pause.png" alt="pause">
+					</a>
+				</div>
+			</div> <?php
+		
+	}
 }
 
 ?>
