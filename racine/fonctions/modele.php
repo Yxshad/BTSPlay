@@ -614,6 +614,36 @@ function getUriNASetTitreMPEG() {
     }
 }
 
+function getUriNASetTitreMPEGEtId() {
+    try {
+        // Connexion à la base de données
+        $connexion = connexionBD();
+        // Préparation de la requête
+        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media');
+        // Exécution de la requête
+        $requeteVid->execute();
+        // Récupérer toutes les lignes sous forme de tableau associatif
+        $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+        // Fermer la connexion
+        $connexion = null;
+        // Vérifier si des résultats existent
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        // Gestion des erreurs
+        if ($connexion) {
+            $connexion->rollback(); // Annule toute transaction si nécessaire
+        }
+        $connexion = null;
+        // Journaliser l'erreur (ou afficher en mode développement)
+        error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
+        return false; // Retourne false en cas d'erreur
+    }
+}
+
 /**###########################
   *     TRUE / FALSE
   ############################*/
@@ -673,5 +703,43 @@ function getUriNASetTitreMPEG() {
         $connexion = null;
     }
  }
+
+/*
+*  fonction fetchAll couteau suisse
+*  ex: fetchAll("SELECT * FROM Media"); va renvoyer toutes les info des vidéos
+*/
+
+function fetchAll($sql){
+
+    try {
+        // Connexion à la base de données
+        $connexion = connexionBD();
+        // Préparation de la requête
+        $requete = $connexion->prepare($sql);
+        // Exécution de la requête
+        $requete->execute();
+        // Récupérer toutes les lignes sous forme de tableau associatif
+        $resultat = $requete->fetchAll(PDO::FETCH_ASSOC);
+        // Fermer la connexion
+        $connexion = null;
+        // Vérifier si des résultats existent
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        // Gestion des erreurs
+        if ($connexion) {
+            $connexion->rollback(); // Annule toute transaction si nécessaire
+        }
+        $connexion = null;
+        // Journaliser l'erreur (ou afficher en mode développement)
+        error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
+        return false; // Retourne false en cas d'erreur
+    }
+
+    return $resultat;
+}
 
 ?>

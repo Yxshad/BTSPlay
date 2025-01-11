@@ -1,5 +1,16 @@
 <?php
 
+if (isset($_POST["action"])) {
+	if ($_POST["action"] == "scanDecoupe") {
+		header('Content-Type: application/json');
+		scan_decoupe(); 
+		exit();
+	}
+	if ($_POST["action"] == "lancerConvertion") {
+		fonctionTransfert();
+	}
+}
+
 /**
  * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le NAS MPEG
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
@@ -453,6 +464,10 @@ function recupererURIEtTitreVideos(){
 	return $tabURIsEtTitres;
 }
 
+function recupererURIEtTitreVideosEtId(){
+	return getUriNASetTitreMPEGEtId();
+}
+
 /**
  * Fonction qui permet de charger une miniature dans l'espace local
  * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
@@ -481,6 +496,45 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	return $cheminLocalComplet;
 	exit();
+}
+
+/*
+* Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+* Ne prend aucun paramètre
+* Retourne une liste avec les noms des vidéos en train de se faire découper
+*/
+function scan_decoupe(){
+	$listeVideoConvertion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	foreach ($listeVideo as $video) {
+		// #RISQUE : appel de base pour récupérer bdd
+		?>  <div class="ligne">
+				<div class="fleches">
+					<a class="fleche-haut">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+					<a class="fleche-bas">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+				</div>
+				<div class="imgVideo">
+					<img src="../ressources/Images/imgVideo.png" alt="">
+				</div>
+				<div class="info">
+					<p class="nomVideo"><?php echo substr($video, 0, -10); ?></p>
+					<p class="poidsVideo">20 go</p>
+				</div>
+				<div class="progress">
+					En cours de découpe
+				</div>
+				<div class="bouton">
+					<a class="pause">
+						<img src="../ressources/Images/pause.png" alt="pause">
+					</a>
+				</div>
+			</div> <?php
+		
+	}
 }
 
 ?>

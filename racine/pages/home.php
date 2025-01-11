@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
+    
 <?php
     require '../ressources/Templates/header.php';
     require '../fonctions/fonctions.php';
@@ -45,7 +46,7 @@
         <div class="swiperVideo">
             <div class="swiper-wrapper">
                 <?php
-                    $tabURIS = recupererURIEtTitreVideos();
+                    $tabURIS = recupererURIEtTitreVideosEtId();
                     if(!($tabURIS)){
                         $nbVideosARecuperer = 0;
                     }
@@ -54,24 +55,19 @@
                     }
                     for ($i=0; $i < $nbVideosARecuperer; $i++) {
 
+                        $id = $tabURIS[$i]['id'];
                         $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
                         $titre = $tabURIS[$i]['mtd_tech_titre'];
                         $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+                        $titre = substr($titre,0,-4); //retire l'extension du nom de la vidéo pour l'affichage
 
-                        // Formulaire caché pour passer l'URI NAS
                         echo("<div class='swiper-slide'>");
-                        echo("<form action='video.php' method='POST' id='formVideo_$i' style='display: none;'>");
-                        echo("<input type='hidden' name='uriNAS' value='$uriNAS'>");
-                        echo("<input type='hidden' name='cheminLocalComplet' value='$cheminLocalComplet'>");
-                        echo("</form>");
-                        
-                        // Lien qui renvoie à la validation du formulaire
-                        echo("<a href='#' onclick='document.getElementById(\"formVideo_$i\").submit();'>");
-                            echo("<div class='miniature'>");
-                                echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
-                            echo("</div>");
-                            echo("<h3>$titre</h3>");
-                        echo("</a>");
+                            echo("<a href='video.php?v=$id'>");
+                                echo("<div class='miniature'>");
+                                    echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
+                                echo("</div>");
+                                echo("<h3>$titre</h3>");
+                            echo("</a>");
                         echo("</div>");
                     }
                 ?>
