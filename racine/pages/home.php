@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php 
 
 session_start(); 
@@ -8,7 +6,6 @@ session_start();
 }
 
 ?>
->>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -16,22 +13,11 @@ session_start();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
-<<<<<<< HEAD
-    <script src="../ressources/Script/scripts.js"></script>
-=======
     <script src="../ressources/Script/script.js"></script>
->>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<<<<<<< HEAD
-<?php include '../ressources/Templates/header.php';?>
-
-<div class="filtres">
-    
-    <form action="">
-=======
     
 <?php
     require '../ressources/Templates/header.php';
@@ -44,7 +30,6 @@ session_start();
 <aside class="filtres">
     
     <form action="recherche.php">
->>>>>>> ba30175d5877dcdd2be581ea6f507b5ae59af3f7
         <div>
             <label>Année</label>
             <input type="number">
@@ -80,7 +65,7 @@ session_start();
                         $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
                         $titre = $tabURIS[$i]['mtd_tech_titre'];
                         $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-                        $titre = substr($titre,0,-4); //retire l'extension du nom de la vidéo pour l'affichage
+                        $titre = pathinfo($titre, PATHINFO_FILENAME); 
 
                         echo("<div class='swiper-slide'>");
                             echo("<a href='video.php?v=$id'>");

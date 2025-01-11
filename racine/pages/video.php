@@ -28,10 +28,10 @@
     }
     $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
     $video = $video[0];
-    $titre = substr($video["mtd_tech_titre"], 0, -4);
+    $nomFichier = $video["mtd_tech_titre"];
     
     //charge la minitature
-    $miniature = $titre . "_miniature.png";
+    $miniature = $nomFichier . "_miniature.png";
     $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
 
     //prépare la video
@@ -41,6 +41,8 @@
     telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
     ftp_close($conn_id);
 
+    //prépare titre
+    $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
 ?>
 <div class="container">
     <div class="lecteurVideo">
@@ -48,7 +50,8 @@
         <source src="<?php echo $cheminLocal; ?>" type="video/mp4"/>
     </video>
 </div>
-    <h1 class="titre"><?php echo $titre; ?></h1>
+    <h1 class="titre"><?php echo $nomFichier; ?></h1>
+    <h2><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $video["Description"]; ?></p>
@@ -68,7 +71,7 @@
                 </div>
                 <p>Diffuser</p>
             </a>
-            <a href="formulaire.php?v=<?php echo $id;?>" class="btnVideo">
+            <a href="formulaire.php?v=<?php echo $id; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
                 </div>

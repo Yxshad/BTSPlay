@@ -1,10 +1,11 @@
 <?php
-
-require_once "../ressources/constantes.php";
-require_once "ftp.php";
-require_once "ffmpeg.php";
-
 if (isset($_POST["action"])) {
+
+	require_once "../ressources/constantes.php";
+	require_once "ftp.php";
+	require_once "ffmpeg.php";
+	require_once "modele.php";
+
 	if ($_POST["action"] == "scanDecoupe") {
 		header('Content-Type: application/json');
 		scan_decoupe(); 
@@ -462,7 +463,18 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 * Retourne une liste avec les noms des vidéos en train de se faire découper
 */
 function scan_decoupe(){
-	$listeVideo = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
+
+	$listeVideoDownload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoDownload);
+	$listeVideoDecoupage = array_map(function($e) { return substr($e,0,-10); }, $listeVideoDecoupage);
+	$listeVideoConversion = array_map(function($e) { return substr($e,0,-10); }, $listeVideoConversion);
+	$listeVideoUpload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoUpload);
+
+	$listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
+
 	foreach ($listeVideo as $video) {
 		// #RISQUE : appel de base pour récupérer bdd
 		?>  <div class="ligne">
@@ -478,19 +490,30 @@ function scan_decoupe(){
 					<img src="../ressources/Images/imgVideo.png" alt="">
 				</div>
 				<div class="info">
-					<p class="nomVideo"><?php echo rtrim($video, "_parts"); ?></p>
+					<p class="nomVideo"><?php echo $video; ?></p>
 					<p class="poidsVideo">20 go</p>
 				</div>
 				<div class="progress">
-					<div class="valeur">0</div>
-					%
+					<?php
+					if (in_array($video, $listeVideoUpload)) {
+						echo "En cours d'upload";
+					} elseif (in_array($video, $listeVideoConversion)) {
+						echo "En cours de conversion";
+					} elseif (in_array($video, $listeVideoDecoupage)){
+						echo "En cours de découpe";
+					} else{
+						echo "En cours de téléchargement";
+					}
+					?>
 				</div>
 				<div class="bouton">
 					<a class="pause">
 						<img src="../ressources/Images/pause.png" alt="pause">
 					</a>
 				</div>
-			</div> <?php
+			</div>
+			
+			<?php
 		
 	}
 }
@@ -537,5 +560,15 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 
 	return $cheminLocalComplet;
 	exit();
+}
+
+/*
+*	Fonction qui retourne le titre de la vidéo
+*   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
+*/
+
+function recupererTitreVideo($nomFichier){
+	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
+	return $titre[1];
 }
 ?>

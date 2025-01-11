@@ -1,7 +1,5 @@
 <?php
 
-require_once "../ressources/constantes.php";
-
 /**
  * Fonction qui établit une connexion FTP.
  * Prend en paramètre : nom du serveur / login / password (ex : NAS_H264, user2, pass2)
