@@ -65,7 +65,7 @@ session_start();
                         $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
                         $titre = $tabURIS[$i]['mtd_tech_titre'];
                         $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-                        $titre = substr($titre,0,-4); //retire l'extension du nom de la vidéo pour l'affichage
+                        $titre = pathinfo($titre, PATHINFO_FILENAME); 
 
                         echo("<div class='swiper-slide'>");
                             echo("<a href='video.php?v=$id'>");

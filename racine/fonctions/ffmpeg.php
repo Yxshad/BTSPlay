@@ -1,7 +1,5 @@
 <?php
 
-require_once "../ressources/constantes.php";
-
 /**
  * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
  * Vidéo située sur un espace local
@@ -150,9 +148,7 @@ function convertirVideo($video){
 function fusionnerVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
     $chemin_dossier_origine = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . '_parts';
-    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video;
-
-    mkdir($chemin_dossier_destination, 0777, true);
+    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD;
 
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
