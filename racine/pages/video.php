@@ -26,23 +26,6 @@
     if (isset($_GET['v'])) {
         $id = $_GET['v'];
     }
-    /*
-    //Téléchargement de la vidéo
-        //On récupère le chemin complet de la miniature, on le remplace par celui de la vidéo
-        $cheminCompletMiniature = $cheminLocalComplet;
-        $miniature = basename($cheminLocalComplet);
-        $fichierVideo = trouverNomVideo($miniature);
-
-        //Pour le chemin local, on retire de $cheminLocalComplet le nom du fichier miniature
-        $cheminLocal = dirname($cheminLocalComplet);
-
-        $cheminDistantComplet = $uriNAS . $fichierVideo;
-        $cheminLocalComplet = $cheminLocal . '/' . $fichierVideo;
-
-        $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-        telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
-        ftp_close($conn_id);
-    */
     $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
     $video = $video[0];
     $titre = substr($video["mtd_tech_titre"], 0, -4);
@@ -58,8 +41,6 @@
     telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
     ftp_close($conn_id);
 
-    var_dump($video);
-
 ?>
 <div class="container">
     <div class="lecteurVideo">
@@ -72,11 +53,7 @@
         <div class="colonne-1">
             <p class="description"><?php echo $video["Description"]; ?></p>
             <p class="meta"><?php echo $video["mtd_tech_fps"]; ?> fps, <?php echo $video["mtd_tech_resolution"]; ?>, <?php echo $video["mtd_tech_format"]; ?>, <?php echo $video["mtd_tech_duree"]; ?></p>
-            <?php $i = 0;
-            while($i < 3){ //tant qu'on trouve des metadonnées editoriales ?>
-                <p>Acteur : José</p>
-                <?php $i++;
-            } ?>
+           
         </div>
         <div class="colonne-2">
             <a href="./bamboulo.mp4" download="bamboulo.mp4" class="btnVideo">
@@ -91,7 +68,7 @@
                 </div>
                 <p>Diffuser</p>
             </a>
-            <a href="formulaire.php" class="btnVideo">
+            <a href="formulaire.php?v=<?php echo $id;?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
                 </div>
