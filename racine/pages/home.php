@@ -21,10 +21,10 @@ session_start();
     
 <?php
     require '../ressources/Templates/header.php';
-    require '../fonctions/fonctions.php';
-    require '../fonctions/ftp.php';
-    require '../ressources/constantes.php';
-    require '../fonctions/modele.php';
+    require_once '../fonctions/fonctions.php';
+    require_once '../fonctions/ftp.php';
+    require_once '../ressources/constantes.php';
+    require_once '../fonctions/modele.php';
 ?>
 
 <aside class="filtres">
