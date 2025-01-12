@@ -571,4 +571,18 @@ function recupererTitreVideo($nomFichier){
 	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
 	return $titre[1];
 }
+
+
+/*
+* Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo
+* Prend en paramètre l'id de la vidéo, le nom d'un réalisateur, l'année de la promotion, le nom du projet, 
+* le nom de l'acteur 1, le role de l'acteur 1, le nom de l'acteur 2 et le role de l'acteur 2
+*/
+
+function miseAJourMetadonneesVideo($idVid, $profReferant, $realisateur, $promotion, $projet, $cadreur, $acteur1Nom, $acteur1Role, $acteur2Nom, $acteur2Role){
+	//vérifie si le prof existe
+	list($nom, $prenom) = explode(" ", $profReferant, 2); 
+	
+
+}
 ?>

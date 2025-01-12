@@ -8,9 +8,6 @@
     <link href="../ressources/Style/formulaire.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
@@ -26,6 +23,72 @@
     if (isset($_GET['v'])) {
         $id = $_GET['v'];
     }
+
+
+    if (
+        isset($_POST["profReferant"]) ||
+        isset($_POST["realisateur"]) || 
+        isset($_POST["promotion"]) || 
+        isset($_POST["projet"]) || 
+        isset($_POST["cadreurNom"]) || 
+        isset($_POST["acteur1Nom"]) || 
+        isset($_POST["acteur1Role"]) || 
+        isset($_POST["acteur2Nom"]) || 
+        isset($_POST["acteur2Role"])
+    ) {
+        // Récupération des champs entrés dans le formulaire
+        $profReferant = "NULL";
+        if (isset($_POST["profReferant"])) {
+            $profReferant = $_POST["profReferant"];
+        }
+
+        $realisateur = "NULL";
+        if (isset($_POST["realisateur"])) {
+            $realisateur = $_POST["realisateur"];
+        }
+        
+        $promotion = "NULL";
+        if (isset($_POST["promotion"])) {
+            $promotion = $_POST["promotion"];
+        }
+        
+        $projet = "NULL";
+        if (isset($_POST["projet"])) {
+            $projet = $_POST["projet"];
+        }
+        
+        $cadreur = "NULL";
+        if (isset($_POST["cadreur"])) {
+            $cadreur = $_POST["cadreur"];
+        }
+        
+        $acteur1Nom = "NULL";
+        if (isset($_POST["acteur1Nom"])) {
+            $acteur1Nom = $_POST["acteur1Nom"];
+        }
+        
+        $acteur1Role = "NULL";
+        if (isset($_POST["acteur1Role"])) {
+            $acteur1Role = $_POST["acteur1Role"];
+        }
+        
+        $acteur2Nom = "NULL";
+        if (isset($_POST["acteur2Nom"])) {
+            $acteur2Nom = $_POST["acteur2Nom"];
+        }
+        
+        $acteur2Role = "NULL";
+        if (isset($_POST["acteur2Role"])) {
+            $acteur2Role = $_POST["acteur2Role"];
+        }
+
+        miseAJourMetadonneesVideo($id, $profReferant, $realisateur, $promotion, $projet, $cadreur, $acteur1Nom, $acteur1Role, $acteur2Nom, $acteur2Role);
+    }
+
+
+
+
+
     $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
     $video = $video[0];
     $titre = substr($video["mtd_tech_titre"], 0, -4);
@@ -35,12 +98,12 @@
     $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
 ?>
 
-<div class="content">
-    <h1 class="text-center mb-4">Formulaire des métadonnées</h1>
+<div class="container">
+    <h1>Formulaire des métadonnées</h1>
 
-    <div class="row mb-4">
-        <div class="col-md-6 text-center">
-            <div class="mb-3">
+    <div class="colonnes">
+        <div class="colonne-1">
+            <div class="img">
                 <img src="<?php echo $cheminMiniature; ?>" alt="Miniature de la vidéo" class="imageMiniature">
             </div>
             <h2><?php echo $titre; ?></h2>
@@ -50,42 +113,44 @@
             <p><strong>Format :</strong> <?php echo $video['mtd_tech_format']; ?></p>
         </div>
 
-        <div class="col-md-6">
+        <div class="colonne-2">
             <h2>Équipe</h2>
-            <form>
-                <div class="mb-3">
+            <form method="post" action="">
+                <div class="champ">
+                    <label for="profReferant" class="form-label">Professeur référant</label>
+                    <input type="text" id="profReferant" name="profReferant">
+                </div>
+                <div class="champ">
                     <label for="realisateur" class="form-label">Réalisateur</label>
-                    <input type="text" class="form-control" id="realisateur">
+                    <input type="text" id="realisateur" name="realisateur">
+                    
                 </div>
-                <div class="mb-3">
-                    <label for="cadreur" class="form-label">Cadreur</label>
-                    <input type="text" class="form-control" id="cadreur">
+                <div class="champ">
+                    <label for="promotion">Promotion</label>
+                    <input type="text" id="promotion" name="promotion">
                 </div>
-                <div class="mb-3">
-                    <label for="acteur1" class="form-label">Acteur</label>
-                    <input type="text" class="form-control" id="acteur1">
+                <div class="champ">
+                    <label for="projet">Projet</label>
+                    <input type="text" id="projet" name="projet">
                 </div>
-                <div class="mb-3">
-                    <label for="acteur2" class="form-label">Acteur 2</label>
-                    <input type="text" class="form-control" id="acteur2">
+                <div class="champ">
+                    <label for="cadreurNom">Cadreur</label>
+                    <div class="inputs">
+                        <input type="text" id="cadreur" name="cadreur">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="promotion" class="form-label">Promotion</label>
-                    <input type="text" class="form-control" id="promotion">
-                </div>
-                <div class="mb-3">
-                    <label for="projet" class="form-label">Projet</label>
-                    <input type="text" class="form-control" id="projet">
+                <div class="champ">
+                    <label for="responsableSon">Responsable son</label>
+                    <div class="inputs">
+                        <input type="text" id="responsableSon" name="responsableSon">
+                    </div>
                 </div>
             </form>
         </div>
     </div>
 
-    <div class="d-flex justify-content-center gap-3">
-        <a href="video.php?v=<?php echo $id;?>" class="btn btn-secondary">Annuler</a>
-        <a href="#" class="btn btn-primary">Confirmer</a>
+    <div class="btns">
+        <a href="video.php?v=<?php echo $id;?>" class="btn">Annuler</a>
+        <a href="#" class="btn" onclick="document.querySelector('form').submit();">Confirmer</a> <!-- Avant que vous disiez quoi que ce soit, je sais, il est 6h du mat, vs code est ouvert 7h13 -->
     </div>
 </div>
-
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

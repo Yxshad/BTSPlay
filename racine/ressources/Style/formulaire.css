@@ -1,74 +1,60 @@
+h1, h2{
+    text-align: center;
+}
+
 .colonnes{
     display: flex;
-    gap: 20px;
+    gap: 10px;
 }
 
-.colonnes .colonne-1{
-    width: 65%;
+.colonne-1,
+.colonne-2{
+    width: 50%;
 }
 
-.colonnes .colonne-2{
-    width: 35%;
+.colonne-1 p{
+    text-align: center;
 }
 
-.video{
-    height: 300px;
-    background: grey;
-    border-radius: 20px;
+.img{
+    border-radius: 10px;
+    overflow: hidden;
 }
 
-.meta-editoriale,
-.promotion,
-.projet{
+.colonne-2 h2{
+    margin-top: 0;
+}
+
+.colonne-2 .champ{
     display: flex;
-    justify-content: space-between;
-    margin: 0px 40px;
+    flex-direction: column;
+    margin: 10px 0;
+}
+ 
+.colonne-2 .champ label{
+    margin-bottom: 5px;
 }
 
-.boutons{
+.colonne-2 .champ input{
+    height: 25px;
+    border-radius: 5px;
+    width: 100%;
+}
+
+.colonne-2 .champ .inputs{
     display: flex;
-    gap: 30px;
+    gap: 5px;
+}
+
+.btns{
+    display: flex;
     justify-content: center;
-    text-align: center;
+    gap: 30px;
 }
 
-.boutons a{
-    padding: 10px;
-    border-radius: 20px;
-    width: 90px;
-    display: block;
-}
-
-a.confirmer{
-    background: red;
-    color: #fff;
-}
-
-.content {
-    margin-top: 30px;
-    padding: 20px;
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-h1, h2 {
-    color: #d9534f;
-    text-align: center;
-}
-.btn-primary {
-    background-color: #d9534f;
-    border-color: #d9534f;
-}
-.btn-primary:hover {
-    background-color: #f0ad4e;
-    border-color: #f0ad4e;
-}
-.imageMiniature {
-    max-width: 100%;
-    height: auto;
-    border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-}
-.form-control {
-    margin-bottom: 15px;
+.btns a{
+    background: grey;
+    color: white;
+    border-radius: 10px;
+    padding: 10px 20px;
 }

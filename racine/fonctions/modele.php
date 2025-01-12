@@ -142,7 +142,7 @@ function insertionProjet($projet)
 * @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
 * @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
  */
-function insertionEleve($video, $eleve)
+function insertionEleve($eleve)
 {
     $connexion = connexionBD();  
     try{
@@ -644,6 +644,29 @@ function getUriNASetTitreMPEGEtId() {
     }
 }
 
+/**
+ * getProfId
+ * renvoie l'id d'un prof
+ */
+function getProfId($profNom, $profPrenom)
+{
+   $connexion = connexionBD();
+   $requeteEleve = $connexion->prepare('SELECT id 
+   FROM Professeur
+   WHERE nom = ? AND prenom = ?');                                                 
+   try{
+       $requeteProf->execute([$profNom, $profPrenom]);
+       $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+       $connexion = null;
+       return $profCherche['id'];
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+       $connexion = null;
+   }
+}
+
 /**###########################
   *     TRUE / FALSE
   ############################*/
@@ -704,6 +727,8 @@ function getUriNASetTitreMPEGEtId() {
     }
  }
 
+
+
 /*
 *  fonction fetchAll couteau suisse
 *  ex: fetchAll("SELECT * FROM Media"); va renvoyer toutes les info des vidéos
@@ -738,8 +763,6 @@ function fetchAll($sql){
         error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
         return false; // Retourne false en cas d'erreur
     }
-
-    return $resultat;
 }
 
 ?>
