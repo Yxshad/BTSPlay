@@ -597,8 +597,13 @@ function miseAJourMetadonneesVideo(
     echo "Cadreur: " . $cadreur . "<br>";
     echo "Responsable Son: " . $responsableSon . "<br>";
 
+	
 
+	assignerProfReferent($idVid, $profReferant);
+	assignerRealisateur($idVid, $realisateur);
 	assignerPromotion($idVid, $promotion);
 	assignerProjet($idVid, $projet);
+	assignerCadreur($idVid, $cadreur);
+	assignerResponsable($idVid, $responsableSon);
 }
 ?>

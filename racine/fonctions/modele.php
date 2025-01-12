@@ -144,18 +144,20 @@ function insertionProjet($projet)
  */
 function insertionEleve($eleve)
 {
-    $connexion = connexionBD();  
-    try{
-        $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
-        $eleveAAjouter= $verif->execute([
-            $eleve]);          
-        $connexion->commit();  
-        $connexion = null;
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
+    if ($eleve != "") {
+        $connexion = connexionBD();  
+        try{
+            $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
+            $eleveAAjouter= $verif->execute([
+                $eleve]);          
+            $connexion->commit();  
+            $connexion = null;
+        }
+        catch(Exception $e)
+        {
+            $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+            $connexion = null;
+        }
     }
 }
 
@@ -231,7 +233,7 @@ function insertionEleve($eleve)
     }
 }
 
-/**
+ /**
  * assignerProfReferent
  * Permet d'assigner un professeur référent au projet
  * idVideo : l'id de la vidéo à laquelle on assigne le professeur
@@ -239,38 +241,52 @@ function insertionEleve($eleve)
  */
 
  function assignerProfReferent($idVideo, $prof) {
+
+    $lastSpacePos = strrpos($prof, ' ');
+
+    // Vérifier si un espace existe
+    if ($lastSpacePos !== false) {
+        // Séparer le prénom du nom
+        $profNom = substr($prof, 0, $lastSpacePos);  
+        $profPrenom = substr($prof, $lastSpacePos + 1);  
+
+        echo $profNom;
+        echo $profPrenom;
+    }
+
     $connexion = connexionBD(); // Connexion à la BD
     try {
-        // Rechercher le professeur par nom complet
-        $profAAjouter = $connexion->prepare('SELECT id FROM Professeur WHERE nomComplet = ?');
-        $profAAjouter->execute([$prof]); 
-        $profAjoute = $profAAjouter->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+        $idProf = getProfId($profNom, $profPrenom);
+        echo $idProf;
 
-        // Vérifiez si le professeur existe
-        if (!$profAjoute || !isset($profAjoute['id'])) {
-            throw new Exception("Professeur non trouvé ou ID manquant pour : $prof");
+        if(!$idProf)
+        {
+            $setIDProf = $connexion->prepare('UPDATE media 
+            SET professeurReferent = NULL
+            WHERE id = ?');
+
+            // Exécution de la mise à jour
+            $setIDProf->execute([
+            $idVideo
+            ]);
+            $connexion = null;
         }
-
-        // Vérification des types (éviter l'erreur Array to string conversion)
-        if (!is_scalar($profAjoute['id']) || !is_scalar($idVideo)) {
-            throw new Exception("Les données fournies ne sont pas scalaires (idProf ou idVideo).");
-        }
-
-        // Mettre à jour la table `media` avec l'ID du professeur
+        else {
+            // Mettre à jour la table `media` avec l'ID du professeur
         $setIDProf = $connexion->prepare('UPDATE media 
-                                          SET professeurReferent = ?
-                                          WHERE id = ?');
-        
+        SET professeurReferent = ?
+        WHERE id = ?');
+
         // Exécution de la mise à jour
         $setIDProf->execute([
-            $profAjoute['id'], // Utilisation de l'ID du professeur récupéré
-            $idVideo
+        $idProf, // Utilisation de l'ID du professeur récupéré
+        $idVideo
         ]);
 
         // Commit de la transaction
         $connexion->commit();
         $connexion = null;
-
+        }
     } catch (Exception $e) {
         // Gestion des erreurs
         if ($connexion) {
@@ -288,40 +304,45 @@ function insertionEleve($eleve)
  */
 
  function assignerCadreur($idVideo, $listeCadreurs){
-    $connexion = connexionBD();
 
-    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
-    // Normaliser et séparer les cadreurs
-    $listeCadreurs = trim(preg_replace('/\s*,\s*/', ', ', $listeCadreurs));
-    $tabCadreur = explode(', ', $listeCadreurs);
+    if ($listeCadreurs != "") {
+        $connexion = connexionBD();
 
-    try{
+        // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+        // Normaliser et séparer les cadreurs
+        $listeCadreurs = trim(preg_replace('/\s*,\s*/', ', ', $listeCadreurs));
+        $tabCadreur = explode(', ', $listeCadreurs);
 
-        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
-        $cadreur = $connexion->prepare('DELETE FROM Participer 
-                    WHERE (idMedia = ? AND idRole = ?)');
-                $cadreur->execute([$idVideo, 1]);
+        try{
 
-        for ($i=0; $i < count($tabCadreur); $i++) { 
-            if(!eleveInBD($tabCadreur[$i]))
-            {
-                insertionEleve($idVideo, $tabCadreur[$i]);
+            //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+            $cadreur = $connexion->prepare('DELETE FROM Participer 
+                        WHERE (idMedia = ? AND idRole = ?)');
+                    $cadreur->execute([$idVideo, 1]);
+
+            
+            for ($i=0; $i < count($tabCadreur); $i++) { 
+
+                if(!eleveInBD($tabCadreur[$i]))
+                {
+                    insertionEleve($tabCadreur[$i]);
+                }
+                    // Récupérer l'ID de l'élève
+                $idEleve = getIdEleve($tabCadreur[$i]);
+
+                // Insertion si non existant
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                    VALUES (?, ?, ?)');
+                $cadreur->execute([$idVideo, $idEleve, 1]);
             }
-                // Récupérer l'ID de l'élève
-            $idEleve = getIdEleve($tabCadreur[$i]);
-
-            // Insertion si non existant
-            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
-                VALUES (?, ?, ?)');
-            $cadreur->execute([$idVideo, $idEleve, 1]);
+            $connexion->commit();  
+            $connexion = null;
         }
-        $connexion->commit();  
-        $connexion = null;
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
+        catch(Exception $e)
+        {
+            $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+            $connexion = null;
+        }
     }
  }
 
@@ -333,40 +354,43 @@ function insertionEleve($eleve)
  */
 
  function assignerResponsable($idVideo, $listeResponsable){
-    $connexion = connexionBD();
 
-    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
-    // Normaliser et séparer les cadreurs
-    $listeResponsable = trim(preg_replace('/\s*,\s*/', ', ', $listeResponsable));
-    $tabResponsable = explode(', ', $listeResponsable);
+    if ($listeResponsable != "") {
+        $connexion = connexionBD();
 
-    try{
+        // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+        // Normaliser et séparer les cadreurs
+        $listeResponsable = trim(preg_replace('/\s*,\s*/', ', ', $listeResponsable));
+        $tabResponsable = explode(', ', $listeResponsable);
 
-        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
-        $cadreur = $connexion->prepare('DELETE FROM Participer 
-                    WHERE (idMedia = ? AND idRole = ?)');
-                $cadreur->execute([$idVideo, 3]);
+        try{
 
-        for ($i=0; $i < count($tabResponsable); $i++) { 
-            if(!eleveInBD($tabResponsable[$i]))
-            {
-                insertionEleve($idVideo, $tabResponsable[$i]);
+            //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+            $cadreur = $connexion->prepare('DELETE FROM Participer 
+                        WHERE (idMedia = ? AND idRole = ?)');
+                    $cadreur->execute([$idVideo, 3]);
+
+            for ($i=0; $i < count($tabResponsable); $i++) { 
+                if(!eleveInBD($tabResponsable[$i]))
+                {
+                    insertionEleve($tabResponsable[$i]);
+                }
+                    // Récupérer l'ID de l'élève
+                $idEleve = getIdEleve($tabResponsable[$i]);
+
+                // Insertion si non existant
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                    VALUES (?, ?, ?)');
+                $cadreur->execute([$idVideo, $idEleve, 3]);
             }
-                // Récupérer l'ID de l'élève
-            $idEleve = getIdEleve($tabResponsable[$i]);
-
-            // Insertion si non existant
-            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
-                VALUES (?, ?, ?)');
-            $cadreur->execute([$idVideo, $idEleve, 3]);
+            $connexion->commit();  
+            $connexion = null;
         }
-        $connexion->commit();  
-        $connexion = null;
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
+        catch(Exception $e)
+        {
+            $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+            $connexion = null;
+        }
     }
  }
 
@@ -378,40 +402,43 @@ function insertionEleve($eleve)
  */
 
  function assignerRealisateur($idVideo, $listeRealisateurs){
-    $connexion = connexionBD();
 
-    // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
-    // Normaliser et séparer les cadreurs
-    $listeRealisateurs = trim(preg_replace('/\s*,\s*/', ', ', $listeRealisateurs));
-    $tabRealisateur = explode(', ', $listeRealisateurs);
+    if ($listeRealisateurs != "") {
+        $connexion = connexionBD();
 
-    try{
+        // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
+        // Normaliser et séparer les cadreurs
+        $listeRealisateurs = trim(preg_replace('/\s*,\s*/', ', ', $listeRealisateurs));
+        $tabRealisateur = explode(', ', $listeRealisateurs);
 
-        //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
-        $cadreur = $connexion->prepare('DELETE FROM Participer 
-                    WHERE (idMedia = ? AND idRole = ?)');
-                $cadreur->execute([$idVideo, 2]);
+        try{
 
-        for ($i=0; $i < count($tabRealisateur); $i++) { 
-            if(!eleveInBD($tabRealisateur[$i]))
-            {
-                insertionEleve($idVideo, $tabRealisateur[$i]);
+            //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+            $cadreur = $connexion->prepare('DELETE FROM Participer 
+                        WHERE (idMedia = ? AND idRole = ?)');
+                    $cadreur->execute([$idVideo, 2]);
+
+            for ($i=0; $i < count($tabRealisateur); $i++) { 
+                if(!eleveInBD($tabRealisateur[$i]))
+                {
+                    insertionEleve($tabRealisateur[$i]);
+                }
+                    // Récupérer l'ID de l'élève
+                $idEleve = getIdEleve($tabRealisateur[$i]);
+
+                // Insertion si non existant
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                    VALUES (?, ?, ?)');
+                $cadreur->execute([$idVideo, $idEleve, 2]);
             }
-                // Récupérer l'ID de l'élève
-            $idEleve = getIdEleve($tabRealisateur[$i]);
-
-            // Insertion si non existant
-            $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
-                VALUES (?, ?, ?)');
-            $cadreur->execute([$idVideo, $idEleve, 2]);
+            $connexion->commit();  
+            $connexion = null;
         }
-        $connexion->commit();  
-        $connexion = null;
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
-        $connexion = null;
+        catch(Exception $e)
+        {
+            $connexion->rollback();             //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+            $connexion = null;
+        }
     }
  }
 
@@ -642,14 +669,14 @@ function getUriNASetTitreMPEGEtId() {
 function getProfId($profNom, $profPrenom)
 {
    $connexion = connexionBD();
-   $requeteEleve = $connexion->prepare('SELECT id 
+   $requeteProf = $connexion->prepare('SELECT identifiant 
    FROM Professeur
    WHERE nom = ? AND prenom = ?');                                                 
    try{
        $requeteProf->execute([$profNom, $profPrenom]);
        $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
-       return $profCherche['id'];
+       return $profCherche['identifiant'];
    }
    catch(Exception $e)
    {
