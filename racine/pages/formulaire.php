@@ -24,65 +24,42 @@
         $id = $_GET['v'];
     }
 
+    var_dump($_POST);
 
     if (
         isset($_POST["profReferant"]) ||
         isset($_POST["realisateur"]) || 
         isset($_POST["promotion"]) || 
         isset($_POST["projet"]) || 
-        isset($_POST["cadreurNom"]) || 
-        isset($_POST["acteur1Nom"]) || 
-        isset($_POST["acteur1Role"]) || 
-        isset($_POST["acteur2Nom"]) || 
-        isset($_POST["acteur2Role"])
+        isset($_POST["cadreur"]) || 
+        isset($_POST["responsableSon"])
     ) {
+
         // Récupération des champs entrés dans le formulaire
-        $profReferant = "NULL";
-        if (isset($_POST["profReferant"])) {
-            $profReferant = $_POST["profReferant"];
-        }
 
-        $realisateur = "NULL";
-        if (isset($_POST["realisateur"])) {
-            $realisateur = $_POST["realisateur"];
-        }
-        
-        $promotion = "NULL";
-        if (isset($_POST["promotion"])) {
-            $promotion = $_POST["promotion"];
-        }
-        
-        $projet = "NULL";
-        if (isset($_POST["projet"])) {
-            $projet = $_POST["projet"];
-        }
-        
-        $cadreur = "NULL";
-        if (isset($_POST["cadreur"])) {
-            $cadreur = $_POST["cadreur"];
-        }
-        
-        $acteur1Nom = "NULL";
-        if (isset($_POST["acteur1Nom"])) {
-            $acteur1Nom = $_POST["acteur1Nom"];
-        }
-        
-        $acteur1Role = "NULL";
-        if (isset($_POST["acteur1Role"])) {
-            $acteur1Role = $_POST["acteur1Role"];
-        }
-        
-        $acteur2Nom = "NULL";
-        if (isset($_POST["acteur2Nom"])) {
-            $acteur2Nom = $_POST["acteur2Nom"];
-        }
-        
-        $acteur2Role = "NULL";
-        if (isset($_POST["acteur2Role"])) {
-            $acteur2Role = $_POST["acteur2Role"];
-        }
+        $profReferant = $_POST["profReferant"];
+    
+        $realisateur = $_POST["realisateur"];
+    
+        $promotion = $_POST["promotion"];
 
-        miseAJourMetadonneesVideo($id, $profReferant, $realisateur, $promotion, $projet, $cadreur, $acteur1Nom, $acteur1Role, $acteur2Nom, $acteur2Role);
+        $projet = $_POST["projet"];
+    
+    
+        $cadreur = $_POST["cadreur"];
+
+        $responsableSon = $_POST["responsableSon"];
+        
+
+        miseAJourMetadonneesVideo(
+            $id, 
+            $profReferant, 
+            $realisateur, 
+            $promotion, 
+            $projet, 
+            $cadreur, 
+            $responsableSon
+        );
     }
 
 
@@ -115,7 +92,7 @@
 
         <div class="colonne-2">
             <h2>Équipe</h2>
-            <form method="post" action="">
+            <form method="post" action="formulaire.php?v=<?php echo $id; ?>">
                 <div class="champ">
                     <label for="profReferant" class="form-label">Professeur référant</label>
                     <input type="text" id="profReferant" name="profReferant">
@@ -145,12 +122,13 @@
                         <input type="text" id="responsableSon" name="responsableSon">
                     </div>
                 </div>
+                <button type="submit" class="btn">Confirmer</button> 
             </form>
         </div>
     </div>
 
     <div class="btns">
-        <a href="video.php?v=<?php echo $id;?>" class="btn">Annuler</a>
-        <a href="#" class="btn" onclick="document.querySelector('form').submit();">Confirmer</a> <!-- Avant que vous disiez quoi que ce soit, je sais, il est 6h du mat, vs code est ouvert 7h13 -->
+        <a href="video.php?v=<?php echo $id; ?>" class="btn">Annuler</a>
+        
     </div>
 </div>

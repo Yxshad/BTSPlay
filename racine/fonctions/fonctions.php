@@ -579,10 +579,26 @@ function recupererTitreVideo($nomFichier){
 * le nom de l'acteur 1, le role de l'acteur 1, le nom de l'acteur 2 et le role de l'acteur 2
 */
 
-function miseAJourMetadonneesVideo($idVid, $profReferant, $realisateur, $promotion, $projet, $cadreur, $acteur1Nom, $acteur1Role, $acteur2Nom, $acteur2Role){
-	//vérifie si le prof existe
-	list($nom, $prenom) = explode(" ", $profReferant, 2); 
-	
+function miseAJourMetadonneesVideo(
+    $idVid, 
+	$profReferant, 
+	$realisateur, 
+	$promotion, 
+	$projet, 
+	$cadreur, 
+	$responsableSon
+) {
+    // Affichage de chaque valeur passée en paramètre
+    echo "ID: " . $idVid . "<br>";
+    echo "Professeur Référant: " . $profReferant . "<br>";
+    echo "Réalisateur: " . $realisateur . "<br>";
+    echo "Promotion: " . $promotion . "<br>";
+    echo "Projet: " . $projet . "<br>";
+    echo "Cadreur: " . $cadreur . "<br>";
+    echo "Responsable Son: " . $responsableSon . "<br>";
 
+
+	assignerPromotion($idVid, $promotion);
+	assignerProjet($idVid, $projet);
 }
 ?>

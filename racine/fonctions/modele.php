@@ -201,29 +201,20 @@ function insertionEleve($eleve)
  function assignerProjet($idVideo, $projet) {
     $connexion = connexionBD(); // Connexion à la BD
     try {
-        // Rechercher le projet par intitule
-        $projetAAjouter = $connexion->prepare('SELECT id FROM Projet WHERE intitule = ?');
-        $projetAAjouter->execute([$projet]); 
-        $projetAjouter = $projetAAjouter->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
-        var_dump($projet, $projetAjouter);
-        // Vérifiez si le professeur existe
-        if (!$projetAjouter || !isset($projetAjouter['id'])) {
-            throw new Exception("Projet non trouvé ou ID manquant pour : $projet");
+
+        $idProjet = getProjet($projet);
+        if (!$idProjet) {
+            insertionProjet($projet);
+            $idProjet = getProjet($projet);
         }
 
-        // Vérification des types (éviter l'erreur Array to string conversion)
-        if (!is_scalar($projetAjouter['id']) || !is_scalar($idVideo)) {
-            throw new Exception("Les données fournies ne sont pas scalaires (idProjet ou idVideo).");
-        }
-
-        // Mettre à jour la table `media` avec l'ID du professeur
         $setIDProjet = $connexion->prepare('UPDATE media 
                                           SET projet = ?
                                           WHERE id = ?');
         
         // Exécution de la mise à jour
         $setIDProjet->execute([
-            $projetAjouter['id'], // Utilisation de l'ID du professeur récupéré
+            $idProjet, // Utilisation de l'ID du professeur récupéré
             $idVideo
         ]);
 
@@ -435,7 +426,7 @@ function insertionEleve($eleve)
     try{
         // Insertion si non existant
         $cadreur = $connexion->prepare('UPDATE Media SET promotion = ? WHERE id = ?');
-        $cadreur->execute([$valPromo, $idVideo]);
+        $cadreur->execute([$valPromo, $idVid]);
         $connexion->commit();  
         $connexion = null;
     }
