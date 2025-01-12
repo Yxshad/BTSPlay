@@ -24,8 +24,6 @@
         $id = $_GET['v'];
     }
 
-    var_dump($_POST);
-
     if (
         isset($_POST["profReferant"]) ||
         isset($_POST["realisateur"]) || 
@@ -60,15 +58,15 @@
             $cadreur, 
             $responsableSon
         );
+
+
     }
-
-
-
-
 
     $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
     $video = $video[0];
     $titre = substr($video["mtd_tech_titre"], 0, -4);
+
+    $listeMeta = getMetadonneesEditorialesVideo($video);
 
     // Charge la miniature
     $miniature = $titre . "_miniature.png";
@@ -95,31 +93,31 @@
             <form method="post" action="formulaire.php?v=<?php echo $id; ?>">
                 <div class="champ">
                     <label for="profReferant" class="form-label">Professeur référant</label>
-                    <input type="text" id="profReferant" name="profReferant">
+                    <input type="text" id="profReferant" name="profReferant" placeholder="<?php echo $listeMeta["professeur"]; ?>">
                 </div>
                 <div class="champ">
                     <label for="realisateur" class="form-label">Réalisateur</label>
-                    <input type="text" id="realisateur" name="realisateur">
+                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $listeMeta["realisateur"]; ?>">
                     
                 </div>
                 <div class="champ">
                     <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion">
+                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $video["promotion"]; ?>">
                 </div>
                 <div class="champ">
                     <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet">
+                    <input type="text" id="projet" name="projet" placeholder="<?php echo $listeMeta["projet"]; ?>">
                 </div>
                 <div class="champ">
                     <label for="cadreurNom">Cadreur</label>
                     <div class="inputs">
-                        <input type="text" id="cadreur" name="cadreur">
+                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $listeMeta["cadreur"]; ?>">
                     </div>
                 </div>
                 <div class="champ">
                     <label for="responsableSon">Responsable son</label>
                     <div class="inputs">
-                        <input type="text" id="responsableSon" name="responsableSon">
+                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $listeMeta["responsableSon"]; ?>">
                     </div>
                 </div>
                 <button type="submit" class="btn">Confirmer</button> 

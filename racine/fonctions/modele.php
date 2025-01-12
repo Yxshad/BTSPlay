@@ -685,6 +685,68 @@ function getProfId($profNom, $profPrenom)
    }
 }
 
+function getProjetIntitule($idProjet){
+    $connexion = connexionBD();
+    $requeteProjet = $connexion->prepare('SELECT intitule 
+    FROM Projet
+    WHERE id = ?');                                                 
+    try{
+        $requeteProjet->execute([$idProjet]);
+        $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+        $connexion = null;
+        return $projet["intitule"];
+    }
+    catch(Exception $e)
+    {
+        $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+        $connexion = null;
+    }
+}
+
+function getProfNomPrenom($identifiant)
+{
+   $connexion = connexionBD();
+   $requeteProf = $connexion->prepare('SELECT nom, prenom 
+   FROM Professeur
+   WHERE identifiant = ?');                                                 
+   try{
+       $requeteProf->execute([$identifiant]);
+       $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
+       $connexion = null;
+       return [$profCherche['nom'], $profCherche['prenom']];
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+       $connexion = null;
+   }
+}
+
+function getParticipants($idVid) {
+    $connexion = connexionBD();
+    
+    // Requête pour le réalisateur
+    $requeteRealisateur = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteRealisateur->execute([$idVid, 2]);
+    $realisateur = $requeteRealisateur->fetchAll(PDO::FETCH_ASSOC);
+
+    // Requête pour le cadreur
+    $requeteCadreur = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteCadreur->execute([$idVid, 1]);
+    $cadreur = $requeteCadreur->fetchAll(PDO::FETCH_ASSOC);
+
+    // Requête pour le son
+    $requeteSon = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteSon->execute([$idVid, 3]);
+    $son = $requeteSon->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fermeture de la connexion
+    $connexion = null;
+
+    return [$realisateur[0]["nomComplet"], $cadreur[0]["nomComplet"], $son[0]["nomComplet"]];
+}
+
+
 /**###########################
   *     TRUE / FALSE
   ############################*/

@@ -586,24 +586,30 @@ function miseAJourMetadonneesVideo(
 	$promotion, 
 	$projet, 
 	$cadreur, 
-	$responsableSon
-) {
-    // Affichage de chaque valeur passée en paramètre
-    echo "ID: " . $idVid . "<br>";
-    echo "Professeur Référant: " . $profReferant . "<br>";
-    echo "Réalisateur: " . $realisateur . "<br>";
-    echo "Promotion: " . $promotion . "<br>";
-    echo "Projet: " . $projet . "<br>";
-    echo "Cadreur: " . $cadreur . "<br>";
-    echo "Responsable Son: " . $responsableSon . "<br>";
-
-	
-
+	$responsableSon){
 	assignerProfReferent($idVid, $profReferant);
 	assignerRealisateur($idVid, $realisateur);
 	assignerPromotion($idVid, $promotion);
 	assignerProjet($idVid, $projet);
 	assignerCadreur($idVid, $cadreur);
 	assignerResponsable($idVid, $responsableSon);
+}
+
+//récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
+function getMetadonneesEditorialesVideo($video){
+
+	$projet = getProjetIntitule($video["projet"]);
+	$nomPrenom = getProfNomPrenom($video["professeurReferent"]);
+	$eleve = getParticipants($video["id"]); 
+	
+	$meta = [
+		"projet" => $projet,
+		"professeur" => $nomPrenom[0],
+		"realisateur" => $eleve[0],
+		"cadreur" => $eleve[1],
+		"responsableSon" => $eleve[2]
+	];
+
+	return $meta;
 }
 ?>
