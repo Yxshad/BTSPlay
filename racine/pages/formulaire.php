@@ -8,60 +8,132 @@
     <link href="../ressources/Style/formulaire.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
+    <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
 <?php
-    require '../ressources/Templates/header.php';
-    require '../fonctions/fonctions.php';
-    require '../fonctions/ftp.php';
-    require '../ressources/constantes.php';
+    require_once '../ressources/Templates/header.php';
+    require_once '../fonctions/fonctions.php';
+    require_once '../fonctions/ftp.php';
+    require_once '../ressources/constantes.php';
+    require_once '../fonctions/modele.php';
+
+    // Récupération de l'URI NAS de la vidéo
+    if (isset($_GET['v'])) {
+        $id = $_GET['v'];
+    }
+
+    if (
+        isset($_POST["profReferant"]) ||
+        isset($_POST["realisateur"]) || 
+        isset($_POST["promotion"]) || 
+        isset($_POST["projet"]) || 
+        isset($_POST["cadreur"]) || 
+        isset($_POST["responsableSon"])
+    ) {
+
+        // Récupération des champs entrés dans le formulaire
+
+        $profReferant = $_POST["profReferant"];
+    
+        $realisateur = $_POST["realisateur"];
+    
+        $promotion = $_POST["promotion"];
+
+        $projet = $_POST["projet"];
+    
+    
+        $cadreur = $_POST["cadreur"];
+
+        $responsableSon = $_POST["responsableSon"];
+        
+
+        miseAJourMetadonneesVideo(
+            $id, 
+            $profReferant, 
+            $realisateur, 
+            $promotion, 
+            $projet, 
+            $cadreur, 
+            $responsableSon
+        );
+
+
+    }
+
+    $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
+    $video = $video[0];
+    $titre = substr($video["mtd_tech_titre"], 0, -4);
+
+    $listeMeta = getMetadonneesEditorialesVideo($video);
+
+    // Charge la miniature
+    $miniature = $titre . "_miniature.png";
+    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
+
+    $allProf = getAllProf();
 ?>
 
-
 <div class="container">
-
     <h1>Formulaire des métadonnées</h1>
 
     <div class="colonnes">
         <div class="colonne-1">
-            <div class='miniature'>
-                <img src=<?php  ?> alt='Miniature de la vidéo' class='imageMiniature'/>
+            <div class="img">
+                <img src="<?php echo $cheminMiniature; ?>" alt="Miniature de la vidéo" class="imageMiniature">
             </div>
-            <h2>Titre de la video</h2>
-            <p class="duree">duree : </p>
-            <p class="fps">image par secondes : </p>
-            <p class="resolution">résolution : </p>
-            <p class="format">format : </p>
+            <h2><?php echo $titre; ?></h2>
+            <p><strong>Durée :</strong> <?php echo $video['mtd_tech_duree']; ?></p>
+            <p><strong>Images par secondes :</strong> <?php echo $video['mtd_tech_fps']; ?></p>
+            <p><strong>Résolution :</strong> <?php echo $video['mtd_tech_resolution']; ?></p>
+            <p><strong>Format :</strong> <?php echo $video['mtd_tech_format']; ?></p>
         </div>
+
         <div class="colonne-2">
             <h2>Équipe</h2>
-            <div class="meta-editoriale">
-                Réalisteur : <input type="text">
-            </div>
-            <div class="meta-editoriale">
-                Cadreur : <input type="text">
-            </div>
-            <div class="meta-editoriale">
-                Acteur : <input type="text">
-            </div>
-            <div class="meta-editoriale">
-                Acteur 2     : <input type="text">
-            </div>
-            <hr>
-            <div class="promotion">
-                Promotion : <input type="text">
-            </div>
-            <hr>
-            <div class="projet">
-                Projet : <input type="text">
-            </div>
+            <form method="post" action="formulaire.php?v=<?php echo $id; ?>">
+                <div class="champ">
+                    <label for="profReferant" class="form-label">Professeur référant</label>
+                    <select id="profReferant" name="profReferant">
+                        <option value="<?php echo $listeMeta["professeur"]; ?>">Professeur actuel : <?php echo $listeMeta["professeur"]; ?></option>
+                        <?php foreach ($allProf as $prof) { ?>
+                            <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
+                        <?php } ?>
+                    </select>
+                </div>
+                <div class="champ">
+                    <label for="realisateur" class="form-label">Réalisateur</label>
+                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $listeMeta["realisateur"]; ?>">
+                    
+                </div>
+                <div class="champ">
+                    <label for="promotion">Promotion</label>
+                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $video["promotion"]; ?>">
+                </div>
+                <div class="champ">
+                    <label for="projet">Projet</label>
+                    <input type="text" id="projet" name="projet" placeholder="<?php echo $listeMeta["projet"]; ?>">
+                </div>
+                <div class="champ">
+                    <label for="cadreurNom">Cadreur</label>
+                    <div class="inputs">
+                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $listeMeta["cadreur"]; ?>">
+                    </div>
+                </div>
+                <div class="champ">
+                    <label for="responsableSon">Responsable son</label>
+                    <div class="inputs">
+                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $listeMeta["responsableSon"]; ?>">
+                    </div>
+                </div>
+                <button type="submit" class="btn">Confirmer</button> 
+            </form>
         </div>
     </div>
 
-    <div class="boutons">
-        <a href="#" class="annuler">Annuler</a>
-        <a href="#" class="confirmer">Confirmer</a>
+    <div class="btns">
+        <a href="video.php?v=<?php echo $id; ?>" class="btn">Annuler</a>
+        
     </div>
-
 </div>

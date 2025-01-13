@@ -149,6 +149,7 @@ function fusionnerVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
     $chemin_dossier_origine = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . '_parts';
     $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD;
+
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
@@ -167,6 +168,8 @@ function fusionnerVideo($video){
     $command = "ffmpeg -v verbose -f concat -safe 0 -i " . $fileListPath .
                " -c copy " . substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
+
+
     // On supprime le dossier qui contient les morceaux convertis
     $files = scandir($chemin_dossier_origine);
     foreach ($files as $file) {

@@ -1,4 +1,20 @@
 <?php
+if (isset($_POST["action"])) {
+
+	require_once "../ressources/constantes.php";
+	require_once "ftp.php";
+	require_once "ffmpeg.php";
+	require_once "modele.php";
+
+	if ($_POST["action"] == "scanDecoupe") {
+		header('Content-Type: application/json');
+		scan_decoupe(); 
+		exit();
+	}
+	if ($_POST["action"] == "lancerConvertion") {
+		fonctionTransfert();
+	}
+}
 
 /**
  * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le NAS MPEG
@@ -229,7 +245,6 @@ function afficherCollect($titre, $COLLECT_NAS) {
     echo "</table><br><br>";
 }
 
-
 /**
  * Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
@@ -249,7 +264,6 @@ function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
         return false;
     }
 }
-
 
 /**
  * Fonction qui vérifie la correspondance des noms des 2 vidéos passées en paramètre
@@ -443,6 +457,67 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 	}
 }
 
+/*
+* Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+* Ne prend aucun paramètre
+* Retourne une liste avec les noms des vidéos en train de se faire découper
+*/
+function scan_decoupe(){
+	$listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+	$listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
+
+	$listeVideoDownload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoDownload);
+	$listeVideoDecoupage = array_map(function($e) { return substr($e,0,-10); }, $listeVideoDecoupage);
+	$listeVideoConversion = array_map(function($e) { return substr($e,0,-10); }, $listeVideoConversion);
+	$listeVideoUpload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoUpload);
+
+	$listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
+
+	foreach ($listeVideo as $video) {
+		// #RISQUE : appel de base pour récupérer bdd
+		?>  <div class="ligne">
+				<div class="fleches">
+					<a class="fleche-haut">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+					<a class="fleche-bas">
+						<img src="../ressources/Images/arrow.png" alt="flèche">
+					</a>
+				</div>
+				<div class="imgVideo">
+					<img src="../ressources/Images/imgVideo.png" alt="">
+				</div>
+				<div class="info">
+					<p class="nomVideo"><?php echo $video; ?></p>
+					<p class="poidsVideo">20 go</p>
+				</div>
+				<div class="progress">
+					<?php
+					if (in_array($video, $listeVideoUpload)) {
+						echo "En cours d'upload";
+					} elseif (in_array($video, $listeVideoConversion)) {
+						echo "En cours de conversion";
+					} elseif (in_array($video, $listeVideoDecoupage)){
+						echo "En cours de découpe";
+					} else{
+						echo "En cours de téléchargement";
+					}
+					?>
+				</div>
+				<div class="bouton">
+					<a class="pause">
+						<img src="../ressources/Images/pause.png" alt="pause">
+					</a>
+				</div>
+			</div>
+			
+			<?php
+		
+	}
+}
+
 /**
  * Fonction qui permet de récupérer des URIS et titre de X vidéos situées dans le NAS MPEG
  * Prend en paramètre le nombre d'URIS et titres à récupérer
@@ -451,6 +526,10 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 function recupererURIEtTitreVideos(){
 	$tabURIsEtTitres = getUriNASetTitreMPEG();
 	return $tabURIsEtTitres;
+}
+
+function recupererURIEtTitreVideosEtId(){
+	return getUriNASetTitreMPEGEtId();
 }
 
 /**
@@ -483,4 +562,78 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 	exit();
 }
 
+/*
+*	Fonction qui retourne le titre de la vidéo
+*   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
+*/
+
+function recupererTitreVideo($nomFichier){
+	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
+	return $titre[1];
+}
+
+
+/*
+* Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo
+* Prend en paramètre l'id de la vidéo, le nom d'un réalisateur, l'année de la promotion, le nom du projet, 
+* le nom de l'acteur 1, le role de l'acteur 1, le nom de l'acteur 2 et le role de l'acteur 2
+*/
+
+function miseAJourMetadonneesVideo(
+    $idVid, 
+	$profReferant, 
+	$realisateur, 
+	$promotion, 
+	$projet, 
+	$cadreur, 
+	$responsableSon){
+
+	if (!$profReferant == "") {
+		assignerProfReferent($idVid, $profReferant);
+	}
+	if (!$realisateur == "") {
+		assignerRealisateur($idVid, $realisateur);
+	}
+	if (!$promotion == "") {
+		assignerPromotion($idVid, $promotion);
+	}
+	if (!$projet == "") {
+		assignerProjet($idVid, $projet);
+	}
+	if (!$cadreur == "") {
+		assignerCadreur($idVid, $cadreur);
+	}
+	if (!$responsableSon == "") {
+		assignerResponsable($idVid, $responsableSon);
+	}
+}
+
+//récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
+function getMetadonneesEditorialesVideo($video){
+
+	$projet = getProjetIntitule($video["projet"]);
+	$nomPrenom = getProfNomPrenom($video["professeurReferent"]);
+	$nomPrenom = implode(" ", $nomPrenom);
+	$eleve = getParticipants($video["id"]); 
+	
+	$meta = [
+		"projet" => $projet,
+		"professeur" => $nomPrenom,
+		"realisateur" => $eleve[0],
+		"cadreur" => $eleve[1],
+		"responsableSon" => $eleve[2]
+	];
+
+	return $meta;
+}
+
+function getAllProf(){
+	$allProf = fetchAll("SELECT nom, prenom FROM Professeur;");
+
+	$result = array_map(function($item) {
+		return $item['nom'] . " " . $item['prenom'];
+	}, $allProf);
+
+	return $result;
+}
 ?>

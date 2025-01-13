@@ -11,7 +11,9 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include '../ressources/Templates/header.php';?>
+<?php 
+include '../ressources/Templates/header.php';
+?>
 
 <div class="container">
     <div class="colonnes">
@@ -19,33 +21,7 @@
             <h1>Transferts</h1>
             <div class="transferts">
                 <div class="lignes">
-                    <?php for ($i=0; $i < 5; $i++) { ?>
-                        <div class="ligne">
-                            <div class="fleches">
-                                <a href="" class="fleche-haut">
-                                    <img src="../ressources/Images/arrow.png" alt="flèche">
-                                </a>
-                                <a href="" class="fleche-bas">
-                                    <img src="../ressources/Images/arrow.png" alt="flèche">
-                                </a>
-                            </div>
-                            <div class="imgVideo">
-                                <img src="../ressources/Images/imgVideo.png" alt="">
-                            </div>
-                            <div class="info">
-                                <p class="nomVideo">video.mpeg</p>
-                                <p class="poidsVideo">20 go</p>
-                            </div>
-                            <div class="progress-bar">
-                                <div class="progress"></div>
-                            </div>
-                            <div class="bouton">
-                                <a href="#" class="pause">
-                                    <img src="../ressources/Images/pause.png" alt="pause">
-                                </a>
-                            </div>
-                        </div>
-                    <?php } ?>
+                    <!-- Résultat ajax -->
                 </div>
                 <div class="commande">
                     <p>Commande de conversion</p>
@@ -77,3 +53,34 @@
         </div>
     </div>
 </div>
+
+<script>
+function lancerConvertion() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/fonctions.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=lancerConvertion");
+}
+
+function ajax() {
+  const xhttp = new XMLHttpRequest();
+  xhttp.onload = function() {
+    document.querySelector('.transferts .lignes').innerHTML = this.responseText;
+  }
+  xhttp.open("POST", "../fonctions/fonctions.php");
+  
+  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  xhttp.send("action=scanDecoupe");
+}
+
+ajax();
+
+setInterval( ajax , 5000);
+
+</script>
