@@ -690,7 +690,7 @@ function getProjetIntitule($idProjet){
         $requeteProjet->execute([$idProjet]);
         $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
         $connexion = null;
-        return $projet["intitule"];
+        return $projet ? $projet["intitule"] : "";
     }
     catch(Exception $e)
     {
@@ -709,7 +709,7 @@ function getProfNomPrenom($identifiant)
        $requeteProf->execute([$identifiant]);
        $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
-       return [$profCherche['nom'], $profCherche['prenom']];
+       return $profCherche ? [$profCherche['nom'], $profCherche['prenom']] : ["", ""];
    }
    catch(Exception $e)
    {
@@ -739,7 +739,13 @@ function getParticipants($idVid) {
     // Fermeture de la connexion
     $connexion = null;
 
-    return [$realisateur[0]["nomComplet"], $cadreur[0]["nomComplet"], $son[0]["nomComplet"]];
+    // #RISQUE traitement des variables si plusieurs personnes ont le même rôle
+
+    return [
+        $realisateur ? $realisateur[0]["nomComplet"] : "",
+        $cadreur ? $cadreur[0]["nomComplet"] : "",
+        $son ? $son[0]["nomComplet"] : ""
+    ];
 }
 
 

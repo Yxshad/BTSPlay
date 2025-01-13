@@ -626,4 +626,14 @@ function getMetadonneesEditorialesVideo($video){
 
 	return $meta;
 }
+
+function getAllProf(){
+	$allProf = fetchAll("SELECT nom, prenom FROM Professeur;");
+
+	$result = array_map(function($item) {
+		return $item['nom'] . " " . $item['prenom'];
+	}, $allProf);
+
+	return $result;
+}
 ?>

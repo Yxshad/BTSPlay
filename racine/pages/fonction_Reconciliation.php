@@ -21,6 +21,7 @@
 
 <!-- Formulaire pour choisir les NAS -->
 <form method="post">
+	<input type="hidden" value="declencherReconciliation">
     <button type="submit" name="declencherReconciliation">Réconciliation</button>
 	<br> <br>
 </form>
@@ -28,86 +29,38 @@
 </html>
 
 <?php
-
-include_once '../fonctions/fonctions.php';
-include_once '../fonctions/ftp.php';
-require_once '../ressources/constantes.php';
-include_once '../fonctions/ffmpeg.php';
+    require '../fonctions/fonctions.php';
+    require '../fonctions/ftp.php';
+    require '../ressources/constantes.php';
+    require '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherReconciliation'])) {
-    if (isset($_POST['NAS_choisi_1']) && isset($_POST['NAS_choisi_2'])) {
-        $NASChoisi1 = $_POST['NAS_choisi_1'];
-        $NASChoisi2 = $_POST['NAS_choisi_2'];
-
-        // Lancer la réconciliation entre les NAS sélectionnés
-        reconciliation($NASChoisi1, $NASChoisi2);
-    }
+    fonctionReconciliationAffichee();
 }
 
-function reconciliation($NASChoisi1, $NASChoisi2) {
-	// Algorithme qui vérifie la présence des vidéos dans les 2 NAS.
-	// Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
+function fonctionReconciliationAffichee() {
+    // Algorithme qui vérifie la présence des vidéos dans les 2 NAS.
+    // Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
 
-	// #RISQUE : Incomprehension sur les spec de la fonction de réconciliation
+    $listeVideos_NAS_1 = [];
+    $listeVideos_NAS_2 = [];
+    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideos_NAS_1);
+    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideos_NAS_2);
 
-	// SelectALL en BD pour récupérer tous les noms des vidéos -- Dans les faits on les récupère dans les NAS
-	$listeVideos_NAS_1 = [];
-	$listeVideos_NAS_2 = [];
+    echo "<h2>Vidéos présentes sur " .NAS_PAD.": </h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
 
-	// Initialisation des paramètres du NAS 1
-	switch ($NASChoisi1) {
-		case "NAS_PAD":
-			$server_1 = NAS_PAD;
-			$nomNAS_1 = NAS_PAD;
-			$login_1 = LOGIN_NAS_PAD;
-			$password_1 = PASSWORD_NAS_PAD;
-			$URI_1 = URI_RACINE_NAS_PAD;
-			break;
-		case "NAS_ARCH":
-			$server_1 = NAS_ARCH;
-			$nomNAS_1 = NAS_ARCH;
-			$login_1 = LOGIN_NAS_ARCH;
-			$password_1 = PASSWORD_NAS_ARCH;
-			$URI_1 = URI_RACINE_NAS_ARCH;
-			break;
-	}
+    echo "<h2>Vidéos présentes sur " .NAS_ARCH.": </h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
 
-	// Initialisation des paramètres du NAS 2
-	switch ($NASChoisi2) {
-		case "NAS_PAD":
-			$server_2 = NAS_PAD;
-			$nomNAS_2 = NAS_PAD;
-			$login_2 = LOGIN_NAS_PAD;
-			$password_2 = PASSWORD_NAS_PAD;
-			$URI_2 = URI_RACINE_NAS_PAD;
-			break;
-		case "NAS_ARCH":
-			$server_2 = NAS_ARCH;
-			$nomNAS_2 = NAS_ARCH;
-			$login_2 = LOGIN_NAS_ARCH;
-			$password_2 = PASSWORD_NAS_ARCH;
-			$URI_2 = URI_RACINE_NAS_ARCH;
-			break;
-	}
+    $listeVideosManquantes = [];
+    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosManquantes);
 
-	$listeVideos_NAS_1 = recupererNomsVideosNAS($server_1, $login_1, $password_1, $URI_1, $listeVideos_NAS_1);
-	$listeVideos_NAS_2 = recupererNomsVideosNAS($server_2, $login_2, $password_2, $URI_2, $listeVideos_NAS_2);
+    afficherVideosManquantes($listeVideosManquantes);
 
-	echo "<h2>Vidéos présentes sur " .$nomNAS_1.": </h2>";
-	echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
 
-	echo "<h2>Vidéos présentes sur " .$nomNAS_2.": </h2>";
-	echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
-
-	$listeVideosManquantes = [];
-	$listeVideosManquantes = trouverVideosManquantes($nomNAS_1, $nomNAS_2, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosManquantes);
-
-	afficherVideosManquantes($listeVideosManquantes);
+    require '../ressources/Templates/footer.php';
 }
-
-	ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
-
-	require '../ressources/Templates/footer.php';
-
 
 ?>

@@ -1,124 +1,46 @@
-[2025-01-11 04:53:21] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:53:21] FAIL : Échec du téléchargement du fichier //./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4.
-[2025-01-11 04:54:09] SUCCESS : Connexion réussie pour l'utilisateur user1.
-[2025-01-11 04:54:09] SUCCESS : Connexion réussie pour l'utilisateur user2.
-[2025-01-11 04:54:09] SUCCESS : Connexion réussie pour l'utilisateur user2.
-[2025-01-11 04:54:11] SUCCESS : Fichier ./23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
-[2025-01-11 04:54:16] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:54:16] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:54:17] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
-[2025-01-11 04:54:17] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:54:17] SUCCESS : Fonction de transfert effectuée avec succès.
-[2025-01-11 04:54:19] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:54:19] SUCCESS : Fichier /./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur_miniature.png téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png.
-[2025-01-11 04:54:35] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:54:36] SUCCESS : Fichier //./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4.
-[2025-01-11 04:55:04] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 04:55:04] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 05:04:06] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 05:04:06] SUCCESS : Fichier /./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur_miniature.png téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png.
-[2025-01-11 05:04:07] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 05:04:07] SUCCESS : Fichier //./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4.
-[2025-01-11 07:01:28] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 07:01:28] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 07:01:31] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 07:01:31] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 11:27:24] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 11:27:24] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 11:27:25] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 11:27:25] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 16:22:38] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:22:38] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 16:23:18] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:23:18] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 16:25:58] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:25:58] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 16:25:59] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:25:59] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 16:26:05] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:26:05] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 16:26:06] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:26:06] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-11 16:26:09] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:26:09] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-11 16:26:10] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-11 16:26:10] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 10:48:40] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 10:48:40] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 10:49:09] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 10:49:09] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:40:09] SUCCESS : Connexion réussie pour l'utilisateur user1.
-[2025-01-12 13:40:09] SUCCESS : Connexion réussie pour l'utilisateur user2.
-[2025-01-12 13:40:10] SUCCESS : Connexion réussie pour l'utilisateur user2.
-[2025-01-12 13:40:12] SUCCESS : Fichier ./23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
-[2025-01-12 13:40:17] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:40:17] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:40:18] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
-[2025-01-12 13:40:18] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:40:18] SUCCESS : Fonction de transfert effectuée avec succès.
-[2025-01-12 13:40:20] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:40:20] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:40:27] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:40:27] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:46:28] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:46:28] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:46:29] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:46:29] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:50:47] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:50:47] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:50:48] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:50:48] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:51:13] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:51:13] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:51:14] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:51:14] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:56:03] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:56:03] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 13:57:07] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:57:07] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:57:08] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:57:08] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 13:57:09] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 13:57:09] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 14:16:22] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 14:16:22] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 14:16:23] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 14:16:23] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 14:36:56] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 14:36:56] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 14:36:56] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 14:36:57] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 15:40:37] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 15:40:37] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 15:40:38] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 15:40:38] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-12 19:07:24] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 19:07:24] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-12 19:07:26] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-12 19:07:26] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 09:57:37] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 09:57:37] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
-[2025-01-13 09:57:47] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 09:57:47] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:29:17] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:29:17] SUCCESS : Fichier /./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur_miniature.png téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png.
-[2025-01-13 10:29:23] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:29:23] SUCCESS : Fichier //./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 téléchargé avec succès dans ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4.
-[2025-01-13 10:29:52] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:29:52] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:34:03] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:34:03] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:46:08] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:46:08] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:46:11] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:46:11] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:47:08] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:47:08] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 10:59:59] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 10:59:59] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 11:06:45] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 11:06:45] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 11:06:56] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 11:06:56] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
-[2025-01-13 11:11:14] SUCCESS : Connexion réussie pour l'utilisateur user3.
-[2025-01-13 11:11:14] INFO : Le fichier ../videos/videosALire//./_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mp4 existe déjà. Téléchargement ignoré.
+[2025-01-13 20:50:08] SUCCESS : Connexion réussie pour l'utilisateur user1.
+[2025-01-13 20:50:08] SUCCESS : Connexion réussie pour l'utilisateur user2.
+[2025-01-13 20:50:09] SUCCESS : Connexion réussie pour l'utilisateur user2.
+[2025-01-13 20:50:09] SUCCESS : Fichier 2024/23_6h_JIN_PUB_OUT.mp4 téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_PUB_OUT.mp4.
+[2025-01-13 20:50:11] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:11] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:11] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_PUB_OUT.mp4 générée avec succès.
+[2025-01-13 20:50:12] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:12] SUCCESS : Connexion réussie pour l'utilisateur user1.
+[2025-01-13 20:50:14] SUCCESS : Fichier 2023/23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
+[2025-01-13 20:50:19] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:19] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:20] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-01-13 20:50:20] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:20] SUCCESS : Connexion réussie pour l'utilisateur user2.
+[2025-01-13 20:50:20] SUCCESS : Fichier 2023/23_6h_JIN_PUB_IN.mp4 téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_PUB_IN.mp4.
+[2025-01-13 20:50:22] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:23] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:23] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_PUB_IN.mp4 générée avec succès.
+[2025-01-13 20:50:23] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:23] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-01-13 20:50:36] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:36] SUCCESS : Fichier /2024/_BTSPLAY_23_6h_JIN_PUB_OUT/23_6h_JIN_PUB_OUT_miniature.png téléchargé avec succès dans ../videos/videosALire//2024/_BTSPLAY_23_6h_JIN_PUB_OUT//23_6h_JIN_PUB_OUT_miniature.png.
+[2025-01-13 20:50:36] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:36] SUCCESS : Fichier /2023/_BTSPLAY_23_6h_JIN_Fermetur/23_6h_JIN_Fermetur_miniature.png téléchargé avec succès dans ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png.
+[2025-01-13 20:50:36] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:50:36] SUCCESS : Fichier /2023/_BTSPLAY_23_6h_JIN_PUB_IN/23_6h_JIN_PUB_IN_miniature.png téléchargé avec succès dans ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_PUB_IN//23_6h_JIN_PUB_IN_miniature.png.
+[2025-01-13 20:51:00] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:51:00] SUCCESS : Fichier //2024/_BTSPLAY_23_6h_JIN_PUB_OUT/23_6h_JIN_PUB_OUT.mp4 téléchargé avec succès dans ../videos/videosALire//2024/_BTSPLAY_23_6h_JIN_PUB_OUT/23_6h_JIN_PUB_OUT.mp4.
+[2025-01-13 20:51:33] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:51:33] INFO : Le fichier ../videos/videosALire//2024/_BTSPLAY_23_6h_JIN_PUB_OUT/23_6h_JIN_PUB_OUT.mp4 existe déjà. Téléchargement ignoré.
+[2025-01-13 20:51:55] SUCCESS : Connexion réussie pour l'utilisateur user1.
+[2025-01-13 20:51:55] SUCCESS : Connexion réussie pour l'utilisateur user2.
+[2025-01-13 20:51:55] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-01-13 20:52:06] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:06] INFO : Le fichier ../videos/videosALire//2024/_BTSPLAY_23_6h_JIN_PUB_OUT//23_6h_JIN_PUB_OUT_miniature.png existe déjà. Téléchargement ignoré.
+[2025-01-13 20:52:06] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:06] INFO : Le fichier ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
+[2025-01-13 20:52:06] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:06] INFO : Le fichier ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_PUB_IN//23_6h_JIN_PUB_IN_miniature.png existe déjà. Téléchargement ignoré.
+[2025-01-13 20:52:20] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:20] INFO : Le fichier ../videos/videosALire//2024/_BTSPLAY_23_6h_JIN_PUB_OUT//23_6h_JIN_PUB_OUT_miniature.png existe déjà. Téléchargement ignoré.
+[2025-01-13 20:52:20] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:20] INFO : Le fichier ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_Fermetur//23_6h_JIN_Fermetur_miniature.png existe déjà. Téléchargement ignoré.
+[2025-01-13 20:52:20] SUCCESS : Connexion réussie pour l'utilisateur user3.
+[2025-01-13 20:52:20] INFO : Le fichier ../videos/videosALire//2023/_BTSPLAY_23_6h_JIN_PUB_IN//23_6h_JIN_PUB_IN_miniature.png existe déjà. Téléchargement ignoré.

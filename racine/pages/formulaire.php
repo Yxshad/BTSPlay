@@ -71,6 +71,8 @@
     // Charge la miniature
     $miniature = $titre . "_miniature.png";
     $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
+
+    $allProf = getAllProf();
 ?>
 
 <div class="container">
@@ -93,7 +95,12 @@
             <form method="post" action="formulaire.php?v=<?php echo $id; ?>">
                 <div class="champ">
                     <label for="profReferant" class="form-label">Professeur référant</label>
-                    <input type="text" id="profReferant" name="profReferant" placeholder="<?php echo $listeMeta["professeur"]; ?>">
+                    <select id="profReferant" name="profReferant">
+                        <option value="<?php echo $listeMeta["professeur"]; ?>">Professeur actuel : <?php echo $listeMeta["professeur"]; ?></option>
+                        <?php foreach ($allProf as $prof) { ?>
+                            <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
+                        <?php } ?>
+                    </select>
                 </div>
                 <div class="champ">
                     <label for="realisateur" class="form-label">Réalisateur</label>
