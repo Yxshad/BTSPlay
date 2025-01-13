@@ -250,49 +250,45 @@ function insertionEleve($eleve)
         $profNom = substr($prof, 0, $lastSpacePos);  
         $profPrenom = substr($prof, $lastSpacePos + 1);  
 
-        echo $profNom;
-        echo $profPrenom;
-    }
+        $connexion = connexionBD(); // Connexion à la BD
+        try {
+            $idProf = getProfId($profNom, $profPrenom);
 
-    $connexion = connexionBD(); // Connexion à la BD
-    try {
-        $idProf = getProfId($profNom, $profPrenom);
-        echo $idProf;
+            if(!$idProf)
+            {
+                $setIDProf = $connexion->prepare('UPDATE media 
+                SET professeurReferent = NULL
+                WHERE id = ?');
 
-        if(!$idProf)
-        {
+                // Exécution de la mise à jour
+                $setIDProf->execute([
+                $idVideo
+                ]);
+                $connexion = null;
+            }
+            else {
+                // Mettre à jour la table `media` avec l'ID du professeur
             $setIDProf = $connexion->prepare('UPDATE media 
-            SET professeurReferent = NULL
+            SET professeurReferent = ?
             WHERE id = ?');
 
             // Exécution de la mise à jour
             $setIDProf->execute([
+            $idProf, // Utilisation de l'ID du professeur récupéré
             $idVideo
             ]);
+
+            // Commit de la transaction
+            $connexion->commit();
+            $connexion = null;
+            }
+        } catch (Exception $e) {
+            // Gestion des erreurs
+            if ($connexion) {
+                $connexion->rollback(); // Annule la transaction en cas d'erreur
+            }
             $connexion = null;
         }
-        else {
-            // Mettre à jour la table `media` avec l'ID du professeur
-        $setIDProf = $connexion->prepare('UPDATE media 
-        SET professeurReferent = ?
-        WHERE id = ?');
-
-        // Exécution de la mise à jour
-        $setIDProf->execute([
-        $idProf, // Utilisation de l'ID du professeur récupéré
-        $idVideo
-        ]);
-
-        // Commit de la transaction
-        $connexion->commit();
-        $connexion = null;
-        }
-    } catch (Exception $e) {
-        // Gestion des erreurs
-        if ($connexion) {
-            $connexion->rollback(); // Annule la transaction en cas d'erreur
-        }
-        $connexion = null;
     }
 }
 

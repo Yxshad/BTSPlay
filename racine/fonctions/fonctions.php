@@ -587,12 +587,25 @@ function miseAJourMetadonneesVideo(
 	$projet, 
 	$cadreur, 
 	$responsableSon){
-	assignerProfReferent($idVid, $profReferant);
-	assignerRealisateur($idVid, $realisateur);
-	assignerPromotion($idVid, $promotion);
-	assignerProjet($idVid, $projet);
-	assignerCadreur($idVid, $cadreur);
-	assignerResponsable($idVid, $responsableSon);
+
+	if (!$profReferant == "") {
+		assignerProfReferent($idVid, $profReferant);
+	}
+	if (!$realisateur == "") {
+		assignerRealisateur($idVid, $realisateur);
+	}
+	if (!$promotion == "") {
+		assignerPromotion($idVid, $promotion);
+	}
+	if (!$projet == "") {
+		assignerProjet($idVid, $projet);
+	}
+	if (!$cadreur == "") {
+		assignerCadreur($idVid, $cadreur);
+	}
+	if (!$responsableSon == "") {
+		assignerResponsable($idVid, $responsableSon);
+	}
 }
 
 //récupère toutes les metadonneesEditoriales de la vidéo à partir de son id

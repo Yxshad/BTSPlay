@@ -43,6 +43,9 @@
 
     //prépare titre
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
+
+    //prépare metadonnées editoriales
+    $meta = getMetadonneesEditorialesVideo($video);
 ?>
 <div class="container">
     <div class="lecteurVideo">
@@ -55,11 +58,38 @@
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $video["Description"]; ?></p>
-            <p class="meta"><?php echo $video["mtd_tech_fps"]; ?> fps, <?php echo $video["mtd_tech_resolution"]; ?>, <?php echo $video["mtd_tech_format"]; ?>, <?php echo $video["mtd_tech_duree"]; ?></p>
+            <p class="meta">
+                <strong>Durée : </strong><?php echo $video["mtd_tech_duree"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Image par secondes : </strong><?php echo $video["mtd_tech_fps"]; ?> fps
+            </p>
+            <p class="meta">
+                <strong>Résolution : </strong><?php echo $video["mtd_tech_resolution"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Format : </strong><?php echo $video["mtd_tech_format"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Projet : </strong><?php echo $meta["projet"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Professeur : </strong><?php echo $meta["professeur"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Réalisateur : </strong><?php echo $meta["realisateur"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Cadreur : </strong><?php echo $meta["cadreur"]; ?>
+            </p>
+            <p class="meta">
+                <strong>Responsable Son : </strong><?php echo $meta["responsableSon"]; ?>
+            </p>
+            
            
         </div>
         <div class="colonne-2">
-            <a href="./bamboulo.mp4" download="bamboulo.mp4" class="btnVideo">
+            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $video["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>
