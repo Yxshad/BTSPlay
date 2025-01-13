@@ -600,11 +600,12 @@ function getMetadonneesEditorialesVideo($video){
 
 	$projet = getProjetIntitule($video["projet"]);
 	$nomPrenom = getProfNomPrenom($video["professeurReferent"]);
+	$nomPrenom = implode(" ", $nomPrenom);
 	$eleve = getParticipants($video["id"]); 
 	
 	$meta = [
 		"projet" => $projet,
-		"professeur" => $nomPrenom[0],
+		"professeur" => $nomPrenom,
 		"realisateur" => $eleve[0],
 		"cadreur" => $eleve[1],
 		"responsableSon" => $eleve[2]
