@@ -672,7 +672,7 @@ function getProfId($profNom, $profPrenom)
        $requeteProf->execute([$profNom, $profPrenom]);
        $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
-       return $profCherche['identifiant'];
+       return $profCherche['identifiant'] ?? null;
    }
    catch(Exception $e)
    {

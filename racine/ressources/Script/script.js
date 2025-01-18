@@ -152,7 +152,7 @@ function lancerConversion() {
     xhttp.onload = function() {
         console.log(this.responseText);
     }
-    xhttp.open("POST", "../fonctions/fonctions.php");
+    xhttp.open("POST", "../fonctions/controleur.php");
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
@@ -164,7 +164,7 @@ function scanDossierDecoupeVideo() {
     xhttp.onload = function() {
       document.querySelector('.transferts .lignes').innerHTML = this.responseText;
     }
-    xhttp.open("POST", "../fonctions/fonctions.php");
+    xhttp.open("POST", "../fonctions/controleur.php");
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=scanDossierDecoupeVideo");
