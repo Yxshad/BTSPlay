@@ -6,12 +6,12 @@ if (isset($_POST["action"])) {
 	require_once "ffmpeg.php";
 	require_once "modele.php";
 
-	if ($_POST["action"] == "scanDecoupe") {
+	if ($_POST["action"] == "scanDossierDecoupeVideo") {
 		header('Content-Type: application/json');
-		scan_decoupe(); 
+		scanDossierDecoupeVideo(); 
 		exit();
 	}
-	if ($_POST["action"] == "lancerConvertion") {
+	if ($_POST["action"] == "lancerConversion") {
 		fonctionTransfert();
 	}
 }
@@ -481,7 +481,7 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 * Ne prend aucun paramètre
 * Retourne une liste avec les noms des vidéos en train de se faire découper
 */
-function scan_decoupe(){
+function scanDossierDecoupeVideo(){
 	$listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
 	$listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
 	$listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
