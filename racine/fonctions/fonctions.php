@@ -61,17 +61,11 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 		if ($nom_fichier !== '.' && $nom_fichier !== '..'
 			&& ($extension == 'mxf' || $extension == 'mp4')) {
 
+			//Chemin distant
+			$cheminFichier = dirname($fichier) . '/';
+
 			// Si le fichier n'est pas présent en base
-			if (!fichierEnBase($nom_fichier)) {
-
-				//Chemin distant
-				$cheminFichier = dirname($fichier) . '/';
-
-				//RECUPERATION VIA TELECHARGEMENT FTP --ABANDONNE CAR BESOIN DE TELECHARGER LA VIDEO
-				/*$fichierDesination = $URI_VIDEOS_A_ANALYSER . '/' . $nom_fichier;
-				telechargerFichier($conn_id, $fichierDesination, $fichier);
-				$listeMetadonneesVideos = recupererMetadonneesViaVideoLocale($nom_fichier, $URI_VIDEOS_A_ANALYSER);
-				unlink($fichierDesination);*/
+			if (!verifierFichierPresentEnBase($URI_NAS_RACINE.$cheminFichier, $nom_fichier, $extension)) {
 
 				//RECUPERATION VIA LECTURE FTP
 				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nom_fichier);
@@ -446,10 +440,35 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
     }
 }
 
+/**
+ * Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_NAS_MPEG)
+ * Prend en paramètre le chemin du fichier et son nom
+ * Retourne true si le fichier est présent, false sinon
+ */
+function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 
-function fichierEnBase($fichier){
-	return false;
+	$cheminFichierNAS_MPEG = trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier);
+
+	// Forcer l'extension à .mp4
+	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$nomFichier = $nomFichierSansExtension . '.mp4';
+
+	$videoPresente = verifierPresenceVideoNAS_MPEG($cheminFichierNAS_MPEG, $nomFichier);
+
+	return $videoPresente;
 }
+
+/**
+ * Fonction qui permet de récupérer le chemin d'un fichier dans le NAS MPEG à partir du chemin dans un autre NAS
+ * prend en paramètre le chemin d'un fichier situé dans le NAS PAD ou ARCH
+ * Retourne le chemin du fichier dans le NAS MPEG
+ */
+function trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier){
+	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$cheminFichierNAS_MPEG = $cheminFichier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+	return $cheminFichierNAS_MPEG;
+}
+
 
 function insertionCollect_MPEG($COLLECT_MPEG){
 	foreach($COLLECT_MPEG as $ligneMetadonneesTechniques){

@@ -847,4 +847,30 @@ function fetchAll($sql){
     }
 }
 
+/**
+ * verifierPresenceVideoNAS_MPEG
+ * renvoie 1 si une vidéo existe
+ * $cheminFichier : chemin NAS MPEG de la vidéo
+ * $nomFichier : nom du fichier
+ */
+function verifierPresenceVideoNAS_MPEG($cheminFichier, $nomFichier)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT 1
+   FROM Media
+   WHERE URI_NAS_MPEG = ?
+   AND mtd_tech_titre = ?');                                                 
+   try{
+       $requeteVid->execute([$cheminFichier, $nomFichier]);
+       $vidPresente = $requeteVid->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return (bool)$vidPresente;
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
 ?>
