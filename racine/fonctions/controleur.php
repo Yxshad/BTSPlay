@@ -18,6 +18,34 @@ if (isset($_POST["action"])) {
     }
 }
 
+/**
+ * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le NAS MPEG
+ * Prend en paramètre le nombre d'URIS et titres à récupérer
+ * Retourne un tableau d'URIS/titres/id et cheminMiniature
+ */
+function recupererURIEtTitreVideosEtId() {
+    $tabURIS = getUriNASetTitreMPEGEtId(10);
+    $videos = [];
+    if (!$tabURIS) {
+        return $videos;
+    }
+    foreach ($tabURIS as $video) {
+        $id = $video['id'];
+        $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
+        $titre = $video['mtd_tech_titre'];
+        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+        $titreSansExtension = pathinfo($titre, PATHINFO_FILENAME);
+
+        $videos[] = [
+            'id' => $id,
+            'uriNAS' => $uriNAS,
+            'titre' => $titreSansExtension,
+            'cheminMiniature' => $cheminLocalComplet
+        ];
+    }
+    return $videos;
+}
+
 function controleurRecupererInfosVideo() {
     // Vérifie si le paramètre 'v' est présent dans l'URL
     if (!isset($_GET['v']) || empty($_GET['v']) || !is_numeric($_GET['v'])) {

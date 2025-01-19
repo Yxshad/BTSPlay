@@ -528,20 +528,6 @@ function scanDossierDecoupeVideo(){
 }
 
 /**
- * Fonction qui permet de récupérer des URIS et titre de X vidéos situées dans le NAS MPEG
- * Prend en paramètre le nombre d'URIS et titres à récupérer
- * Retourne un tableau d'URIS
- */
-function recupererURIEtTitreVideos(){
-	$tabURIsEtTitres = getUriNASetTitreMPEG();
-	return $tabURIsEtTitres;
-}
-
-function recupererURIEtTitreVideosEtId(){
-	return getUriNASetTitreMPEGEtId();
-}
-
-/**
  * Fonction qui permet de charger une miniature dans l'espace local
  * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
  * 	pour laquelle trouver l'URI et les logins FTP

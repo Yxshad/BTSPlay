@@ -628,16 +628,22 @@ function getUriNASetTitreMPEG() {
     }
 }
 
-function getUriNASetTitreMPEGEtId() {
+function getUriNASetTitreMPEGEtId($nbMaxVideo) {
     try {
+        ajouterLog(LOG_CRITICAL, "$nbMaxVideo");
         // Connexion à la base de données
         $connexion = connexionBD();
+       
         // Préparation de la requête
-        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media');
+        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media LIMIT :nbVideo');
+        $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
+        
         // Exécution de la requête
         $requeteVid->execute();
+
         // Récupérer toutes les lignes sous forme de tableau associatif
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+
         // Fermer la connexion
         $connexion = null;
         // Vérifier si des résultats existent
@@ -647,6 +653,7 @@ function getUriNASetTitreMPEGEtId() {
             return false; // Aucun résultat trouvé
         }
     } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
         // Gestion des erreurs
         if ($connexion) {
             $connexion->rollback(); // Annule toute transaction si nécessaire
