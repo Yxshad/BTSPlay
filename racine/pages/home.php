@@ -63,7 +63,7 @@ session_start();
                     for ($i=0; $i < $nbVideosARecuperer; $i++) {
 
                         $id = $tabURIS[$i]['id'];
-                        $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
+                        $uriNAS = URI_RACINE_NAS_MPEG . $tabURIS[$i]['URI_NAS_MPEG'];
                         $titre = $tabURIS[$i]['mtd_tech_titre'];
                         $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
                         $titre = pathinfo($titre, PATHINFO_FILENAME); 

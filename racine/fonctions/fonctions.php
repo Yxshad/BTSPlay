@@ -158,7 +158,7 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
 
 		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminDestination = URI_RACINE_NAS_MPEG .$URI_NAS;
+		$cheminDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
 		$fichierDestination = $video[MTD_TITRE];
 
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
@@ -182,6 +182,11 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
 		//Ajouter l'URI du NAS MPEG à $video dans collectMPEG
+
+		//On retire la racine du NAS MPEG
+		if (strpos($dossierVideo, URI_RACINE_NAS_MPEG) == 0) {
+			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_NAS_MPEG));
+		}
 		$video[MTD_URI_NAS_MPEG] = $dossierVideo;
 	}
 
