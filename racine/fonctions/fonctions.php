@@ -570,7 +570,6 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 *	Fonction qui retourne le titre de la vidéo
 *   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
 */
-
 function recupererTitreVideo($nomFichier){
 	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
 	return $titre[1];

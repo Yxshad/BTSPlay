@@ -1,50 +1,22 @@
-<?php session_start();
+<?php 
+    session_start();
 
-    require_once '../fonctions/fonctions.php';
-    require_once '../fonctions/ftp.php';
-    require_once '../ressources/constantes.php';
-    require_once '../fonctions/ffmpeg.php';
-    require_once '../fonctions/modele.php';
-
-    //Récupération de l'URI NAS de la vidéo
-    if (isset($_GET['v'])) {
-        $id = $_GET['v'];
-    }
-    else{
-        header('Location: erreur.php?code=404');
-        exit();
-    }
-    
-    $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
-    if($video == null){
-        header('Location: erreur.php');
-        exit();
-    }
-    $video = $video[0];
-    $nomFichier = $video["mtd_tech_titre"];
-    
-    //charge la minitature
-    $miniature = $nomFichier . "_miniature.png";
-    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
-
-    //prépare la video
-    $cheminLocal = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
-    $cheminDistant = URI_RACINE_NAS_MPEG . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"]; 
-    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
-    ftp_close($conn_id);
-
-    //prépare titre
-    $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
-
-    //prépare metadonnées editoriales
-    $meta = getMetadonneesEditorialesVideo($video);
+    require_once '../fonctions/controleur.php';
+    $infosVideo = controleurRecupererInfosVideo();
+    $idVideo = $infosVideo["idVideo"];
+    $mtdTech = $infosVideo["video"];
+    $nomFichier = $infosVideo["nomFichier"];
+    $cheminMiniature = $infosVideo["cheminMiniature"];
+    $cheminLocal = $infosVideo["cheminLocal"];
+    $titreVideo = $infosVideo["titreVideo"];
+    $meta = $infosVideo["meta"];
 ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
@@ -68,18 +40,18 @@
     <h2><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
         <div class="colonne-1">
-            <p class="description"><?php echo $video["Description"]; ?></p>
+            <p class="description"><?php echo $mtdTech["Description"]; ?></p>
             <p class="meta">
-                <strong>Durée : </strong><?php echo $video["mtd_tech_duree"]; ?>
+                <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
             </p>
             <p class="meta">
-                <strong>Image par secondes : </strong><?php echo $video["mtd_tech_fps"]; ?> fps
+                <strong>Image par secondes : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps
             </p>
             <p class="meta">
-                <strong>Résolution : </strong><?php echo $video["mtd_tech_resolution"]; ?>
+                <strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?>
             </p>
             <p class="meta">
-                <strong>Format : </strong><?php echo $video["mtd_tech_format"]; ?>
+                <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
             </p>
             <p class="meta">
                 <strong>Projet : </strong><?php echo $meta["projet"]; ?>
@@ -97,7 +69,6 @@
                 <strong>Responsable Son : </strong><?php echo $meta["responsableSon"]; ?>
             </p>
             
-           
         </div>
         <div class="colonne-2">
             <a href="<?php echo $cheminLocal; ?>" download="<?php echo $video["mtd_tech_titre"]; ?>" class="btnVideo">
@@ -112,7 +83,7 @@
                 </div>
                 <p>Diffuser</p>
             </a>
-            <a href="formulaire.php?v=<?php echo $id; ?>" class="btnVideo">
+            <a href="formulaire.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
                 </div>

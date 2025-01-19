@@ -11,6 +11,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
