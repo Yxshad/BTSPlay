@@ -4,6 +4,8 @@ session_start();
  if(isset($_POST["username"])){
     $_SESSION["username"] = $_POST["username"];
 }
+require_once '../fonctions/controleur.php';
+$tabVideos = recupererURIEtTitreVideosEtId();
 
 ?>
 <!DOCTYPE html>
@@ -11,6 +13,7 @@ session_start();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
@@ -21,10 +24,6 @@ session_start();
     
 <?php
     require '../ressources/Templates/header.php';
-    require_once '../fonctions/fonctions.php';
-    require_once '../fonctions/ftp.php';
-    require_once '../ressources/constantes.php';
-    require_once '../fonctions/modele.php';
 ?>
 
 <aside class="filtres">
@@ -52,29 +51,19 @@ session_start();
         <div class="swiperVideo">
             <div class="swiper-wrapper">
                 <?php
-                    $tabURIS = recupererURIEtTitreVideosEtId();
-                    if(!($tabURIS)){
-                        $nbVideosARecuperer = 0;
-                    }
-                    else{
-                        $nbVideosARecuperer = count($tabURIS);
-                    }
-                    for ($i=0; $i < $nbVideosARecuperer; $i++) {
-
-                        $id = $tabURIS[$i]['id'];
-                        $uriNAS = $tabURIS[$i]['URI_NAS_MPEG'];
-                        $titre = $tabURIS[$i]['mtd_tech_titre'];
-                        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-                        $titre = pathinfo($titre, PATHINFO_FILENAME); 
-
-                        echo("<div class='swiper-slide'>");
-                            echo("<a href='video.php?v=$id'>");
-                                echo("<div class='miniature'>");
-                                    echo("<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>");
-                                echo("</div>");
-                                echo("<h3>$titre</h3>");
-                            echo("</a>");
-                        echo("</div>");
+                    foreach ($tabVideos as $video) {
+                        $id = $video['id'];
+                        $uriNAS = $video['uriNAS'];
+                        $titre = $video['titre'];
+                        $cheminLocalComplet = $video['cheminMiniature'];
+                        echo "<div class='swiper-slide'>";
+                            echo "<a href='video.php?v=$id'>";
+                                echo "<div class='miniature'>";
+                                    echo "<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
+                                echo "</div>";
+                                echo "<h3>$titre</h3>";
+                            echo "</a>";
+                        echo "</div>";
                     }
                 ?>
             </div>

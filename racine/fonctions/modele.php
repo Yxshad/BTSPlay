@@ -628,16 +628,22 @@ function getUriNASetTitreMPEG() {
     }
 }
 
-function getUriNASetTitreMPEGEtId() {
+function getUriNASetTitreMPEGEtId($nbMaxVideo) {
     try {
+        ajouterLog(LOG_CRITICAL, "$nbMaxVideo");
         // Connexion à la base de données
         $connexion = connexionBD();
+       
         // Préparation de la requête
-        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media');
+        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media LIMIT :nbVideo');
+        $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
+        
         // Exécution de la requête
         $requeteVid->execute();
+
         // Récupérer toutes les lignes sous forme de tableau associatif
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+
         // Fermer la connexion
         $connexion = null;
         // Vérifier si des résultats existent
@@ -647,6 +653,7 @@ function getUriNASetTitreMPEGEtId() {
             return false; // Aucun résultat trouvé
         }
     } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
         // Gestion des erreurs
         if ($connexion) {
             $connexion->rollback(); // Annule toute transaction si nécessaire
@@ -672,7 +679,7 @@ function getProfId($profNom, $profPrenom)
        $requeteProf->execute([$profNom, $profPrenom]);
        $profCherche = $requeteProf->fetch(PDO::FETCH_ASSOC); // Récupère une seule ligne sous forme de tableau associatif
        $connexion = null;
-       return $profCherche['identifiant'];
+       return $profCherche['identifiant'] ?? null;
    }
    catch(Exception $e)
    {
@@ -845,6 +852,32 @@ function fetchAll($sql){
         error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
         return false; // Retourne false en cas d'erreur
     }
+}
+
+/**
+ * verifierPresenceVideoNAS_MPEG
+ * renvoie 1 si une vidéo existe
+ * $cheminFichier : chemin NAS MPEG de la vidéo
+ * $nomFichier : nom du fichier
+ */
+function verifierPresenceVideoNAS_MPEG($cheminFichier, $nomFichier)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT 1
+   FROM Media
+   WHERE URI_NAS_MPEG = ?
+   AND mtd_tech_titre = ?');                                                 
+   try{
+       $requeteVid->execute([$cheminFichier, $nomFichier]);
+       $vidPresente = $requeteVid->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return (bool)$vidPresente;
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+   }
 }
 
 ?>

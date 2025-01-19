@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/transfert.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
@@ -26,7 +27,7 @@ include '../ressources/Templates/header.php';
                 <div class="commande">
                     <p>Commande de conversion</p>
                     <input type="text" placeholder="ffmpeg -i $video 2>&1">
-                    <a class="btn" onclick="lancerConvertion()">Lancer conversion</a>
+                    <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
                 </div>
                 
             </div>
@@ -54,33 +55,13 @@ include '../ressources/Templates/header.php';
     </div>
 </div>
 
+<footer>
+<?php require_once '../ressources/Templates/footer.php';?>
+</footer>
+
 <script>
-function lancerConvertion() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        console.log(this.responseText);
-    }
-    xhttp.open("POST", "../fonctions/fonctions.php");
-    
-    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhttp.send("action=lancerConvertion");
-}
-
-function ajax() {
-  const xhttp = new XMLHttpRequest();
-  xhttp.onload = function() {
-    document.querySelector('.transferts .lignes').innerHTML = this.responseText;
-  }
-  xhttp.open("POST", "../fonctions/fonctions.php");
-  
-  xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-  xhttp.send("action=scanDecoupe");
-}
-
-ajax();
-
-setInterval( ajax , 5000);
-
+    document.addEventListener("DOMContentLoaded", function () {
+        scanDossierDecoupeVideo();
+        setInterval( scanDossierDecoupeVideo , 5000);
+    });
 </script>

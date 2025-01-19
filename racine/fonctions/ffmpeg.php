@@ -126,7 +126,7 @@ function convertirVideo($video){
                        "\"$chemin_fichier_destination\"";
             exec($command, $output, $return_var);
             if ($return_var == 1) {
-                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($i + 1)."de la vidéo $titre.");
+                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($files[$file] + 1)."de la vidéo $chemin_fichier_origine.");
             }
         }
     }

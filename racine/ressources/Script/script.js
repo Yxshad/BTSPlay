@@ -1,4 +1,5 @@
 
+// #RISQUE : Dégager ce truc DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function(event) {
 
     if(document.querySelector('.transferts')){
@@ -68,6 +69,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
     }
 });
+
+
 //Fonctions spécifiques à la page home.php
 function affichageFiltres(){
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
@@ -144,14 +147,25 @@ function affichageSousMenu(){
     }
 }
 
-function lancerConvertion() {
+function lancerConversion() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         console.log(this.responseText);
     }
-    xhttp.open("POST", "../fonctions/fonctions.php");
+    xhttp.open("POST", "../fonctions/controleur.php");
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    xhttp.send("action=lancerConvertion");
+    xhttp.send("action=lancerConversion");
+}
+
+function scanDossierDecoupeVideo() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+      document.querySelector('.transferts .lignes').innerHTML = this.responseText;
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=scanDossierDecoupeVideo");
 }

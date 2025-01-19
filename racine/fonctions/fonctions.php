@@ -1,20 +1,5 @@
 <?php
-if (isset($_POST["action"])) {
 
-	require_once "../ressources/constantes.php";
-	require_once "ftp.php";
-	require_once "ffmpeg.php";
-	require_once "modele.php";
-
-	if ($_POST["action"] == "scanDecoupe") {
-		header('Content-Type: application/json');
-		scan_decoupe(); 
-		exit();
-	}
-	if ($_POST["action"] == "lancerConvertion") {
-		fonctionTransfert();
-	}
-}
 
 /**
  * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le NAS MPEG
@@ -61,17 +46,11 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 		if ($nom_fichier !== '.' && $nom_fichier !== '..'
 			&& ($extension == 'mxf' || $extension == 'mp4')) {
 
+			//Chemin distant
+			$cheminFichier = dirname($fichier) . '/';
+
 			// Si le fichier n'est pas présent en base
-			if (!fichierEnBase($nom_fichier)) {
-
-				//Chemin distant
-				$cheminFichier = dirname($fichier) . '/';
-
-				//RECUPERATION VIA TELECHARGEMENT FTP --ABANDONNE CAR BESOIN DE TELECHARGER LA VIDEO
-				/*$fichierDesination = $URI_VIDEOS_A_ANALYSER . '/' . $nom_fichier;
-				telechargerFichier($conn_id, $fichierDesination, $fichier);
-				$listeMetadonneesVideos = recupererMetadonneesViaVideoLocale($nom_fichier, $URI_VIDEOS_A_ANALYSER);
-				unlink($fichierDesination);*/
+			if (!verifierFichierPresentEnBase($URI_NAS_RACINE.$cheminFichier, $nom_fichier, $extension)) {
 
 				//RECUPERATION VIA LECTURE FTP
 				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nom_fichier);
@@ -179,7 +158,7 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
 
 		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminDestination = URI_RACINE_NAS_MPEG .$URI_NAS;
+		$cheminDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
 		$fichierDestination = $video[MTD_TITRE];
 
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
@@ -203,6 +182,11 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
 		//Ajouter l'URI du NAS MPEG à $video dans collectMPEG
+
+		//On retire la racine du NAS MPEG
+		if (strpos($dossierVideo, URI_RACINE_NAS_MPEG) == 0) {
+			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_NAS_MPEG));
+		}
 		$video[MTD_URI_NAS_MPEG] = $dossierVideo;
 	}
 
@@ -446,10 +430,35 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
     }
 }
 
+/**
+ * Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_NAS_MPEG)
+ * Prend en paramètre le chemin du fichier et son nom
+ * Retourne true si le fichier est présent, false sinon
+ */
+function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 
-function fichierEnBase($fichier){
-	return false;
+	$cheminFichierNAS_MPEG = trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier);
+
+	// Forcer l'extension à .mp4
+	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$nomFichier = $nomFichierSansExtension . '.mp4';
+
+	$videoPresente = verifierPresenceVideoNAS_MPEG($cheminFichierNAS_MPEG, $nomFichier);
+
+	return $videoPresente;
 }
+
+/**
+ * Fonction qui permet de récupérer le chemin d'un fichier dans le NAS MPEG à partir du chemin dans un autre NAS
+ * prend en paramètre le chemin d'un fichier situé dans le NAS PAD ou ARCH
+ * Retourne le chemin du fichier dans le NAS MPEG
+ */
+function trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier){
+	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$cheminFichierNAS_MPEG = $cheminFichier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+	return $cheminFichierNAS_MPEG;
+}
+
 
 function insertionCollect_MPEG($COLLECT_MPEG){
 	foreach($COLLECT_MPEG as $ligneMetadonneesTechniques){
@@ -462,7 +471,7 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 * Ne prend aucun paramètre
 * Retourne une liste avec les noms des vidéos en train de se faire découper
 */
-function scan_decoupe(){
+function scanDossierDecoupeVideo(){
 	$listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
 	$listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
 	$listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
@@ -519,20 +528,6 @@ function scan_decoupe(){
 }
 
 /**
- * Fonction qui permet de récupérer des URIS et titre de X vidéos situées dans le NAS MPEG
- * Prend en paramètre le nombre d'URIS et titres à récupérer
- * Retourne un tableau d'URIS
- */
-function recupererURIEtTitreVideos(){
-	$tabURIsEtTitres = getUriNASetTitreMPEG();
-	return $tabURIsEtTitres;
-}
-
-function recupererURIEtTitreVideosEtId(){
-	return getUriNASetTitreMPEGEtId();
-}
-
-/**
  * Fonction qui permet de charger une miniature dans l'espace local
  * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
  * 	pour laquelle trouver l'URI et les logins FTP
@@ -566,7 +561,6 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 *	Fonction qui retourne le titre de la vidéo
 *   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
 */
-
 function recupererTitreVideo($nomFichier){
 	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
 	return $titre[1];
@@ -616,7 +610,7 @@ function getMetadonneesEditorialesVideo($video){
 	$nomPrenom = implode(" ", $nomPrenom);
 	$eleve = getParticipants($video["id"]); 
 	
-	$meta = [
+	$mtdEdito = [
 		"projet" => $projet,
 		"professeur" => $nomPrenom,
 		"realisateur" => $eleve[0],
@@ -624,7 +618,7 @@ function getMetadonneesEditorialesVideo($video){
 		"responsableSon" => $eleve[2]
 	];
 
-	return $meta;
+	return $mtdEdito;
 }
 
 function getAllProf(){
