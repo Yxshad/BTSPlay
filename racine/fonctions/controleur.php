@@ -24,8 +24,6 @@ function controleurRecupererInfosVideo() {
         header('Location: erreur.php?code=404');
         exit();
     }
-
-    // Récupère l'ID vidéo
     $idVideo = intval($_GET['v']);
 
     // Récupère les informations de la vidéo
@@ -38,31 +36,31 @@ function controleurRecupererInfosVideo() {
 
     // Prépare les chemins nécessaires
     $nomFichier = $video["mtd_tech_titre"];
-    $miniature = $nomFichier . "_miniature.png";
+
+    $miniature = trouverNomMiniature($nomFichier);
     $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
 
+    // Télécharge la vidéo depuis le serveur FTP
     $cheminLocal = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
     $cheminDistant = URI_RACINE_NAS_MPEG . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
-
-    // Télécharge la vidéo depuis le serveur FTP
     $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
     telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
     ftp_close($conn_id);
 
     // Prépare les métadonnées et le titre
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
-    $meta = getMetadonneesEditorialesVideo($video);
+    $mtdEdito = getMetadonneesEditorialesVideo($video);
 
     // Retourne toutes les informations sous forme de tableau
     return [
         "idVideo" => $idVideo,
-        "video" => $video,
+        "mtdTech" => $video,
         "nomFichier" => $nomFichier,
         "cheminMiniature" => $cheminMiniature,
         "cheminLocal" => $cheminLocal,
         "cheminDistant" => $cheminDistant,
         "titreVideo" => $titreVideo,
-        "meta" => $meta,
+        "mtdEdito" => $mtdEdito,
     ];
 }
 ?>

@@ -619,7 +619,7 @@ function getMetadonneesEditorialesVideo($video){
 	$nomPrenom = implode(" ", $nomPrenom);
 	$eleve = getParticipants($video["id"]); 
 	
-	$meta = [
+	$mtdEdito = [
 		"projet" => $projet,
 		"professeur" => $nomPrenom,
 		"realisateur" => $eleve[0],
@@ -627,7 +627,7 @@ function getMetadonneesEditorialesVideo($video){
 		"responsableSon" => $eleve[2]
 	];
 
-	return $meta;
+	return $mtdEdito;
 }
 
 function getAllProf(){

@@ -1,16 +1,16 @@
 <?php 
     session_start();
-
     require_once '../fonctions/controleur.php';
     $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
-    $mtdTech = $infosVideo["video"];
+    $mtdTech = $infosVideo["mtdTech"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniature = $infosVideo["cheminMiniature"];
     $cheminLocal = $infosVideo["cheminLocal"];
     $titreVideo = $infosVideo["titreVideo"];
-    $meta = $infosVideo["meta"];
+    $mtdEdito = $infosVideo["mtdEdito"];
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -54,19 +54,19 @@
                 <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
             </p>
             <p class="meta">
-                <strong>Projet : </strong><?php echo $meta["projet"]; ?>
+                <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
             </p>
             <p class="meta">
-                <strong>Professeur : </strong><?php echo $meta["professeur"]; ?>
+                <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
             </p>
             <p class="meta">
-                <strong>Réalisateur : </strong><?php echo $meta["realisateur"]; ?>
+                <strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?>
             </p>
             <p class="meta">
-                <strong>Cadreur : </strong><?php echo $meta["cadreur"]; ?>
+                <strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?>
             </p>
             <p class="meta">
-                <strong>Responsable Son : </strong><?php echo $meta["responsableSon"]; ?>
+                <strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?>
             </p>
             
         </div>
