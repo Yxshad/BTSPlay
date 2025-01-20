@@ -13,7 +13,7 @@
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
 <?php 
-include '../ressources/Templates/header.php';
+require_once '../ressources/Templates/header.php';
 ?>
 
 <?php
@@ -37,8 +37,4 @@ switch ($code) {
 echo ($message);
 ?>
 
-
-
-<footer>
 <?php require_once '../ressources/Templates/footer.php';?>
-</footer>

@@ -1,13 +1,12 @@
 <?php 
-
 session_start(); 
  if(isset($_POST["username"])){
     $_SESSION["username"] = $_POST["username"];
 }
 require_once '../fonctions/controleur.php';
-$tabVideos = recupererURIEtTitreVideosEtId();
-
+$tabVideos = controleurRecupererTitreIdVideo();
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -15,35 +14,16 @@ $tabVideos = recupererURIEtTitreVideosEtId();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-    
-<?php
-    require '../ressources/Templates/header.php';
-?>
+<?php require_once '../ressources/Templates/header.php'; ?>
 
-<aside class="filtres">
-    
-    <form action="recherche.php">
-        <div>
-            <label>Année</label>
-            <input type="number">
-        </div>
-
-        <div>
-            <label>Niveau</label>
-            <input type="number">
-        </div>
-        
-        <input value="Rechercher" type="submit">
-    </form>
-
-    <button class="afficherFiltres"> > </button>
-</aside>
+<?php require_once '../ressources/Templates/menuFiltres.php'; ?>
 
 <div class="container">
     <div class="sliderVideo">
@@ -73,11 +53,7 @@ $tabVideos = recupererURIEtTitreVideosEtId();
     </div>
 </div>
 
-<div class="voile"></div>
-
-<footer>
-<?php require_once '../ressources/Templates/footer.php';?>
-</footer>
+<?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

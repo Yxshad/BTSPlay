@@ -2,13 +2,17 @@
     session_start();
     require_once '../fonctions/controleur.php';
     $infosVideo = controleurRecupererInfosVideo();
+
     $idVideo = $infosVideo["idVideo"];
-    $mtdTech = $infosVideo["mtdTech"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniature = $infosVideo["cheminMiniature"];
-    $cheminLocal = $infosVideo["cheminLocal"];
+    $cheminDistantVideo = $infosVideo["cheminDistantVideo"];
     $titreVideo = $infosVideo["titreVideo"];
+    $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
+    $promotion = $infosVideo["promotion"];
+
+    $cheminLocal = controleurTelechargerFichier($cheminDistantVideo, $nomFichier); 
 ?>
 
 <!DOCTYPE html>
@@ -27,9 +31,8 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
-<?php
-    require_once '../ressources/Templates/header.php';
-?>
+<?php require_once '../ressources/Templates/header.php'; ?>
+
 <div class="container">
     <div class="lecteurVideo">
     <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniature; ?>>
@@ -37,41 +40,45 @@
     </video>
 </div>
     <h1 class="titre"><?php echo $nomFichier; ?></h1>
-    <h2><?php echo $titreVideo; ?></h2>
+    <h2 ><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Image par secondes : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
+                <strong>Promotion : </strong><?php echo $promotion; ?>
+            </p>
+            <p class="mtd">
                 <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?>
             </p>
             
         </div>
         <div class="colonne-2">
-            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $video["mtd_tech_titre"]; ?>" class="btnVideo">
+            <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH -->
+            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>
@@ -99,9 +106,7 @@
     </div>
 </div>
 
-<footer>
-<?php require '../ressources/Templates/footer.php';?>
-</footer>
+<?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

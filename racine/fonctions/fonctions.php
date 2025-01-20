@@ -575,15 +575,15 @@ function recupererTitreVideo($nomFichier){
 
 function miseAJourMetadonneesVideo(
     $idVid, 
-	$profReferant, 
+	$profReferent, 
 	$realisateur, 
 	$promotion, 
 	$projet, 
 	$cadreur, 
 	$responsableSon){
 
-	if (!$profReferant == "") {
-		assignerProfReferent($idVid, $profReferant);
+	if (!$profReferent == "") {
+		assignerProfReferent($idVid, $profReferent);
 	}
 	if (!$realisateur == "") {
 		assignerRealisateur($idVid, $realisateur);

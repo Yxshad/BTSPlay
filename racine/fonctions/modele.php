@@ -630,7 +630,6 @@ function getUriNASetTitreMPEG() {
 
 function getUriNASetTitreMPEGEtId($nbMaxVideo) {
     try {
-        ajouterLog(LOG_CRITICAL, "$nbMaxVideo");
         // Connexion à la base de données
         $connexion = connexionBD();
        
