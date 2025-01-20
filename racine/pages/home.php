@@ -15,6 +15,7 @@ $tabVideos = controleurRecupererTitreIdVideo();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
@@ -24,24 +25,7 @@ $tabVideos = controleurRecupererTitreIdVideo();
     
 <?php require_once '../ressources/Templates/header.php'; ?>
 
-<aside class="filtres">
-    
-    <form action="recherche.php">
-        <div>
-            <label>Année</label>
-            <input type="number">
-        </div>
-
-        <div>
-            <label>Niveau</label>
-            <input type="number">
-        </div>
-        
-        <input value="Rechercher" type="submit">
-    </form>
-
-    <button class="afficherFiltres"> > </button>
-</aside>
+<?php require_once '../ressources/Templates/menuFiltres.php'; ?>
 
 <div class="container">
     <div class="sliderVideo">
@@ -70,8 +54,6 @@ $tabVideos = controleurRecupererTitreIdVideo();
         <div class="swiper-button-prev"></div>
     </div>
 </div>
-
-<div class="voile"></div>
 
 <?php require_once '../ressources/Templates/footer.php'; ?>
 

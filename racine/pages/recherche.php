@@ -6,32 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
+    <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/recherche.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php require_once '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/header.php'; ?>
 
-<div class="filtres">
-    
-    <form action="">
-        <div>
-            <label>Année</label>
-            <input type="number">
-        </div>
-
-        <div>
-            <label>Niveau</label>
-            <input type="number">
-        </div>
-        
-        <input value="Rechercher" type="submit">
-    </form>
-
-    <button class="afficherFiltres">></button>
-</div>
+<?php require_once '../ressources/Templates/menuFiltres.php'; ?>
 
 <div class="container">
     <?php for ($i=0; $i < 5; $i++) { ?>
@@ -45,6 +29,10 @@
     <?php } ?>
 </div>
 
-<div class="voile"></div>
-
 <?php require_once '../ressources/Templates/footer.php'; ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        affichageFiltres();
+    });
+</script>
