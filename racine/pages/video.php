@@ -2,13 +2,17 @@
     session_start();
     require_once '../fonctions/controleur.php';
     $infosVideo = controleurRecupererInfosVideo();
+
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniature = $infosVideo["cheminMiniature"];
-    $cheminLocal = $infosVideo["cheminLocal"];
+    $cheminDistantVideo = $infosVideo["cheminDistantVideo"];
     $titreVideo = $infosVideo["titreVideo"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
+    $promotion = $infosVideo["promotion"];
+
+    $cheminLocal = controleurTelechargerFichier($cheminDistantVideo, $nomFichier); 
 ?>
 
 <!DOCTYPE html>
@@ -36,7 +40,7 @@
     </video>
 </div>
     <h1 class="titre"><?php echo $nomFichier; ?></h1>
-    <h2><?php echo $titreVideo; ?></h2>
+    <h2 ><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
@@ -56,6 +60,9 @@
                 <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
             </p>
             <p class="mtd">
+                <strong>Promotion : </strong><?php echo $promotion; ?>
+            </p>
+            <p class="mtd">
                 <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
             </p>
             <p class="mtd">
@@ -70,7 +77,8 @@
             
         </div>
         <div class="colonne-2">
-            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $video["mtd_tech_titre"]; ?>" class="btnVideo">
+            <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH -->
+            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>

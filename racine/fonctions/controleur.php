@@ -49,8 +49,17 @@ function controleurRecupererTitreIdVideo() {
     return $videos;
 }
 
-function controleurRecupererInfosVideo() {
+function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
+    // Télécharge la vidéo depuis le serveur FTP
+    $cheminLocal = URI_VIDEOS_A_LIRE . $cheminDistantVideo . $nomFichier;
+    $cheminDistant = URI_RACINE_NAS_MPEG . $cheminDistantVideo . $nomFichier;
+    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
+    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
+    ftp_close($conn_id);
+    return $cheminLocal;
+}
 
+function controleurRecupererInfosVideo() {
     $idVideo = controleurVerifierVideoParametre();
     // Récupère les informations de la vidéo
     $video = fetchAll("SELECT * FROM Media WHERE id=$idVideo;");
@@ -59,31 +68,23 @@ function controleurRecupererInfosVideo() {
         exit();
     }
     $video = $video[0];
-
     // Prépare les chemins nécessaires
     $nomFichier = $video["mtd_tech_titre"];
     $miniature = trouverNomMiniature($nomFichier);
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
+    $promotion = $video["promotion"];
     $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
-
-    // Télécharge la vidéo depuis le serveur FTP
-    $cheminLocal = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
-    $cheminDistant = URI_RACINE_NAS_MPEG . $video["URI_NAS_MPEG"] . $video["mtd_tech_titre"];
-    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
-    ftp_close($conn_id);   
-
-    // Retourne toutes les informations sous forme de tableau
+    $cheminDistantVideo = $video["URI_NAS_MPEG"];
     return [
         "idVideo" => $idVideo,
         "mtdTech" => $video,
         "nomFichier" => $nomFichier,
         "cheminMiniature" => $cheminMiniature,
-        "cheminLocal" => $cheminLocal,
-        "cheminDistant" => $cheminDistant,
+        "cheminDistantVideo" => $cheminDistantVideo,
         "titreVideo" => $titreVideo,
         "mtdEdito" => $mtdEdito,
+        "promotion" => $promotion,
     ];
 }
 

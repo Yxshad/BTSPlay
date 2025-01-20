@@ -2,7 +2,17 @@
     session_start();
     require_once '../fonctions/controleur.php';
 
-    $idVideo = controleurVerifierVideoParametre();
+    $infosVideo = controleurRecupererInfosVideo();
+
+    $idVideo = $infosVideo["idVideo"];
+    $nomFichier = $infosVideo["nomFichier"];
+    $cheminMiniature = $infosVideo["cheminMiniature"];
+    $cheminDistantVideo = $infosVideo["cheminDistantVideo"];
+    $titreVideo = $infosVideo["titreVideo"];
+    $mtdTech = $infosVideo["mtdTech"];
+    $mtdEdito = $infosVideo["mtdEdito"];
+    $promotion = $infosVideo["promotion"];
+    $allProf = getAllProf();
 ?>
 
 <!DOCTYPE html>
@@ -21,20 +31,6 @@
 
     <?php require_once '../ressources/Templates/header.php'; ?>
 
-<?php
-    $video = fetchAll("SELECT * FROM Media WHERE id=$idVideo;");
-    $video = $video[0];
-    $titre = substr($video["mtd_tech_titre"], 0, -4);
-
-    $listeMeta = getMetadonneesEditorialesVideo($video);
-
-    // Charge la miniature
-    $miniature = $titre . "_miniature.png";
-    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
-
-    $allProf = getAllProf();
-?>
-
 <div class="container">
     <h1>Formulaire des métadonnées</h1>
 
@@ -43,11 +39,12 @@
             <div class="img">
                 <img src="<?php echo $cheminMiniature; ?>" alt="Miniature de la vidéo" class="imageMiniature">
             </div>
-            <h2><?php echo $titre; ?></h2>
-            <p><strong>Durée :</strong> <?php echo $video['mtd_tech_duree']; ?></p>
-            <p><strong>Images par secondes :</strong> <?php echo $video['mtd_tech_fps']; ?></p>
-            <p><strong>Résolution :</strong> <?php echo $video['mtd_tech_resolution']; ?></p>
-            <p><strong>Format :</strong> <?php echo $video['mtd_tech_format']; ?></p>
+            <h2 class="titre"><?php echo $nomFichier; ?></h2>
+            <h2 class="titre"><?php echo $titreVideo; ?></h2>
+            <p><strong>Durée :</strong> <?php echo $mtdTech['mtd_tech_duree']; ?></p>
+            <p><strong>Images par secondes :</strong> <?php echo $mtdTech['mtd_tech_fps']; ?></p>
+            <p><strong>Résolution :</strong> <?php echo $mtdTech['mtd_tech_resolution']; ?></p>
+            <p><strong>Format :</strong> <?php echo $mtdTech['mtd_tech_format']; ?></p>
         </div>
 
         <div class="colonne-2">
@@ -58,7 +55,7 @@
                 <div class="champ">
                     <label for="profReferent" class="form-label">Professeur référant</label>
                     <select id="profReferent" name="profReferent">
-                        <option value="<?php echo $listeMeta["professeur"]; ?>">Professeur actuel : <?php echo $listeMeta["professeur"]; ?></option>
+                        <option value="<?php echo $mtdEdito["professeur"]; ?>">Professeur actuel : <?php echo $mtdEdito["professeur"]; ?></option>
                         <?php foreach ($allProf as $prof) { ?>
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
                         <?php } ?>
@@ -66,26 +63,26 @@
                 </div>
                 <div class="champ">
                     <label for="realisateur" class="form-label">Réalisateur</label>
-                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $listeMeta["realisateur"]; ?>">
+                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $mtdEdito["realisateur"]; ?>">
                 </div>
                 <div class="champ">
                     <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $video["promotion"]; ?>">
+                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $promotion; ?>">
                 </div>
                 <div class="champ">
                     <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet" placeholder="<?php echo $listeMeta["projet"]; ?>">
+                    <input type="text" id="projet" name="projet" placeholder="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
                 <div class="champ">
                     <label for="cadreurNom">Cadreur</label>
                     <div class="inputs">
-                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $listeMeta["cadreur"]; ?>">
+                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $mtdEdito["cadreur"]; ?>">
                     </div>
                 </div>
                 <div class="champ">
                     <label for="responsableSon">Responsable son</label>
                     <div class="inputs">
-                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $listeMeta["responsableSon"]; ?>">
+                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $mtdEdito["responsableSon"]; ?>">
                     </div>
                 </div>
                 <button type="submit" class="btn">Confirmer</button> 
