@@ -5,7 +5,7 @@ session_start();
     $_SESSION["username"] = $_POST["username"];
 }
 require_once '../fonctions/controleur.php';
-$tabVideos = recupererURIEtTitreVideosEtId();
+$tabVideos = controleurRecupererTitreIdVideo();
 
 ?>
 <!DOCTYPE html>
@@ -22,9 +22,7 @@ $tabVideos = recupererURIEtTitreVideosEtId();
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
     
-<?php
-    require '../ressources/Templates/header.php';
-?>
+<?php require_once '../ressources/Templates/header.php'; ?>
 
 <aside class="filtres">
     
@@ -75,9 +73,7 @@ $tabVideos = recupererURIEtTitreVideosEtId();
 
 <div class="voile"></div>
 
-<footer>
-<?php require_once '../ressources/Templates/footer.php';?>
-</footer>
+<?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

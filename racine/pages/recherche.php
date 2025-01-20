@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include_once '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/header.php';?>
 
 <div class="filtres">
     
@@ -47,4 +47,4 @@
 
 <div class="voile"></div>
 
-<script src="../ressources/Script/script.js"></script>
+<?php require_once '../ressources/Templates/footer.php'; ?>

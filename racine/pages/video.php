@@ -27,9 +27,8 @@
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
-<?php
-    require_once '../ressources/Templates/header.php';
-?>
+<?php require_once '../ressources/Templates/header.php'; ?>
+
 <div class="container">
     <div class="lecteurVideo">
     <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniature; ?>>
@@ -99,9 +98,7 @@
     </div>
 </div>
 
-<footer>
-<?php require '../ressources/Templates/footer.php';?>
-</footer>
+<?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

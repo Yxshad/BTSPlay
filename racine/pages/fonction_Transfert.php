@@ -9,24 +9,25 @@
     <link href="../ressources/Style/home.css" rel="stylesheet">
 	<script src="../ressources/Script/script.js"></script>
 	<title>Fonction de transfert</title>
-</head>
-<body>
+
+<?php require '../ressources/Templates/header.php';?>
+
 	<h1> Fonction de transfert </h1>
 	<form method="post">
 		<button type="submit" name="declencherTransfert">Déclencher la fonction de transfert</button>
 	</form>
-</body>
-</html>
+
+<?php require_once '../ressources/Templates/footer.php';?>	
+
+
 
 <?php
-
 require '../fonctions/fonctions.php';
 require '../fonctions/ftp.php';
 require '../ressources/constantes.php';
 require '../fonctions/ffmpeg.php';
 require '../fonctions/modele.php';
 require '../ressources/Templates/header.php';
-
 
 if (isset($_POST['declencherTransfert'])) {
 	fonctionTransfertAffiche();

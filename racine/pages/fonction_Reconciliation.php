@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
 
 	
-<?php require '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/header.php';?>
 
 <h1> Fonction de réconciliation </h1>
 
@@ -27,13 +27,15 @@
 	<br> <br>
 </form>
 
-</html>
+<?php require_once '../ressources/Templates/footer.php';?>
+
+
 
 <?php
-    require '../fonctions/fonctions.php';
-    require '../fonctions/ftp.php';
-    require '../ressources/constantes.php';
-    require '../fonctions/ffmpeg.php';
+    require_once '../fonctions/fonctions.php';
+    require_once '../fonctions/ftp.php';
+    require_once '../ressources/constantes.php';
+    require_once '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherReconciliation'])) {
     fonctionReconciliationAffichee();
@@ -60,8 +62,5 @@ function fonctionReconciliationAffichee() {
     afficherVideosManquantes($listeVideosManquantes);
 
     ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
-
-    require '../ressources/Templates/footer.php';
 }
-
 ?>

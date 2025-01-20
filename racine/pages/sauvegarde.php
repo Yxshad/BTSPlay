@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
-<?php include_once '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="colonnes">
@@ -59,6 +59,7 @@
                 </div>
             <?php } ?>
         </div>
-
     </div>
 </div>
+
+<?php require_once '../ressources/Templates/footer.php'; ?>

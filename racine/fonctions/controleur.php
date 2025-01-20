@@ -5,7 +5,7 @@ require_once "ffmpeg.php";
 require_once "modele.php";
 require_once "fonctions.php";
 
-
+//CONTROLE AJAX
 if (isset($_POST["action"])) {
 
     if ($_POST["action"] == "scanDossierDecoupeVideo") {
@@ -23,7 +23,7 @@ if (isset($_POST["action"])) {
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS/titres/id et cheminMiniature
  */
-function recupererURIEtTitreVideosEtId() {
+function controleurRecupererTitreIdVideo() {
     $tabURIS = getUriNASetTitreMPEGEtId(10);
     $videos = [];
     if (!$tabURIS) {

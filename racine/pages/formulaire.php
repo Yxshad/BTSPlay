@@ -15,6 +15,8 @@
 
 <?php
     require_once '../ressources/Templates/header.php';
+    
+    
     require_once '../fonctions/fonctions.php';
     require_once '../fonctions/ftp.php';
     require_once '../ressources/constantes.php';
@@ -44,12 +46,10 @@
 
         $projet = $_POST["projet"];
     
-    
         $cadreur = $_POST["cadreur"];
 
         $responsableSon = $_POST["responsableSon"];
         
-
         miseAJourMetadonneesVideo(
             $id, 
             $profReferant, 
@@ -59,8 +59,6 @@
             $cadreur, 
             $responsableSon
         );
-
-
     }
 
     $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
@@ -138,3 +136,5 @@
         
     </div>
 </div>
+
+<?php require_once '../ressources/Templates/footer.php';?>
