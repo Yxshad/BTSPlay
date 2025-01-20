@@ -3,11 +3,11 @@
     require_once '../fonctions/controleur.php';
     $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
-    $mtdTech = $infosVideo["mtdTech"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniature = $infosVideo["cheminMiniature"];
     $cheminLocal = $infosVideo["cheminLocal"];
     $titreVideo = $infosVideo["titreVideo"];
+    $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
 ?>
 
@@ -40,31 +40,31 @@
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Image par secondes : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?>
             </p>
-            <p class="meta">
+            <p class="mtd">
                 <strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?>
             </p>
             

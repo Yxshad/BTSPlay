@@ -1,4 +1,10 @@
-<?php session_start(); ?>
+<?php 
+    session_start();
+    require_once '../fonctions/controleur.php';
+
+    $idVideo = controleurVerifierVideoParametre();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,55 +19,10 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
     <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
 
+    <?php require_once '../ressources/Templates/header.php'; ?>
+
 <?php
-    require_once '../ressources/Templates/header.php';
-    
-    
-    require_once '../fonctions/fonctions.php';
-    require_once '../fonctions/ftp.php';
-    require_once '../ressources/constantes.php';
-    require_once '../fonctions/modele.php';
-
-    // Récupération de l'URI NAS de la vidéo
-    if (isset($_GET['v'])) {
-        $id = $_GET['v'];
-    }
-
-    if (
-        isset($_POST["profReferant"]) ||
-        isset($_POST["realisateur"]) || 
-        isset($_POST["promotion"]) || 
-        isset($_POST["projet"]) || 
-        isset($_POST["cadreur"]) || 
-        isset($_POST["responsableSon"])
-    ) {
-
-        // Récupération des champs entrés dans le formulaire
-
-        $profReferant = $_POST["profReferant"];
-    
-        $realisateur = $_POST["realisateur"];
-    
-        $promotion = $_POST["promotion"];
-
-        $projet = $_POST["projet"];
-    
-        $cadreur = $_POST["cadreur"];
-
-        $responsableSon = $_POST["responsableSon"];
-        
-        miseAJourMetadonneesVideo(
-            $id, 
-            $profReferant, 
-            $realisateur, 
-            $promotion, 
-            $projet, 
-            $cadreur, 
-            $responsableSon
-        );
-    }
-
-    $video = fetchAll("SELECT * FROM Media WHERE id=$id;");
+    $video = fetchAll("SELECT * FROM Media WHERE id=$idVideo;");
     $video = $video[0];
     $titre = substr($video["mtd_tech_titre"], 0, -4);
 
@@ -91,10 +52,12 @@
 
         <div class="colonne-2">
             <h2>Équipe</h2>
-            <form method="post" action="formulaire.php?v=<?php echo $id; ?>">
+            <form method="post" action="#">
+                <input type="hidden" name="action" value="ModifierMetadonnees">
+                <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
                 <div class="champ">
-                    <label for="profReferant" class="form-label">Professeur référant</label>
-                    <select id="profReferant" name="profReferant">
+                    <label for="profReferent" class="form-label">Professeur référant</label>
+                    <select id="profReferent" name="profReferent">
                         <option value="<?php echo $listeMeta["professeur"]; ?>">Professeur actuel : <?php echo $listeMeta["professeur"]; ?></option>
                         <?php foreach ($allProf as $prof) { ?>
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
@@ -104,7 +67,6 @@
                 <div class="champ">
                     <label for="realisateur" class="form-label">Réalisateur</label>
                     <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $listeMeta["realisateur"]; ?>">
-                    
                 </div>
                 <div class="champ">
                     <label for="promotion">Promotion</label>
@@ -132,7 +94,7 @@
     </div>
 
     <div class="btns">
-        <a href="video.php?v=<?php echo $id; ?>" class="btn">Annuler</a>
+        <a href="video.php?v=<?php echo $idVideo; ?>" class="btn">Terminer</a>
         
     </div>
 </div>
