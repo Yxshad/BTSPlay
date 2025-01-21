@@ -582,6 +582,9 @@ function miseAJourMetadonneesVideo(
 	$cadreur, 
 	$responsableSon){
 
+		// #RISQUE : Une seule requête d'insertion sur des rôles multiples. Là c'est criminel.
+		//A voir au moment de l'ajout de multiples personnes pour un même rôle
+
 	if (!$profReferent == "") {
 		assignerProfReferent($idVid, $profReferent);
 	}
