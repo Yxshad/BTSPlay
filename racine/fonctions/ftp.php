@@ -12,11 +12,8 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
         exit();
     }
     elseif (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
-        ajouterLog(LOG_FAIL, "Échec de la connexion pour l'utilisateur $ftp_user.");
+        ajouterLog(LOG_FAIL, "Échec de la connexion au serveur FTP $ftp_server pour l'utilisateur $ftp_user.");
         exit();
-    }
-    else{
-        ajouterLog(LOG_SUCCESS, "Connexion réussie pour l'utilisateur $ftp_user.");
     }
     return $conn_id;
 }
@@ -52,7 +49,10 @@ function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $f
     $fichierLocal = $cheminLocal . $nomFichier;
     // Envoyer le fichier
     if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
-        echo "Échec de l'export du fichier '$fichierLocal' vers '$cheminDistantNAS'<br>";
+        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal vers $cheminDistantNAS");
+    }
+    else{
+        ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal exporté avec succès dans $cheminDistantNAS.");
     }
     ftp_close($conn_id);
 }

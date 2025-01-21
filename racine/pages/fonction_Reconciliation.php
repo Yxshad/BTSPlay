@@ -1,4 +1,4 @@
-<?php session_start();?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -6,15 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/logo_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
-    <link href="../ressources/Style/video.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
-    
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-
+    <title>Fonction de Reconciliation</title>
 	
 <?php require_once '../ressources/Templates/header.php';?>
 

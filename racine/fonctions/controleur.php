@@ -32,6 +32,7 @@ function controleurRecupererTitreIdVideo() {
     if (!$tabURIS) {
         return $videos;
     }
+    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil");
     foreach ($tabURIS as $video) {
         $id = $video['id'];
         $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
@@ -61,14 +62,12 @@ function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
 
 function controleurRecupererInfosVideo() {
     $idVideo = controleurVerifierVideoParametre();
-    // Récupère les informations de la vidéo
-    $video = fetchAll("SELECT * FROM Media WHERE id=$idVideo;");
+    $video = getInfosVideo($idVideo);
     if ($video == null) {
         header('Location: erreur.php?code=404');
         exit();
     }
-    $video = $video[0];
-    // Prépare les chemins nécessaires
+    ajouterLog(LOG_INFORM, "Chargement des informations de la vidéo n° $idVideo");
     $nomFichier = $video["mtd_tech_titre"];
     $miniature = trouverNomMiniature($nomFichier);
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
@@ -114,6 +113,14 @@ function controleurPreparerMetadonnees($idVideo){
             $responsableSon
         );
     }
+}
+
+function controleurRecupererListeProfesseurs() {
+    $listeProfesseurs = getAllProfesseurs();
+    $resultat = array_map(function($item) {
+        return $item['nom'] . " " . $item['prenom'];
+    }, $listeProfesseurs);
+    return $resultat;
 }
 
 function controleurVerifierVideoParametre(){

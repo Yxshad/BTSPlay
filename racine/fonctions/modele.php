@@ -552,6 +552,30 @@ function getVideo($path)
    }
 }
 
+function getInfosVideo($idVideo)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT * 
+   FROM Media
+   WHERE id = ?');                                                 
+   try{
+       $requeteVid->execute([$idVideo]);
+       $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($infosVideo) {
+        return $infosVideo;
+       } 
+       else {
+           return false;
+       }
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
 
 /**
  * @getUriNASMPEG
@@ -724,6 +748,23 @@ function getProfNomPrenom($identifiant)
    }
 }
 
+function getAllProfesseurs(){
+    $connexion = connexionBD();
+   $requeteProf = $connexion->prepare('SELECT nom, prenom 
+   FROM Professeur');                                                 
+   try{
+       $requeteProf->execute();
+       $professeurs = $requeteProf->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $professeurs;
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+       $connexion = null;
+   }
+}
+
 function getParticipants($idVid) {
     $connexion = connexionBD();
     
@@ -837,7 +878,7 @@ function fetchAll($sql){
         $connexion = null;
         // Vérifier si des résultats existent
         if (!empty($resultat)) {
-            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+            return $resultat;
         } else {
             return false; // Aucun résultat trouvé
         }
