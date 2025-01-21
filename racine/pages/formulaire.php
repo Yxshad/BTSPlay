@@ -7,7 +7,6 @@
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniature = $infosVideo["cheminMiniature"];
-    $cheminDistantVideo = $infosVideo["cheminDistantVideo"];
     $titreVideo = $infosVideo["titreVideo"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
