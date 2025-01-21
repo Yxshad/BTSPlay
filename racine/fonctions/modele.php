@@ -724,6 +724,24 @@ function getProfNomPrenom($identifiant)
    }
 }
 
+function getAllProfesseurs(){
+    $connexion = connexionBD();
+   $requeteProf = $connexion->prepare('SELECT nom, prenom 
+   FROM Professeur');                                                 
+   try{
+       $requeteProf->execute();
+       $professeurs = $requeteProf->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       ajouterLog(LOG_CRITICAL, "Résultat brut de la requête: " . print_r($professeurs, true));
+       return $professeurs;
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();                                                         //En cas d'erreurs, on va essayer de lancer un rollback plutôt que de commit
+       $connexion = null;
+   }
+}
+
 function getParticipants($idVid) {
     $connexion = connexionBD();
     
@@ -837,7 +855,7 @@ function fetchAll($sql){
         $connexion = null;
         // Vérifier si des résultats existent
         if (!empty($resultat)) {
-            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+            return $resultat;
         } else {
             return false; // Aucun résultat trouvé
         }

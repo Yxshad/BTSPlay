@@ -119,14 +119,12 @@ function controleurPreparerMetadonnees($idVideo){
     }
 }
 
-function controleurRecupererListeProfesseurs(){
-    $listeProfesseurs = fetchAll("SELECT nom, prenom FROM Professeur;");
-
-	$resultat = array_map(function($item) {
-		return $item['nom'] . " " . $item['prenom'];
-	}, $listeProfesseurs);
-
-	return $resultat;
+function controleurRecupererListeProfesseurs() {
+    $listeProfesseurs = getAllProfesseurs();
+    $resultat = array_map(function($item) {
+        return $item['nom'] . " " . $item['prenom'];
+    }, $listeProfesseurs);
+    return $resultat;
 }
 
 function controleurVerifierVideoParametre(){
