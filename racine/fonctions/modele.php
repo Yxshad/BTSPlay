@@ -756,7 +756,6 @@ function getAllProfesseurs(){
        $requeteProf->execute();
        $professeurs = $requeteProf->fetchAll(PDO::FETCH_ASSOC);
        $connexion = null;
-       ajouterLog(LOG_CRITICAL, "Résultat brut de la requête: " . print_r($professeurs, true));
        return $professeurs;
    }
    catch(Exception $e)

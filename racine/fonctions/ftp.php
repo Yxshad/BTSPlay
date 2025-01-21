@@ -12,11 +12,8 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
         exit();
     }
     elseif (!ftp_login($conn_id, $ftp_user, $ftp_pass)) {
-        ajouterLog(LOG_FAIL, "Échec de la connexion pour l'utilisateur $ftp_user.");
+        ajouterLog(LOG_FAIL, "Échec de la connexion au serveur FTP $ftp_server pour l'utilisateur $ftp_user.");
         exit();
-    }
-    else{
-        ajouterLog(LOG_SUCCESS, "Connexion réussie pour l'utilisateur $ftp_user.");
     }
     return $conn_id;
 }

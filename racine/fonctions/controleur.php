@@ -32,6 +32,7 @@ function controleurRecupererTitreIdVideo() {
     if (!$tabURIS) {
         return $videos;
     }
+    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil");
     foreach ($tabURIS as $video) {
         $id = $video['id'];
         $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
@@ -66,6 +67,7 @@ function controleurRecupererInfosVideo() {
         header('Location: erreur.php?code=404');
         exit();
     }
+    ajouterLog(LOG_INFORM, "Chargement des informations de la vidéo n° $idVideo");
     $nomFichier = $video["mtd_tech_titre"];
     $miniature = trouverNomMiniature($nomFichier);
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);

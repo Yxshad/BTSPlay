@@ -6,6 +6,7 @@
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
  */
 function fonctionTransfert(){
+	ajouterLog(LOG_INFORM, "Lancement de la fonction de transfert.");
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
 	$COLLECT_MPEG = [];
@@ -17,7 +18,6 @@ function fonctionTransfert(){
 	$COLLECT_MPEG = remplirCollect_MPEG($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_MPEG);
 	//Alimenter le NAS MPEG
 	$COLLECT_MPEG = alimenterNAS_MPEG($COLLECT_MPEG);
-
 	//Mettre à jour la base avec $COLLECT_MPEG
 	insertionCollect_MPEG($COLLECT_MPEG);
     ajouterLog(LOG_SUCCESS, "Fonction de transfert effectuée avec succès.");
@@ -50,7 +50,7 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 			$cheminFichier = dirname($fichier) . '/';
 
 			// Si le fichier n'est pas présent en base
-			if (!verifierFichierPresentEnBase($URI_NAS_RACINE.$cheminFichier, $nom_fichier, $extension)) {
+			if (!verifierFichierPresentEnBase($cheminFichier, $nom_fichier, $extension)) {
 
 				//RECUPERATION VIA LECTURE FTP
 				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nom_fichier);
@@ -436,15 +436,11 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
  * Retourne true si le fichier est présent, false sinon
  */
 function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
-
 	$cheminFichierNAS_MPEG = trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier);
-
-	// Forcer l'extension à .mp4
+	// Forcer l'extension à .mp4 (si des vidéos sont présentes en .mxf)
 	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
 	$nomFichier = $nomFichierSansExtension . '.mp4';
-
 	$videoPresente = verifierPresenceVideoNAS_MPEG($cheminFichierNAS_MPEG, $nomFichier);
-
 	return $videoPresente;
 }
 
@@ -603,6 +599,7 @@ function miseAJourMetadonneesVideo(
 	if (!$responsableSon == "") {
 		assignerResponsable($idVid, $responsableSon);
 	}
+	ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
 }
 
 //récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
