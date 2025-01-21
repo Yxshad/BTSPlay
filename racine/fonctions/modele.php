@@ -552,6 +552,30 @@ function getVideo($path)
    }
 }
 
+function getInfosVideo($idVideo)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT * 
+   FROM Media
+   WHERE id = ?');                                                 
+   try{
+       $requeteVid->execute([$idVideo]);
+       $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($infosVideo) {
+        return $infosVideo;
+       } 
+       else {
+           return false;
+       }
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
 
 /**
  * @getUriNASMPEG
