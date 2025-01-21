@@ -49,7 +49,10 @@ function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $f
     $fichierLocal = $cheminLocal . $nomFichier;
     // Envoyer le fichier
     if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
-        echo "Échec de l'export du fichier '$fichierLocal' vers '$cheminDistantNAS'<br>";
+        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal vers $cheminDistantNAS");
+    }
+    else{
+        ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal exporté avec succès dans $cheminDistantNAS.");
     }
     ftp_close($conn_id);
 }

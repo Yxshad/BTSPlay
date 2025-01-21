@@ -10,7 +10,7 @@
 	<script src="../ressources/Script/script.js"></script>
 	<title>Fonction de transfert</title>
 
-<?php require '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/header.php';?>
 
 	<h1> Fonction de transfert </h1>
 	<form method="post">

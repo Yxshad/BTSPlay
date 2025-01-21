@@ -12,13 +12,17 @@ function fonctionTransfert(){
 	$COLLECT_MPEG = [];
 	//-----------------------   répertoire NAS_PAD      ------------------------
 	$COLLECT_PAD = recupererCollectNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_VIDEOS_A_ANALYSER, $COLLECT_PAD, URI_RACINE_NAS_PAD);
+	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS PAD. " . count($COLLECT_PAD) . " fichiers trouvés.");
 	//-----------------------   répertoire NAS_ARCH      ------------------------
 	$COLLECT_ARCH = recupererCollectNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_VIDEOS_A_ANALYSER, $COLLECT_ARCH, URI_RACINE_NAS_ARCH);
+	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS ARCH. " . count($COLLECT_ARCH) . " fichiers trouvés.");
 	//Remplir $COLLECT_MPEG
 	$COLLECT_MPEG = remplirCollect_MPEG($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_MPEG);
 	//Alimenter le NAS MPEG
+	ajouterLog(LOG_INFORM, "Alimentation du NAS MPEG avec " . count($COLLECT_MPEG) . " fichiers." );
 	$COLLECT_MPEG = alimenterNAS_MPEG($COLLECT_MPEG);
 	//Mettre à jour la base avec $COLLECT_MPEG
+	ajouterLog(LOG_INFORM, "Insertion des informations dans la base de données.");
 	insertionCollect_MPEG($COLLECT_MPEG);
     ajouterLog(LOG_SUCCESS, "Fonction de transfert effectuée avec succès.");
 }
