@@ -12,7 +12,7 @@
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
-    $allProf = getAllProf();
+    $listeProfesseurs = controleurRecupererListeProfesseurs();
 ?>
 
 <!DOCTYPE html>
@@ -56,7 +56,7 @@
                     <label for="profReferent" class="form-label">Professeur référant</label>
                     <select id="profReferent" name="profReferent">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">Professeur actuel : <?php echo $mtdEdito["professeur"]; ?></option>
-                        <?php foreach ($allProf as $prof) { ?>
+                        <?php foreach ($listeProfesseurs as $prof) { ?>
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
                         <?php } ?>
                     </select>

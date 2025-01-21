@@ -62,6 +62,9 @@ function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
 function controleurRecupererInfosVideo() {
     $idVideo = controleurVerifierVideoParametre();
     // Récupère les informations de la vidéo
+
+    // #RISQUE : Ne plus passer une requete directement, appeler une fonction
+
     $video = fetchAll("SELECT * FROM Media WHERE id=$idVideo;");
     if ($video == null) {
         header('Location: erreur.php?code=404');
@@ -114,6 +117,16 @@ function controleurPreparerMetadonnees($idVideo){
             $responsableSon
         );
     }
+}
+
+function controleurRecupererListeProfesseurs(){
+    $listeProfesseurs = fetchAll("SELECT nom, prenom FROM Professeur;");
+
+	$resultat = array_map(function($item) {
+		return $item['nom'] . " " . $item['prenom'];
+	}, $listeProfesseurs);
+
+	return $resultat;
 }
 
 function controleurVerifierVideoParametre(){
