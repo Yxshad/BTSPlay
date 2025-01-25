@@ -18,8 +18,8 @@ $tabVideos = controleurRecupererTitreIdVideo();
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
-    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
+    <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
+    <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
 
 <?php require_once '../ressources/Templates/header.php'; ?>
 

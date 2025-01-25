@@ -25,10 +25,14 @@
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
     
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" /> -->
 
-<?php require_once '../ressources/Templates/header.php'; ?>
+    <!-- #RISQUE : Liens CDN utilisés dans la lib plyr.js -->
+    <script src="../ressources/lib/Plyr/plyr.js"></script>
+    <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
+
+<?php require_once '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="lecteurVideo">

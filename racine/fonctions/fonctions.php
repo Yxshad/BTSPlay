@@ -558,12 +558,21 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 /*
 *	Fonction qui retourne le titre de la vidéo
 *   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
+*   Si le nom du fichier ne contient pas le bon format, retourne le nom du fichier passé en paramètre
 */
 function recupererTitreVideo($nomFichier){
-	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
-	return $titre[1];
+	$titre = [];
+    if (preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/", $nomFichier, $titre)) {
+        if (isset($titre[1]) && !empty($titre[1])) {
+            return $titre[1];
+        }
+    }
+	else{
+		//Si le fichier a un nom particulier, on retourne son nom sans extension
+		$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	}
+    return $nomFichierSansExtension;
 }
-
 
 /*
 * Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo
