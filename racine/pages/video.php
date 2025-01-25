@@ -24,9 +24,6 @@
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
     
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />

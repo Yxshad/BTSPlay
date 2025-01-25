@@ -543,8 +543,6 @@ function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $
 	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
 	$cheminDossier = URI_VIDEOS_A_LIRE . $uriServeurNAS;
 
-	// #RISQUE : On peut créer énormément de dossiers similaires. --Problème résolu normalement
-
 	//Pas de création de dossier incrementale
 	creerDossier($cheminDossier, false);
 	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
