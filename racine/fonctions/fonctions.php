@@ -39,25 +39,25 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
 	// Lister les fichiers sur le serveur FTP
-	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
+	$fichiersNAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
 
-	foreach ($fichiers_NAS as $fichier) {
-        $nom_fichier = basename($fichier);
+	foreach ($fichiersNAS as $fichier) {
+        $nomFichier = basename($fichier);
 
-		$extension = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
+		$extensionFichier = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
 
 		//Si le fichier est une vidéo
-		if ($nom_fichier !== '.' && $nom_fichier !== '..'
-			&& ($extension == 'mxf' || $extension == 'mp4')) {
+		if ($nomFichier !== '.' && $nomFichier !== '..'
+			&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
 
 			//Chemin distant
 			$cheminFichier = dirname($fichier) . '/';
 
 			// Si le fichier n'est pas présent en base
-			if (!verifierFichierPresentEnBase($cheminFichier, $nom_fichier, $extension)) {
+			if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
 
 				//RECUPERATION VIA LECTURE FTP
-				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nom_fichier);
+				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
 
 				$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
 			}
@@ -131,20 +131,20 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 
 	foreach($COLLECT_MPEG as &$video){
 		//Téléchargement du fichier dans le répertoire local
-		$fichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+		$cheminFichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
 
 		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
 		if($video[MTD_URI_NAS_ARCH] != null && $video[MTD_URI_NAS_ARCH] != ""){
 			$conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-			$fichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			$cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_ARCH];
 		}
 		elseif($video[MTD_URI_NAS_PAD] != null && $video[MTD_URI_NAS_PAD] != ""){
 			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-			$fichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			$cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_PAD];
 		}
@@ -161,15 +161,14 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);
 		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
 
-		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
-		$fichierDestination = $video[MTD_TITRE];
+		$cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+		$cheminFichierDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
 
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
-		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
-		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+		$nomFichierSansExtension = pathinfo($cheminCompletFichierSource, PATHINFO_FILENAME);
+		$dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-		creerDossierFTP($conn_id, $cheminDestination);
+		creerDossierFTP($conn_id, $cheminFichierDestination);
 		creerDossierFTP($conn_id, $dossierVideo);
 		ftp_close($conn_id);
 
@@ -177,16 +176,15 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Générer la miniature de la vidéo
-		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
+		$miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
 
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Supprimer la vidéo de l'espace local et sa miniature
-		unlink($fichierSource);
+		unlink($cheminCompletFichierSource);
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
 		//Ajouter l'URI du NAS MPEG à $video dans collectMPEG
-
 		//On retire la racine du NAS MPEG
 		if (strpos($dossierVideo, URI_RACINE_NAS_MPEG) == 0) {
 			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_NAS_MPEG));
