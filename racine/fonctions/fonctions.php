@@ -236,14 +236,14 @@ function afficherCollect($titre, $COLLECT_NAS) {
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
  * (pathinfo pour ne pas tenir compte de l'extension)
  */
-function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
+function verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2){
     
-    if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
-        && $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
-        && $video_1[MTD_FPS] == $video_2[MTD_FPS]
-        && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
-        && $video_1[MTD_DUREE] == $video_2[MTD_DUREE]
-        && $video_1[MTD_URI] == $video_2[MTD_URI]) {
+    if (pathinfo($donneesVideo1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($donneesVideo2[MTD_TITRE], PATHINFO_FILENAME)
+        && $donneesVideo1[MTD_FORMAT] == $donneesVideo2[MTD_FORMAT]
+        && $donneesVideo1[MTD_FPS] == $donneesVideo2[MTD_FPS]
+        && $donneesVideo1[MTD_RESOLUTION] == $donneesVideo2[MTD_RESOLUTION]
+        && $donneesVideo1[MTD_DUREE] == $donneesVideo2[MTD_DUREE]
+        && $donneesVideo1[MTD_URI] == $donneesVideo2[MTD_URI]) {
         return true;
     }
     else {
@@ -257,15 +257,15 @@ function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
  * (pathinfo pour ne pas tenir compte de l'extension)
  * On prend cependant compte du chemin du fichier
  */
-function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2) {
+function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichierComplet2) {
 
-    $cheminFichier_1 = pathinfo($nomVideo_1, PATHINFO_DIRNAME);
-    $cheminFichier_2 = pathinfo($nomVideo_2, PATHINFO_DIRNAME);
+    $cheminFichier1 = pathinfo($cheminFichierComplet1, PATHINFO_DIRNAME);
+    $cheminFichier2 = pathinfo($cheminFichierComplet2, PATHINFO_DIRNAME);
 
-    $nomFichier_1 = pathinfo($nomVideo_1, PATHINFO_FILENAME);
-    $nomFichier_2 = pathinfo($nomVideo_2, PATHINFO_FILENAME);
+    $nomFichier1 = pathinfo($cheminFichierComplet1, PATHINFO_FILENAME);
+    $nomFichier2 = pathinfo($cheminFichierComplet2, PATHINFO_FILENAME);
 
-    if ($cheminFichier_1 == $cheminFichier_2 && $nomFichier_1 == $nomFichier_2) {
+    if ($cheminFichier1 == $cheminFichier2 && $nomFichier1 == $nomFichier2) {
         return true;
     } else {
         return false;
@@ -281,14 +281,15 @@ function fonctionReconciliation() {
 	// Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
 
 	// #RISQUE : Incomprehension sur les spec de la fonction de réconciliation
-	// SelectALL en BD pour récupérer tous les noms des vidéos -- Dans les faits on les récupère dans les NAS
-	$listeVideos_NAS_1 = [];
-	$listeVideos_NAS_2 = [];
-	$listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideos_NAS_1);
-	$listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideos_NAS_2);
+	// Il faudra pouvoir comparer un fichier et ses infos dans la base de données
+
+	$listeVideosNAS_1 = [];
+	$listeVideosNAS_2 = [];
+	$listeVideosNAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideosNAS_1);
+	$listeVideosNAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideosNAS_2);
 
 	$listeVideosManquantes = [];
-	$listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosManquantes);
+	$listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideosNAS_1, $listeVideosNAS_2, $listeVideosManquantes);
 
 	// #RIQUE : Affichage pas encore implémenté
 	//Pour chaque vidéo manquante, afficher un message d'information
@@ -302,14 +303,14 @@ function fonctionReconciliation() {
  * Prend en paramètre les noms des deux NAS, les listes des noms des vidéos des deux NAS et une liste vide de vidéos manquantes.
  * Retourne $listeVideosManquantes valorisée
  */
-function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
-    foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {
+function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes) {
+    foreach ($nomsVideosNAS_1 as $key1 => $nomVideoNAS1) {
         $videoManquanteDansNAS2 = true;
-        foreach ($nomsVideos_NAS2 as $key2 => $nomVideoNAS2) {
+        foreach ($nomsVideosNAS_2 as $key2 => $nomVideoNAS2) {
 
             if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
-				unset($nomsVideos_NAS1[$key1]);
-                unset($nomsVideos_NAS2[$key2]);
+				unset($nomsVideosNAS_1[$key1]);
+                unset($nomsVideosNAS_2[$key2]);
                 $videoManquanteDansNAS2 = false;
                 break;
             }
@@ -319,11 +320,11 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVi
                 MTD_TITRE => $nomVideoNAS1,
                 EMPLACEMENT_MANQUANT => $nomNAS_2
             ];
-			unset($nomsVideos_NAS1[$key1]);
+			unset($nomsVideosNAS_1[$key1]);
         }
     }
     // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
-    foreach ($nomsVideos_NAS2 as $nomVideoNAS2Restant) {
+    foreach ($nomsVideosNAS_2 as $nomVideoNAS2Restant) {
         $listeVideosManquantes[] = [
             MTD_TITRE => $nomVideoNAS2Restant,
             EMPLACEMENT_MANQUANT => $nomNAS_1
@@ -382,9 +383,9 @@ function ajouterLog($typeLog, $message){
  * Prend en paramètre le nom de la vidéo à trouver
  * Renvoie le nom de la miniature
  */
-function trouverNomMiniature($titreVideo) {
-    $nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
-    return $nomSansExtension . SUFFIXE_MINIATURE_VIDEO;
+function trouverNomMiniature($nomFichierVideo) {
+    $nomFichierSansExtension = pathinfo($nomFichierVideo, PATHINFO_FILENAME);
+    return $nomFichierSansExtension . SUFFIXE_MINIATURE_VIDEO;
 }
 
 
@@ -393,9 +394,9 @@ function trouverNomMiniature($titreVideo) {
  * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
  * Renvoie le nom de la vidéo
  */
-function trouverNomVideo($titreMiniature) {
-    $nomSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $titreMiniature);
-    return $nomSansExtension . SUFFIXE_VIDEO;
+function trouverNomVideo($nomFichierMiniature) {
+    $nomFichierSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $nomFichierMiniature);
+    return $nomFichierSansExtension . SUFFIXE_VIDEO;
 }
 
 
@@ -529,28 +530,26 @@ function scanDossierDecoupeVideo(){
  * Fonction qui permet de charger une miniature dans l'espace local
  * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
  * 	pour laquelle trouver l'URI et les logins FTP
- * Retourne le cheminLocalComplet de la miniature
+ * Retourne le cheminFichierLocalComplet de la miniature
  */
-function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $ftp_pass){
+function chargerMiniature($URIServeurNAS, $nomFichierVideo, $ftp_server, $ftp_user, $ftp_pass){
 
 	//Définition du chemin complet de la miniature
-	$miniature = trouverNomMiniature($titreVideo);
-	$cheminDistantComplet = $uriServeurNAS . $miniature;
+	$nomFichierMiniature = trouverNomMiniature($nomFichierVideo);
+	$cheminFichierDistantComplet = $URIServeurNAS . $nomFichierMiniature;
 
 	//Création d'un dossier dans l'espace local
-	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
-	$cheminDossier = URI_VIDEOS_A_LIRE . $uriServeurNAS;
+	$cheminDossier = URI_VIDEOS_A_LIRE . $URIServeurNAS;
 
 	//Pas de création de dossier incrementale
 	creerDossier($cheminDossier, false);
-	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
+	$cheminFichierLocalComplet = $cheminDossier . '/' . $nomFichierMiniature;
 	
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-	telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
+	telechargerFichier($conn_id, $cheminFichierLocalComplet, $cheminFichierDistantComplet);
     ftp_close($conn_id);
 
-	return $cheminLocalComplet;
-	exit();
+	return $cheminFichierLocalComplet;
 }
 
 /*
