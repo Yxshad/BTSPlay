@@ -1,4 +1,8 @@
-<?php session_start(); ?>
+<?php
+    session_start();
+    require_once '../fonctions/controleur.php';
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -13,30 +17,24 @@
 
 <div class="container">
     <div>
-        <form method="POST" action="home.php">
+        <form method="POST" action="#">
+        <input type="hidden" name="action" value="connexionUtilisateur">
             <div class="profile_picture">
                 <img src="../ressources/Images/account.png" alt="profile-picture">
             </div>
             <div class="username">
                 <p>Nom d'utilisateur : </p>
-                <input type="text" name="username">
+                <input type="text" name="loginUser">
             </div>
             <div class="password">
                 <p>Mot de passe : </p>
-                <input type="password" name="password">
+                <input type="password" name="passwordUser">
             </div>
             <div class="confirmer">
-                <button>Valider</button>
+                <button type="submit" class="btn">Confirmer</button>
             </div>
         </form>
     </div>
 </div>
 
 <?php require_once '../ressources/Templates/footer.php';?>
-
-<script>
-    document.querySelector(".confirmer button").addEventListener("click",function(e) {
-        document.querySelector("form").submit();
-    }
-)
-</script>

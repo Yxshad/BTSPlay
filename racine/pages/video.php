@@ -91,7 +91,7 @@
                 </div>
                 <p>Diffuser</p>
             </a>
-            <a href="formulaire.php?v=<?php echo $idVideo; ?>" class="btnVideo">
+            <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
                 </div>

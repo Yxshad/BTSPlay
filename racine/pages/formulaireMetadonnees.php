@@ -87,7 +87,6 @@
 
     <div class="btns">
         <a href="video.php?v=<?php echo $idVideo; ?>" class="btn">Terminer</a>
-        
     </div>
 </div>
 

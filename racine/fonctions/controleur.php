@@ -19,6 +19,11 @@ if (isset($_POST["action"])) {
         $idVideo = $_POST['idVideo'];
         controleurPreparerMetadonnees($idVideo);
     }
+    if ($_POST["action"] == "connexionUtilisateur") {
+        $loginUser = $_POST['loginUser'];
+        $passwordUser = $_POST['passwordUser'];
+        controleurIdentifierUtilisateur($loginUser, $passwordUser);
+    }
 }
 
 /**
@@ -132,6 +137,27 @@ function controleurVerifierVideoParametre(){
     $idVideo = intval($_GET['v']);
 
     return $idVideo;
+}
+
+function controleurIdentifierUtilisateur($loginUser, $passwordUser){
+
+    $passwordHache = hash('sha256', $passwordUser);
+
+    //regarder si login + mdp en base, récupérer le rôle si trouvé. Sinon, message d'erreur
+    $role = connexionProfesseur($loginUser, $passwordHache);
+
+    ajouterLog(LOG_INFORM, $loginUser);
+    ajouterLog(LOG_INFORM, $passwordHache);
+
+    if($role == false){
+        ajouterLog(LOG_FAIL, "Erreur d'authentification");
+    }
+    else{
+        $_SESSION["loginUser"] = $loginUser;
+        $_SESSION["role"] = $role["role"];
+
+        header('Location: home.php');
+    }
 }
 
 ?>

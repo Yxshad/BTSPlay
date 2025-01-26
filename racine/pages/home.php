@@ -1,8 +1,5 @@
 <?php 
-session_start(); 
- if(isset($_POST["username"])){
-    $_SESSION["username"] = $_POST["username"];
-}
+session_start();
 require_once '../fonctions/controleur.php';
 $tabVideos = controleurRecupererTitreIdVideo();
 ?>
