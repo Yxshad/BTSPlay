@@ -41,17 +41,15 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	// Lister les fichiers sur le serveur FTP
 	$fichiersNAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
 
-	foreach ($fichiersNAS as $fichier) {
-        $nomFichier = basename($fichier);
+	foreach ($fichiersNAS as $cheminFichierComplet) {
 
-		$extensionFichier = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
+        $nomFichier = basename($cheminFichierComplet);
+		$cheminFichier = dirname($cheminFichierComplet) . '/';	
+		$extensionFichier = recupererExtensionFichier($nomFichier);
 
 		//Si le fichier est une vidéo
 		if ($nomFichier !== '.' && $nomFichier !== '..'
 			&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
-
-			//Chemin distant
-			$cheminFichier = dirname($fichier) . '/';
 
 			// Si le fichier n'est pas présent en base
 			if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
@@ -158,14 +156,13 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		fusionnerVideo($video[MTD_TITRE]);
 
 		// Forcer l'extension à .mp4
-		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);
-		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
+		$video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 
 		$cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
 		$cheminFichierDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
 
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
-		$nomFichierSansExtension = pathinfo($cheminCompletFichierSource, PATHINFO_FILENAME);
+		$nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
 		$dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 		creerDossierFTP($conn_id, $cheminFichierDestination);
@@ -384,7 +381,7 @@ function ajouterLog($typeLog, $message){
  * Renvoie le nom de la miniature
  */
 function trouverNomMiniature($nomFichierVideo) {
-    $nomFichierSansExtension = pathinfo($nomFichierVideo, PATHINFO_FILENAME);
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichierVideo);
     return $nomFichierSansExtension . SUFFIXE_MINIATURE_VIDEO;
 }
 
@@ -440,9 +437,10 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
  */
 function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 	$cheminFichierNAS_MPEG = trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier);
+	
 	// Forcer l'extension à .mp4 (si des vidéos sont présentes en .mxf)
-	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
-	$nomFichier = $nomFichierSansExtension . '.mp4';
+	$nomFichier = forcerExtensionMp4($nomFichier);
+
 	$videoPresente = verifierPresenceVideoNAS_MPEG($cheminFichierNAS_MPEG, $nomFichier);
 	return $videoPresente;
 }
@@ -453,7 +451,7 @@ function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
  * Retourne le chemin du fichier dans le NAS MPEG
  */
 function trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier){
-	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	$cheminFichierNAS_MPEG = $cheminFichier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 	return $cheminFichierNAS_MPEG;
 }
@@ -558,17 +556,30 @@ function chargerMiniature($URIServeurNAS, $nomFichierVideo, $ftp_server, $ftp_us
 *   Si le nom du fichier ne contient pas le bon format, retourne le nom du fichier passé en paramètre
 */
 function recupererTitreVideo($nomFichier){
-	$titre = [];
-    if (preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/", $nomFichier, $titre)) {
-        if (isset($titre[1]) && !empty($titre[1])) {
-            return $titre[1];
+	$titreVideo = [];
+    if (preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/", $nomFichier, $titreVideo)) {
+        if (isset($titreVideo[1]) && !empty($titreVideo[1])) {
+            return $titreVideo[1];
         }
     }
 	else{
 		//Si le fichier a un nom particulier, on retourne son nom sans extension
-		$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+		$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	}
     return $nomFichierSansExtension;
+}
+
+function recupererExtensionFichier($nomFichier){
+	return substr(pathinfo($nomFichier, PATHINFO_EXTENSION), -3);
+}
+
+function recupererNomFichierSansExtension($nomFichier){
+	return pathinfo($nomFichier, PATHINFO_FILENAME);
+}
+
+function forcerExtensionMp4($nomFichier){
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
+	return $nomFichierSansExtension . '.mp4';
 }
 
 /*
