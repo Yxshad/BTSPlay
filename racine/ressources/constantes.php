@@ -23,6 +23,15 @@
     const LOGIN_NAS_MPEG = 'user3';
     const PASSWORD_NAS_MPEG = 'pass3';
 
+    //CONSTANTES DE LA BASE DE DONNEES
+    // #RISQUE : Changement des informations de la base de données
+
+    const BD_HOST = 'mysql_BTSPlay';
+    const BD_PORT = '3306:3306';
+    const BD_NAME = 'mydatabase';
+    const BD_USER = 'myuser';
+    const BD_PASSWORD = 'mypassword';
+
     //CONSTANTES DES METADONNEES
     const MTD_TITRE = 'Titre';
     const MTD_FPS = 'FPS';

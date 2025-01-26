@@ -146,13 +146,11 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
     //regarder si login + mdp en base, récupérer le rôle si trouvé. Sinon, message d'erreur
     $role = connexionProfesseur($loginUser, $passwordHache);
 
-    ajouterLog(LOG_INFORM, $loginUser);
-    ajouterLog(LOG_INFORM, $passwordHache);
-
     if($role == false){
-        ajouterLog(LOG_FAIL, "Erreur d'authentification");
+        ajouterLog(LOG_FAIL, "Erreur d'authentification pour l'utilisateur $loginUser.");
     }
     else{
+        ajouterLog(LOG_INFORM, "L'utilisateur $loginUser s'est connecté.");
         $_SESSION["loginUser"] = $loginUser;
         $_SESSION["role"] = $role["role"];
 
