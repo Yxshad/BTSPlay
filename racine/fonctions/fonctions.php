@@ -39,25 +39,23 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
 	// Lister les fichiers sur le serveur FTP
-	$fichiers_NAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
+	$fichiersNAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
 
-	foreach ($fichiers_NAS as $fichier) {
-        $nom_fichier = basename($fichier);
+	foreach ($fichiersNAS as $cheminFichierComplet) {
 
-		$extension = substr(pathinfo($fichier, PATHINFO_EXTENSION), -3);
+        $nomFichier = basename($cheminFichierComplet);
+		$cheminFichier = dirname($cheminFichierComplet) . '/';	
+		$extensionFichier = recupererExtensionFichier($nomFichier);
 
 		//Si le fichier est une vidéo
-		if ($nom_fichier !== '.' && $nom_fichier !== '..'
-			&& ($extension == 'mxf' || $extension == 'mp4')) {
-
-			//Chemin distant
-			$cheminFichier = dirname($fichier) . '/';
+		if ($nomFichier !== '.' && $nomFichier !== '..'
+			&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
 
 			// Si le fichier n'est pas présent en base
-			if (!verifierFichierPresentEnBase($cheminFichier, $nom_fichier, $extension)) {
+			if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
 
 				//RECUPERATION VIA LECTURE FTP
-				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nom_fichier);
+				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
 
 				$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
 			}
@@ -131,20 +129,20 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 
 	foreach($COLLECT_MPEG as &$video){
 		//Téléchargement du fichier dans le répertoire local
-		$fichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+		$cheminFichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
 
 		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
 		if($video[MTD_URI_NAS_ARCH] != null && $video[MTD_URI_NAS_ARCH] != ""){
 			$conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-			$fichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			$cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_ARCH];
 		}
 		elseif($video[MTD_URI_NAS_PAD] != null && $video[MTD_URI_NAS_PAD] != ""){
 			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-			$fichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
+			$cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_PAD];
 		}
@@ -158,18 +156,16 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		fusionnerVideo($video[MTD_TITRE]);
 
 		// Forcer l'extension à .mp4
-		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);
-		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
+		$video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 
-		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
-		$fichierDestination = $video[MTD_TITRE];
+		$cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+		$cheminFichierDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
 
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
-		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
-		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+		$nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
+		$dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-		creerDossierFTP($conn_id, $cheminDestination);
+		creerDossierFTP($conn_id, $cheminFichierDestination);
 		creerDossierFTP($conn_id, $dossierVideo);
 		ftp_close($conn_id);
 
@@ -177,16 +173,15 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Générer la miniature de la vidéo
-		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
+		$miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
 
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 
 		//Supprimer la vidéo de l'espace local et sa miniature
-		unlink($fichierSource);
+		unlink($cheminCompletFichierSource);
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
 		//Ajouter l'URI du NAS MPEG à $video dans collectMPEG
-
 		//On retire la racine du NAS MPEG
 		if (strpos($dossierVideo, URI_RACINE_NAS_MPEG) == 0) {
 			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_NAS_MPEG));
@@ -238,14 +233,14 @@ function afficherCollect($titre, $COLLECT_NAS) {
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
  * (pathinfo pour ne pas tenir compte de l'extension)
  */
-function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
+function verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2){
     
-    if (pathinfo($video_1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($video_2[MTD_TITRE], PATHINFO_FILENAME)
-        && $video_1[MTD_FORMAT] == $video_2[MTD_FORMAT]
-        && $video_1[MTD_FPS] == $video_2[MTD_FPS]
-        && $video_1[MTD_RESOLUTION] == $video_2[MTD_RESOLUTION]
-        && $video_1[MTD_DUREE] == $video_2[MTD_DUREE]
-        && $video_1[MTD_URI] == $video_2[MTD_URI]) {
+    if (pathinfo($donneesVideo1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($donneesVideo2[MTD_TITRE], PATHINFO_FILENAME)
+        && $donneesVideo1[MTD_FORMAT] == $donneesVideo2[MTD_FORMAT]
+        && $donneesVideo1[MTD_FPS] == $donneesVideo2[MTD_FPS]
+        && $donneesVideo1[MTD_RESOLUTION] == $donneesVideo2[MTD_RESOLUTION]
+        && $donneesVideo1[MTD_DUREE] == $donneesVideo2[MTD_DUREE]
+        && $donneesVideo1[MTD_URI] == $donneesVideo2[MTD_URI]) {
         return true;
     }
     else {
@@ -259,15 +254,15 @@ function verifierCorrespondanceMdtTechVideos($video_1, $video_2){
  * (pathinfo pour ne pas tenir compte de l'extension)
  * On prend cependant compte du chemin du fichier
  */
-function verifierCorrespondanceNomsVideos($nomVideo_1, $nomVideo_2) {
+function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichierComplet2) {
 
-    $cheminFichier_1 = pathinfo($nomVideo_1, PATHINFO_DIRNAME);
-    $cheminFichier_2 = pathinfo($nomVideo_2, PATHINFO_DIRNAME);
+    $cheminFichier1 = pathinfo($cheminFichierComplet1, PATHINFO_DIRNAME);
+    $cheminFichier2 = pathinfo($cheminFichierComplet2, PATHINFO_DIRNAME);
 
-    $nomFichier_1 = pathinfo($nomVideo_1, PATHINFO_FILENAME);
-    $nomFichier_2 = pathinfo($nomVideo_2, PATHINFO_FILENAME);
+    $nomFichier1 = pathinfo($cheminFichierComplet1, PATHINFO_FILENAME);
+    $nomFichier2 = pathinfo($cheminFichierComplet2, PATHINFO_FILENAME);
 
-    if ($cheminFichier_1 == $cheminFichier_2 && $nomFichier_1 == $nomFichier_2) {
+    if ($cheminFichier1 == $cheminFichier2 && $nomFichier1 == $nomFichier2) {
         return true;
     } else {
         return false;
@@ -283,14 +278,15 @@ function fonctionReconciliation() {
 	// Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
 
 	// #RISQUE : Incomprehension sur les spec de la fonction de réconciliation
-	// SelectALL en BD pour récupérer tous les noms des vidéos -- Dans les faits on les récupère dans les NAS
-	$listeVideos_NAS_1 = [];
-	$listeVideos_NAS_2 = [];
-	$listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideos_NAS_1);
-	$listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideos_NAS_2);
+	// Il faudra pouvoir comparer un fichier et ses infos dans la base de données
+
+	$listeVideosNAS_1 = [];
+	$listeVideosNAS_2 = [];
+	$listeVideosNAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideosNAS_1);
+	$listeVideosNAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideosNAS_2);
 
 	$listeVideosManquantes = [];
-	$listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosManquantes);
+	$listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideosNAS_1, $listeVideosNAS_2, $listeVideosManquantes);
 
 	// #RIQUE : Affichage pas encore implémenté
 	//Pour chaque vidéo manquante, afficher un message d'information
@@ -304,14 +300,14 @@ function fonctionReconciliation() {
  * Prend en paramètre les noms des deux NAS, les listes des noms des vidéos des deux NAS et une liste vide de vidéos manquantes.
  * Retourne $listeVideosManquantes valorisée
  */
-function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVideos_NAS2, $listeVideosManquantes) {
-    foreach ($nomsVideos_NAS1 as $key1 => $nomVideoNAS1) {
+function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes) {
+    foreach ($nomsVideosNAS_1 as $key1 => $nomVideoNAS1) {
         $videoManquanteDansNAS2 = true;
-        foreach ($nomsVideos_NAS2 as $key2 => $nomVideoNAS2) {
+        foreach ($nomsVideosNAS_2 as $key2 => $nomVideoNAS2) {
 
             if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
-				unset($nomsVideos_NAS1[$key1]);
-                unset($nomsVideos_NAS2[$key2]);
+				unset($nomsVideosNAS_1[$key1]);
+                unset($nomsVideosNAS_2[$key2]);
                 $videoManquanteDansNAS2 = false;
                 break;
             }
@@ -321,11 +317,11 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideos_NAS1, $nomsVi
                 MTD_TITRE => $nomVideoNAS1,
                 EMPLACEMENT_MANQUANT => $nomNAS_2
             ];
-			unset($nomsVideos_NAS1[$key1]);
+			unset($nomsVideosNAS_1[$key1]);
         }
     }
     // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
-    foreach ($nomsVideos_NAS2 as $nomVideoNAS2Restant) {
+    foreach ($nomsVideosNAS_2 as $nomVideoNAS2Restant) {
         $listeVideosManquantes[] = [
             MTD_TITRE => $nomVideoNAS2Restant,
             EMPLACEMENT_MANQUANT => $nomNAS_1
@@ -384,9 +380,9 @@ function ajouterLog($typeLog, $message){
  * Prend en paramètre le nom de la vidéo à trouver
  * Renvoie le nom de la miniature
  */
-function trouverNomMiniature($titreVideo) {
-    $nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
-    return $nomSansExtension . SUFFIXE_MINIATURE_VIDEO;
+function trouverNomMiniature($nomFichierVideo) {
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichierVideo);
+    return $nomFichierSansExtension . SUFFIXE_MINIATURE_VIDEO;
 }
 
 
@@ -395,9 +391,9 @@ function trouverNomMiniature($titreVideo) {
  * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
  * Renvoie le nom de la vidéo
  */
-function trouverNomVideo($titreMiniature) {
-    $nomSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $titreMiniature);
-    return $nomSansExtension . SUFFIXE_VIDEO;
+function trouverNomVideo($nomFichierMiniature) {
+    $nomFichierSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $nomFichierMiniature);
+    return $nomFichierSansExtension . SUFFIXE_VIDEO;
 }
 
 
@@ -441,9 +437,10 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
  */
 function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 	$cheminFichierNAS_MPEG = trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier);
+	
 	// Forcer l'extension à .mp4 (si des vidéos sont présentes en .mxf)
-	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
-	$nomFichier = $nomFichierSansExtension . '.mp4';
+	$nomFichier = forcerExtensionMp4($nomFichier);
+
 	$videoPresente = verifierPresenceVideoNAS_MPEG($cheminFichierNAS_MPEG, $nomFichier);
 	return $videoPresente;
 }
@@ -454,7 +451,7 @@ function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
  * Retourne le chemin du fichier dans le NAS MPEG
  */
 function trouverCheminNAS_MPEGVideo($cheminFichier, $nomFichier){
-	$nomFichierSansExtension = pathinfo($nomFichier, PATHINFO_FILENAME);
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	$cheminFichierNAS_MPEG = $cheminFichier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 	return $cheminFichierNAS_MPEG;
 }
@@ -531,41 +528,59 @@ function scanDossierDecoupeVideo(){
  * Fonction qui permet de charger une miniature dans l'espace local
  * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
  * 	pour laquelle trouver l'URI et les logins FTP
- * Retourne le cheminLocalComplet de la miniature
+ * Retourne le cheminFichierLocalComplet de la miniature
  */
-function chargerMiniature($uriServeurNAS, $titreVideo, $ftp_server, $ftp_user, $ftp_pass){
+function chargerMiniature($URIServeurNAS, $nomFichierVideo, $ftp_server, $ftp_user, $ftp_pass){
 
 	//Définition du chemin complet de la miniature
-	$miniature = trouverNomMiniature($titreVideo);
-	$cheminDistantComplet = $uriServeurNAS . $miniature;
+	$nomFichierMiniature = trouverNomMiniature($nomFichierVideo);
+	$cheminFichierDistantComplet = $URIServeurNAS . $nomFichierMiniature;
 
 	//Création d'un dossier dans l'espace local
-	$nomSansExtension = pathinfo($titreVideo, PATHINFO_FILENAME);
-	$cheminDossier = URI_VIDEOS_A_LIRE . $uriServeurNAS;
-
-	// #RISQUE : On peut créer énormément de dossiers similaires. --Problème résolu normalement
+	$cheminDossier = URI_VIDEOS_A_LIRE . $URIServeurNAS;
 
 	//Pas de création de dossier incrementale
 	creerDossier($cheminDossier, false);
-	$cheminLocalComplet = $cheminDossier . '/' . $miniature;
+	$cheminFichierLocalComplet = $cheminDossier . '/' . $nomFichierMiniature;
 	
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-	telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
+	telechargerFichier($conn_id, $cheminFichierLocalComplet, $cheminFichierDistantComplet);
     ftp_close($conn_id);
 
-	return $cheminLocalComplet;
-	exit();
+	return $cheminFichierLocalComplet;
 }
 
 /*
 *	Fonction qui retourne le titre de la vidéo
 *   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
+*   Si le nom du fichier ne contient pas le bon format, retourne le nom du fichier passé en paramètre
 */
 function recupererTitreVideo($nomFichier){
-	preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/",$nomFichier,$titre);
-	return $titre[1];
+	$titreVideo = [];
+    if (preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/", $nomFichier, $titreVideo)) {
+        if (isset($titreVideo[1]) && !empty($titreVideo[1])) {
+            return $titreVideo[1];
+        }
+    }
+	else{
+		//Si le fichier a un nom particulier, on retourne son nom sans extension
+		$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
+	}
+    return $nomFichierSansExtension;
 }
 
+function recupererExtensionFichier($nomFichier){
+	return substr(pathinfo($nomFichier, PATHINFO_EXTENSION), -3);
+}
+
+function recupererNomFichierSansExtension($nomFichier){
+	return pathinfo($nomFichier, PATHINFO_FILENAME);
+}
+
+function forcerExtensionMp4($nomFichier){
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
+	return $nomFichierSansExtension . '.mp4';
+}
 
 /*
 * Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo

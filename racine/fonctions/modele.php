@@ -920,4 +920,29 @@ function verifierPresenceVideoNAS_MPEG($cheminFichier, $nomFichier)
    }
 }
 
+/**
+ * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
+ * renvoie le rôle si trouvé, false sinon
+ */
+function connexionProfesseur($loginUser, $passwordUser)
+{
+   $connexion = connexionBD();                     
+   try{
+       $requeteConnexion = $connexion->prepare('SELECT role
+       FROM Professeur P
+       WHERE P.identifiant = ?
+       AND P.motdepasse = ?');   
+       $requeteConnexion->execute([$loginUser, $passwordUser]);
+        $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
+
+        return $resultatRequeteConnexion;
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
 ?>

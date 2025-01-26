@@ -19,7 +19,7 @@
             </form>
             
             <div class="compte">
-                <?php if(!isset($_SESSION["username"])){ ?>
+                <?php if(!isset($_SESSION["loginUser"])){ ?>
                     <a href="compte.php">                 
                         Se connecter
                         <div class="logo-compte">
@@ -28,7 +28,7 @@
                     </a>
                 <?php }else{ ?>
                     <a class="btnSousMenu">
-                        <?php echo $_SESSION["username"]; ?>
+                        <?php echo $_SESSION["loginUser"]; ?>
                         <div class="logo-compte">
                             <img src="../ressources/Images/account.png" alt="Compte">
                         </div>

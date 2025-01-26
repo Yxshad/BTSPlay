@@ -24,14 +24,15 @@
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
-
-    <link rel="stylesheet" href="https://unpkg.com/swiper@10/swiper-bundle.min.css" />
-    <script src="https://unpkg.com/swiper@10/swiper-bundle.min.js"></script>
     
-    <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" /> -->
 
-<?php require_once '../ressources/Templates/header.php'; ?>
+    <!-- #RISQUE : Liens CDN utilisés dans la lib plyr.js -->
+    <script src="../ressources/lib/Plyr/plyr.js"></script>
+    <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
+
+<?php require_once '../ressources/Templates/header.php';?>
 
 <div class="container">
     <div class="lecteurVideo">
@@ -90,7 +91,7 @@
                 </div>
                 <p>Diffuser</p>
             </a>
-            <a href="formulaire.php?v=<?php echo $idVideo; ?>" class="btnVideo">
+            <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
                 </div>
