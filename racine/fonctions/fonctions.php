@@ -468,61 +468,39 @@ function insertionCollect_MPEG($COLLECT_MPEG){
 * Ne prend aucun paramètre
 * Retourne une liste avec les noms des vidéos en train de se faire découper
 */
-function scanDossierDecoupeVideo(){
-	$listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
-	$listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
-	$listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
-	$listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
+function scanDossierDecoupeVideo() {
+    $listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
+    $listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+    $listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
+    $listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
+	
+    $listeVideoDownload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoDownload);
+    $listeVideoDecoupage = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoDecoupage);
+    $listeVideoConversion = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoConversion);
+    $listeVideoUpload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoUpload);
 
-	$listeVideoDownload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoDownload);
-	$listeVideoDecoupage = array_map(function($e) { return substr($e,0,-10); }, $listeVideoDecoupage);
-	$listeVideoConversion = array_map(function($e) { return substr($e,0,-10); }, $listeVideoConversion);
-	$listeVideoUpload = array_map(function($e) { return substr($e,0,-4); }, $listeVideoUpload);
+    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
 
-	$listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
-
-	foreach ($listeVideo as $video) {
-		// #RISQUE : appel de base pour récupérer bdd
-		?>  <div class="ligne">
-				<div class="fleches">
-					<a class="fleche-haut">
-						<img src="../ressources/Images/arrow.png" alt="flèche">
-					</a>
-					<a class="fleche-bas">
-						<img src="../ressources/Images/arrow.png" alt="flèche">
-					</a>
-				</div>
-				<div class="imgVideo">
-					<img src="../ressources/Images/imgVideo.png" alt="">
-				</div>
-				<div class="info">
-					<p class="nomVideo"><?php echo $video; ?></p>
-					<p class="poidsVideo">20 go</p>
-				</div>
-				<div class="progress">
-					<?php
-					if (in_array($video, $listeVideoUpload)) {
-						echo "En cours d'upload";
-					} elseif (in_array($video, $listeVideoConversion)) {
-						echo "En cours de conversion";
-					} elseif (in_array($video, $listeVideoDecoupage)){
-						echo "En cours de découpe";
-					} else{
-						echo "En cours de téléchargement";
-					}
-					?>
-				</div>
-				<div class="bouton">
-					<a class="pause">
-						<img src="../ressources/Images/pause.png" alt="pause">
-					</a>
-				</div>
-			</div>
-			
-			<?php
-		
-	}
+    $result = [];
+    foreach ($listeVideo as $video) {
+        if (in_array($video, $listeVideoUpload)) {
+            $status = "En cours d'upload";
+        } elseif (in_array($video, $listeVideoConversion)) {
+            $status = "En cours de conversion";
+        } elseif (in_array($video, $listeVideoDecoupage)) {
+            $status = "En cours de découpe";
+        } else {
+            $status = "En cours de téléchargement";
+        }
+        $result[] = [
+            'nomVideo' => $video,
+            'poidsVideo' => 'XX mb',
+            'status' => $status
+        ];
+    }
+    echo json_encode($result);
 }
+
 
 /**
  * Fonction qui permet de charger une miniature dans l'espace local
