@@ -158,4 +158,13 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
     }
 }
 
+// Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
+// $compteAutorises est une liste des roles autorisé
+function controleurVerifierAcces($compteAutorises){
+    if (!in_array($_SESSION["role"], $compteAutorises)) {
+        header('Location: home.php');
+        exit();
+    }
+}
+
 ?>

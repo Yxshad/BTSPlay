@@ -1,4 +1,12 @@
-<?php session_start(); ?>
+<?php 
+
+session_start(); 
+
+// Si l'utilisateur n'est pas autorisé alors il est renvoyé sur la page d'accueil
+if ($_SESSION["role"] != "Administateur") {
+    header('Location: home.php');
+    exit();
+} ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
