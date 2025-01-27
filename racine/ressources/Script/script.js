@@ -162,10 +162,39 @@ function lancerConversion() {
 function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-      document.querySelector('.transferts .lignes').innerHTML = this.responseText;
-    }
+        const videos = JSON.parse(this.responseText);
+        const lignesContainer = document.querySelector('.transferts .lignes');
+        lignesContainer.innerHTML = '';
+        videos.forEach(video => {
+            const ligne = document.createElement('div');
+            ligne.classList.add('ligne');
+            ligne.innerHTML = `
+                <div class="fleches">
+                    <a class="fleche-haut">
+                        <img src="../ressources/Images/arrow.png" alt="flèche">
+                    </a>
+                    <a class="fleche-bas">
+                        <img src="../ressources/Images/arrow.png" alt="flèche">
+                    </a>
+                </div>
+                <div class="imgVideo">
+                    <img src="../ressources/Images/imgVideo.png" alt="">
+                </div>
+                <div class="info">
+                    <p class="nomVideo">${video.nomVideo}</p>
+                    <p class="poidsVideo">${video.poidsVideo}</p>
+                </div>
+                <div class="progress">${video.status}</div>
+                <div class="bouton">
+                    <a class="pause">
+                        <img src="../ressources/Images/pause.png" alt="pause">
+                    </a>
+                </div>
+            `;
+            lignesContainer.appendChild(ligne);
+        });
+    };
     xhttp.open("POST", "../fonctions/controleur.php");
-    
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=scanDossierDecoupeVideo");
 }

@@ -41,7 +41,7 @@
                     <div class="ligne">
                         <div>
                             <p>04/05/2025 17:42</p>
-                            <p>vidéo.mpeg</p>
+                            <p>vidéo.mp4</p>
                         </div>
                     </div>
                 <?php } ?>
