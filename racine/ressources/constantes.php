@@ -66,4 +66,8 @@
     //URI DU FICHIER DE LOG
     const URI_FICHIER_LOG = '../ressources/';
     const NOM_FICHIER_LOG = 'historique.log';
+
+    //NIVEAU D'AUTORISATION
+    const AUTORISATION_PROF = ["Professeur", "Administrateur"];
+    const AUTORISATION_ADMIN = ["Administrateur"];
 ?>

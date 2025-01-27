@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php 
+	session_start(); 
+	require_once '../fonctions/controleur.php';
+    controleurVerifierAcces(AUTORISATION_ADMIN);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -21,11 +26,6 @@
 
 
 <?php
-require '../fonctions/fonctions.php';
-require '../fonctions/ftp.php';
-require '../ressources/constantes.php';
-require '../fonctions/ffmpeg.php';
-require '../fonctions/modele.php';
 
 if (isset($_POST['declencherTransfert'])) {
 	fonctionTransfertAffiche();

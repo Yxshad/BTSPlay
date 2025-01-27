@@ -27,6 +27,7 @@
                         </div>
                     </a>
                 <?php }else{ ?>
+
                     <a class="btnSousMenu">
                         <?php echo $_SESSION["loginUser"]; ?>
                         <div class="logo-compte">
@@ -34,17 +35,23 @@
                         </div>
                     </a>
                     <div class="sousMenu">
-                        <a href="transfert.php">Transfert</a>
-                        <a href="sauvegarde.php">Sauvegarde</a>
-                        <a href="reconciliation.php">Réconciliation</a>
-                        <a href="../ressources/historique.log">Logs</a>
-                        <hr/>
+
+                        <?php
+                        if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
+                            <a href="transfert.php">Transfert</a>
+                            <a href="sauvegarde.php">Sauvegarde</a>
+                            <a href="reconciliation.php">Réconciliation</a>
+                            <a href="../ressources/historique.log">Logs</a>
+                            <hr/>
+                        <?php } ?>
+
                         <a href="logout.php">
                             <div class="logo-compte">
                                 <img src="../ressources/Images/logout.png" alt="Compte">
                             </div>
                             Déconnecter
                         </a>
+
                     </div>
                 <?php } ?>
             </div>
