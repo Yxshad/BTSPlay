@@ -127,18 +127,18 @@ function insertionProjet($projet)
 }
 
 /**
-* @Nom : insertionEleve
+* @Nom : insertionEtudiant
 * @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
 * @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
  */
-function insertionEleve($eleve)
+function insertionEtudiant($etudiant)
 {
-    if ($eleve != "") {
+    if ($etudiant != "") {
         $connexion = connexionBD();  
         try{
-            $verif = $connexion->prepare('INSERT INTO ELEVE (nomComplet) VALUES (?)');
-            $eleveAAjouter= $verif->execute([
-                $eleve]);          
+            $verif = $connexion->prepare('INSERT INTO ETUDIANT (nomComplet) VALUES (?)');
+            $etudiantAAjouter= $verif->execute([
+                $etudiant]);          
             $connexion->commit();  
             $connexion = null;
         }
@@ -281,16 +281,16 @@ function insertionEleve($eleve)
                         WHERE (idMedia = ? AND idRole = ?)');
                     $cadreur->execute([$idVideo, 1]);            
             for ($i=0; $i < count($tabCadreur); $i++) { 
-                if(!eleveInBD($tabCadreur[$i]))
+                if(!etudiantInBD($tabCadreur[$i]))
                 {
-                    insertionEleve($tabCadreur[$i]);
+                    insertionEtudiant($tabCadreur[$i]);
                 }
                 // Récupérer l'ID de l'élève
-                $idEleve = getIdEleve($tabCadreur[$i]);
+                $idEtudiant = getIdEtudiant($tabCadreur[$i]);
                 // Insertion si non existant
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
                     VALUES (?, ?, ?)');
-                $cadreur->execute([$idVideo, $idEleve, 1]);
+                $cadreur->execute([$idVideo, $idEtudiant, 1]);
             }
             $connexion->commit();  
             $connexion = null;
@@ -323,16 +323,16 @@ function insertionEleve($eleve)
                         WHERE (idMedia = ? AND idRole = ?)');
                     $cadreur->execute([$idVideo, 3]);
             for ($i=0; $i < count($tabResponsable); $i++) { 
-                if(!eleveInBD($tabResponsable[$i]))
+                if(!etudiantInBD($tabResponsable[$i]))
                 {
-                    insertionEleve($tabResponsable[$i]);
+                    insertionEtudiant($tabResponsable[$i]);
                 }
                 // Récupérer l'ID de l'élève
-                $idEleve = getIdEleve($tabResponsable[$i]);
+                $idEtudiant = getIdEtudiant($tabResponsable[$i]);
                 // Insertion si non existant
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
                     VALUES (?, ?, ?)');
-                $cadreur->execute([$idVideo, $idEleve, 3]);
+                $cadreur->execute([$idVideo, $idEtudiant, 3]);
             }
             $connexion->commit();  
             $connexion = null;
@@ -364,16 +364,16 @@ function insertionEleve($eleve)
                         WHERE (idMedia = ? AND idRole = ?)');
                     $cadreur->execute([$idVideo, 2]);
             for ($i=0; $i < count($tabRealisateur); $i++) { 
-                if(!eleveInBD($tabRealisateur[$i]))
+                if(!etudiantInBD($tabRealisateur[$i]))
                 {
-                    insertionEleve($tabRealisateur[$i]);
+                    insertionEtudiant($tabRealisateur[$i]);
                 }
                 // Récupérer l'ID de l'élève
-                $idEleve = getIdEleve($tabRealisateur[$i]);
+                $idEtudiant = getIdEtudiant($tabRealisateur[$i]);
                 // Insertion si non existant
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEleve, idRole) 
+                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
                     VALUES (?, ?, ?)');
-                $cadreur->execute([$idVideo, $idEleve, 2]);
+                $cadreur->execute([$idVideo, $idEtudiant, 2]);
             }
             $connexion->commit();  
             $connexion = null;
@@ -441,21 +441,21 @@ function insertionEleve($eleve)
  }
 
 /**
- * getIdEleve
+ * getIdEtudiant
  * renvoie l'id d'un élève
  * Ce code est catastrophique bref
  */
- function getIdEleve($eleve)
+ function getIdEtudiant($etudiant)
  {
     $connexion = connexionBD();
-    $requeteEleve = $connexion->prepare('SELECT id 
-    FROM Eleve
+    $requeteEtudiant = $connexion->prepare('SELECT id 
+    FROM Etudiant
     WHERE nomComplet = ?');                                                 
     try{
-        $requeteEleve->execute([$eleve]);
-        $eleveCherche = $requeteEleve->fetch(PDO::FETCH_ASSOC);
+        $requeteEtudiant->execute([$etudiant]);
+        $etudiantCherche = $requeteEtudiant->fetch(PDO::FETCH_ASSOC);
         $connexion = null;
-        return $eleveCherche['id'];
+        return $etudiantCherche['id'];
     }
     catch(Exception $e)
     {
@@ -626,17 +626,17 @@ function getParticipants($idVid) {
     $connexion = connexionBD();
     
     // Requête pour le réalisateur
-    $requeteRealisateur = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteRealisateur = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
     $requeteRealisateur->execute([$idVid, 2]);
     $realisateur = $requeteRealisateur->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour le cadreur
-    $requeteCadreur = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteCadreur = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
     $requeteCadreur->execute([$idVid, 1]);
     $cadreur = $requeteCadreur->fetchAll(PDO::FETCH_ASSOC);
 
     // Requête pour le son
-    $requeteSon = $connexion->prepare('SELECT Eleve.nomComplet FROM Eleve JOIN Participer ON Eleve.id = Participer.idEleve WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+    $requeteSon = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
     $requeteSon->execute([$idVid, 3]);
     $son = $requeteSon->fetchAll(PDO::FETCH_ASSOC);
 
@@ -655,20 +655,20 @@ function getParticipants($idVid) {
   *     TRUE / FALSE
   ############################*/
 
-/** @eleveInBD
+/** @etudiantInBD
  *  Renvoie un boléen si l'élève est dans la base de données
  */
-function eleveInBD($eleve)
+function etudiantInBD($etudiant)
 {
     $connexion = connexionBD(); 
-    $requeteEleve = $connexion->prepare('SELECT 1 
-    FROM Eleve
-    WHERE eleve.nomComplet = ?');                                                 
+    $requeteEtudiant = $connexion->prepare('SELECT 1 
+    FROM Etudiant
+    WHERE etudiant.nomComplet = ?');                                                 
     try{
-        $requeteEleve->execute([$eleve]);
-        $resultatEleve = $requeteEleve->fetch(PDO::FETCH_ASSOC);
+        $requeteEtudiant->execute([$etudiant]);
+        $resultatEtudiant = $requeteEtudiant->fetch(PDO::FETCH_ASSOC);
         $connexion = null;
-        if(!$resultatEleve){
+        if(!$resultatEtudiant){
             return False;
         }
         else {
