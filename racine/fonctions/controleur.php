@@ -24,6 +24,10 @@ if (isset($_POST["action"])) {
         $passwordUser = $_POST['passwordUser'];
         controleurIdentifierUtilisateur($loginUser, $passwordUser);
     }
+    if ($_POST["action"] == "diffuserVideo") {
+        $cheminLocal = $_POST['cheminLocal'];
+        controleurDiffuserVideo($cheminLocal);
+    }
 }
 
 /**
@@ -37,7 +41,7 @@ function controleurRecupererTitreIdVideo() {
     if (!$tabURIS) {
         return $videos;
     }
-    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil");
+    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil.");
     foreach ($tabURIS as $video) {
         $id = $video['id'];
         $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
@@ -57,12 +61,12 @@ function controleurRecupererTitreIdVideo() {
 
 function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
     // Télécharge la vidéo depuis le serveur FTP
-    $cheminLocal = URI_VIDEOS_A_LIRE . $cheminDistantVideo . $nomFichier;
-    $cheminDistant = URI_RACINE_NAS_MPEG . $cheminDistantVideo . $nomFichier;
+    $cheminLocalComplet = URI_VIDEOS_A_LIRE . $cheminDistantVideo . $nomFichier;
+    $cheminDistantComplet = URI_RACINE_NAS_MPEG . $cheminDistantVideo . $nomFichier;
     $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
+    telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
     ftp_close($conn_id);
-    return $cheminLocal;
+    return $cheminLocalComplet;
 }
 
 function controleurRecupererInfosVideo() {
@@ -165,6 +169,29 @@ function controleurVerifierAcces($rolesAutorises){
     if (!in_array($_SESSION["role"], $rolesAutorises)) {
         header('Location: home.php');
         exit();
+    }
+}
+
+/**
+ * Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
+ */
+function controleurDiffuserVideo($cheminLocalComplet){
+    // Récupération de la vidéo en qualité optimale
+    // - Récupération des URIS en base
+    // - Téléchargement du fichier dans videoADiffuser
+    
+    // #RISQUE : Changement des répertoires du NAS de diffusion
+
+    $nomFichier = basename($cheminLocalComplet);
+    $cheminDistantComplet = URI_RACINE_NAS_DIFF . $nomFichier;
+    $exportSucces = exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantComplet, NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
+    if($exportSucces){
+        // #RISQUE : Message de validation à l'utilisateur
+        return;
+    }
+    else{
+        //Message d'erreur
+        return;
     }
 }
 

@@ -169,6 +169,8 @@ function alimenterNAS_MPEG($COLLECT_MPEG){
 		creerDossierFTP($conn_id, $dossierVideo);
 		ftp_close($conn_id);
 
+		// #RISQUE : S'assurer de l'export des fichiers par le booléen renvoyé par exporterFichierVersNAS()
+
 		//Export de la vidéo dans le NAS MPEG
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 

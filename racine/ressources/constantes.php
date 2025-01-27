@@ -5,6 +5,7 @@
     const URI_RACINE_NAS_PAD = '/';
     const URI_RACINE_NAS_ARCH = '/';
     const URI_RACINE_NAS_MPEG = '/';
+    const URI_RACINE_NAS_DIFF = '/';
 
     const PREFIXE_DOSSIER_VIDEO = '_BTSPLAY_';
     const SUFFIXE_MINIATURE_VIDEO = '_miniature.png';
@@ -22,6 +23,10 @@
     const NAS_MPEG = 'NAS_MPEG';
     const LOGIN_NAS_MPEG = 'user3';
     const PASSWORD_NAS_MPEG = 'pass3';
+
+    const NAS_DIFF = 'NAS_DIFF';
+    const LOGIN_NAS_DIFF = 'user4';
+    const PASSWORD_NAS_DIFF = 'pass4';
 
     //CONSTANTES DE LA BASE DE DONNEES
     // #RISQUE : Changement des informations de la base de données

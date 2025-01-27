@@ -78,19 +78,25 @@
             
         </div>
         <div class="colonne-2">
-            <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH -->
+            <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH, il faudra créer un dossier local 'videosATelecharger' -->
             <a href="<?php echo $cheminLocal; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>
                 <p>Télécharger</p>
             </a>
-            <a href="#" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/antenne.png" alt="">
-                </div>
-                <p>Diffuser</p>
-            </a>
+
+            <form action="#" method="POST">
+                <input type="hidden" name="action" value="diffuserVideo">
+                <input type="hidden" name="cheminLocal" value="<?php echo $cheminLocal; ?>">
+                <button type="submit" class="btnVideo">
+                    <div class="logo-btnvideo">
+                        <img src="../ressources/Images/antenne.png" alt="">
+                    </div>
+                    <p>Diffuser</p>
+                </button>
+            </form>
+
             <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/modif.png" alt="">
