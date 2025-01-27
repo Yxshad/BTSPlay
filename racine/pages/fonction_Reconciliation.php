@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php 
+	session_start(); 
+	require_once '../fonctions/controleur.php';
+    controleurVerifierAcces(AUTORISATION_ADMIN);
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -25,10 +30,6 @@
 
 
 <?php
-    require_once '../fonctions/fonctions.php';
-    require_once '../fonctions/ftp.php';
-    require_once '../ressources/constantes.php';
-    require_once '../fonctions/ffmpeg.php';
 
 if (isset($_POST['declencherReconciliation'])) {
     fonctionReconciliationAffichee();

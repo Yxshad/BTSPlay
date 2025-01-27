@@ -155,13 +155,14 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
         $_SESSION["role"] = $role["role"];
 
         header('Location: home.php');
+        exit();
     }
 }
 
 // Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
-// $compteAutorises est une liste des roles autorisé
-function controleurVerifierAcces($compteAutorises){
-    if (!in_array($_SESSION["role"], $compteAutorises)) {
+// $rolesAutorises est une liste des roles autorisé
+function controleurVerifierAcces($rolesAutorises){
+    if (!in_array($_SESSION["role"], $rolesAutorises)) {
         header('Location: home.php');
         exit();
     }

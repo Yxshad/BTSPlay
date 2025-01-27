@@ -1,10 +1,9 @@
 <?php 
-session_start(); 
-
-include_once "../fonctions/controleur.php";
-controleurVerifierAcces(AUTORISATION_ADMIN);
-
+	session_start(); 
+	require_once '../fonctions/controleur.php';
+    controleurVerifierAcces(AUTORISATION_ADMIN);
 ?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>

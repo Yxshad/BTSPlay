@@ -1,12 +1,9 @@
 <?php 
+	session_start(); 
+	require_once '../fonctions/controleur.php';
+    controleurVerifierAcces(AUTORISATION_ADMIN);
+?>
 
-session_start(); 
-
-// Si l'utilisateur n'est pas autorisé alors il est renvoyé sur la page d'accueil
-if ($_SESSION["role"] != "Administateur") {
-    header('Location: home.php');
-    exit();
-} ?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -29,11 +26,6 @@ if ($_SESSION["role"] != "Administateur") {
 
 
 <?php
-require '../fonctions/fonctions.php';
-require '../fonctions/ftp.php';
-require '../ressources/constantes.php';
-require '../fonctions/ffmpeg.php';
-require '../fonctions/modele.php';
 
 if (isset($_POST['declencherTransfert'])) {
 	fonctionTransfertAffiche();
