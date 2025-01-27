@@ -605,14 +605,14 @@ function getMetadonneesEditorialesVideo($video){
 	$projet = getProjetIntitule($video["projet"]);
 	$nomPrenom = getProfNomPrenom($video["professeurReferent"]);
 	$nomPrenom = implode(" ", $nomPrenom);
-	$eleve = getParticipants($video["id"]); 
+	$etudiant = getParticipants($video["id"]); 
 	
 	$mtdEdito = [
 		"projet" => $projet,
 		"professeur" => $nomPrenom,
-		"realisateur" => $eleve[0],
-		"cadreur" => $eleve[1],
-		"responsableSon" => $eleve[2]
+		"realisateur" => $etudiant[0],
+		"cadreur" => $etudiant[1],
+		"responsableSon" => $etudiant[2]
 	];
 
 	return $mtdEdito;
