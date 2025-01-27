@@ -36,7 +36,8 @@
                     </a>
                     <div class="sousMenu">
 
-                        <?php if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
+                        <?php
+                        if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
                             <a href="transfert.php">Transfert</a>
                             <a href="sauvegarde.php">Sauvegarde</a>
                             <a href="reconciliation.php">Réconciliation</a>

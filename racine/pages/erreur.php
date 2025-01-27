@@ -1,4 +1,7 @@
-<?php session_start(); ?>
+<?php 
+session_start();
+require_once '../fonctions/controleur.php';
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
