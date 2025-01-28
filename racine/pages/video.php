@@ -86,16 +86,18 @@
                 <p>Télécharger</p>
             </a>
 
-            <form action="#" method="POST">
-                <input type="hidden" name="action" value="diffuserVideo">
-                <input type="hidden" name="cheminLocal" value="<?php echo $cheminLocal; ?>">
-                <button type="submit" class="btnVideo">
-                    <div class="logo-btnvideo">
-                        <img src="../ressources/Images/antenne.png" alt="">
-                    </div>
-                    <p>Diffuser</p>
-                </button>
-            </form>
+            <div class="btnVideo">
+                <form action="#" method="POST">
+                    <input type="hidden" name="action" value="diffuserVideo">
+                    <input type="hidden" name="cheminLocal" value="<?php echo $cheminLocal; ?>">
+                    <button type="submit" class="boutonSubmit">
+                        <div class="logo-btnvideo">
+                            <img src="../ressources/Images/antenne.png" alt="">
+                        </div>
+                        <p>Diffuser</p>
+                    </button>
+                </form>
+            </div>
 
             <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                 <div class="logo-btnvideo">

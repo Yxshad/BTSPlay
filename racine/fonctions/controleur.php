@@ -177,7 +177,7 @@ function controleurVerifierAcces($rolesAutorises){
  */
 function controleurDiffuserVideo($cheminLocalComplet){
     // Récupération de la vidéo en qualité optimale
-    // - Récupération des URIS en base
+    // - Récupération des URIS en base avec $ID
     // - Téléchargement du fichier dans videoADiffuser
     
     // #RISQUE : Changement des répertoires du NAS de diffusion
