@@ -96,6 +96,66 @@ function decouperVideo($titre, $duree) {
     }
     // Supprimer le fichier original
     unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
+    
+    /*
+    $total = formaterDuree($duree);
+
+    if ($total >= 100) {
+        $nombreParties = 100;
+        $dureePartie = $total / $nombreParties;
+    
+
+        $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+        creerDossier($chemin_dossier, false);
+
+        $groupes = [
+            range(1, 50), // Processus 1 : parties 1 à 33
+            range(51, 100), // Processus 2 : parties 34 à 66
+        ];
+
+        foreach ($groupes as $groupe) {
+            $pid = pcntl_fork();
+
+            if ($pid == -1) {
+                ajouterLog(LOG_CRITICAL, "Erreur lors de la création d'un processus pour un groupe.");
+                continue;
+            } elseif ($pid === 0) {
+                // Processus enfant : gérer les parties de ce groupe
+                foreach ($groupe as $i) {
+                    $start_time = $i * $dureePartie;
+                    $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
+                    $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+
+                    $extension = substr($titre, -1) == "4" ? 'mp4' : 'mxf';
+                    $output_path = "$chemin_dossier/$titre" . '_part_' . sprintf('%03d', $i + 1) . ".$extension";
+
+                    $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
+                                " -ss " . $start_time_formatted .
+                                " -t " . $current_part_duration .
+                                " -c copy \"" . $output_path . "\" -y";
+                    exec($command, $output, $return_var);
+
+                    if ($return_var == 1) {
+                        ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie" . ($i + 1) . " de la vidéo $titre.");
+                    }
+                }
+                exit(0); // Terminer le processus enfant
+            }
+        }
+
+        // Attendre que tous les processus enfants se terminent
+        $status = false;
+        for($i = 0; $i < 3; $i++){
+            do {
+                $status = pcntl_wifexited($status);
+                sleep(1);
+            } while ($status == false);
+        }
+    }
+    */
+
+    unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
+    
 }
 
 

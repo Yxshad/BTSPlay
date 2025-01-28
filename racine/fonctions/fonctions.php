@@ -127,68 +127,128 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 
 function alimenterNAS_MPEG($COLLECT_MPEG){
 
-	foreach($COLLECT_MPEG as &$video){
-		//Téléchargement du fichier dans le répertoire local
-		$cheminFichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
 
+	/*
+	// calcul du nombre de processus 
+	$numSublists = (int) ceil((int) shell_exec('nproc') / 3);
+	if ($numSublists < 1) {
+		// force la création d'au moins une liste
+		$numSublists = 1; 
+	}
+
+	$totalElements = count($COLLECT_MPEG);
+	$sublistSize = (int) ceil($totalElements / $numSublists);
+
+	// se répartis les vidéos dans les listes disponibles
+	$sublists = [];
+	for ($i = 0; $i < $numSublists; $i++) {
+		$startIndex = $i * $sublistSize; // Starting index for the current sublist
+		$sublists[] = array_slice($COLLECT_MPEG, $startIndex, $sublistSize); // Slice and add the sublist
+	}
+
+	$processus = [];
+
+	foreach($sublists as $list){
+		$pid = pcntl_fork();
+
+		if ($pid == -1) {
+			ajouterLog(LOG_FAIL, "Erreur, impossible de créer un processus.");
+		} else if ($pid == 0){
+
+			ajouterLog(LOG_INFORM, "Création du processus n° " . getmypid());
+			$string = json_encode($list);
+			ajouterLog(LOG_INFORM, "Le processus n° " . getmypid() . " va s'occuper des vidéos " . $string);
+			
+			//traiter vidéo
+			foreach($list as &$video){
+
+			}
+			sleep(rand(2, 5));
+
+			ajouterLog(LOG_INFORM, "Le processus n° " . getmypid() . " a fini sa tache!");
+			exit(0);
+		} else{
+			$processus[$pid] = $pid;
+			ajouterLog(LOG_INFORM, "Le processus parent va attendre le processus n° ". $pid);
+		}
+		
+	}
+
+	// attente de la fin des enfants
+	$status = false;
+	foreach($processus as $enfant){
+		do {
+			$status = pcntl_wifexited($status);
+			sleep(1);
+		} while ($status == false);
+	}
+	ajouterLog(LOG_INFORM, "Fin de l'attente");
+	*/
+
+	foreach($COLLECT_MPEG as &$video){
+		
+		//Téléchargement du fichier dans le répertoire local
+		$fichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+		
 		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
 		if($video[MTD_URI_NAS_ARCH] != null && $video[MTD_URI_NAS_ARCH] != ""){
 			$conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-			$cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+			$fichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_ARCH];
-		}
-		elseif($video[MTD_URI_NAS_PAD] != null && $video[MTD_URI_NAS_PAD] != ""){
+		} elseif($video[MTD_URI_NAS_PAD] != null && $video[MTD_URI_NAS_PAD] != ""){
 			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-			$cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+			$fichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+			telechargerFichier($conn_id, $fichierDesination, $fichierSource);
 			ftp_close($conn_id);
 			$URI_NAS = $video[MTD_URI_NAS_PAD];
-		}
-		else{
+		} else{
 			ajouterLog(LOG_FAIL, "Erreur, la vidéo $video n'est présente dans aucun des 2 NAS .");
-            exit();
+			exit();
 		}
 		
 		decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
 		convertirVideo($video[MTD_TITRE]);
 		fusionnerVideo($video[MTD_TITRE]);
-
+		
 		// Forcer l'extension à .mp4
-		$video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
-
-		$cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminFichierDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
-
+		$nomFichierSansExtension = pathinfo($video[MTD_TITRE], PATHINFO_FILENAME);
+		$video[MTD_TITRE] = $nomFichierSansExtension . '.mp4'; // Forcer l'extension à .mp4
+		
+		$fichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+		$cheminDestination = URI_RACINE_NAS_MPEG . $URI_NAS;
+		$fichierDestination = $video[MTD_TITRE];
+		
 		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
-		$nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
-		$dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+		$nomFichierSansExtension = pathinfo($fichierSource, PATHINFO_FILENAME);
+		$dossierVideo = $cheminDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 		$conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-		creerDossierFTP($conn_id, $cheminFichierDestination);
+		creerDossierFTP($conn_id, $cheminDestination);
 		creerDossierFTP($conn_id, $dossierVideo);
 		ftp_close($conn_id);
-
+		
 		//Export de la vidéo dans le NAS MPEG
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-
+		
 		//Générer la miniature de la vidéo
-		$miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-
+		$miniature = genererMiniature($fichierSource, $video[MTD_DUREE]);
+		
 		exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-
+		
 		//Supprimer la vidéo de l'espace local et sa miniature
-		unlink($cheminCompletFichierSource);
+		unlink($fichierSource);
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
-
+		
 		//Ajouter l'URI du NAS MPEG à $video dans collectMPEG
+		
 		//On retire la racine du NAS MPEG
 		if (strpos($dossierVideo, URI_RACINE_NAS_MPEG) == 0) {
 			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_NAS_MPEG));
 		}
+		
 		$video[MTD_URI_NAS_MPEG] = $dossierVideo;
 	}
-
 	return $COLLECT_MPEG;
 }
 
