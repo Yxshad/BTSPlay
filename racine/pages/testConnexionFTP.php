@@ -17,7 +17,7 @@ exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASCo
 
 $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
 
-$cheminLocalComplet = './video3.php';
+$cheminLocalComplet =  URI_RACINE_STOCKAGE_LOCAL.'video3.php';
 $cheminDistantNASComplet = './video2.php';
 
 telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantNASComplet);

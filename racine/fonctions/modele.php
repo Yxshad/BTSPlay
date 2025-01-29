@@ -737,12 +737,12 @@ function fetchAll($sql){
 }
 
 /**
- * verifierPresenceVideoNAS_MPEG
+ * verifierPresenceVideoStockageLocal
  * renvoie 1 si une vidéo existe
- * $cheminFichier : chemin NAS MPEG de la vidéo
+ * $cheminFichier : chemin de l'espace local de la vidéo
  * $nomFichier : nom du fichier
  */
-function verifierPresenceVideoNAS_MPEG($cheminFichier, $nomFichier)
+function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
 {
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT 1
