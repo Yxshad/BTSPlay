@@ -9,21 +9,21 @@ function fonctionTransfert(){
 	ajouterLog(LOG_INFORM, "Lancement de la fonction de transfert.");
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
-	$COLLECT_MPEG = [];
+	$COLLECT_STOCK_LOCAL = [];
 	//-----------------------   répertoire NAS_PAD      ------------------------
 	$COLLECT_PAD = recupererCollectNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_VIDEOS_A_ANALYSER, $COLLECT_PAD, URI_RACINE_NAS_PAD);
 	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS PAD. " . count($COLLECT_PAD) . " fichiers trouvés.");
 	//-----------------------   répertoire NAS_ARCH      ------------------------
 	$COLLECT_ARCH = recupererCollectNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_VIDEOS_A_ANALYSER, $COLLECT_ARCH, URI_RACINE_NAS_ARCH);
 	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS ARCH. " . count($COLLECT_ARCH) . " fichiers trouvés.");
-	//Remplir $COLLECT_MPEG
-	$COLLECT_MPEG = remplirCollect_MPEG($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_MPEG);
+	//Remplir $COLLECT_STOCK_LOCAL
+	$COLLECT_STOCK_LOCAL = remplirCOLLECT_STOCK_LOCAL($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_STOCK_LOCAL);
 	//Alimenter le Stockage local
-	ajouterLog(LOG_INFORM, "Alimentation du stockage local avec " . count($COLLECT_MPEG) . " fichiers." );
-	$COLLECT_MPEG = alimenterStockageLocal($COLLECT_MPEG);
-	//Mettre à jour la base avec $COLLECT_MPEG
+	ajouterLog(LOG_INFORM, "Alimentation du stockage local avec " . count($COLLECT_STOCK_LOCAL) . " fichiers." );
+	$COLLECT_STOCK_LOCAL = alimenterStockageLocal($COLLECT_STOCK_LOCAL);
+	//Mettre à jour la base avec $COLLECT_STOCK_LOCAL
 	ajouterLog(LOG_INFORM, "Insertion des informations dans la base de données.");
-	insertionCollect_MPEG($COLLECT_MPEG);
+	insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL);
     ajouterLog(LOG_SUCCESS, "Fonction de transfert effectuée avec succès.");
 }
 
@@ -67,19 +67,19 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 
 
 /**
-* Fonction qui remplit $COLLECT_MPEG avec les metadonnées de chaque vidéo présentes dans $COLLECT_PAD ET $COLLECT_ARCH
-* - Vide les vidéos de $COLLECT_PAD et $COLLECT_ARCH qui sont ajoutées dans $COLLECT_MPEG (passage les collections par référence)
+* Fonction qui remplit $COLLECT_STOCK_LOCAL avec les metadonnées de chaque vidéo présentes dans $COLLECT_PAD ET $COLLECT_ARCH
+* - Vide les vidéos de $COLLECT_PAD et $COLLECT_ARCH qui sont ajoutées dans $COLLECT_STOCK_LOCAL (passage les collections par référence)
 * Traite les vidéos isolées
 */
-function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
+function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOCK_LOCAL){
 
 	foreach ($COLLECT_PAD as $key_PAD => $ligneCollect_PAD) {
 		foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
 			//Si les deux $ligneCollect correspondent exactement (hors URI) (pathinfo pour ne pas tenir compte de l'extension)
 			if (verifierCorrespondanceMdtTechVideos($ligneCollect_PAD, $ligneCollect_ARCH)){
 
-				//Remplir $COLLECT_MPEG
-				$COLLECT_MPEG[] = [
+				//Remplir $COLLECT_STOCK_LOCAL
+				$COLLECT_STOCK_LOCAL[] = [
 					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
 					MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
 					MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
@@ -98,7 +98,7 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 	}
 	//Traitement des fichiers isolés
 	foreach ($COLLECT_PAD as $key_PAD => $ligneCollect_PAD) {
-		$COLLECT_MPEG[] = [
+		$COLLECT_STOCK_LOCAL[] = [
 			MTD_TITRE => $ligneCollect_PAD[MTD_TITRE],
 			MTD_URI_NAS_PAD => $ligneCollect_PAD[MTD_URI],
 			MTD_URI_NAS_ARCH => null,
@@ -110,7 +110,7 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 		unset($COLLECT_PAD[$key_PAD]);
 	}
 	foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
-		$COLLECT_MPEG[] = [
+		$COLLECT_STOCK_LOCAL[] = [
 			MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
 			MTD_URI_NAS_PAD => null,
 			MTD_URI_NAS_ARCH => $ligneCollect_ARCH[MTD_URI],
@@ -121,13 +121,13 @@ function remplirCollect_MPEG(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_MPEG){
 		];
 		unset($COLLECT_ARCH[$key_ARCH]);
 	}
-	return $COLLECT_MPEG;
+	return $COLLECT_STOCK_LOCAL;
 }
 
 
-function alimenterStockageLocal($COLLECT_MPEG){
+function alimenterStockageLocal($COLLECT_STOCK_LOCAL){
 
-	foreach($COLLECT_MPEG as &$video){
+	foreach($COLLECT_STOCK_LOCAL as &$video){
 		//Téléchargement du fichier dans le répertoire local
 		$cheminFichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
 
@@ -185,7 +185,7 @@ function alimenterStockageLocal($COLLECT_MPEG){
 		unlink($cheminCompletFichierSource);
 		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
-		//Ajouter l'URI du stockage local à $video dans collectMPEG
+		//Ajouter l'URI du stockage local à $video dans COLLECT_STOCK_LOCAL
 		//On retire la racine du stockage local
 		if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) == 0) {
 			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
@@ -193,7 +193,7 @@ function alimenterStockageLocal($COLLECT_MPEG){
 		$video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
 	}
 
-	return $COLLECT_MPEG;
+	return $COLLECT_STOCK_LOCAL;
 }
 
 
@@ -435,7 +435,7 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
 }
 
 /**
- * Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_NAS_MPEG)
+ * Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_STOCKAGE_LOCAL)
  * Prend en paramètre le chemin du fichier et son nom
  * Retourne true si le fichier est présent, false sinon
  */
@@ -461,8 +461,8 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 }
 
 
-function insertionCollect_MPEG($COLLECT_MPEG){
-	foreach($COLLECT_MPEG as $ligneMetadonneesTechniques){
+function insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL){
+	foreach($COLLECT_STOCK_LOCAL as $ligneMetadonneesTechniques){
 		insertionDonneesTechniques($ligneMetadonneesTechniques);
 	}
 }
