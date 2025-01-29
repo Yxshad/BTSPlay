@@ -55,12 +55,12 @@ function connexionBD()
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       );
       try {
-        if(!getVideo($listeMetadonnees[MTD_URI_NAS_MPEG]))
+        if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
           // Ajout des paramètres
           $videoAAjouter->execute([
             $listeMetadonnees[MTD_URI_NAS_PAD],
             $listeMetadonnees[MTD_URI_NAS_ARCH],
-              $listeMetadonnees[MTD_URI_NAS_MPEG],
+              $listeMetadonnees[MTD_URI_STOCKAGE_LOCAL],
               $listeMetadonnees[MTD_TITRE],
               $listeMetadonnees[MTD_DUREE],
               $listeMetadonnees[MTD_RESOLUTION],
