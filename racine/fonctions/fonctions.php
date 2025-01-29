@@ -170,7 +170,6 @@ function alimenterStockageLocal($COLLECT_MPEG){
 		// #RISQUE : S'assurer de l'export des fichiers par le booléen renvoyé par exporterFichierVersNAS()
 
 		//Export de la vidéo dans le stockage local
-		//exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $video[MTD_TITRE], NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 		$cheminCompletDestination = $dossierVideo . $video[MTD_TITRE];
 		$cheminCompletOrigine = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
 		copy($cheminCompletOrigine, $cheminCompletDestination);
@@ -178,7 +177,6 @@ function alimenterStockageLocal($COLLECT_MPEG){
 		//Générer la miniature de la vidéo
 		$miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
 
-		//exporterFichierVersNAS(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, $dossierVideo, $miniature, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
 		$cheminCompletDestination = $dossierVideo . $miniature;
 		$cheminCompletOrigine = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature;
 		copy($cheminCompletOrigine, $cheminCompletDestination);

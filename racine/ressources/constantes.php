@@ -20,10 +20,6 @@
     const LOGIN_NAS_ARCH = 'user2';
     const PASSWORD_NAS_ARCH = 'pass2';
 
-    const NAS_MPEG = 'NAS_MPEG';
-    const LOGIN_NAS_MPEG = 'user3';
-    const PASSWORD_NAS_MPEG = 'pass3';
-
     const NAS_DIFF = 'NAS_DIFF';
     const LOGIN_NAS_DIFF = 'user4';
     const PASSWORD_NAS_DIFF = 'pass4';
@@ -47,7 +43,7 @@
     const MTD_URI = 'URI';
     const MTD_URI_NAS_PAD = 'URI NAS PAD';
     const MTD_URI_NAS_ARCH = 'URI NAS ARCH';
-    const MTD_URI_STOCKAGE_LOCAL = 'URI NAS MPEG';
+    const MTD_URI_STOCKAGE_LOCAL = 'URI ESPACE LOCAL';
 
     //CONSTANTES DE LA FONCTION DE RECONCILIATION
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
