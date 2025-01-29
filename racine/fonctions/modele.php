@@ -518,10 +518,10 @@ function getInfosVideo($idVideo)
 }
 
 /**
- * @getUriNASetTitreMPEGEtId
- * @return array|false Renvoie la liste des URI NAS MPEG + titre + id ou false en cas d'échec
+ * @getTitreURIEtId
+ * @return array|false Renvoie la liste des : URI STOCKAGE LOCAL + titre + id ou false en cas d'échec
  */
-function getUriNASetTitreMPEGEtId($nbMaxVideo) {
+function getTitreURIEtId($nbMaxVideo) {
     try {
         $connexion = connexionBD();
         $requeteVid = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre FROM Media LIMIT :nbVideo');

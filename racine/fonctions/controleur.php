@@ -25,8 +25,9 @@ if (isset($_POST["action"])) {
         controleurIdentifierUtilisateur($loginUser, $passwordUser);
     }
     if ($_POST["action"] == "diffuserVideo") {
-        $cheminLocal = $_POST['cheminLocal'];
-        controleurDiffuserVideo($cheminLocal);
+        $cheminVideoComplet = $_POST['cheminVideoComplet'];
+        //controleurDiffuserVideo($cheminVideoComplet);
+        // #RISQUE : DIFFUSION stoppée, en attente du dev nico
     }
 }
 
@@ -36,7 +37,7 @@ if (isset($_POST["action"])) {
  * Retourne un tableau d'URIS/titres/id et cheminMiniature
  */
 function controleurRecupererTitreIdVideo() {
-    $tabURIS = getUriNASetTitreMPEGEtId(10);
+    $tabURIS = getTitreURIEtId(10);
     $videos = [];
     if (!$tabURIS) {
         return $videos;
@@ -198,5 +199,4 @@ function controleurDiffuserVideo($cheminLocalComplet){
         return;
     }
 }
-
 ?>
