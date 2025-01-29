@@ -32,12 +32,12 @@ if (isset($_POST["action"])) {
 }
 
 /**
- * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le NAS MPEG
+ * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS/titres/id et cheminMiniature
  */
 function controleurRecupererTitreIdVideo() {
-    $tabURIS = getTitreURIEtId(10);
+    $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
     $videos = [];
     if (!$tabURIS) {
         return $videos;
@@ -59,16 +59,6 @@ function controleurRecupererTitreIdVideo() {
         ];
     }
     return $videos;
-}
-
-function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
-    // Télécharge la vidéo depuis le serveur FTP
-    $cheminLocalComplet = URI_VIDEOS_A_LIRE . $cheminDistantVideo . $nomFichier;
-    $cheminDistantComplet = URI_RACINE_NAS_MPEG . $cheminDistantVideo . $nomFichier;
-    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-    telechargerFichier($conn_id, $cheminLocalComplet, $cheminDistantComplet);
-    ftp_close($conn_id);
-    return $cheminLocalComplet;
 }
 
 function controleurRecupererInfosVideo() {

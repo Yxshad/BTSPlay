@@ -49,7 +49,7 @@ function fonctionTransfertAffiche(){
 	//Remplir $COLLECT_STOCK_LOCAL
 	$COLLECT_STOCK_LOCAL = remplirCOLLECT_STOCK_LOCAL($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_STOCK_LOCAL);
 
-	afficherCollect("COLLECT_MPEG", $COLLECT_STOCK_LOCAL);
+	afficherCollect("COLLECT_STOCK_LOCAL", $COLLECT_STOCK_LOCAL);
 	afficherCollect("COLLECT_PAD", $COLLECT_PAD);
 	afficherCollect("COLLECT_ARCH", $COLLECT_ARCH);
 

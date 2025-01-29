@@ -39,8 +39,8 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
 
 
 /**
- * Fonction qui exporte un fichier  local vers le NAS MPEG.
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG et nom du fichier.
+ * Fonction qui exporte un fichier  local vers un serveur NAS.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS de destination et nom du fichier.
  */
 function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
     // Construire le chemin complet de destination pour le fichier
@@ -51,9 +51,9 @@ function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $f
 }
 
 /**
- * Fonction qui exporte un fichier  local vers le NAS MPEG.
+ * Fonction qui exporte un fichier  local vers un NAS distant.
  * Prend en paramètre les chemins complet des fichiers 
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG et nom du fichier.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS et nom du fichier.
  */
 function exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);

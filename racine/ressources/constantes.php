@@ -71,4 +71,7 @@
     //NIVEAU D'AUTORISATION
     const AUTORISATION_PROF = ["Professeur", "Administrateur"];
     const AUTORISATION_ADMIN = ["Administrateur"];
+
+    //CONSTANTES DES PAGES
+    const NB_VIDEOS_PAR_SWIPER = 10
 ?>

@@ -540,7 +540,7 @@ function getTitreURIEtId($nbMaxVideo) {
             $connexion->rollback();
         }
         $connexion = null;
-        error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
+        error_log('Erreur dans getTitreURIEtId: ' . $e->getMessage());
         return false;
     }
 }
