@@ -530,7 +530,7 @@ function getUriNASetTitreMPEGEtId($nbMaxVideo) {
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
         $connexion = null;
         if (!empty($resultat)) {
-            return $resultat; // Retourne un tableau des URI_STOCKAGE_LOCAL
+            return $resultat; // Retourne un tableau
         } else {
             return false; // Aucun résultat trouvé
         }

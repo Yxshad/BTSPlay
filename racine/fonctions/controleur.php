@@ -44,16 +44,17 @@ function controleurRecupererTitreIdVideo() {
     ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil.");
     foreach ($tabURIS as $video) {
         $id = $video['id'];
-        $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
-        $titre = $video['mtd_tech_titre'];
-        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-        $titreSansExtension = pathinfo($titre, PATHINFO_FILENAME);
+        $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
+        $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
 
+        $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
+        $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+        
         $videos[] = [
             'id' => $id,
-            'uriNAS' => $uriNAS,
+            'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
-            'cheminMiniature' => $cheminLocalComplet
+            'cheminMiniatureComplet' => $cheminMiniatureComplet
         ];
     }
     return $videos;
