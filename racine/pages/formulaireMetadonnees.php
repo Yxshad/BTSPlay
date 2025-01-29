@@ -5,7 +5,7 @@
     $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];
-    $cheminMiniature = $infosVideo["cheminMiniature"];
+    $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
     $titreVideo = $infosVideo["titreVideo"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
@@ -31,7 +31,7 @@
     <div class="colonnes">
         <div class="colonne-1">
             <div class="img">
-                <img src="<?php echo $cheminMiniature; ?>" alt="Miniature de la vidéo" class="imageMiniature">
+                <img src="<?php echo $cheminMiniatureComplet; ?>" alt="Miniature de la vidéo" class="imageMiniature">
             </div>
             <h2 class="titre"><?php echo $nomFichier; ?></h2>
             <h2 class="titre"><?php echo $titreVideo; ?></h2>

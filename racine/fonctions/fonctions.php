@@ -505,33 +505,6 @@ function scanDossierDecoupeVideo() {
     echo json_encode($result);
 }
 
-
-/**
- * Fonction qui permet de charger une miniature dans l'espace local
- * Prend en paramètre un URI d'un dossier d'un serveur NAS, le titre de la vidéo
- * 	pour laquelle trouver l'URI et les logins FTP
- * Retourne le cheminFichierLocalComplet de la miniature
- */
-function chargerMiniature($URIServeurNAS, $nomFichierVideo, $ftp_server, $ftp_user, $ftp_pass){
-
-	//Définition du chemin complet de la miniature
-	$nomFichierMiniature = trouverNomMiniature($nomFichierVideo);
-	$cheminFichierDistantComplet = $URIServeurNAS . $nomFichierMiniature;
-
-	//Création d'un dossier dans l'espace local
-	$cheminDossier = URI_VIDEOS_A_LIRE . $URIServeurNAS;
-
-	//Pas de création de dossier incrementale
-	creerDossier($cheminDossier, false);
-	$cheminFichierLocalComplet = $cheminDossier . '/' . $nomFichierMiniature;
-	
-	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
-	telechargerFichier($conn_id, $cheminFichierLocalComplet, $cheminFichierDistantComplet);
-    ftp_close($conn_id);
-
-	return $cheminFichierLocalComplet;
-}
-
 /*
 *	Fonction qui retourne le titre de la vidéo
 *   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
