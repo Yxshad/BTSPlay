@@ -26,7 +26,7 @@ if (isset($_POST["action"])) {
     }
     if ($_POST["action"] == "diffuserVideo") {
         $cheminVideoComplet = $_POST['cheminVideoComplet'];
-        //controleurDiffuserVideo($cheminVideoComplet);
+        controleurDiffuserVideo($cheminVideoComplet);
         // #RISQUE : DIFFUSION stoppée, en attente du dev nico
     }
 }
@@ -177,8 +177,12 @@ function controleurDiffuserVideo($cheminLocalComplet){
     
     // #RISQUE : Changement des répertoires du NAS de diffusion
 
-    $nomFichier = basename($cheminLocalComplet);
-    $cheminDistantComplet = URI_RACINE_NAS_DIFF . $nomFichier;
+    // $nomFichier = basename($cheminLocalComplet);
+    // $cheminDistantComplet = URI_RACINE_NAS_DIFF . $nomFichier;
+
+    $cheminLocalComplet = URI_RACINE_STOCKAGE_LOCAL . '2023-2024/_BTSPLAY_bomba/bomba.mp4';
+    $cheminDistantComplet = URI_RACINE_NAS_DIFF . 'bomba.mp4';
+
     $exportSucces = exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantComplet, NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
     if($exportSucces){
         // #RISQUE : Message de validation à l'utilisateur

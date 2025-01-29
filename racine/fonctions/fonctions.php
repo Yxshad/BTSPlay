@@ -446,7 +446,8 @@ function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 	$nomFichier = forcerExtensionMp4($nomFichier);
 
 	$videoPresente = verifierPresenceVideoStockageLocal($cheminFichierStockageLocal, $nomFichier);
-	return $videoPresente;
+	//return $videoPresente;
+	return false;
 }
 
 /**
