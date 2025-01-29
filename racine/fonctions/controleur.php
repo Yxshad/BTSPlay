@@ -79,18 +79,21 @@ function controleurRecupererInfosVideo() {
     }
     ajouterLog(LOG_INFORM, "Chargement des informations de la vidéo n° $idVideo");
     $nomFichier = $video["mtd_tech_titre"];
-    $miniature = trouverNomMiniature($nomFichier);
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
     $promotion = $video["promotion"];
-    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
-    $cheminDistantVideo = $video["URI_NAS_MPEG"];
+
+    $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
+    $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
+    $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+
+    $cheminVideoComplet = $URIEspaceLocal . $nomFichier;
     return [
         "idVideo" => $idVideo,
         "mtdTech" => $video,
         "nomFichier" => $nomFichier,
-        "cheminMiniature" => $cheminMiniature,
-        "cheminDistantVideo" => $cheminDistantVideo,
+        "cheminMiniatureComplet" => $cheminMiniatureComplet,
+        "cheminVideoComplet" => $cheminVideoComplet,
         "titreVideo" => $titreVideo,
         "mtdEdito" => $mtdEdito,
         "promotion" => $promotion,

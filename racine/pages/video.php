@@ -5,14 +5,12 @@
 
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];
-    $cheminMiniature = $infosVideo["cheminMiniature"];
-    $cheminDistantVideo = $infosVideo["cheminDistantVideo"];
+    $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
+    $cheminVideoComplet = $infosVideo["cheminVideoComplet"];
     $titreVideo = $infosVideo["titreVideo"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
-
-    $cheminLocal = controleurTelechargerFichier($cheminDistantVideo, $nomFichier); 
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +34,8 @@
 
 <div class="container">
     <div class="lecteurVideo">
-    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniature; ?>>
-        <source src="<?php echo $cheminLocal; ?>" type="video/mp4"/>
+    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniatureComplet; ?>>
+        <source src="<?php echo $cheminVideoComplet; ?>" type="video/mp4"/>
     </video>
 </div>
     <h1 class="titre"><?php echo $nomFichier; ?></h1>
@@ -79,7 +77,7 @@
         </div>
         <div class="colonne-2">
             <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH, il faudra créer un dossier local 'videosATelecharger' -->
-            <a href="<?php echo $cheminLocal; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
+            <a href="<?php echo $cheminVideoComplet; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
                 </div>
@@ -89,7 +87,7 @@
             <div class="btnVideo">
                 <form action="#" method="POST">
                     <input type="hidden" name="action" value="diffuserVideo">
-                    <input type="hidden" name="cheminLocal" value="<?php echo $cheminLocal; ?>">
+                    <input type="hidden" name="cheminVideoComplet" value="<?php echo $cheminVideoComplet; ?>">
                     <button type="submit" class="boutonSubmit">
                         <div class="logo-btnvideo">
                             <img src="../ressources/Images/antenne.png" alt="">
