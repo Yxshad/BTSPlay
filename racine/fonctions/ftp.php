@@ -39,22 +39,35 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
 
 
 /**
- * Fonction qui exporte un fichier  local vers le NAS MPEG.
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS MPEG et nom du fichier.
+ * Fonction qui exporte un fichier  local vers un serveur NAS.
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS de destination et nom du fichier.
  */
 function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
-    $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
     // Construire le chemin complet de destination pour le fichier
-    $cheminCompletFichier = $cheminDistantNAS . $nomFichier;
-    $fichierLocal = $cheminLocal . $nomFichier;
+    $cheminDistantNASComplet = $cheminDistantNAS . $nomFichier;
+    $cheminLocalComplet = $cheminLocal . $nomFichier;
     // Envoyer le fichier
-    if (!(ftp_put($conn_id, $cheminCompletFichier, $fichierLocal, FTP_BINARY))){
-        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $fichierLocal vers $cheminDistantNAS");
+    return exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass);
+}
+
+/**
+ * Fonction qui exporte un fichier  local vers un NAS distant.
+ * Prend en paramètre les chemins complet des fichiers 
+ * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS et nom du fichier.
+ */
+function exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass) {
+    $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+    // Envoyer le fichier
+    $exportSucces = true;
+    if (!(ftp_put($conn_id, $cheminDistantNASComplet, $cheminLocalComplet, FTP_BINARY))){
+        ajouterLog(LOG_FAIL, "Échec de l'export du fichier $cheminLocalComplet vers $cheminDistantNASComplet");
+        $exportSucces = false;
     }
     else{
-        ajouterLog(LOG_SUCCESS, "Fichier $fichierLocal exporté avec succès dans $cheminDistantNAS.");
+        ajouterLog(LOG_SUCCESS, "Fichier $cheminLocalComplet exporté avec succès dans $cheminDistantNASComplet.");
     }
     ftp_close($conn_id);
+    return $exportSucces;
 }
 
 

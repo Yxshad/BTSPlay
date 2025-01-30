@@ -39,3 +39,18 @@
 .colonne-2 .btnVideo .logo-btnvideo{
     width: 50px;
 }
+
+.boutonSubmit {
+    all: unset;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+.boutonSubmit:hover{
+    transform: scale(1.05);
+}

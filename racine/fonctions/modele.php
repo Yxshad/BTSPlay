@@ -46,7 +46,7 @@ function connexionBD()
           'INSERT INTO Media (
               URI_NAS_PAD, 
               URI_NAS_ARCH, 
-              URI_NAS_MPEG,
+              URI_STOCKAGE_LOCAL,
               mtd_tech_titre,
               mtd_tech_duree,
               mtd_tech_resolution,
@@ -55,12 +55,12 @@ function connexionBD()
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       );
       try {
-        if(!getVideo($listeMetadonnees[MTD_URI_NAS_MPEG]))
+        if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
           // Ajout des paramètres
           $videoAAjouter->execute([
             $listeMetadonnees[MTD_URI_NAS_PAD],
             $listeMetadonnees[MTD_URI_NAS_ARCH],
-              $listeMetadonnees[MTD_URI_NAS_MPEG],
+              $listeMetadonnees[MTD_URI_STOCKAGE_LOCAL],
               $listeMetadonnees[MTD_TITRE],
               $listeMetadonnees[MTD_DUREE],
               $listeMetadonnees[MTD_RESOLUTION],
@@ -467,14 +467,14 @@ function insertionEtudiant($etudiant)
  /**
  * getVideo
  * renvoie l'id d'une vidéo
- * $path : chemin NAS MPEG de la vidéo
+ * $path : chemin de l'espace local de la vidéo
  */
 function getVideo($path)
 {
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT id 
    FROM Media
-   WHERE URI_NAS_MPEG = ?');                                                 
+   WHERE URI_STOCKAGE_LOCAL = ?');                                                 
    try{
        $requeteVid->execute([$path]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
@@ -518,19 +518,19 @@ function getInfosVideo($idVideo)
 }
 
 /**
- * @getUriNASetTitreMPEGEtId
- * @return array|false Renvoie la liste des URI NAS MPEG + titre + id ou false en cas d'échec
+ * @getTitreURIEtId
+ * @return array|false Renvoie la liste des : URI STOCKAGE LOCAL + titre + id ou false en cas d'échec
  */
-function getUriNASetTitreMPEGEtId($nbMaxVideo) {
+function getTitreURIEtId($nbMaxVideo) {
     try {
         $connexion = connexionBD();
-        $requeteVid = $connexion->prepare('SELECT id, URI_NAS_MPEG, mtd_tech_titre FROM Media LIMIT :nbVideo');
+        $requeteVid = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre FROM Media LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
         $requeteVid->execute();
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
         $connexion = null;
         if (!empty($resultat)) {
-            return $resultat; // Retourne un tableau des URI_NAS_MPEG
+            return $resultat; // Retourne un tableau
         } else {
             return false; // Aucun résultat trouvé
         }
@@ -540,7 +540,7 @@ function getUriNASetTitreMPEGEtId($nbMaxVideo) {
             $connexion->rollback();
         }
         $connexion = null;
-        error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
+        error_log('Erreur dans getTitreURIEtId: ' . $e->getMessage());
         return false;
     }
 }
@@ -731,23 +731,23 @@ function fetchAll($sql){
             $connexion->rollback();
         }
         $connexion = null;
-        error_log('Erreur dans getUriNASetTitreMPEG: ' . $e->getMessage());
+        error_log('Erreur : ' . $e->getMessage());
         return false;
     }
 }
 
 /**
- * verifierPresenceVideoNAS_MPEG
+ * verifierPresenceVideoStockageLocal
  * renvoie 1 si une vidéo existe
- * $cheminFichier : chemin NAS MPEG de la vidéo
+ * $cheminFichier : chemin de l'espace local de la vidéo
  * $nomFichier : nom du fichier
  */
-function verifierPresenceVideoNAS_MPEG($cheminFichier, $nomFichier)
+function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
 {
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT 1
    FROM Media
-   WHERE URI_NAS_MPEG = ?
+   WHERE URI_STOCKAGE_LOCAL = ?
    AND mtd_tech_titre = ?');                                                 
    try{
        $requeteVid->execute([$cheminFichier, $nomFichier]);

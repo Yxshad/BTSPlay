@@ -24,45 +24,41 @@ if (isset($_POST["action"])) {
         $passwordUser = $_POST['passwordUser'];
         controleurIdentifierUtilisateur($loginUser, $passwordUser);
     }
+    if ($_POST["action"] == "diffuserVideo") {
+        $cheminVideoComplet = $_POST['cheminVideoComplet'];
+        controleurDiffuserVideo($cheminVideoComplet);
+        // #RISQUE : DIFFUSION stoppée, en attente du dev nico
+    }
 }
 
 /**
- * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le NAS MPEG
+ * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS/titres/id et cheminMiniature
  */
 function controleurRecupererTitreIdVideo() {
-    $tabURIS = getUriNASetTitreMPEGEtId(10);
+    $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
     $videos = [];
     if (!$tabURIS) {
         return $videos;
     }
-    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil");
+    ajouterLog(LOG_INFORM, "Récupération des informations à afficher sur la page d'accueil.");
     foreach ($tabURIS as $video) {
         $id = $video['id'];
-        $uriNAS = URI_RACINE_NAS_MPEG . $video['URI_NAS_MPEG'];
-        $titre = $video['mtd_tech_titre'];
-        $cheminLocalComplet = chargerMiniature($uriNAS, $titre, NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-        $titreSansExtension = pathinfo($titre, PATHINFO_FILENAME);
+        $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
+        $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
 
+        $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
+        $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+        
         $videos[] = [
             'id' => $id,
-            'uriNAS' => $uriNAS,
+            'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
-            'cheminMiniature' => $cheminLocalComplet
+            'cheminMiniatureComplet' => $cheminMiniatureComplet
         ];
     }
     return $videos;
-}
-
-function controleurTelechargerFichier($cheminDistantVideo, $nomFichier){
-    // Télécharge la vidéo depuis le serveur FTP
-    $cheminLocal = URI_VIDEOS_A_LIRE . $cheminDistantVideo . $nomFichier;
-    $cheminDistant = URI_RACINE_NAS_MPEG . $cheminDistantVideo . $nomFichier;
-    $conn_id = connexionFTP_NAS(NAS_MPEG, LOGIN_NAS_MPEG, PASSWORD_NAS_MPEG);
-    telechargerFichier($conn_id, $cheminLocal, $cheminDistant);
-    ftp_close($conn_id);
-    return $cheminLocal;
 }
 
 function controleurRecupererInfosVideo() {
@@ -74,18 +70,21 @@ function controleurRecupererInfosVideo() {
     }
     ajouterLog(LOG_INFORM, "Chargement des informations de la vidéo n° $idVideo");
     $nomFichier = $video["mtd_tech_titre"];
-    $miniature = trouverNomMiniature($nomFichier);
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
     $promotion = $video["promotion"];
-    $cheminMiniature = URI_VIDEOS_A_LIRE . $video["URI_NAS_MPEG"] . $miniature;
-    $cheminDistantVideo = $video["URI_NAS_MPEG"];
+
+    $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
+    $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
+    $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+
+    $cheminVideoComplet = $URIEspaceLocal . $nomFichier;
     return [
         "idVideo" => $idVideo,
         "mtdTech" => $video,
         "nomFichier" => $nomFichier,
-        "cheminMiniature" => $cheminMiniature,
-        "cheminDistantVideo" => $cheminDistantVideo,
+        "cheminMiniatureComplet" => $cheminMiniatureComplet,
+        "cheminVideoComplet" => $cheminVideoComplet,
         "titreVideo" => $titreVideo,
         "mtdEdito" => $mtdEdito,
         "promotion" => $promotion,
@@ -162,10 +161,36 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
 // Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
 // $rolesAutorises est une liste des roles autorisé
 function controleurVerifierAcces($rolesAutorises){
-    if (!in_array($_SESSION["role"], $rolesAutorises)) {
+    if ((!isset($_SESSION["role"])) || (!in_array($_SESSION["role"], $rolesAutorises))) {
         header('Location: home.php');
         exit();
     }
 }
 
+/**
+ * Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
+ */
+function controleurDiffuserVideo($cheminLocalComplet){
+    // Récupération de la vidéo en qualité optimale
+    // - Récupération des URIS en base avec $ID
+    // - Téléchargement du fichier dans videoADiffuser
+    
+    // #RISQUE : Changement des répertoires du NAS de diffusion
+
+    // $nomFichier = basename($cheminLocalComplet);
+    // $cheminDistantComplet = URI_RACINE_NAS_DIFF . $nomFichier;
+
+    $cheminLocalComplet = URI_RACINE_STOCKAGE_LOCAL . '2023-2024/_BTSPLAY_bomba/bomba.mp4';
+    $cheminDistantComplet = URI_RACINE_NAS_DIFF . 'bomba.mp4';
+
+    $exportSucces = exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantComplet, NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
+    if($exportSucces){
+        // #RISQUE : Message de validation à l'utilisateur
+        return;
+    }
+    else{
+        //Message d'erreur
+        return;
+    }
+}
 ?>

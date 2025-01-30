@@ -30,13 +30,12 @@ $tabVideos = controleurRecupererTitreIdVideo();
                 <?php
                     foreach ($tabVideos as $video) {
                         $id = $video['id'];
-                        $uriNAS = $video['uriNAS'];
                         $titre = $video['titre'];
-                        $cheminLocalComplet = $video['cheminMiniature'];
+                        $cheminMiniatureComplet = $video['cheminMiniatureComplet'];
                         echo "<div class='swiper-slide'>";
                             echo "<a href='video.php?v=$id'>";
                                 echo "<div class='miniature'>";
-                                    echo "<img src='$cheminLocalComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
+                                    echo "<img src='$cheminMiniatureComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
                                 echo "</div>";
                                 echo "<h3>$titre</h3>";
                             echo "</a>";

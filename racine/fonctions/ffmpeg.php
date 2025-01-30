@@ -112,7 +112,7 @@ function convertirVideo($video){
     creerDossier($chemin_dossier_destination, false);
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
-    // Pour chaque fichier on le converti en MPEG
+    // Pour chaque fichier on le compresse
     foreach ($files as $file) {
         if($file != '.' && $file != '..'){
             $chemin_fichier_origine = $chemin_dossier_origine . '/' . $file;
