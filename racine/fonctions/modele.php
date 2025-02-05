@@ -540,19 +540,20 @@ function getProfId($profNom, $profPrenom)
  */
 function getProjetIntitule($idProjet){
     $connexion = connexionBD();
-    $requeteProjet = $connexion->prepare('SELECT intitule 
-    FROM Projet
-    WHERE id = ?');                                                 
-    try{
+    
+    if (!$connexion) {
+        return false; // Retourner false si la connexion échoue
+    }
+    try {
+        $requeteProjet = $connexion->prepare('SELECT intitule FROM Projet WHERE id = ?');
         $requeteProjet->execute([$idProjet]);
         $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC);
-        $connexion = null;
-        return $projet ? $projet["intitule"] : "";
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
+        return $projet ? $projet["intitule"] : false;
+    } catch (Exception $e) {
+        error_log("Erreur lors de la récupération du projet: " . $e->getMessage());
+        return false;
+    } finally {
+        $connexion = null; // Fermeture propre de la connexion
     }
 }
 

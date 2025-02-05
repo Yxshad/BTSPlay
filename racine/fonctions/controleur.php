@@ -52,7 +52,7 @@ checkHeader();
  * \brief Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
  * \return un tableau d'URIS/titres/id et cheminMiniature
  */
-function controleurRecupererTitreIdVideo() {
+function controleurRecupererTitreIdProjetVideo() {
     $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
     $videos = [];
     if (!$tabURIS) {
@@ -66,12 +66,20 @@ function controleurRecupererTitreIdVideo() {
 
         $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
         $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+        $idProjet = getIdProjetVideo($id);
+        if ($idProjet) {
+            $intituleProjet = getProjetIntitule($idProjet);
+        } else{
+            $intituleProjet = "Vos Videos";
+        }
+        
         
         $videos[] = [
             'id' => $id,
             'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
-            'cheminMiniatureComplet' => $cheminMiniatureComplet
+            'cheminMiniatureComplet' => $cheminMiniatureComplet,
+            'projet' => $intituleProjet
         ];
     }
     return $videos;
