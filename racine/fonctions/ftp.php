@@ -15,6 +15,8 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
         ajouterLog(LOG_FAIL, "Échec de la connexion au serveur FTP $ftp_server pour l'utilisateur $ftp_user.");
         exit();
     }
+    #PROD : À DECOMMENTER LORS DU PASSAGE EN PROD
+    //ftp_pasv($conn_id, true);
     return $conn_id;
 }
 
@@ -101,6 +103,8 @@ function creerDossierFTP($conn_id, $cheminDossier) {
 function listerFichiersCompletFTP($conn_id, $repertoire) {
     $pile = [$repertoire];
     $fichiersComplet = [];
+    // #PROD, on ne récupère que les 2 premiers fichiers pour ne pas surcharger - À DECOMMENTER LORS DES TESTS EN PROD
+    //while (!empty($pile) && count($fichiersComplet) < 2){
     while (!empty($pile)) {
         $dossierCourant = array_pop($pile); 
         $elements = ftp_nlist($conn_id, $dossierCourant);
