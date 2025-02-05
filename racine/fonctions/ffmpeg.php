@@ -60,38 +60,40 @@ function decouperVideo($titre, $duree) {
     
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
-        $dureePartie = 2; // Durée de chaque partie en secondes
-        $nombreParties = ceil($total / $dureePartie); // Nombre total de parties
+        $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+        creerDossier($chemin_dossier, false);
+        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier . '/' . $titre);
     } else {
         $nombreParties = 100; // Diviser en 100 parties
         $dureePartie = $total / $nombreParties; // Durée de chaque partie
-    }
-    // Créer le dossier de sortie
-    $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier, false);
-    for ($i = 0; $i < $nombreParties; $i++) {
-        // Calculer le temps de début pour chaque partie
-        $start_time = $i * $dureePartie;
-        // Formater le temps de début avec une précision correcte
-        $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
-        // Déterminer la durée effective de la partie (dernier segment peut être plus court)
-        $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
-        // Chemin de sortie pour l'extrait
-        if (substr($titre, -1) == "4" ) {
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
-        } else{
-            $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
-        }
-        // Construire la commande ffmpeg
-        $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
-                   " -ss " . $start_time_formatted .
-                   " -t " . $current_part_duration .
-                   " -c copy \"" . $output_path . "\" -y";
-        // Exécuter la commande ffmpeg
-        exec($command, $output, $return_var);
-        // #RISQUE
-        if ($return_var == 1) {
-            ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
+    
+        // Créer le dossier de sortie
+        $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+        creerDossier($chemin_dossier, false);
+        for ($i = 0; $i < $nombreParties; $i++) {
+            // Calculer le temps de début pour chaque partie
+            $start_time = $i * $dureePartie;
+            // Formater le temps de début avec une précision correcte
+            $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
+            // Déterminer la durée effective de la partie (dernier segment peut être plus court)
+            $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+            // Chemin de sortie pour l'extrait
+            if (substr($titre, -1) == "4" ) {
+                $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+            } else{
+                $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
+            }
+            // Construire la commande ffmpeg
+            $command = "ffmpeg -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
+                    " -ss " . $start_time_formatted .
+                    " -t " . $current_part_duration .
+                    " -c copy \"" . $output_path . "\" -y";
+            // Exécuter la commande ffmpeg
+            exec($command, $output, $return_var);
+            // #RISQUE
+            if ($return_var == 1) {
+                ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
+            }
         }
     }
     // Supprimer le fichier original
