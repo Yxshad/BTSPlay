@@ -1,6 +1,14 @@
 <?php 
 session_start();
 require_once '../fonctions/controleur.php';
+
+
+
+// Appel des logs 
+$logFile = '../ressources/historique.log'; // Chemin du fichier log
+$maxLines = 100; // Nombre maximum de lignes à afficher
+$logs = getLastLines($logFile, $maxLines);
+
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +27,8 @@ require_once '../fonctions/controleur.php';
         <div class="tab" data-tab="reconciliation">Réconciliation</div>
         <div class="tab" data-tab="transfer">Fonction de transfert</div>
         <div class="tab" data-tab="settings">Paramétrage du site</div>
+        <div class="tab" data-tab="logs">Consulter les logs</div>
+        <div class="tab" data-tab="users">Gérer les utilisateurs</div>
     </div>
     
     <div class="tab-content active" id="database">
@@ -37,6 +47,15 @@ require_once '../fonctions/controleur.php';
         <h2>Paramétrage du site</h2>
         <p>Configuration et personnalisation...</p>
     </div>
+    <div class="tab-content" id="logs">
+        <h2>Consulter les logs</h2>
+        <pre><?php echo implode("\n", $logs); ?></pre>
+    </div>
+    <div class="tab-content" id="users">
+        <h2>Gérer les utilisateurs</h2>
+        <p>Configuration des comptes utilisateurs...</p>
+    </div>
+    
     
     <script>
         const tabs = document.querySelectorAll('.tab');

@@ -215,4 +215,33 @@ function controleurRecupererTitreIdVideoFiltre($annee = null, $niveau = null, $p
 
     return fetchAll($sql);
 }
+
+
+function getLastLines($filename, $lines) {
+    if (!file_exists($filename)) {
+        return ["Fichier introuvable."];
+    }
+
+    // Utilisation de `tail` si disponible
+    if (function_exists('shell_exec')) {
+        $output = shell_exec("tail -n " . escapeshellarg($lines) . " " . escapeshellarg($filename));
+        return explode("\n", trim($output));
+    }
+
+    // Alternative en PHP si `shell_exec` est désactivé
+    $file = fopen($filename, "r");
+    if (!$file) {
+        return ["Impossible d'ouvrir le fichier."];
+    }
+
+    $buffer = [];
+    while (!feof($file)) {
+        $buffer[] = fgets($file);
+        if (count($buffer) > $lines) {
+            array_shift($buffer);
+        }
+    }
+    fclose($file);
+    return array_filter($buffer);
+}
 ?>

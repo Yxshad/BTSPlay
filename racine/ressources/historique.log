@@ -22,3 +22,16 @@
 [2025-02-05 10:51:03] CRITICAL : Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'URI_STOCKAGE_LOCAL' in 'field list'
 [2025-02-05 10:51:14] CRITICAL : Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'URI_STOCKAGE_LOCAL' in 'field list'
 [2025-02-05 10:54:52] CRITICAL : Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'URI_STOCKAGE_LOCAL' in 'field list'
+[2025-02-05 14:17:50] CRITICAL : Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'URI_STOCKAGE_LOCAL' in 'field list'
+[2025-02-05 14:18:28] FAIL : Erreur d'authentification pour l'utilisateur nconguisti.
+[2025-02-05 14:18:36] FAIL : Erreur d'authentification pour l'utilisateur smartin.
+[2025-02-05 14:18:47] FAIL : Erreur d'authentification pour l'utilisateur smartin.
+[2025-02-05 14:18:50] CRITICAL : Erreur SQL: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'URI_STOCKAGE_LOCAL' in 'field list'
+[2025-02-05 14:29:23] FAIL : Erreur d'authentification pour l'utilisateur admin.
+[2025-02-05 14:30:36] FAIL : Erreur d'authentification pour l'utilisateur .
+[2025-02-05 14:30:37] FAIL : Erreur d'authentification pour l'utilisateur .
+[2025-02-05 14:30:38] FAIL : Erreur d'authentification pour l'utilisateur .
+[2025-02-05 14:30:38] FAIL : Erreur d'authentification pour l'utilisateur .
+[2025-02-05 14:37:39] FAIL : Erreur d'authentification pour l'utilisateur .
+[2025-02-05 14:37:47] INFO : L'utilisateur nconguisti s'est connecté.
+[2025-02-05 15:04:33] INFO : L'utilisateur nconguisti s'est connecté.

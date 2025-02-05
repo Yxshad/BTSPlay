@@ -82,7 +82,7 @@ header .container {
 }
 
 .compte a:hover {
-    background: #CCC;
+    background: #4A627D;
     transform: scale(1);
 }
 
@@ -95,16 +95,22 @@ header .container {
     position: absolute;
     right: 0;
     width: max-content;
-    background: #EEE;
+    background: #2C3E50;
     border-radius: 10px;
-    border: 1px solid #000;
-    overflow: hidden;
+    border: 3px solid #f09520;
+    overflow: hidden !important ;
+    display: none;
 }
 
 .compte .sousMenu a {
     border-radius: 0px;
     padding: 10px;
 }
+
+#lienAdmin{
+    border-bottom: 1px solid #f09520;
+}
+
 
 /* --- Ajustement du body pour compenser le header fixe --- */
 body {
