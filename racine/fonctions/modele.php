@@ -546,6 +546,34 @@ function getTitreURIEtId($nbMaxVideo) {
 }
 
 /**
+ * @getIdProjetVideo
+ * @return array|false Renvoie l'ID du projet associer à la vidéo, false si aucun projet n'est attribué
+ */
+function getIdProjetVideo($idVideo) {
+    try {
+        $connexion = connexionBD();
+        $requeteVid = $connexion->prepare('SELECT projet FROM `Media` WHERE id=:idVideo;');
+        $requeteVid->bindParam(":idVideo", $idVideo,PDO::PARAM_INT);
+        $requeteVid->execute();
+        $resultat = $requeteVid->fetch(PDO::FETCH_ASSOC)["projet"];
+        $connexion = null;
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
+        if ($connexion) {
+            $connexion->rollback();
+        }
+        $connexion = null;
+        error_log('Erreur dans getTitreURIEtId: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
  * getProfId
  * renvoie l'id d'un prof
  */
@@ -568,21 +596,22 @@ function getProfId($profNom, $profPrenom)
    }
 }
 
-function getProjetIntitule($idProjet){
+function getProjetIntitule($idProjet) {
     $connexion = connexionBD();
-    $requeteProjet = $connexion->prepare('SELECT intitule 
-    FROM Projet
-    WHERE id = ?');                                                 
-    try{
+    
+    if (!$connexion) {
+        return false; // Retourner false si la connexion échoue
+    }
+    try {
+        $requeteProjet = $connexion->prepare('SELECT intitule FROM Projet WHERE id = ?');
         $requeteProjet->execute([$idProjet]);
         $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC);
-        $connexion = null;
-        return $projet ? $projet["intitule"] : "";
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
+        return $projet ? $projet["intitule"] : false;
+    } catch (Exception $e) {
+        error_log("Erreur lors de la récupération du projet: " . $e->getMessage());
+        return false;
+    } finally {
+        $connexion = null; // Fermeture propre de la connexion
     }
 }
 
