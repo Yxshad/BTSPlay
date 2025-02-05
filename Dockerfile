@@ -1,7 +1,7 @@
 # Base PHP avec Apache
 FROM php:8.3-apache
 
-# Installer les extensions PHP nécessaires
+# Installer les extensions PHP nécessaires et Doxygen
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     libzip-dev \
@@ -10,6 +10,8 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     pure-ftpd \
+    doxygen \
+    graphviz \
     && docker-php-ext-install pdo pdo_mysql mysqli ftp zip curl
 
 # Activer le module Apache rewrite
@@ -31,10 +33,8 @@ COPY ./racine /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-
-
-
+# Vérification de la version de FFmpeg
 RUN ffmpeg -version
 
-# Exposer le port 80    
+# Exposer le port 80
 EXPOSE 80
