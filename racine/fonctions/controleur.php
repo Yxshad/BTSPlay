@@ -36,7 +36,7 @@ if (isset($_POST["action"])) {
  * Prend en paramètre le nombre d'URIS et titres à récupérer
  * Retourne un tableau d'URIS/titres/id et cheminMiniature
  */
-function controleurRecupererTitreIdVideo() {
+function controleurRecupererTitreIdProjetVideo() {
     $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
     $videos = [];
     if (!$tabURIS) {
@@ -50,12 +50,20 @@ function controleurRecupererTitreIdVideo() {
 
         $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
         $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
+        $idProjet = getIdProjetVideo($id);
+        if ($idProjet) {
+            $intituleProjet = getProjetIntitule($idProjet);
+        } else{
+            $intituleProjet = "Vos Videos";
+        }
+        
         
         $videos[] = [
             'id' => $id,
             'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
-            'cheminMiniatureComplet' => $cheminMiniatureComplet
+            'cheminMiniatureComplet' => $cheminMiniatureComplet,
+            'projet' => $intituleProjet
         ];
     }
     return $videos;

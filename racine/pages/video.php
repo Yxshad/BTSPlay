@@ -84,31 +84,34 @@
                 <p>Télécharger</p>
             </a>
 
-            <div class="btnVideo">
-                <form action="#" method="POST">
-                    <input type="hidden" name="action" value="diffuserVideo">
-                    <input type="hidden" name="cheminVideoComplet" value="<?php echo $cheminVideoComplet; ?>">
-                    <button type="submit" class="boutonSubmit">
-                        <div class="logo-btnvideo">
-                            <img src="../ressources/Images/antenne.png" alt="">
-                        </div>
-                        <p>Diffuser</p>
-                    </button>
-                </form>
-            </div>
 
-            <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/modif.png" alt="">
+            <?php if(in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
+                <div class="btnVideo">
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="diffuserVideo">
+                        <input type="hidden" name="cheminVideoComplet" value="<?php echo $cheminVideoComplet; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/antenne.png" alt="">
+                            </div>
+                            <p>Diffuser</p>
+                        </button>
+                    </form>
                 </div>
-                <p>Modifier</p>
-            </a>
-            <a href="#" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/trash.png" alt="">
-                </div>
-                <p>Supprimer</p>
-            </a>
+
+                <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
+                    <div class="logo-btnvideo">
+                        <img src="../ressources/Images/modif.png" alt="">
+                    </div>
+                    <p>Modifier</p>
+                </a>
+                <a href="#" class="btnVideo">
+                    <div class="logo-btnvideo">
+                        <img src="../ressources/Images/trash.png" alt="">
+                    </div>
+                    <p>Supprimer</p>
+                </a>
+            <?php } ?>
         </div>
     </div>
 </div>

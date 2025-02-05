@@ -88,15 +88,23 @@ function affichageFiltres(){
 }
 
 function initCarrousel(){
-    const swiperVideo = new Swiper('.swiperVideo', {
-        speed: 400,
-        spaceBetween: 100,
-        slidesPerView: 3,
-        navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-        },
-    });
+    const buildSwiperSlider = sliderElm => {
+        return new Swiper(sliderElm, {
+            speed: 400,
+            spaceBetween: 100,
+            slidesPerView: 3,
+            navigation: {
+                nextEl: sliderElm.querySelector('.swiper-button-next'),
+                prevEl: sliderElm.querySelector('.swiper-button-prev'),
+            },
+        });
+    }
+    
+    // Get all of the swipers on the page
+    const allSliders = document.querySelectorAll('.swiperVideo');
+    
+    // Loop over all of the fetched sliders and apply Swiper on each one.
+    allSliders.forEach(slider => buildSwiperSlider(slider));
 }
 
 
