@@ -1,0 +1,72 @@
+
+/* --- Styles Généraux --- */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f8f8f8;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+}
+
+
+
+/* --- Tabs --- */
+.tabs {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+    gap: 15px;
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    background: #f09520 ;
+    border-radius: 5px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+.tab.active, .tab:hover {
+    background: #c72027;
+    color: white;
+}
+
+/* --- Contenu des tabs --- */
+.tab-content {
+    width: 80%;
+    display: none;
+    padding: 20px;
+    background: white;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .container {
+        flex-direction: column;
+        text-align: center;
+    }
+    .recherche input {
+        width: 150px;
+    }
+    .tabs {
+        flex-wrap: wrap;
+    }
+    .tab {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+
