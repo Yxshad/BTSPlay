@@ -1,10 +1,20 @@
 <?php
 
 /**
- * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
- * Vidéo située sur un espace local
- * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
- * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
+ * \file ffmpeg.php
+ * \version 1.1
+ * \brief Fichier regroupant toutes les fonctions de transferts des métadonnées et vidéos
+ * \author Axel Marrier
+ */
+
+
+
+ /**
+ * \fn recupererMetadonneesViaVideoLocale($fichier, $URI_ESPACE_LOCAL)
+ * \brief Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
+ * \param fichier - Nom de la vidéo
+ * \param URI_ESPACE_LOCAL - Uri du fichier sur l'espace local
+ * \return tableau généré par la fonction recupérerMetadonnees
  */
 function recupererMetadonneesViaVideoLocale($fichier, $URI_ESPACE_LOCAL){
 	$fichier_source = $URI_ESPACE_LOCAL . '/' . $fichier;
@@ -14,11 +24,16 @@ function recupererMetadonneesViaVideoLocale($fichier, $URI_ESPACE_LOCAL){
     return recupererMetadonnees($meta, $fichier);
 }
 
-/**
- * Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
- * Vidéo située sur un NAS distant, connexion via FTP
- * $fichier : le titre de la vidéo dont on veut récupérer les métadonnées
- * $URI_ESPACE_LOCAL : le chemin d'accès à la vidéo par exemple : " videos/videosAConvertir/attenteDeConvertion "
+
+ /**
+ * \fn recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier)
+ * \brief Fonction qui retourne la liste des métadonnées techniques d'une vidéo passée en paramètre
+ * \param ftp_server - Serveur ftp sur lequel on veut se connecter
+ * \param ftp_user - Utilisateur ftp qu'on utilise pour la connexion
+ * \param ftp_pass - Mot de passe de l'utilisateur qu'on utilise
+ * \param cheminFichier - Uri du fichier sur l'espace local
+ * \param nomFichier - Nom du fichier recherché
+ * \return tableau généré par la fonction recupérerMetadonnees
  */
 function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier) {
     $fileUrl = "ftp://$ftp_user:$ftp_pass@$ftp_server/$cheminFichier/$nomFichier";
@@ -28,10 +43,16 @@ function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $che
     return recupererMetadonnees($meta, $nomFichier);
 }
 
+
 /**
- * Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
- * #RISQUE : Changment des REGEX selon les vidéos
+ * \fn recupererMetadonnees($meta, $fichier)
+ * \brief Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
+ * \param meta - bloc de métadonnées 
+ * \param fichier - Nom du fichier
+ * \return liste - Liste des métadonnées techniques de la vidéo
  */
+
+ // #RISQUE : Changment des REGEX selon les vidéos
 function recupererMetadonnees($meta, $fichier){
     preg_match("/'[^']*\/(.*)'/",$meta,$nom);
     preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
@@ -50,9 +71,13 @@ function recupererMetadonnees($meta, $fichier){
 }
 
 
+
 /**
- * Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
- * Prend en paramètre le titre et la durée d'une vidéo
+ * \fn decouperVideo($titre, $duree)
+ * \brief Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
+ * \param titre - duree de la vidéo 
+ * \param duree - Duree de la vidéo
+ * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function decouperVideo($titre, $duree) {
     
@@ -101,10 +126,11 @@ function decouperVideo($titre, $duree) {
 }
 
 
-
 /**
- * Fonction qui converti l'ensemble des parties de vidéo situées dans URI_VIDEOS_EN_ATTENTE_DE_CONVERSION et les place dans URI_VIDEOS_EN_COURS_DE_CONVERSION (à upload)
- * Prend en paramètre une $vidéo
+ * \fn convertirVideo($video)
+ * \brief Fonction qui converti l'ensemble des parties de vidéo situées dans URI_VIDEOS_EN_ATTENTE_DE_CONVERSION et les place dans URI_VIDEOS_EN_COURS_DE_CONVERSION (à upload)
+ * \param video - nom de la video 
+ * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function convertirVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
@@ -144,8 +170,9 @@ function convertirVideo($video){
 }
 
 /**
- * Fonction qui permet de fisionner tous les morceaux d'une vidéo en un seul fichier
- * Prend en paramètre la $video à fusionner (nom du dossier)
+ * \fn fusionnerVideo($video)
+ * \brief Fonction qui permet de fusionner tous les morceaux d'une vidéo en un seul fichier
+ * \param video - nom de la video 
  */
 function fusionnerVideo($video){
     // Chemin pour accéder aux dossiers des vidéos
@@ -183,9 +210,11 @@ function fusionnerVideo($video){
 }
 
 /**
- * Fonction qui créé une miniature dans un espace local.
- * Prend en paramètre une vidéo et sa durée
- * Retourne le nom de la miniature
+ * \fn genererMiniature($video, $duree)
+ * \brief Fonction qui créé une miniature dans un espace local.
+ * \param video - nom de la video 
+ * \param duree - duree de la vidéo
+ * \return miniature - Miniature de la vidéo
  */
 function genererMiniature($video, $duree){
 
@@ -208,9 +237,10 @@ function genererMiniature($video, $duree){
 }
 
 /**
- * Fonction qui permet de convertir une durée totale en secondes
- * Prend en paramètre une $duree sous la forme hh:mm:ss.mm
- * Retourne la durée totale en seconde
+ * \fn formaterDuree($duree)
+ * \brief Fonction qui permet de convertir une durée totale en secondes
+ * \param duree - duree de la vidéo
+ * \return total - Durée totale en secondes
  */
 function formaterDuree($duree){
     $heures = (int)substr($duree, 0, 2);

@@ -1,9 +1,19 @@
 <?php
 
 /**
- * Fonction qui établit une connexion FTP.
- * Prend en paramètre : nom du serveur / login / password (ex : NAS_H264, user2, pass2)
- * Retourne $conn_id. Il sera nécessaire de fermer la connexion avec "ftp_close($conn_id)"
+ * \file ftp.php
+ * \version 1.1
+ * \brief Fichier regroupant toutes les fonctions lié au processus ftp
+ * \author Axel Marrier/Julien Loridant
+ */
+
+/**
+ * \fn connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass)
+ * \brief Fonction qui établit une connexion FTP
+ * \param ftp_server - nom du serveur 
+ * \param ftp_user - login de l'utilisateur 
+ * \param ftp_pass - password de l'utilisateur
+ * \return conn_id - id de la connexion
  */
 function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
     $conn_id = ftp_connect($ftp_server);
@@ -21,8 +31,11 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
 }
 
 /**
- * Fonction qui télécharge un fichier dans un répertoire local
- * Prend en paramètre l'id de connexion, le fichier à obtenir en local et le fichier sutué dans le NAS
+ * \fn telechargerFichier($conn_id, $local_file, $ftp_file)
+ * \brief Fonction qui télécharge un fichier dans un répertoire local
+ * \param conn_id - id de la connexion
+ * \param local_file - le fichier que l'on cherche en local
+ * \param ftp_file - le fichier situé sur le NAS où on se connecte
  */
 function telechargerFichier($conn_id, $local_file, $ftp_file){
 
@@ -41,8 +54,15 @@ function telechargerFichier($conn_id, $local_file, $ftp_file){
 
 
 /**
- * Fonction qui exporte un fichier  local vers un serveur NAS.
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS de destination et nom du fichier.
+ * \fn exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass)
+ * \brief Fonction qui exporte un fichier local vers un serveur NAS.
+ * \param cheminLocalComplet - Chemin du fichier local
+ * \param cheminDistantNAS - Chemin du fichier sur le NAS distant
+ * \param nomFichier - nom du fichier
+ * \param ftp_server - le server ftp sur lequel on se connecte
+ * \param ftp_user - Identifiant de l'utilisateur qui se connecte en FTP
+ * \param ftp_pass - Mot de passe de l'utilisateur qui se connecte en FTP
+ * \return resultat de la fonction exporterFichierVersNASAvecCheminComplet
  */
 function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $ftp_server, $ftp_user, $ftp_pass) {
     // Construire le chemin complet de destination pour le fichier
@@ -53,9 +73,13 @@ function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $f
 }
 
 /**
- * Fonction qui exporte un fichier  local vers un NAS distant.
- * Prend en paramètre les chemins complet des fichiers 
- * Prend en paramètre : chemin du fichier local, chemin distant sur le NAS et nom du fichier.
+ * \fn exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass)
+ * \brief Fonction qui exporte un fichier  local vers un NAS distant.
+ * \param cheminLocalComplet - Chemin du fichier local
+ * \param cheminDistantNASComplet - Chemin du fichier sur le NAS distant
+ * \param ftp_server - le server ftp sur lequel on se connecte
+ * \param ftp_user - Identifiant de l'utilisateur qui se connecte en FTP
+ * \param ftp_pass - Mot de passe de l'utilisateur qui se connecte en FTP
  */
 function exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
@@ -74,7 +98,10 @@ function exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDis
 
 
 /**
- * Fonction qui permet de créer un dossier via FTP
+ * \fn creerDossierFTP($conn_id, $cheminDossier)
+ * \brief Fonction qui permet de créer un dossier via FTP
+ * \param conn_id - l'id de la connexion ftp
+ * \param cheminDossier - chemin vers où on veut créer le dossier
  */
 function creerDossierFTP($conn_id, $cheminDossier) {
     $cheminDossier = rtrim($cheminDossier, '/');
@@ -95,10 +122,11 @@ function creerDossierFTP($conn_id, $cheminDossier) {
 
 
 /**
- * Fonction qui retourne un tableau de fichiers avec les chemins complets.
- * Prend en paramètre l'id de connexion et le repertoire à partir duquel analyser (normalement la racine).
- * exemple : 2024-2025/video.mp4
- * Si une vidéo est située à la racine, elle se nomme video.mp4
+ * \fn listerFichiersCompletFTP($conn_id, $repertoire) 
+ * \brief Fonction qui retourne un tableau de fichiers avec les chemins complets.
+ * \param conn_id - l'id de connexion et le repertoire à partir duquel analyser (normalement la racine).
+ * \param repertoire - repertoire où on liste les fichiers
+ * \return fichiersComplet - liste complète des fichiers
  */
 function listerFichiersCompletFTP($conn_id, $repertoire) {
     $pile = [$repertoire];
@@ -138,7 +166,13 @@ function listerFichiersCompletFTP($conn_id, $repertoire) {
 
 
 /**
- * Fonction qui récupère les noms des vidéos situées dans un NAS ($ftp_server). Créé une connexion FTP
+ * \fn recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS)
+ * \brief Fonction qui récupère les noms des vidéos situées dans un NAS ($ftp_server). Créé une connexion FTP
+ * \param ftp_server - Le serveur ftp sur lequel on se connecte
+ * \param ftp_user - L'utilisateur utilisé pour se connecter
+ * \param ftp_pass - Le mot de passe pour se connecter
+ * \param URI_NAS - L'url du NAS où récupérer la vidéo
+ * \param nomVideos_NAS - Nom de la vidéo sur le NAS
  */
 function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $nomsVideos_NAS){
 	
