@@ -517,6 +517,33 @@ function getInfosVideo($idVideo)
    }
 }
 
+function getURISVideo($idVideo)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH
+                                        FROM Media
+                                        WHERE id = ?');                                                 
+   try{
+       $requeteVid->execute([$idVideo]);
+       $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($infosVideo) {
+        ajouterLog(LOG_INFORM, "ok");
+        return $infosVideo;
+       } 
+       else {
+        ajouterLog(LOG_INFORM, "pas ok");
+           return false;
+       }
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       ajouterLog(LOG_INFORM, "err");
+       $connexion = null;
+   }
+}
+
 /**
  * @getTitreURIEtId
  * @return array|false Renvoie la liste des : URI STOCKAGE LOCAL + titre + id ou false en cas d'échec

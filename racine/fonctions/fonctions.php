@@ -411,7 +411,7 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
 	// Vérifie si le dossier existe, sinon le crée
 	if (!is_dir($cheminDossier)) {
 		if (!(mkdir($cheminDossier, 0777, true))) {
-			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminCourant.");
+			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
 			exit();
 		}
 	}
@@ -535,6 +535,11 @@ function recupererNomFichierSansExtension($nomFichier){
 function forcerExtensionMp4($nomFichier){
 	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	return $nomFichierSansExtension . '.mp4';
+}
+
+function forcerExtensionMXF($nomFichier){
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
+	return $nomFichierSansExtension . '.mxf';
 }
 
 /*
