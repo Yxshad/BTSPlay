@@ -1,7 +1,8 @@
 <?php 
 session_start();
 require_once '../fonctions/controleur.php';
-$tabVideos = controleurRecupererTitreIdProjetVideo();
+$tabVideos = controleurRecupererTitreIdVideo();
+$tabDernierProjet = controleurRecupererDernierProjet();
 ?>
 
 <!DOCTYPE html>
@@ -23,40 +24,58 @@ $tabVideos = controleurRecupererTitreIdProjetVideo();
 <?php require_once '../ressources/Templates/menuFiltres.php'; ?>
 
 <div class="container">
-    <?php 
-    $videosParProjet = [];
-    $videosParProjet["Vos Videos"] = [];
-    foreach ($tabVideos as $video) {
-        $videosParProjet[$video["projet"]][] = $video;
-    }
-    foreach ($videosParProjet as $projet) {
-        if (!empty($projet)) { ?>
-            <div class="sliderVideo">
-                <h2><?php echo $projet[0]["projet"]; ?></h2>
-                <div class="swiperVideo">
-                    <div class="swiper-wrapper">
-                        <?php
-                        foreach ($projet as $video) {
-                            $id = $video['id'];
-                            $titre = $video['titre'];
-                            $cheminMiniatureComplet = $video['cheminMiniatureComplet'];
-                            echo "<div class='swiper-slide'>";
-                                echo "<a href='video.php?v=$id'>";
-                                    echo "<div class='miniature'>";
-                                        echo "<img src='$cheminMiniatureComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
-                                    echo "</div>";
-                                    echo "<h3>$titre</h3>";
-                                echo "</a>";
-                            echo "</div>";
-                        }
-                        ?>
-                    </div>
-                </div>
-                <div class="swiper-button-next"></div>
-                <div class="swiper-button-prev"></div>
+    <div class="sliderVideo">
+        <h2>Vos vidéos</h2>
+        <div class="swiperVideo">
+            <div class="swiper-wrapper">
+                <?php
+                    foreach ($tabVideos as $video) {
+                        $id = $video['id'];
+                        $titre = $video['titre'];
+                        $cheminMiniatureComplet = $video['cheminMiniatureComplet'];
+                        echo "<div class='swiper-slide'>";
+                            echo "<a href='video.php?v=$id'>";
+                                echo "<div class='miniature'>";
+                                    echo "<img src='$cheminMiniatureComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
+                                echo "</div>";
+                                echo "<h3>$titre</h3>";
+                            echo "</a>";
+                        echo "</div>";
+                    }
+                ?>
             </div>
-        <?php }
-    } ?>
+        </div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+    
+    <?php if (!empty($tabDernierProjet)) { ?>
+        <div class="sliderVideoProjet">
+        <h2><?php echo $tabDernierProjet[0]["projet"]; ?></h2>
+        <div class="swiperVideo">
+            <div class="swiper-wrapper">
+                <?php
+                    foreach ($tabDernierProjet as $video) {
+                        $id = $video['id'];
+                        $titre = $video['titre'];
+                        $cheminMiniatureComplet = $video['cheminMiniatureComplet'];
+                        echo "<div class='swiper-slide'>";
+                            echo "<a href='video.php?v=$id'>";
+                                echo "<div class='miniature'>";
+                                    echo "<img src='$cheminMiniatureComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
+                                echo "</div>";
+                                echo "<h3>$titre</h3>";
+                            echo "</a>";
+                        echo "</div>";
+                    }
+                ?>
+            </div>
+        </div>
+        <div class="swiper-projet-button-next"></div>
+        <div class="swiper-projet-button-prev"></div>
+    </div>
+    <?php } ?>
+    
 </div>
 
 <?php require_once '../ressources/Templates/footer.php'; ?>
