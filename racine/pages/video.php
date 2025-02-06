@@ -99,9 +99,6 @@
                 </div>
                 <p>Télécharger</p>
             </a>
-
-
-            <?php if(in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
                 <div class="btnVideo">
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">
@@ -115,7 +112,6 @@
                         </button>
                     </form>
                 </div>
-
                 <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                     <div class="logo-btnvideo">
                         <img src="../ressources/Images/modif.png" alt="">
@@ -128,7 +124,6 @@
                     </div>
                     <p>Supprimer</p>
                 </a>
-            <?php } ?>
         </div>
     </div>
 </div>

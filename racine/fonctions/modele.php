@@ -585,6 +585,34 @@ function getProjetIntitule($idProjet){
 }
 
 /**
+ * @getIdProjetVideo
+ * @return array|false Renvoie l'ID du projet associer à la vidéo, false si aucun projet n'est attribué
+ */
+function getIdProjetVideo($idVideo) {
+    try {
+        $connexion = connexionBD();
+        $requeteVid = $connexion->prepare('SELECT projet FROM `Media` WHERE id=:idVideo;');
+        $requeteVid->bindParam(":idVideo", $idVideo,PDO::PARAM_INT);
+        $requeteVid->execute();
+        $resultat = $requeteVid->fetch(PDO::FETCH_ASSOC)["projet"];
+        $connexion = null;
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
+        if ($connexion) {
+            $connexion->rollback();
+        }
+        $connexion = null;
+        error_log('Erreur dans getTitreURIEtId: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
  * \fn getProfNomPrenom($identifiant)
  * \brief Renvoie le nom et le prénom du professeur
  * \param identifiant - identifiant du professeur dont on recherche les informations
