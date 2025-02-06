@@ -550,7 +550,7 @@ function scanDossierDecoupeVideo() {
         }
         $result[] = [
             'nomVideo' => $video,
-            'poidsVideo' => 'XX mb',
+            'poidsVideo' => recupererTailleFichier(),
             'status' => $status
         ];
     }

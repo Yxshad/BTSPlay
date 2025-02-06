@@ -55,7 +55,7 @@
                 <div class="ligne">
                     <div>
                         <p class="text-date">04/05/2025 17:42</p>
-                        <p class="text-date">Réalisé par proffesseur 1</p>
+                        <p class="text-date">Réalisé par professeur 1</p>
                         <p class="text-date">Réussite</p>
                     </div>
                 </div>

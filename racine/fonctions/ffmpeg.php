@@ -45,6 +45,8 @@ function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $che
 
 
 /**
+ * Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
+ * #RISQUE : Changement des REGEX selon les vidéos
  * \fn recupererMetadonnees($meta, $fichier)
  * \brief Fonction de récupération des métadonnées d'un $meta (bloc de métadonnées) via REGEX
  * \param meta - bloc de métadonnées 
@@ -68,6 +70,10 @@ function recupererMetadonnees($meta, $fichier){
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;
+}
+
+function recupererTailleFichier(){
+    return "XX Mb"; #RISQUE pas encore implémenté : Changement par une fonction qui récupère la taille du fichier
 }
 
 
