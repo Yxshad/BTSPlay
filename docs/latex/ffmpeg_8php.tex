@@ -1,0 +1,197 @@
+\doxysection{Référence du fichier racine/fonctions/ffmpeg.php}
+\hypertarget{ffmpeg_8php}{}\label{ffmpeg_8php}\index{racine/fonctions/ffmpeg.php@{racine/fonctions/ffmpeg.php}}
+
+
+Fichier regroupant toutes les fonctions de transferts des métadonnées et vidéos.  
+
+
+\doxysubsubsection*{Fonctions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{ffmpeg_8php_a2cb903ed844d873044e98217284b0226}{recuperer\+Metadonnees\+Via\+Video\+Locale}} (\$fichier, \$URI\+\_\+\+ESPACE\+\_\+\+LOCAL)
+\begin{DoxyCompactList}\small\item\em Fonction qui retourne la liste des métadonnées techniques d\textquotesingle{}une vidéo passée en paramètre. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_aa4cc16047c1abf00a72ccb76ff1c8b0c}{recuperer\+Metadonnees\+Video\+Via\+FTP}} (\$ftp\+\_\+server, \$ftp\+\_\+user, \$ftp\+\_\+pass, \$chemin\+Fichier, \$nom\+Fichier)
+\begin{DoxyCompactList}\small\item\em Fonction qui retourne la liste des métadonnées techniques d\textquotesingle{}une vidéo passée en paramètre. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_afea8178193ab24277e6cee7c07ca1de6}{recuperer\+Metadonnees}} (\$meta, \$fichier)
+\begin{DoxyCompactList}\small\item\em Fonction de récupération des métadonnées d\textquotesingle{}un \$meta (bloc de métadonnées) via REGEX. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_a469b18864ddf25711dc71c92122af90f}{decouper\+Video}} (\$titre, \$duree)
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_ab32c734be7196b9a83f775a94d64b11e}{convertir\+Video}} (\$video)
+\begin{DoxyCompactList}\small\item\em Fonction qui converti l\textquotesingle{}ensemble des parties de vidéo situées dans URI\+\_\+\+VIDEOS\+\_\+\+EN\+\_\+\+ATTENTE\+\_\+\+DE\+\_\+\+CONVERSION et les place dans URI\+\_\+\+VIDEOS\+\_\+\+EN\+\_\+\+COURS\+\_\+\+DE\+\_\+\+CONVERSION (à upload) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_ac2bc4735505fb7d37e6daaacc2f06165}{fusionner\+Video}} (\$video)
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de fusionner tous les morceaux d\textquotesingle{}une vidéo en un seul fichier. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_a42c8312b795411c131751ff8c5f600fb}{generer\+Miniature}} (\$video, \$duree)
+\begin{DoxyCompactList}\small\item\em Fonction qui créé une miniature dans un espace local. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{ffmpeg_8php_aafc94b143589ee48f451060a9f60d75e}{formater\+Duree}} (\$duree)
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de convertir une durée totale en secondes. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Description détaillée}
+Fichier regroupant toutes les fonctions de transferts des métadonnées et vidéos. 
+
+\begin{DoxyVersion}{Version}
+1.\+1 
+\end{DoxyVersion}
+\begin{DoxyAuthor}{Auteur}
+Axel Marrier 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Documentation des fonctions}
+\Hypertarget{ffmpeg_8php_ab32c734be7196b9a83f775a94d64b11e}\index{ffmpeg.php@{ffmpeg.php}!convertirVideo@{convertirVideo}}
+\index{convertirVideo@{convertirVideo}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{convertirVideo()}{convertirVideo()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_ab32c734be7196b9a83f775a94d64b11e} 
+convertir\+Video (\begin{DoxyParamCaption}\item[{}]{\$video}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui converti l\textquotesingle{}ensemble des parties de vidéo situées dans URI\+\_\+\+VIDEOS\+\_\+\+EN\+\_\+\+ATTENTE\+\_\+\+DE\+\_\+\+CONVERSION et les place dans URI\+\_\+\+VIDEOS\+\_\+\+EN\+\_\+\+COURS\+\_\+\+DE\+\_\+\+CONVERSION (à upload) 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em video} & -\/ nom de la video \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+liste -\/ Liste des métadonnées techniques de la vidéo 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_a469b18864ddf25711dc71c92122af90f}\index{ffmpeg.php@{ffmpeg.php}!decouperVideo@{decouperVideo}}
+\index{decouperVideo@{decouperVideo}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{decouperVideo()}{decouperVideo()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_a469b18864ddf25711dc71c92122af90f} 
+decouper\+Video (\begin{DoxyParamCaption}\item[{}]{\$titre}{, }\item[{}]{\$duree}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em titre} & -\/ duree de la vidéo \\
+\hline
+{\em duree} & -\/ Duree de la vidéo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+liste -\/ Liste des métadonnées techniques de la vidéo 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_aafc94b143589ee48f451060a9f60d75e}\index{ffmpeg.php@{ffmpeg.php}!formaterDuree@{formaterDuree}}
+\index{formaterDuree@{formaterDuree}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{formaterDuree()}{formaterDuree()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_aafc94b143589ee48f451060a9f60d75e} 
+formater\+Duree (\begin{DoxyParamCaption}\item[{}]{\$duree}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de convertir une durée totale en secondes. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em duree} & -\/ duree de la vidéo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+total -\/ Durée totale en secondes 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_ac2bc4735505fb7d37e6daaacc2f06165}\index{ffmpeg.php@{ffmpeg.php}!fusionnerVideo@{fusionnerVideo}}
+\index{fusionnerVideo@{fusionnerVideo}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{fusionnerVideo()}{fusionnerVideo()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_ac2bc4735505fb7d37e6daaacc2f06165} 
+fusionner\+Video (\begin{DoxyParamCaption}\item[{}]{\$video}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de fusionner tous les morceaux d\textquotesingle{}une vidéo en un seul fichier. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em video} & -\/ nom de la video \\
+\hline
+\end{DoxyParams}
+\Hypertarget{ffmpeg_8php_a42c8312b795411c131751ff8c5f600fb}\index{ffmpeg.php@{ffmpeg.php}!genererMiniature@{genererMiniature}}
+\index{genererMiniature@{genererMiniature}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{genererMiniature()}{genererMiniature()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_a42c8312b795411c131751ff8c5f600fb} 
+generer\+Miniature (\begin{DoxyParamCaption}\item[{}]{\$video}{, }\item[{}]{\$duree}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui créé une miniature dans un espace local. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em video} & -\/ nom de la video \\
+\hline
+{\em duree} & -\/ duree de la vidéo \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+miniature -\/ Miniature de la vidéo 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_afea8178193ab24277e6cee7c07ca1de6}\index{ffmpeg.php@{ffmpeg.php}!recupererMetadonnees@{recupererMetadonnees}}
+\index{recupererMetadonnees@{recupererMetadonnees}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{recupererMetadonnees()}{recupererMetadonnees()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_afea8178193ab24277e6cee7c07ca1de6} 
+recuperer\+Metadonnees (\begin{DoxyParamCaption}\item[{}]{\$meta}{, }\item[{}]{\$fichier}{}\end{DoxyParamCaption})}
+
+
+
+Fonction de récupération des métadonnées d\textquotesingle{}un \$meta (bloc de métadonnées) via REGEX. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em meta} & -\/ bloc de métadonnées \\
+\hline
+{\em fichier} & -\/ Nom du fichier \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+liste -\/ Liste des métadonnées techniques de la vidéo 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_a2cb903ed844d873044e98217284b0226}\index{ffmpeg.php@{ffmpeg.php}!recupererMetadonneesViaVideoLocale@{recupererMetadonneesViaVideoLocale}}
+\index{recupererMetadonneesViaVideoLocale@{recupererMetadonneesViaVideoLocale}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{recupererMetadonneesViaVideoLocale()}{recupererMetadonneesViaVideoLocale()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_a2cb903ed844d873044e98217284b0226} 
+recuperer\+Metadonnees\+Via\+Video\+Locale (\begin{DoxyParamCaption}\item[{}]{\$fichier}{, }\item[{}]{\$\+URI\+\_\+\+ESPACE\+\_\+\+LOCAL}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui retourne la liste des métadonnées techniques d\textquotesingle{}une vidéo passée en paramètre. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em fichier} & -\/ Nom de la vidéo \\
+\hline
+{\em URI\+\_\+\+ESPACE\+\_\+\+LOCAL} & -\/ Uri du fichier sur l\textquotesingle{}espace local \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+tableau généré par la fonction recupérer\+Metadonnees 
+\end{DoxyReturn}
+\Hypertarget{ffmpeg_8php_aa4cc16047c1abf00a72ccb76ff1c8b0c}\index{ffmpeg.php@{ffmpeg.php}!recupererMetadonneesVideoViaFTP@{recupererMetadonneesVideoViaFTP}}
+\index{recupererMetadonneesVideoViaFTP@{recupererMetadonneesVideoViaFTP}!ffmpeg.php@{ffmpeg.php}}
+\doxysubsubsection{\texorpdfstring{recupererMetadonneesVideoViaFTP()}{recupererMetadonneesVideoViaFTP()}}
+{\footnotesize\ttfamily \label{ffmpeg_8php_aa4cc16047c1abf00a72ccb76ff1c8b0c} 
+recuperer\+Metadonnees\+Video\+Via\+FTP (\begin{DoxyParamCaption}\item[{}]{\$ftp\+\_\+server}{, }\item[{}]{\$ftp\+\_\+user}{, }\item[{}]{\$ftp\+\_\+pass}{, }\item[{}]{\$chemin\+Fichier}{, }\item[{}]{\$nom\+Fichier}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui retourne la liste des métadonnées techniques d\textquotesingle{}une vidéo passée en paramètre. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em ftp\+\_\+server} & -\/ Serveur ftp sur lequel on veut se connecter \\
+\hline
+{\em ftp\+\_\+user} & -\/ Utilisateur ftp qu\textquotesingle{}on utilise pour la connexion \\
+\hline
+{\em ftp\+\_\+pass} & -\/ Mot de passe de l\textquotesingle{}utilisateur qu\textquotesingle{}on utilise \\
+\hline
+{\em chemin\+Fichier} & -\/ Uri du fichier sur l\textquotesingle{}espace local \\
+\hline
+{\em nom\+Fichier} & -\/ Nom du fichier recherché \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+tableau généré par la fonction recupérer\+Metadonnees 
+\end{DoxyReturn}

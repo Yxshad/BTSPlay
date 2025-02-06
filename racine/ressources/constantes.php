@@ -45,11 +45,41 @@
     const MTD_URI_NAS_ARCH = 'URI NAS ARCH';
     const MTD_URI_STOCKAGE_LOCAL = 'URI STOCKAGE LOCAL';
 
+    /*
+    #PROD : À DECOMMENTER LORS DU PASSAGE EN PROD
+
+    //CONSTANTES DES CONNEXIONS FTP
+    const NAS_PAD = '192.168.10.8';
+    const LOGIN_NAS_PAD = 'btsplay';
+    const PASSWORD_NAS_PAD = 'btsplay';
+
+    const NAS_ARCH = '192.168.10.9';
+    const LOGIN_NAS_ARCH = 'btsplay';
+    const PASSWORD_NAS_ARCH = 'btsplay';
+
+    const NAS_DIFF = 'NAS_DIFF';
+    const LOGIN_NAS_DIFF = 'btsplay';
+    const PASSWORD_NAS_DIFF = 'btsplay';
+
+    //CONSTANTES DE LA BASE DE DONNEES
+    const BD_HOST = 'localhost';
+    const BD_PORT = '3306:3306';
+    const BD_NAME = 'btsplay_bd';
+    const BD_USER = 'BTSPlay_ADMIN';
+    const BD_PASSWORD = 'BTSPlay_ADMIN';
+
+    */
+
+    //CONSTANTE POUR l'URI DE FFMPEG
+    #PROD : À DECOMMENTER LORS DU PASSAGE EN PROD
+    //const URI_FFMPEG = '../ressources/lib/ffmepg/ffmpeg.exe';
+    const URI_FFMPEG = 'ffmpeg';
+
     //CONSTANTES DE LA FONCTION DE RECONCILIATION
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
 
     //CONSTANTES DES REPERTOIRES DES VIDEOS
-    const URI_VIDEOS_A_LIRE = '../videos/videosALire/';
+    const URI_VIDEOS_A_DIFFUSER = '../videos/videosADiffuser/';
     const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser/';
     const URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
     const URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';

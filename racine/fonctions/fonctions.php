@@ -1,8 +1,15 @@
 <?php
 
+/**
+ * \file fonctions.php
+ * \version 1.1
+ * \brief Fichier servant à la majorité des fonctions de transferts ffmpeg et autres
+ * \author Julien Loridant
+ */
 
 /**
- * Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le stockage local
+ * \fn fonctionTransfert()
+ * \brief Fonction principale qui execute le transfert des fichiers des NAS ARCH et PAD vers le stockage local
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
  */
 function fonctionTransfert(){
@@ -29,11 +36,18 @@ function fonctionTransfert(){
 
 
 /**
-* - Fonction qui récupère l'ensemble des métadonnées techniques des vidéos d'un NAS (collectPAD ou collectARCH)
-* On télécharge les vidéos dans un $URI_VIDEOS_A_ANALYSER si celles-ci ne sont pas présentes dans la BD
-* - On remplit CollectNAS pour chaque vidéo
-* - On vide le répertoire local $URI_VIDEOS_A_ANALYSER
-*/
+ * \fn recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_ANALYSER, $COLLECT_NAS, $URI_NAS_RACINE)
+ * \brief Fonction qui récupère l'ensemble des métadonnées techniques des vidéos d'un NAS (collectPAD ou collectARCH)
+ * On télécharge les vidéos dans un $URI_VIDEOS_A_ANALYSER si celles-ci ne sont pas présentes dans la BD
+ * - On remplit CollectNAS pour chaque vidéo
+ * - On vide le répertoire local $URI_VIDEOS_A_ANALYSER
+ * \param ftp_server - Le nom du serveur ftp auquel on veut accéder
+ * \param ftp_user - Nom de l'utilisateur qui se connecte sur le serveur ftp
+ * \param ftp_pass - Mot de passe de l'utilisateur se connectant sur le serveur ftp
+ * \param URI_VIDEOS_A_ANALYSER - - URI de la vidéo qui doit être analysée
+ * \param COLLECT_NAS - Toutes les vidéos collectées sur les NAS
+ * \param URI_NAS_RACINE - URI de la vidéo sur le NAS racine
+ */
 function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_ANALYSER, $COLLECT_NAS, $URI_NAS_RACINE){
 	
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
@@ -67,9 +81,14 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 
 
 /**
-* Fonction qui remplit $COLLECT_STOCK_LOCAL avec les metadonnées de chaque vidéo présentes dans $COLLECT_PAD ET $COLLECT_ARCH
-* - Vide les vidéos de $COLLECT_PAD et $COLLECT_ARCH qui sont ajoutées dans $COLLECT_STOCK_LOCAL (passage les collections par référence)
-* Traite les vidéos isolées
+ * \fn remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOCK_LOCAL)
+ * \brief Fonction qui remplit $COLLECT_STOCK_LOCAL avec les metadonnées de chaque vidéo présentes dans $COLLECT_PAD ET $COLLECT_ARCH
+ * - Vide les vidéos de $COLLECT_PAD et $COLLECT_ARCH qui sont ajoutées dans $COLLECT_STOCK_LOCAL (passage les collections par référence)
+ * Traite les vidéos isolées
+ * \param COLLECT_PAD - Vidéos collectées sur le NAS PAD
+ * \param COLLECT_ARCH - Vidéos collectées sur le NAS Archivage
+ * \param COLLECT_STOCK_LOCAL - Tableau qui sera rempli de données à l'issue de la fonction
+ * \return COLLECT_STOCK_LOCAL - Tableau contenant toutes les vidéos qui doivent être stockées sur le serveur local
 */
 function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOCK_LOCAL){
 
@@ -124,7 +143,12 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 	return $COLLECT_STOCK_LOCAL;
 }
 
-
+/**
+ * \fn alimenterStockageLocal($COLLECT_STOCK_LOCAL)
+ * \brief Alimente le stockage en local des différentes vidéos récupérées dans les autres NAS
+ * \param COLLECT_STOCK_LOCAL - Collection des vidéos à stocker sur le serveur local
+ * \param COLLECT_STOCK_LOCAL - Liste des vidéos qui ont été implémentées dans le stockage local
+ */
 function alimenterStockageLocal($COLLECT_STOCK_LOCAL){
 
 	foreach($COLLECT_STOCK_LOCAL as &$video){
@@ -198,9 +222,10 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL){
 
 
 /**
- * Fonction qui affiche à l'écran une collection passée en paramètre sous forme de tableau
- * $titre : Le titre de la collection à afficher
- * $COLLECT_NAS : Un tableau de métadonnées des vidéos présentes dans le NAS
+ * \fn afficherCollect($titre, $COLLECT_NAS)
+ * \brief Fonction qui affiche à l'écran une collection passée en paramètre sous forme de tableau
+ * \param titre - Le titre de la collection à afficher
+ * \param COLLECT_NAS - Un tableau de métadonnées des vidéos présentes dans le NAS
  */
 function afficherCollect($titre, $COLLECT_NAS) {
     echo "<h2>$titre</h2>";
@@ -233,9 +258,13 @@ function afficherCollect($titre, $COLLECT_NAS) {
 }
 
 /**
- * Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
+ * \fn verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2)
+ * \brief Fonction qui vérifie la correspondance de toutes les métadonnées techniques entre 2 vidéos passées en paramètre
  * Une vidéo est un tableau qui contient les métadonnées techniques d'une vidéo (titre, durée, ...)
  * (pathinfo pour ne pas tenir compte de l'extension)
+ * \param donneesVideo1 - Données de la première vidéo
+ * \param donneesVideo2 - Données de la deuxième vidéo
+ * \return boolean
  */
 function verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2){
     
@@ -253,10 +282,13 @@ function verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2){
 }
 
 /**
+ * \fn verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichierComplet2)
  * Fonction qui vérifie la correspondance des noms des 2 vidéos passées en paramètre
  * On compare les noms des fichiers sans tenir compte de leur extension (video.mp4 = video.mxf)
  * (pathinfo pour ne pas tenir compte de l'extension)
  * On prend cependant compte du chemin du fichier
+ * \param cheminFichierComplet1 - Chemin complet du fichier numéro 1
+ * \param cheminFichierComplet2 - Chemin complet du fichier numéro 2
  */
 function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichierComplet2) {
 
@@ -275,7 +307,8 @@ function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichier
 
 
 /**
- * Fonction qui permet de comparer le contenu des deux NAS pour trouver les vidéos qui ne sont présentes que dans un seul emplacement
+ * \fn fonctionReconciliation()
+ * \brief Fonction qui permet de comparer le contenu des deux NAS pour trouver les vidéos qui ne sont présentes que dans un seul emplacement
  */
 function fonctionReconciliation() {
 	// Algorithme qui vérifie la présence des vidéos dans les 2 NAS.
@@ -300,9 +333,16 @@ function fonctionReconciliation() {
 
 
 /**
- * Fonction qui permet de rechercher les vidéos présentes dans un NAS mais pas dans l'autre
+ * \fn trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes)
+ * \brief Fonction qui permet de rechercher les vidéos présentes dans un NAS mais pas dans l'autre
  * Prend en paramètre les noms des deux NAS, les listes des noms des vidéos des deux NAS et une liste vide de vidéos manquantes.
  * Retourne $listeVideosManquantes valorisée
+ * \param nomNAS_1 - nom du premier NAS inspecté
+ * \param nomNAS_2 - nom du second NAS inspecté
+ * \param nomsVideosNAS_1 - nom de la vidéo comparée dans le NAS numéro 1
+ * \param nomsVideosNAS_2 - nom de la vidéo comparée dans le NAS numéro 2
+ * \param listeVideosManquantes - Liste des vidéos manquantes dans les NAS
+ * \return listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  */
 function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes) {
     foreach ($nomsVideosNAS_1 as $key1 => $nomVideoNAS1) {
@@ -335,8 +375,9 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVi
 }
 
 /**
- * Fonction qui permet d'afficher la liste des vidéos manquantes dans un des deux NAS.
- * Prend en paramètre $listeVideosManquantes
+ * \fn afficherVideosManquantes($listeVideosManquantes)
+ * \brief Fonction qui permet d'afficher la liste des vidéos manquantes dans un des deux NAS.
+ * \param listeVideosManquantes - la liste des vidéos manquantes dans un NAS
  */
 function afficherVideosManquantes($listeVideosManquantes) {
     echo "<h2>Tableau des vidéos manquantes :</h2>";
@@ -360,9 +401,10 @@ function afficherVideosManquantes($listeVideosManquantes) {
 
 
 /**
- * Fonction qui permet d'ajouter un log dans le fichier de log
- * Prend en paramètre : Type du log et message
- * Si le fichier n'existe pas, le créé
+ * \fn ajouterLog($typeLog, $message)
+ * \brief Fonction qui permet d'ajouter un log dans le fichier de log
+ * \param typeLog - Le type de log qu'on veut retourner
+ * \param message - Le message qu'on veut mettre dans le log
  */
 function ajouterLog($typeLog, $message){
     $repertoireLog = URI_FICHIER_LOG;
@@ -380,9 +422,10 @@ function ajouterLog($typeLog, $message){
 }
 
 /**
- * Fonction qui permet de trouver le nom de la miniature d'une vidéo
- * Prend en paramètre le nom de la vidéo à trouver
- * Renvoie le nom de la miniature
+ * \fn trouverNomMiniature($nomFichierVideo)
+ * \brief Fonction qui permet de trouver le nom de la miniature d'une vidéo
+ * \param nomFichierVideo - nom de la vidéo dont on cherche la miniature
+ * \return nomFichierSansExtension - le nom de la miniature
  */
 function trouverNomMiniature($nomFichierVideo) {
 	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichierVideo);
@@ -391,9 +434,10 @@ function trouverNomMiniature($nomFichierVideo) {
 
 
 /**
- * Fonction qui permet de trouver le nom d'une vidéo à partir d'une miniature
- * Prend en paramètre le nom de la miniature pour laquelle in faut trouver la vidéo
- * Renvoie le nom de la vidéo
+ * \fn trouverNomVideo($nomFichierMiniature)
+ * \brief Fonction qui permet de trouver le nom d'une vidéo à partir d'une miniature
+ * \param nomFichierMiniature - Nom de la vidéo dont on cherche la miniature
+ * \return nomFichierSansExtension le nom de la vidéo
  */
 function trouverNomVideo($nomFichierMiniature) {
     $nomFichierSansExtension = str_replace(SUFFIXE_MINIATURE_VIDEO, '', $nomFichierMiniature);
@@ -402,16 +446,17 @@ function trouverNomVideo($nomFichierMiniature) {
 
 
 /**
- * Fonction qui permet de créer un dossier local sans erreur
- * Prend en paramètre l'URI du dossier à créer, et un booléen qui indique si on créé de manière incrémentale
- * Création incrémentale : si le dossier "nomDossier" existe deja, on créé le dossier "nomDossier(1)"
+ * \fn creerDossier(&$cheminDossier, $creationIncrementale)
+ * \brief Fonction qui permet de créer un dossier local sans erreur
+ * \param cheminDossier - l'URI du dossier à créer
+ * \param creationIncrementale - booléen qui indique si on créé de manière incrémentale
  */
 function creerDossier(&$cheminDossier, $creationIncrementale){
 	
 	// Vérifie si le dossier existe, sinon le crée
 	if (!is_dir($cheminDossier)) {
 		if (!(mkdir($cheminDossier, 0777, true))) {
-			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminCourant.");
+			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
 			exit();
 		}
 	}
@@ -435,9 +480,11 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
 }
 
 /**
- * Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_STOCKAGE_LOCAL)
- * Prend en paramètre le chemin du fichier et son nom
- * Retourne true si le fichier est présent, false sinon
+ * \fn verifierFichierPresentEnBase($cheminFichier, $nomFichier)
+ * \brief Fonction qui véfifie la présence l'un fichier dans la base de données (dans URI_STOCKAGE_LOCAL)
+ * \param cheminFichier - le chemin du fichier
+ * \param nomFichier - Nom du fichier
+ * \return booléen
  */
 function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 	$cheminFichierStockageLocal = trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier);
@@ -450,9 +497,11 @@ function verifierFichierPresentEnBase($cheminFichier, $nomFichier){
 }
 
 /**
- * Fonction qui permet de récupérer le chemin d'un fichier dans le stockage local à partir du chemin dans un autre NAS
- * prend en paramètre le chemin d'un fichier situé dans le NAS PAD ou ARCH
- * Retourne le chemin du fichier dans le stockage local
+ * \fn trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier)
+ * \brief Fonction qui permet de récupérer le chemin d'un fichier dans le stockage local à partir du chemin dans un autre NAS
+ * \param cheminFichier - chemin d'un fichier situé dans le NAS PAD ou ARCH
+ * \param nomFichier - Nom du fichier
+ * \return cheminFichierStockageLocal - Le chemin du fichier dans le stockage local
  */
 function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
@@ -460,18 +509,21 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 	return $cheminFichierStockageLocal;
 }
 
-
+/**
+ * \fn insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL)
+ * \brief Lance l'insertion des métadonnées techniques en bd de toutes les vidéos ajoutées dans le serveur
+ * \param COLLECT_STOCK_LOCAL - Collection des vidéos à ajouter sur le serveur
+ */
 function insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL){
 	foreach($COLLECT_STOCK_LOCAL as $ligneMetadonneesTechniques){
 		insertionDonneesTechniques($ligneMetadonneesTechniques);
 	}
 }
 
-/*
-* Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
-* Ne prend aucun paramètre
-* Retourne une liste avec les noms des vidéos en train de se faire découper
-*/
+/**
+ * \fn scanDossierDecoupeVideo()
+ * \brief Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+ */
 function scanDossierDecoupeVideo() {
     $listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
     $listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
@@ -505,11 +557,12 @@ function scanDossierDecoupeVideo() {
     echo json_encode($result);
 }
 
-/*
-*	Fonction qui retourne le titre de la vidéo
-*   Prend en paramètre le nom d'un fichier et retourne le titre sans l'année, le projet et l'extension
-*   Si le nom du fichier ne contient pas le bon format, retourne le nom du fichier passé en paramètre
-*/
+/**
+ * \fn recupererTitreVideo($nomFichier)
+ * \brief Fonction qui retourne le titre de la vidéo
+ * \param nomFichier - le nom d'un fichier
+ * \return nomFichierSansExtension - le titre du fichier sans l'année, le projet et l'extension
+ */
 function recupererTitreVideo($nomFichier){
 	$titreVideo = [];
     if (preg_match("/^[^_]*_[^_]*_(.*)(?=\.)/", $nomFichier, $titreVideo)) {
@@ -524,24 +577,56 @@ function recupererTitreVideo($nomFichier){
     return $nomFichierSansExtension;
 }
 
+/**
+ * \fn recupererExtensionFichier($nomFichier)
+ * \brief Fonction récupérant l'extension du fichier mis en paramètre
+ * \param nomFichier - Nom du fichier
+ * \return string - extension du fichier
+ */
 function recupererExtensionFichier($nomFichier){
 	return substr(pathinfo($nomFichier, PATHINFO_EXTENSION), -3);
 }
 
+/**
+ * \fn recupererNomFichierSansExtension($nomFichier)
+ * \brief Fonction récupérant le nom du fichier mis en paramètre sans l'extension de fichier
+ * \param nomFichier - Nom du fichier
+ * \return string - nom du fichier sans extension
+ */
 function recupererNomFichierSansExtension($nomFichier){
 	return pathinfo($nomFichier, PATHINFO_FILENAME);
 }
 
+
+/**
+ * \fn forcerExtensionMp4($nomFichier)
+ * \brief Fonction qui force le fichier donné à obtenir l'extension mp4
+ * \param nomFichier - Nom du fichier
+ * \return string - nom du fichier avec l'extension mp4
+ */
 function forcerExtensionMp4($nomFichier){
 	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	return $nomFichierSansExtension . '.mp4';
 }
 
-/*
-* Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo
-* Prend en paramètre l'id de la vidéo, le nom d'un réalisateur, l'année de la promotion, le nom du projet, 
-* le nom de l'acteur 1, le role de l'acteur 1, le nom de l'acteur 2 et le role de l'acteur 2
-*/
+
+function forcerExtensionMXF($nomFichier){
+	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
+	return $nomFichierSansExtension . '.mxf';
+}
+
+/**
+ * \fn miseAJourMetadonneesVideo($idVid, $profReferent, $realisateur, $promotion, $projet, $cadreur, $responsableSon)
+ * \brief Fonction qui permet de modifier les métadonnées éditoriales d'une vidéo
+ * \param idVid - l'id de la vidéo
+ * \param profReferent - ID du professeur référent
+ * \param realisateur - le nom d'un réalisateur
+ * \param promotion - l'année de la promotion
+ * \param projet - le nom du projet
+ * \param cadreur - le nom du cadreur
+ * \param responsableSon - le nom du responsable son
+ */
+
 
 function miseAJourMetadonneesVideo(
     $idVid, 
@@ -576,7 +661,12 @@ function miseAJourMetadonneesVideo(
 	ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
 }
 
-//récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
+/**
+ * \fn getMetadonneesEditorialesVideo($video)
+ * \brief Récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
+ * \param video - id de la vidéo
+ * \return mtdEdito - Tableau de métadonnées éditoriales qui doivent être insérées
+ */
 function getMetadonneesEditorialesVideo($video){
 
 	$projet = getProjetIntitule($video["projet"]);
