@@ -306,22 +306,23 @@ function controleurRecupererDernierProjet(){
     if ($id !== false && $id !== null) {
         $listeVideo = recupererUriTitreVideosMemeProjet($id);
 
-        $listeVideoFormater = [];
+        $listeVideosFormatees = [];
         // Vérifier si $listeVideo est un tableau valide
         if (is_array($listeVideo) && getProjetIntitule($listeVideo[0]["projet"] != NULL)) {
             foreach ($listeVideo as $key => $video) {
-                $listeVideoFormater[$key]["projet"] = getProjetIntitule($video["projet"]);
-                $listeVideoFormater[$key]["titre"] = $video["mtd_tech_titre"];
-                $listeVideoFormater[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
-                $listeVideoFormater[$key]["id"] = $video["id"];
+                $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
+                $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
+                $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
+                $listeVideosFormatees[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
+                $listeVideosFormatees[$key]["id"] = $video["id"];
             }
         } else {
-            $listeVideoFormater = []; // Assurer que $listeVideo est bien un tableau
+            $listeVideosFormatees = []; // Assurer que $listeVideo est bien un tableau
         }
     } else {
-        $listeVideoFormater = [];
+        $listeVideosFormatees = [];
     }
 
-    return $listeVideoFormater  ;
+    return $listeVideosFormatees;
 }
 ?>

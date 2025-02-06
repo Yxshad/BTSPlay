@@ -512,7 +512,11 @@ function getURISVideo($idVideo)
 function getTitreURIEtId($nbMaxVideo) {
     try {
         $connexion = connexionBD();
-        $requeteVid = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre FROM Media LIMIT :nbVideo');
+        $requeteVid = $connexion->prepare('SELECT id,
+        URI_STOCKAGE_LOCAL, mtd_tech_titre
+        FROM Media
+        ORDER BY date_modification DESC
+        LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
         $requeteVid->execute();
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
@@ -841,7 +845,8 @@ function recupererDerniereVideoModifiee(){
     try{
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
-            WHERE projet = ?');   
+            WHERE projet = ?
+            ORDER BY date_modification DESC');   
          $requeteConnexion->execute([$idProjet]);
          $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
          $connexion = null;
