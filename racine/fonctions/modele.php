@@ -476,6 +476,33 @@ function getInfosVideo($idVideo)
    }
 }
 
+function getURISVideo($idVideo)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH
+                                        FROM Media
+                                        WHERE id = ?');                                                 
+   try{
+       $requeteVid->execute([$idVideo]);
+       $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($infosVideo) {
+        ajouterLog(LOG_INFORM, "ok");
+        return $infosVideo;
+       } 
+       else {
+        ajouterLog(LOG_INFORM, "pas ok");
+           return false;
+       }
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       ajouterLog(LOG_INFORM, "err");
+       $connexion = null;
+   }
+}
+
 /**
  * \fn getTitreURIEtId($nbMaxVideo)
  * \brief Renvoie tous les titres, ids des vidéos et leur chemin d'accès dans la machine locale

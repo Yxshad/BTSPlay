@@ -21,29 +21,29 @@ require_once "fonctions.php";
 function checkHeader(){
     if (isset($_POST["action"])) {
 
-        if ($_POST["action"] == "scanDossierDecoupeVideo") {
-            header('Content-Type: application/json');
-            scanDossierDecoupeVideo(); 
-            exit();
-        }
-        if ($_POST["action"] == "lancerConversion") {
-            fonctionTransfert();
-        }
-        if ($_POST["action"] == "ModifierMetadonnees") {
-            $idVideo = $_POST['idVideo'];
-            controleurPreparerMetadonnees($idVideo);
-        }
-        if ($_POST["action"] == "connexionUtilisateur") {
-            $loginUser = $_POST['loginUser'];
-            $passwordUser = $_POST['passwordUser'];
-            controleurIdentifierUtilisateur($loginUser, $passwordUser);
-        }
-        if ($_POST["action"] == "diffuserVideo") {
-            $cheminVideoComplet = $_POST['cheminVideoComplet'];
-            controleurDiffuserVideo($cheminVideoComplet);
-            // #RISQUE : DIFFUSION stoppée, en attente du dev nico
-        }
-    }
+      if ($_POST["action"] == "scanDossierDecoupeVideo") {
+          header('Content-Type: application/json');
+          scanDossierDecoupeVideo(); 
+          exit();
+      }
+      if ($_POST["action"] == "lancerConversion") {
+          fonctionTransfert();
+      }
+      if ($_POST["action"] == "ModifierMetadonnees") {
+          $idVideo = $_POST['idVideo'];
+          controleurPreparerMetadonnees($idVideo);
+      }
+      if ($_POST["action"] == "connexionUtilisateur") {
+          $loginUser = $_POST['loginUser'];
+          $passwordUser = $_POST['passwordUser'];
+          controleurIdentifierUtilisateur($loginUser, $passwordUser);
+      }
+      if ($_POST["action"] == "diffuserVideo") {
+          $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
+          $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
+          controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
+      }
+   }
 }
 checkHeader();
 
@@ -104,6 +104,21 @@ function controleurRecupererInfosVideo() {
     $mtdEdito = getMetadonneesEditorialesVideo($video);
     $promotion = $video["promotion"];
 
+    //Ajout des URIS des 2 NAS avec gestion d'erreur
+    $URIS = [];
+    if (!empty($video["URI_NAS_PAD"])) {
+        $URIS["URI_NAS_PAD"] = URI_RACINE_NAS_PAD . $video["URI_NAS_PAD"];
+    }
+    else{
+        $URIS["URI_NAS_PAD"] = "";
+    }
+    if (!empty($video["URI_NAS_ARCH"])) {
+        $URIS["URI_NAS_ARCH"] = URI_RACINE_NAS_ARCH . $video["URI_NAS_ARCH"];
+    }
+    else{
+        $URIS["URI_NAS_ARCH"] = "";
+    }
+
     $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
     $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
     $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
@@ -118,6 +133,7 @@ function controleurRecupererInfosVideo() {
         "titreVideo" => $titreVideo,
         "mtdEdito" => $mtdEdito,
         "promotion" => $promotion,
+        "URIS" => $URIS,
     ];
 }
 
@@ -231,26 +247,60 @@ function controleurVerifierAcces($rolesAutorises){
  * \brief Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
  * \param cheminLocalComplet - Le chemin d'accès à la vidéo
  */
-function controleurDiffuserVideo($cheminLocalComplet){
-    // Récupération de la vidéo en qualité optimale
-    // - Récupération des URIS en base avec $ID
-    // - Téléchargement du fichier dans videoADiffuser
-    
-    // #RISQUE : Changement des répertoires du NAS de diffusion
+function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
 
-    // $nomFichier = basename($cheminLocalComplet);
-    // $cheminDistantComplet = URI_RACINE_NAS_DIFF . $nomFichier;
+    //Téléchargement du fichier dans la meilleure qualité possible
+    $cheminFichierDesination = null;
+    $cheminFichierSource = null;
 
-    $cheminLocalComplet = URI_RACINE_STOCKAGE_LOCAL . '2023-2024/_BTSPLAY_bomba/bomba.mp4';
-    $cheminDistantComplet = URI_RACINE_NAS_DIFF . 'bomba.mp4';
+    if(!empty($URI_COMPLET_NAS_PAD)){
+        //On récupère met le nom à .mxf
+        $nomFichier = forcerExtensionMXF($URI_COMPLET_NAS_PAD);
+        $cheminFichier = dirname($URI_COMPLET_NAS_PAD) . '/';
+        $URI_COMPLET_NAS_PAD = $cheminFichier . $nomFichier;
 
-    $exportSucces = exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantComplet, NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
-    if($exportSucces){
+        $cheminFichierDesination = URI_VIDEOS_A_DIFFUSER . $nomFichier;
+        $cheminFichierSource = $URI_COMPLET_NAS_PAD;
+
+        $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+        ftp_close($conn_id);
+    }
+    elseif(!empty($URI_COMPLET_NAS_ARCH)) {
+        $nomFichier = basename($URI_COMPLET_NAS_ARCH);
+        $cheminFichierDesination = URI_VIDEOS_A_DIFFUSER . $nomFichier;
+        $cheminFichierSource = $URI_COMPLET_NAS_ARCH;
+        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+        ftp_close($conn_id);
+    }
+    else{
+        // #RISQUE : Message d'erreur
+        exit();
+    }
+
+    //Inversion des URIs, la source devient la destination
+    $cheminTempCopieFichierDestination = $cheminFichierDesination;
+    $cheminFichierDesination = $cheminFichierSource;
+    $cheminFichierSource = $cheminTempCopieFichierDestination;
+
+    //Création des dossiers dans le NAS de diffusion
+    $dossierVideo = dirname($cheminFichierDesination);
+    $conn_id = connexionFTP_NAS(NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
+    creerDossierFTP($conn_id, $dossierVideo);
+    ftp_close($conn_id);
+
+    $isExportSucces = exporterFichierVersNASAvecCheminComplet($cheminFichierSource, $cheminFichierDesination, NAS_DIFF, LOGIN_NAS_DIFF, PASSWORD_NAS_DIFF);
+
+    //Supprimer le fichier du dossier videoADiffuser
+    unlink($cheminFichierSource);
+
+    if($isExportSucces){
         // #RISQUE : Message de validation à l'utilisateur
         return;
     }
     else{
-        //Message d'erreur
+        // #RISQUE : Message d'erreur
         return;
     }
 }

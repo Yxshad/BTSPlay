@@ -79,7 +79,7 @@
     const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
 
     //CONSTANTES DES REPERTOIRES DES VIDEOS
-    const URI_VIDEOS_A_LIRE = '../videos/videosALire/';
+    const URI_VIDEOS_A_DIFFUSER = '../videos/videosADiffuser/';
     const URI_VIDEOS_A_ANALYSER = '../videos/videosAAnalyser/';
     const URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION = '../videos/videosAConvertir/attenteDeConversion/';
     const URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION = '../videos/videosAConvertir/coursDeConversion/';
