@@ -1,16 +1,17 @@
 <?php
-/**
- *  @NOM : methodes.php
- *  @DESCRIPTION : Fonctions php liées aux manipulations (insertions, suppressions...) sur la base de données
- *  @CREATION : 19/12/2024
- *  @DERNIERE MODIFICATION : 08/01/2025 - XXHXX
- *  @COLLABORATEURS : Elsa Lavergne
- */
+
+ /**
+ * \file modele.php
+ * \version 1.1
+ * \brief Fonctions php liées aux manipulations (insertions, suppressions...) sur la base de données
+ * \author Elsa Lavergne
+ * */
 
 /**
- *  @Nom : connexionBD
-  * @Description : Permet de se connecter en base de données et de checker au passage s'il y a eu des erreurs de connexion
- */
+* \fn connexionBD
+* \brief Permet de se connecter en base de données et de checker au passage s'il y a eu des erreurs de connexion
+* \return mysqlClient - Objet de connexion à la base de données
+*/
 function connexionBD()
 {
     try
@@ -27,16 +28,16 @@ function connexionBD()
     }
 }
 
-/**#########################################
- *
- *           INSERTIONS DANS LA BD
- * 
- */########################################
+#########################################
+# 
+#        INSERTIONS DANS LA BD
+#
+ ########################################
 
  /**
-  * @Nom : insertionDonneesTechniques
-  * @Description : crée la vidéo en base de données et insère les métadonnées techniques associées 
-  * @$listeMetadonnees : liste des metadonnées techniques à insérer
+  * \fn insertionDonneesTechniques($listeMetadonnees)
+  * \brief crée la vidéo en base de données et insère les métadonnées techniques associées 
+  * \param listeMetadonnees - liste des metadonnées techniques à insérer
   */
   function insertionDonneesTechniques($listeMetadonnees)
   {
@@ -75,36 +76,12 @@ function connexionBD()
       }
   }
 
-/**
-* @Nom : insertionProfesseur
-* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
-* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
- */
-function insertionProfesseur($prof)
-{
-    $connexion = connexionBD();     
-    try{
-        if(!profInBD($prof))
-        {
-            $ajoutProfesseur = $connexion->prepare('INSERT INTO Professeur (nomComplet) VALUES (?)');
-            $ajoutProfesseur->execute([$prof]); 
-            $connexion->commit();
-        }
-        else {
-            $connexion = null;
-        }
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
-    }
-}
 
 /**
- * @Nom : insertionProjet
- * @Description : gère l'insertion des projets et lie le projet à un/des médias
- */
+  * \fn insertionProjet($projet)
+  * \brief gère l'insertion des projets si celui-ci n'est pas déjà dans la bd
+  * \param projet - Projet que l'on veut insérer
+  */
 function insertionProjet($projet)
 {
     $connexion = connexionBD();     
@@ -127,9 +104,9 @@ function insertionProjet($projet)
 }
 
 /**
-* @Nom : insertionEtudiant
-* @Description : gère l'insertion des professeurs et lie le professeur à un/des projets
-* @nomProf et prenomProf : assez explicite, il serait préférable de renvoyer les deux individuellement pour faire les comparaisons en bd plus facilement mais j'arrangerai ça plus tard au pire
+  * \fn insertionEtudiant($etudiant)
+  * \brief Gère l'insertion des étudiants et lie le professeur à un/des projets
+  * \param etudiant - Nom et prenom de l'étudiant
  */
 function insertionEtudiant($etudiant)
 {
@@ -150,42 +127,17 @@ function insertionEtudiant($etudiant)
     }
 }
 
-/**
-* @Nom : insertionDonneesEditoriales
-* @Description : insère les métadonnées éditoriales sur la vidéo concernée
- */
- function insertionDonneesEditoriales($videoTitre, $listeEdito)
- {
-    $connexion = connexionBD();
-    try{
-        $idVid = getVideo($videoTitre); //Permet d'obtenir l'id exact de la vidéo à partir du titre 
-        insertionProfesseur($listeEdito['prof']);
-        assignerProfReferent($idVid, $listeEdito['prof']);
-        assignerCadreur($idVid, $listeEdito['cadreurs']);
-        assignerResponsable($idVid, $listeEdito['responsables']);
-        assignerRealisateur($idVid, $listeEdito['realisateurs']);
-        insertionProjet($listeEdito['projet']);
-        assignerProjet($idVid, $listeEdito['projet']);
-        assignerPromotion($idVid, $listeEdito['promotion']);
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
-    }
- }
-
-/**#########################################
- *
- *           ASSIGNER DANS LA BD
- * 
- */########################################
+#########################################
+ 
+#          ASSIGNER DANS LA BD
+  
+ ########################################
 
 /**
- * assignerProjet
- * Permet d'assigner un projet au média
- * idVideo : l'id de la vidéo à laquelle on assigne le projet
- * projet : libelle du projet
+ * \fn assignerProjet($idVideo, $projet)
+ * \brief Permet d'assigner un projet au média
+ * \param idVideo - l'id de la vidéo à laquelle on assigne le projet
+ * \param projet - libelle du projet
  */
  function assignerProjet($idVideo, $projet) {
     $connexion = connexionBD();
@@ -196,7 +148,7 @@ function insertionEtudiant($etudiant)
             $idProjet = getProjet($projet);
         }
         $setIDProjet = $connexion->prepare('UPDATE media 
-                                          SET projet = ?
+                                          SET projet = ?, date_modification = CURRENT_TIMESTAMP
                                           WHERE id = ?');
         $setIDProjet->execute([
             $idProjet,
@@ -213,10 +165,10 @@ function insertionEtudiant($etudiant)
 }
 
  /**
- * assignerProfReferent
- * Permet d'assigner un professeur référent au projet
- * idVideo : l'id de la vidéo à laquelle on assigne le professeur
- * prof : nomComplet du professeur
+ * \fn assignerProfReferent($idVideo, $prof)
+ * \brief Permet d'assigner un professeur référent au projet
+ * \param idVideo - l'id de la vidéo à laquelle on assigne le professeur
+ * \param prof - nomComplet du professeur
  */
 
  function assignerProfReferent($idVideo, $prof) {
@@ -233,7 +185,7 @@ function insertionEtudiant($etudiant)
             if(!$idProf)
             {
                 $setIDProf = $connexion->prepare('UPDATE media 
-                SET professeurReferent = NULL
+                SET professeurReferent = NULL, date_modification = CURRENT_TIMESTAMP
                 WHERE id = ?');
                 $setIDProf->execute([
                 $idVideo
@@ -243,7 +195,7 @@ function insertionEtudiant($etudiant)
             else {
                 // Mettre à jour la table `media` avec l'ID du professeur
             $setIDProf = $connexion->prepare('UPDATE media 
-            SET professeurReferent = ?
+            SET professeurReferent = ?, date_modification = CURRENT_TIMESTAMP
             WHERE id = ?');
             $setIDProf->execute([
             $idProf,
@@ -262,10 +214,10 @@ function insertionEtudiant($etudiant)
 }
 
 /**
- * assignerCadreur
- * Permet d'assigner un ou des cadreurs au projet
- * idVideo : l'id de la vidéo à laquelle on assigne le professeur
- * listeCadreurs : supposément une chaîne de caractères contenant tous les cadreurs
+ * \fn assignerCadreur($idVideo, $listeCadreurs)
+ * \brief Permet d'assigner un ou des cadreurs au projet
+ * \param idVideo - l'id de la vidéo à laquelle on assigne le professeur
+ * \param listeCadreurs - supposément une chaîne de caractères contenant tous les cadreurs
  */
  function assignerCadreur($idVideo, $listeCadreurs){
 
@@ -304,10 +256,10 @@ function insertionEtudiant($etudiant)
  }
 
 /**
- * assignerResponsable
- * Permet d'assigner un ou des responsables sons
- * idVideo : l'id de la vidéo à laquelle on assigne l'élève
- * listeResponsable : supposément une chaîne de caractères contenant tous les cadreurs
+ * \fn assignerResponsable($idVideo, $listeResponsable)
+ * \brief Permet d'assigner un ou des responsables sons
+ * \param idVideo - l'id de la vidéo à laquelle on assigne l'élève
+ * \param listeResponsable - supposément une chaîne de caractères contenant tous les responsables son
  */
  function assignerResponsable($idVideo, $listeResponsable){
 
@@ -346,10 +298,10 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * assignerRealisateur
- * Permet d'assigner un ou des réalisateurs
- * idVideo : l'id de la vidéo à laquelle on assigne l'élève
- * listeRealisateur : supposément une chaîne de caractères contenant tous les cadreurs
+ * \fn assignerRealisateur($idVideo, $listeRealisateurs)
+ * \brief Permet d'assigner un ou des réalisateurs
+ * \param idVideo - l'id de la vidéo à laquelle on assigne l'élève
+ * \param listeRealisateur - supposément une chaîne de caractères contenant tous les réalisateurs
  */
  function assignerRealisateur($idVideo, $listeRealisateurs){
     if ($listeRealisateurs != "") {
@@ -387,14 +339,16 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * assignerPromotion
- * @Assigne la promotion durant laquelle la vidéo a été produite
+ * \fn assignerPromotion($idVid, $valPromo)
+ * \brief Assigne la promotion durant laquelle la vidéo a été produite
+ * \param idVid - ID de la vidéo
+ * \param valPromo - La promotion qu'on va assigner
  */
  function assignerPromotion($idVid, $valPromo)
  {
     $connexion = connexionBD();  
     try{
-        $cadreur = $connexion->prepare('UPDATE Media SET promotion = ? WHERE id = ?');
+        $cadreur = $connexion->prepare('UPDATE Media SET promotion = ?, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
         $cadreur->execute([$valPromo, $idVid]);
         $connexion->commit();  
         $connexion = null;
@@ -406,17 +360,17 @@ function insertionEtudiant($etudiant)
     }
  }
 
-/** #################################################
- * 
- *    FONCTIONS "GETTERS" DE RECHERCHE SUR LES TABLES
- * 
- *####################################################*/
+#################################################
+ 
+#    FONCTIONS "GETTERS" DE RECHERCHE SUR LES TABLES
+ 
+####################################################*/
 
- /**
-* @Nom : getProjet
-* @Description : renvoie le projet lié à une vidéo
-* @projet : nom du projet
- */
+/**
+* \fn getProjet($projet)
+* \brief Renvoie le projet lié à une vidéo
+* \param projet - nom du projet
+*/
  function getProjet($projet)
  {
     $connexion = connexionBD();
@@ -441,9 +395,9 @@ function insertionEtudiant($etudiant)
  }
 
 /**
- * getIdEtudiant
- * renvoie l'id d'un élève
- * Ce code est catastrophique bref
+ * \fn getIdEtudiant($etudiant)
+ * \brief Renvoie l'id d'un élève
+ * \param etudiant - Nom complet de l'étudiant
  */
  function getIdEtudiant($etudiant)
  {
@@ -465,9 +419,9 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * getVideo
- * renvoie l'id d'une vidéo
- * $path : chemin de l'espace local de la vidéo
+ * \fn getVideo($path)
+ * \brief Renvoie l'id d'une vidéo
+ * \param path - chemin de l'espace local de la vidéo
  */
 function getVideo($path)
 {
@@ -493,6 +447,11 @@ function getVideo($path)
    }
 }
 
+/**
+ * \fn getInfosVideo($idVideo)
+ * \brief Renvoie toutes les informations d'une vidéo
+ * \param idVideo - ID de la vidéo dont on veut les informations
+ */
 function getInfosVideo($idVideo)
 {
    $connexion = connexionBD();
@@ -517,14 +476,47 @@ function getInfosVideo($idVideo)
    }
 }
 
+function getURISVideo($idVideo)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH
+                                        FROM Media
+                                        WHERE id = ?');                                                 
+   try{
+       $requeteVid->execute([$idVideo]);
+       $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($infosVideo) {
+        ajouterLog(LOG_INFORM, "ok");
+        return $infosVideo;
+       } 
+       else {
+        ajouterLog(LOG_INFORM, "pas ok");
+           return false;
+       }
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       ajouterLog(LOG_INFORM, "err");
+       $connexion = null;
+   }
+}
+
 /**
- * @getTitreURIEtId
- * @return array|false Renvoie la liste des : URI STOCKAGE LOCAL + titre + id ou false en cas d'échec
+ * \fn getTitreURIEtId($nbMaxVideo)
+ * \brief Renvoie tous les titres, ids des vidéos et leur chemin d'accès dans la machine locale
+ * \param nbMaxVideo - Le nombre maximum de vidéos dont on veut obtenir les informations
+ * \return resultat - Tableau des vidéos et informations obtenues
  */
 function getTitreURIEtId($nbMaxVideo) {
     try {
         $connexion = connexionBD();
-        $requeteVid = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre FROM Media LIMIT :nbVideo');
+        $requeteVid = $connexion->prepare('SELECT id,
+        URI_STOCKAGE_LOCAL, mtd_tech_titre
+        FROM Media
+        ORDER BY date_modification DESC
+        LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
         $requeteVid->execute();
         $resultat = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
@@ -546,8 +538,11 @@ function getTitreURIEtId($nbMaxVideo) {
 }
 
 /**
- * getProfId
- * renvoie l'id d'un prof
+ * \fn getProfId($profNom, $profPrenom)
+ * \brief Renvoie l'id du professeur ayant le nom et prenom spécifié
+ * \param profNom - Nom du professeur
+ * \param profPrenom - Prénom du professeur
+ * \return profCherche - Données sur le professeur obtenu 
  */
 function getProfId($profNom, $profPrenom)
 {
@@ -568,24 +563,65 @@ function getProfId($profNom, $profPrenom)
    }
 }
 
+/**
+ * \fn getProjetIntitule($idProjet)
+ * \brief Renvoie l'intitulé du projet
+ * \param idProjet - Id du projet qu'on recherche
+ * \return projet - Données du projet
+ */
 function getProjetIntitule($idProjet){
     $connexion = connexionBD();
-    $requeteProjet = $connexion->prepare('SELECT intitule 
-    FROM Projet
-    WHERE id = ?');                                                 
-    try{
+    
+    if (!$connexion) {
+        return false; // Retourner false si la connexion échoue
+    }
+    try {
+        $requeteProjet = $connexion->prepare('SELECT intitule FROM Projet WHERE id = ?');
         $requeteProjet->execute([$idProjet]);
         $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC);
-        $connexion = null;
-        return $projet ? $projet["intitule"] : "";
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
+        return $projet ? $projet["intitule"] : false;
+    } catch (Exception $e) {
+        error_log("Erreur lors de la récupération du projet: " . $e->getMessage());
+        return false;
+    } finally {
+        $connexion = null; // Fermeture propre de la connexion
     }
 }
 
+/**
+ * @getIdProjetVideo
+ * @return array|false Renvoie l'ID du projet associer à la vidéo, false si aucun projet n'est attribué
+ */
+function getIdProjetVideo($idVideo) {
+    try {
+        $connexion = connexionBD();
+        $requeteVid = $connexion->prepare('SELECT projet FROM `Media` WHERE id=:idVideo;');
+        $requeteVid->bindParam(":idVideo", $idVideo,PDO::PARAM_INT);
+        $requeteVid->execute();
+        $resultat = $requeteVid->fetch(PDO::FETCH_ASSOC)["projet"];
+        $connexion = null;
+        if (!empty($resultat)) {
+            return $resultat; // Retourne un tableau
+        } else {
+            return false; // Aucun résultat trouvé
+        }
+    } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
+        if ($connexion) {
+            $connexion->rollback();
+        }
+        $connexion = null;
+        error_log('Erreur dans getTitreURIEtId: ' . $e->getMessage());
+        return false;
+    }
+}
+
+/**
+ * \fn getProfNomPrenom($identifiant)
+ * \brief Renvoie le nom et le prénom du professeur
+ * \param identifiant - identifiant du professeur dont on recherche les informations
+ * \return profCherche - Données du prof recherché
+ */
 function getProfNomPrenom($identifiant)
 {
    $connexion = connexionBD();
@@ -605,6 +641,11 @@ function getProfNomPrenom($identifiant)
    }
 }
 
+/**
+ * \fn getAllProfesseurs()
+ * \brief Renvoie la liste de tous les professeurs (nom + prenom)
+ * \return professeurs - Liste de tous les professeurs
+ */
 function getAllProfesseurs(){
     $connexion = connexionBD();
    $requeteProf = $connexion->prepare('SELECT nom, prenom 
@@ -622,6 +663,12 @@ function getAllProfesseurs(){
    }
 }
 
+/**
+ * \fn getParticipants($idVid)
+ * \brief Retourne tous les participants d'un projet
+ * \param idVid - La vidéo dont on veut connaître tous les participants pour sa production
+ * \return [realisateur,cadreur,son] - Tableau des participants dans chaque rôle
+ */
 function getParticipants($idVid) {
     $connexion = connexionBD();
     
@@ -651,13 +698,18 @@ function getParticipants($idVid) {
     ];
 }
 
-/**###########################
-  *     TRUE / FALSE
-  ############################*/
+###########################
+#     TRUE / FALSE
+############################
 
-/** @etudiantInBD
- *  Renvoie un boléen si l'élève est dans la base de données
+
+/**
+ * \fn etudiantInBD($etudiant)
+ * \brief Renvoie un boléen si l'élève est dans la base de données
+ * \param etudiant - Etudiant recherché
+ * \return boolean (Vrai ou Faux)
  */
+
 function etudiantInBD($etudiant)
 {
     $connexion = connexionBD(); 
@@ -682,38 +734,13 @@ function etudiantInBD($etudiant)
     }
 }
 
-/** profInBD
- *  Renvoie un booléen si le professeur est dans la base
- * 
+/**
+ * \fn fetchAll($sql)
+ * \brief fetchAll("SELECT * FROM Media"); va renvoyer toutes les infos des vidéos
+ * NE PAS UTILISER SI POSSIBLE. TOUJOURS PRÉFÉRER LA CRÉATION D'UNE NOUVELLE FONCTION
+ * \param sql - Requête qu'on aimerait exécuter
+ * \return resultat - Données récupérées via la requête
  */
-function profInBD($prof){
-    $connexion = connexionBD();                     
-    try{
-        $requeteProf = $connexion->prepare('SELECT 1 
-        FROM Professeur
-        WHERE Professeur.nomComplet = ?');   
-        $requeteProf->execute([$prof]);
-            $resultatProf = $requeteProf->fetchAll();
-            $connexion = null;
-            if(count($resultatProf) == 0 ){
-                return False;
-            }
-            else {
-                return True;
-            }
-    }
-    catch(Exception $e)
-    {
-        $connexion->rollback();
-        $connexion = null;
-    }
-}
-
-/*
-*  fonction fetchAll couteau suisse
-*  ex: fetchAll("SELECT * FROM Media"); va renvoyer toutes les info des vidéos
-*  NE PAS UTILISER SI PROSSIBLE. TOUJOURS PREFERER LA CREATION D'UNE NOUVELLE FONCTION
-*/
 function fetchAll($sql){
     try {
         $connexion = connexionBD();
@@ -737,10 +764,11 @@ function fetchAll($sql){
 }
 
 /**
- * verifierPresenceVideoStockageLocal
- * renvoie 1 si une vidéo existe
- * $cheminFichier : chemin de l'espace local de la vidéo
- * $nomFichier : nom du fichier
+ * \fn verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
+ * \brief Vérifie qu'une vidéo existe bien dans le stockage local. Renvoie 1 si une vidéo existe
+ * \param cheminFichier - chemin de l'espace local de la vidéo
+ * \param nomFichier - nom du fichier
+ * \return boolean
  */
 function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
 {
@@ -757,14 +785,16 @@ function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
        $connexion = null;
    }
 }
 
 /**
- * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
- * renvoie le rôle si trouvé, false sinon
+ * \fn connexionProfesseur($loginUser, $passwordUser)
+ * \brief Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
+ * \param loginUser - Identifiant de connexion du professeur
+ * \param passwordUser - Mot de passe de l'utilisateur
+ * \return resultatRequeteConnexion - Données retournées par la requête de connexion
  */
 function connexionProfesseur($loginUser, $passwordUser){
    $connexion = connexionBD();                     
@@ -780,9 +810,53 @@ function connexionProfesseur($loginUser, $passwordUser){
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
        $connexion = null;
    }
 }
+
+/**
+ * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
+ * renvoie le rôle si trouvé, false sinon
+ */
+function recupererDerniereVideoModifiee(){
+    $connexion = connexionBD();                     
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT projet FROM Media
+            WHERE projet IS NOT NULL
+            ORDER BY date_modification DESC
+            LIMIT 1;');   
+         $requeteConnexion->execute();
+         $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
+         $connexion = null;
+         return $resultatRequeteConnexion["projet"];
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+
+/**
+ * Fonction retourne toutes les vidéos d'un même projet
+ * renvoie une liste de vidéo si trouvé
+ */
+ function recupererUriTitreVideosMemeProjet($idProjet){
+    $connexion = connexionBD();                     
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
+            FROM Media
+            WHERE projet = ?
+            ORDER BY date_modification DESC');   
+         $requeteConnexion->execute([$idProjet]);
+         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+         $connexion = null;
+         return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+ 
 
 ?>

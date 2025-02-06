@@ -1,0 +1,473 @@
+\doxysection{Référence du fichier racine/fonctions/modele.php}
+\hypertarget{modele_8php}{}\label{modele_8php}\index{racine/fonctions/modele.php@{racine/fonctions/modele.php}}
+
+
+Fonctions php liées aux manipulations (insertions, suppressions...) sur la base de données.  
+
+
+\doxysubsubsection*{Fonctions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{modele_8php_a356540f1911fcb8b43e4fa3d44a421a4}{connexion\+BD}} ()
+\begin{DoxyCompactList}\small\item\em Permet de se connecter en base de données et de checker au passage s\textquotesingle{}il y a eu des erreurs de connexion. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_abeb18b0f1b55f4b32e1277d0aa6bb477}{insertion\+Donnees\+Techniques}} (\$liste\+Metadonnees)
+\begin{DoxyCompactList}\small\item\em crée la vidéo en base de données et insère les métadonnées techniques associées \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a4d43477f84efb956410acceb6d4c79ac}{insertion\+Projet}} (\$projet)
+\begin{DoxyCompactList}\small\item\em gère l\textquotesingle{}insertion des projets si celui-\/ci n\textquotesingle{}est pas déjà dans la bd \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_af1f1846cee25a51469bb58d9cb485585}{insertion\+Etudiant}} (\$etudiant)
+\begin{DoxyCompactList}\small\item\em Gère l\textquotesingle{}insertion des étudiants et lie le professeur à un/des projets. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a2acd32e4dd08d8120ad760225be9987f}{assigner\+Projet}} (\$id\+Video, \$projet)
+\begin{DoxyCompactList}\small\item\em Permet d\textquotesingle{}assigner un projet au média. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a05bec0883969ce66d127b7ee6d42fe0f}{assigner\+Prof\+Referent}} (\$id\+Video, \$prof)
+\begin{DoxyCompactList}\small\item\em Permet d\textquotesingle{}assigner un professeur référent au projet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_ab923f1d421d3701f3217d6c54bb941e1}{assigner\+Cadreur}} (\$id\+Video, \$liste\+Cadreurs)
+\begin{DoxyCompactList}\small\item\em Permet d\textquotesingle{}assigner un ou des cadreurs au projet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a2ce96b20b199e229b049faab768985e6}{assigner\+Responsable}} (\$id\+Video, \$liste\+Responsable)
+\begin{DoxyCompactList}\small\item\em Permet d\textquotesingle{}assigner un ou des responsables sons. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_acd30f0e6995802c321601def7c54f0d6}{assigner\+Realisateur}} (\$id\+Video, \$liste\+Realisateurs)
+\begin{DoxyCompactList}\small\item\em Permet d\textquotesingle{}assigner un ou des réalisateurs. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a30d2039a589ea1ba0c47a01ebf8c7ace}{assigner\+Promotion}} (\$id\+Vid, \$val\+Promo)
+\begin{DoxyCompactList}\small\item\em Assigne la promotion durant laquelle la vidéo a été produite. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a109fa8c0d0577278eca4259f1fc34859}{get\+Projet}} (\$projet)
+\begin{DoxyCompactList}\small\item\em Renvoie le projet lié à une vidéo. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a35cd9afdc818e2039a5781777d344ed4}{get\+Id\+Etudiant}} (\$etudiant)
+\begin{DoxyCompactList}\small\item\em Renvoie l\textquotesingle{}id d\textquotesingle{}un élève. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a204a1b9bc951e1689d99aa8d19c526c0}{get\+Video}} (\$path)
+\begin{DoxyCompactList}\small\item\em Renvoie l\textquotesingle{}id d\textquotesingle{}une vidéo. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a48b4996cd9e8fe7eee349e69be64b495}{get\+Infos\+Video}} (\$id\+Video)
+\begin{DoxyCompactList}\small\item\em Renvoie toutes les informations d\textquotesingle{}une vidéo. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a723149978fb739ca572a8cdfdbb9d878}{get\+Titre\+URIEt\+Id}} (\$nb\+Max\+Video)
+\begin{DoxyCompactList}\small\item\em Renvoie tous les titres, ids des vidéos et leur chemin d\textquotesingle{}accès dans la machine locale. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_aaec36784a717834bb5571ed489146e21}{get\+Prof\+Id}} (\$prof\+Nom, \$prof\+Prenom)
+\begin{DoxyCompactList}\small\item\em Renvoie l\textquotesingle{}id du professeur ayant le nom et prenom spécifié \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a0f39c78a063e7be1c269441b8116f449}{get\+Projet\+Intitule}} (\$id\+Projet)
+\begin{DoxyCompactList}\small\item\em Renvoie l\textquotesingle{}intitulé du projet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a9441dd1afc01bbbd8daf00e131492425}{get\+Prof\+Nom\+Prenom}} (\$identifiant)
+\begin{DoxyCompactList}\small\item\em Renvoie le nom et le prénom du professeur. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a35cc4b2ce46b504bdfefe81c827bf3be}{get\+All\+Professeurs}} ()
+\begin{DoxyCompactList}\small\item\em Renvoie la liste de tous les professeurs (nom + prenom) \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a9610327195eb1057e694d99403130ddb}{get\+Participants}} (\$id\+Vid)
+\begin{DoxyCompactList}\small\item\em Retourne tous les participants d\textquotesingle{}un projet. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_afdf40268598194312461202d5d7d59bd}{etudiant\+In\+BD}} (\$etudiant)
+\begin{DoxyCompactList}\small\item\em Renvoie un boléen si l\textquotesingle{}élève est dans la base de données. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a3e0a08e5efb09ade0bf64bf219b0c974}{fetch\+All}} (\$sql)
+\begin{DoxyCompactList}\small\item\em fetch\+All("{}\+SELECT \texorpdfstring{$\ast$}{*} FROM Media"{}); va renvoyer toutes les infos des vidéos NE PAS UTILISER SI POSSIBLE. TOUJOURS PRÉ\+FÉ\+RER LA CRÉ\+ATION D\textquotesingle{}UNE NOUVELLE FONCTION \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_aa7e8d59cef73af0e6c2dc89cba88a605}{verifier\+Presence\+Video\+Stockage\+Local}} (\$chemin\+Fichier, \$nom\+Fichier)
+\begin{DoxyCompactList}\small\item\em Vérifie qu\textquotesingle{}une vidéo existe bien dans le stockage local. Renvoie 1 si une vidéo existe. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{modele_8php_a85c4b37452589aa4b0eed1df29621755}{connexion\+Professeur}} (\$login\+User, \$password\+User)
+\begin{DoxyCompactList}\small\item\em Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Description détaillée}
+Fonctions php liées aux manipulations (insertions, suppressions...) sur la base de données. 
+
+\begin{DoxyVersion}{Version}
+1.\+1 
+\end{DoxyVersion}
+\begin{DoxyAuthor}{Auteur}
+Elsa Lavergne 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Documentation des fonctions}
+\Hypertarget{modele_8php_ab923f1d421d3701f3217d6c54bb941e1}\index{modele.php@{modele.php}!assignerCadreur@{assignerCadreur}}
+\index{assignerCadreur@{assignerCadreur}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerCadreur()}{assignerCadreur()}}
+{\footnotesize\ttfamily \label{modele_8php_ab923f1d421d3701f3217d6c54bb941e1} 
+assigner\+Cadreur (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{, }\item[{}]{\$liste\+Cadreurs}{}\end{DoxyParamCaption})}
+
+
+
+Permet d\textquotesingle{}assigner un ou des cadreurs au projet. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ l\textquotesingle{}id de la vidéo à laquelle on assigne le professeur \\
+\hline
+{\em liste\+Cadreurs} & -\/ supposément une chaîne de caractères contenant tous les cadreurs \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a05bec0883969ce66d127b7ee6d42fe0f}\index{modele.php@{modele.php}!assignerProfReferent@{assignerProfReferent}}
+\index{assignerProfReferent@{assignerProfReferent}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerProfReferent()}{assignerProfReferent()}}
+{\footnotesize\ttfamily \label{modele_8php_a05bec0883969ce66d127b7ee6d42fe0f} 
+assigner\+Prof\+Referent (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{, }\item[{}]{\$prof}{}\end{DoxyParamCaption})}
+
+
+
+Permet d\textquotesingle{}assigner un professeur référent au projet. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ l\textquotesingle{}id de la vidéo à laquelle on assigne le professeur \\
+\hline
+{\em prof} & -\/ nom\+Complet du professeur \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a2acd32e4dd08d8120ad760225be9987f}\index{modele.php@{modele.php}!assignerProjet@{assignerProjet}}
+\index{assignerProjet@{assignerProjet}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerProjet()}{assignerProjet()}}
+{\footnotesize\ttfamily \label{modele_8php_a2acd32e4dd08d8120ad760225be9987f} 
+assigner\+Projet (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{, }\item[{}]{\$projet}{}\end{DoxyParamCaption})}
+
+
+
+Permet d\textquotesingle{}assigner un projet au média. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ l\textquotesingle{}id de la vidéo à laquelle on assigne le projet \\
+\hline
+{\em projet} & -\/ libelle du projet \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a30d2039a589ea1ba0c47a01ebf8c7ace}\index{modele.php@{modele.php}!assignerPromotion@{assignerPromotion}}
+\index{assignerPromotion@{assignerPromotion}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerPromotion()}{assignerPromotion()}}
+{\footnotesize\ttfamily \label{modele_8php_a30d2039a589ea1ba0c47a01ebf8c7ace} 
+assigner\+Promotion (\begin{DoxyParamCaption}\item[{}]{\$id\+Vid}{, }\item[{}]{\$val\+Promo}{}\end{DoxyParamCaption})}
+
+
+
+Assigne la promotion durant laquelle la vidéo a été produite. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Vid} & -\/ ID de la vidéo \\
+\hline
+{\em val\+Promo} & -\/ La promotion qu\textquotesingle{}on va assigner \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_acd30f0e6995802c321601def7c54f0d6}\index{modele.php@{modele.php}!assignerRealisateur@{assignerRealisateur}}
+\index{assignerRealisateur@{assignerRealisateur}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerRealisateur()}{assignerRealisateur()}}
+{\footnotesize\ttfamily \label{modele_8php_acd30f0e6995802c321601def7c54f0d6} 
+assigner\+Realisateur (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{, }\item[{}]{\$liste\+Realisateurs}{}\end{DoxyParamCaption})}
+
+
+
+Permet d\textquotesingle{}assigner un ou des réalisateurs. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ l\textquotesingle{}id de la vidéo à laquelle on assigne l\textquotesingle{}élève \\
+\hline
+{\em liste\+Realisateur} & -\/ supposément une chaîne de caractères contenant tous les réalisateurs \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a2ce96b20b199e229b049faab768985e6}\index{modele.php@{modele.php}!assignerResponsable@{assignerResponsable}}
+\index{assignerResponsable@{assignerResponsable}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{assignerResponsable()}{assignerResponsable()}}
+{\footnotesize\ttfamily \label{modele_8php_a2ce96b20b199e229b049faab768985e6} 
+assigner\+Responsable (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{, }\item[{}]{\$liste\+Responsable}{}\end{DoxyParamCaption})}
+
+
+
+Permet d\textquotesingle{}assigner un ou des responsables sons. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ l\textquotesingle{}id de la vidéo à laquelle on assigne l\textquotesingle{}élève \\
+\hline
+{\em liste\+Responsable} & -\/ supposément une chaîne de caractères contenant tous les responsables son \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a356540f1911fcb8b43e4fa3d44a421a4}\index{modele.php@{modele.php}!connexionBD@{connexionBD}}
+\index{connexionBD@{connexionBD}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{connexionBD()}{connexionBD()}}
+{\footnotesize\ttfamily \label{modele_8php_a356540f1911fcb8b43e4fa3d44a421a4} 
+connexion\+BD (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Permet de se connecter en base de données et de checker au passage s\textquotesingle{}il y a eu des erreurs de connexion. 
+
+\begin{DoxyReturn}{Renvoie}
+mysql\+Client -\/ Objet de connexion à la base de données 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a85c4b37452589aa4b0eed1df29621755}\index{modele.php@{modele.php}!connexionProfesseur@{connexionProfesseur}}
+\index{connexionProfesseur@{connexionProfesseur}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{connexionProfesseur()}{connexionProfesseur()}}
+{\footnotesize\ttfamily \label{modele_8php_a85c4b37452589aa4b0eed1df29621755} 
+connexion\+Professeur (\begin{DoxyParamCaption}\item[{}]{\$login\+User}{, }\item[{}]{\$password\+User}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em login\+User} & -\/ Identifiant de connexion du professeur \\
+\hline
+{\em password\+User} & -\/ Mot de passe de l\textquotesingle{}utilisateur \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+resultat\+Requete\+Connexion -\/ Données retournées par la requête de connexion 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_afdf40268598194312461202d5d7d59bd}\index{modele.php@{modele.php}!etudiantInBD@{etudiantInBD}}
+\index{etudiantInBD@{etudiantInBD}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{etudiantInBD()}{etudiantInBD()}}
+{\footnotesize\ttfamily \label{modele_8php_afdf40268598194312461202d5d7d59bd} 
+etudiant\+In\+BD (\begin{DoxyParamCaption}\item[{}]{\$etudiant}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie un boléen si l\textquotesingle{}élève est dans la base de données. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em etudiant} & -\/ Etudiant recherché \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+boolean (Vrai ou Faux) 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a3e0a08e5efb09ade0bf64bf219b0c974}\index{modele.php@{modele.php}!fetchAll@{fetchAll}}
+\index{fetchAll@{fetchAll}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{fetchAll()}{fetchAll()}}
+{\footnotesize\ttfamily \label{modele_8php_a3e0a08e5efb09ade0bf64bf219b0c974} 
+fetch\+All (\begin{DoxyParamCaption}\item[{}]{\$sql}{}\end{DoxyParamCaption})}
+
+
+
+fetch\+All("{}\+SELECT \texorpdfstring{$\ast$}{*} FROM Media"{}); va renvoyer toutes les infos des vidéos NE PAS UTILISER SI POSSIBLE. TOUJOURS PRÉ\+FÉ\+RER LA CRÉ\+ATION D\textquotesingle{}UNE NOUVELLE FONCTION 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em sql} & -\/ Requête qu\textquotesingle{}on aimerait exécuter \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+resultat -\/ Données récupérées via la requête 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a35cc4b2ce46b504bdfefe81c827bf3be}\index{modele.php@{modele.php}!getAllProfesseurs@{getAllProfesseurs}}
+\index{getAllProfesseurs@{getAllProfesseurs}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getAllProfesseurs()}{getAllProfesseurs()}}
+{\footnotesize\ttfamily \label{modele_8php_a35cc4b2ce46b504bdfefe81c827bf3be} 
+get\+All\+Professeurs (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie la liste de tous les professeurs (nom + prenom) 
+
+\begin{DoxyReturn}{Renvoie}
+professeurs -\/ Liste de tous les professeurs 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a35cd9afdc818e2039a5781777d344ed4}\index{modele.php@{modele.php}!getIdEtudiant@{getIdEtudiant}}
+\index{getIdEtudiant@{getIdEtudiant}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getIdEtudiant()}{getIdEtudiant()}}
+{\footnotesize\ttfamily \label{modele_8php_a35cd9afdc818e2039a5781777d344ed4} 
+get\+Id\+Etudiant (\begin{DoxyParamCaption}\item[{}]{\$etudiant}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie l\textquotesingle{}id d\textquotesingle{}un élève. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em etudiant} & -\/ Nom complet de l\textquotesingle{}étudiant \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a48b4996cd9e8fe7eee349e69be64b495}\index{modele.php@{modele.php}!getInfosVideo@{getInfosVideo}}
+\index{getInfosVideo@{getInfosVideo}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getInfosVideo()}{getInfosVideo()}}
+{\footnotesize\ttfamily \label{modele_8php_a48b4996cd9e8fe7eee349e69be64b495} 
+get\+Infos\+Video (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie toutes les informations d\textquotesingle{}une vidéo. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ ID de la vidéo dont on veut les informations \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a9610327195eb1057e694d99403130ddb}\index{modele.php@{modele.php}!getParticipants@{getParticipants}}
+\index{getParticipants@{getParticipants}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getParticipants()}{getParticipants()}}
+{\footnotesize\ttfamily \label{modele_8php_a9610327195eb1057e694d99403130ddb} 
+get\+Participants (\begin{DoxyParamCaption}\item[{}]{\$id\+Vid}{}\end{DoxyParamCaption})}
+
+
+
+Retourne tous les participants d\textquotesingle{}un projet. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Vid} & -\/ La vidéo dont on veut connaître tous les participants pour sa production \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+\mbox{[}realisateur,cadreur,son\mbox{]} -\/ Tableau des participants dans chaque rôle 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_aaec36784a717834bb5571ed489146e21}\index{modele.php@{modele.php}!getProfId@{getProfId}}
+\index{getProfId@{getProfId}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getProfId()}{getProfId()}}
+{\footnotesize\ttfamily \label{modele_8php_aaec36784a717834bb5571ed489146e21} 
+get\+Prof\+Id (\begin{DoxyParamCaption}\item[{}]{\$prof\+Nom}{, }\item[{}]{\$prof\+Prenom}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie l\textquotesingle{}id du professeur ayant le nom et prenom spécifié 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em prof\+Nom} & -\/ Nom du professeur \\
+\hline
+{\em prof\+Prenom} & -\/ Prénom du professeur \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+prof\+Cherche -\/ Données sur le professeur obtenu 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a9441dd1afc01bbbd8daf00e131492425}\index{modele.php@{modele.php}!getProfNomPrenom@{getProfNomPrenom}}
+\index{getProfNomPrenom@{getProfNomPrenom}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getProfNomPrenom()}{getProfNomPrenom()}}
+{\footnotesize\ttfamily \label{modele_8php_a9441dd1afc01bbbd8daf00e131492425} 
+get\+Prof\+Nom\+Prenom (\begin{DoxyParamCaption}\item[{}]{\$identifiant}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie le nom et le prénom du professeur. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em identifiant} & -\/ identifiant du professeur dont on recherche les informations \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+prof\+Cherche -\/ Données du prof recherché 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a109fa8c0d0577278eca4259f1fc34859}\index{modele.php@{modele.php}!getProjet@{getProjet}}
+\index{getProjet@{getProjet}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getProjet()}{getProjet()}}
+{\footnotesize\ttfamily \label{modele_8php_a109fa8c0d0577278eca4259f1fc34859} 
+get\+Projet (\begin{DoxyParamCaption}\item[{}]{\$projet}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie le projet lié à une vidéo. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em projet} & -\/ nom du projet \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a0f39c78a063e7be1c269441b8116f449}\index{modele.php@{modele.php}!getProjetIntitule@{getProjetIntitule}}
+\index{getProjetIntitule@{getProjetIntitule}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getProjetIntitule()}{getProjetIntitule()}}
+{\footnotesize\ttfamily \label{modele_8php_a0f39c78a063e7be1c269441b8116f449} 
+get\+Projet\+Intitule (\begin{DoxyParamCaption}\item[{}]{\$id\+Projet}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie l\textquotesingle{}intitulé du projet. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Projet} & -\/ Id du projet qu\textquotesingle{}on recherche \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+projet -\/ Données du projet 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a723149978fb739ca572a8cdfdbb9d878}\index{modele.php@{modele.php}!getTitreURIEtId@{getTitreURIEtId}}
+\index{getTitreURIEtId@{getTitreURIEtId}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getTitreURIEtId()}{getTitreURIEtId()}}
+{\footnotesize\ttfamily \label{modele_8php_a723149978fb739ca572a8cdfdbb9d878} 
+get\+Titre\+URIEt\+Id (\begin{DoxyParamCaption}\item[{}]{\$nb\+Max\+Video}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie tous les titres, ids des vidéos et leur chemin d\textquotesingle{}accès dans la machine locale. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em nb\+Max\+Video} & -\/ Le nombre maximum de vidéos dont on veut obtenir les informations \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+resultat -\/ Tableau des vidéos et informations obtenues 
+\end{DoxyReturn}
+\Hypertarget{modele_8php_a204a1b9bc951e1689d99aa8d19c526c0}\index{modele.php@{modele.php}!getVideo@{getVideo}}
+\index{getVideo@{getVideo}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{getVideo()}{getVideo()}}
+{\footnotesize\ttfamily \label{modele_8php_a204a1b9bc951e1689d99aa8d19c526c0} 
+get\+Video (\begin{DoxyParamCaption}\item[{}]{\$path}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie l\textquotesingle{}id d\textquotesingle{}une vidéo. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em path} & -\/ chemin de l\textquotesingle{}espace local de la vidéo \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_abeb18b0f1b55f4b32e1277d0aa6bb477}\index{modele.php@{modele.php}!insertionDonneesTechniques@{insertionDonneesTechniques}}
+\index{insertionDonneesTechniques@{insertionDonneesTechniques}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{insertionDonneesTechniques()}{insertionDonneesTechniques()}}
+{\footnotesize\ttfamily \label{modele_8php_abeb18b0f1b55f4b32e1277d0aa6bb477} 
+insertion\+Donnees\+Techniques (\begin{DoxyParamCaption}\item[{}]{\$liste\+Metadonnees}{}\end{DoxyParamCaption})}
+
+
+
+crée la vidéo en base de données et insère les métadonnées techniques associées 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em liste\+Metadonnees} & -\/ liste des metadonnées techniques à insérer \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_af1f1846cee25a51469bb58d9cb485585}\index{modele.php@{modele.php}!insertionEtudiant@{insertionEtudiant}}
+\index{insertionEtudiant@{insertionEtudiant}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{insertionEtudiant()}{insertionEtudiant()}}
+{\footnotesize\ttfamily \label{modele_8php_af1f1846cee25a51469bb58d9cb485585} 
+insertion\+Etudiant (\begin{DoxyParamCaption}\item[{}]{\$etudiant}{}\end{DoxyParamCaption})}
+
+
+
+Gère l\textquotesingle{}insertion des étudiants et lie le professeur à un/des projets. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em etudiant} & -\/ Nom et prenom de l\textquotesingle{}étudiant \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_a4d43477f84efb956410acceb6d4c79ac}\index{modele.php@{modele.php}!insertionProjet@{insertionProjet}}
+\index{insertionProjet@{insertionProjet}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{insertionProjet()}{insertionProjet()}}
+{\footnotesize\ttfamily \label{modele_8php_a4d43477f84efb956410acceb6d4c79ac} 
+insertion\+Projet (\begin{DoxyParamCaption}\item[{}]{\$projet}{}\end{DoxyParamCaption})}
+
+
+
+gère l\textquotesingle{}insertion des projets si celui-\/ci n\textquotesingle{}est pas déjà dans la bd 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em projet} & -\/ Projet que l\textquotesingle{}on veut insérer \\
+\hline
+\end{DoxyParams}
+\Hypertarget{modele_8php_aa7e8d59cef73af0e6c2dc89cba88a605}\index{modele.php@{modele.php}!verifierPresenceVideoStockageLocal@{verifierPresenceVideoStockageLocal}}
+\index{verifierPresenceVideoStockageLocal@{verifierPresenceVideoStockageLocal}!modele.php@{modele.php}}
+\doxysubsubsection{\texorpdfstring{verifierPresenceVideoStockageLocal()}{verifierPresenceVideoStockageLocal()}}
+{\footnotesize\ttfamily \label{modele_8php_aa7e8d59cef73af0e6c2dc89cba88a605} 
+verifier\+Presence\+Video\+Stockage\+Local (\begin{DoxyParamCaption}\item[{}]{\$chemin\+Fichier}{, }\item[{}]{\$nom\+Fichier}{}\end{DoxyParamCaption})}
+
+
+
+Vérifie qu\textquotesingle{}une vidéo existe bien dans le stockage local. Renvoie 1 si une vidéo existe. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em chemin\+Fichier} & -\/ chemin de l\textquotesingle{}espace local de la vidéo \\
+\hline
+{\em nom\+Fichier} & -\/ nom du fichier \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Renvoie}
+boolean 
+\end{DoxyReturn}

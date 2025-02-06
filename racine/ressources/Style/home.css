@@ -1,13 +1,11 @@
-.swiperVideo{
-    padding-bottom: 50px;
-} 
-
-.sliderVideo{
+.sliderVideo, .sliderVideoProjet{
     overflow-x: hidden;
     position: relative;
+    padding-bottom: 50px;
 }
 
-.sliderVideo .swiper-slide .miniature{
+.sliderVideo .swiper-slide .miniature,
+.sliderVideoProjet .swiper-slide .miniature{
     background: grey;
     display: flex;
     border-radius: 20px;
