@@ -43,6 +43,11 @@ function checkHeader(){
           $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
           controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
       }
+      if ($_POST["action"] == "supprimerVideo") {
+        $idVideo = $_POST['idVideo'];
+        $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
+        supprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+    }
    }
 }
 checkHeader();
@@ -328,4 +333,16 @@ function controleurRecupererDernierProjet(){
 
     return $listeVideosFormatees;
 }
+
+/**
+ * \fn supprimerVideo($idVideo)
+ * \brief "Supprime" la vidéo du MAM
+ * \param idVideo - Id de la vidéo à supprimer
+ */
+function supprimerVideo($idVideo){
+    $video = getInfosVideo($idVideo);
+    unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    supprimerVideoDeBD($idVideo);
+}
+
 ?>

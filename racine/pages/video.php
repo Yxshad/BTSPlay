@@ -119,12 +119,19 @@
                     </div>
                     <p>Modifier</p>
                 </a>
-                <a href="#" class="btnVideo">
-                    <div class="logo-btnvideo">
-                        <img src="../ressources/Images/trash.png" alt="">
-                    </div>
-                    <p>Supprimer</p>
-                </a>
+                <div class="btnVideo">
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="supprimerVideo">
+                        <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
+                        <input type="hidden" name="URI_STOCKAGE_LOCAL" value="<?php echo $cheminVideoComplet; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/trash.png" alt="">
+                            </div>
+                            <p>Supprimer</p>
+                        </button>
+                    </form>
+                </div>
             <?php } ?>
         </div>
     </div>
