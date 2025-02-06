@@ -35,3 +35,6 @@
 [2025-02-05 14:37:39] FAIL : Erreur d'authentification pour l'utilisateur .
 [2025-02-05 14:37:47] INFO : L'utilisateur nconguisti s'est connecté.
 [2025-02-05 15:04:33] INFO : L'utilisateur nconguisti s'est connecté.
+[2025-02-06 14:34:11] FAIL : Erreur d'authentification pour l'utilisateur nconguisti.
+[2025-02-06 14:34:17] FAIL : Erreur d'authentification pour l'utilisateur nconguisti.
+[2025-02-06 14:34:21] INFO : L'utilisateur nconguisti s'est connecté.
