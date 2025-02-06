@@ -828,7 +828,11 @@ function recupererDerniereVideoModifiee(){
          $requeteConnexion->execute();
          $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
          $connexion = null;
-         return $resultatRequeteConnexion["projet"];
+         if (!empty($resultatRequeteConnexion["projet"])) {
+            return $resultatRequeteConnexion["projet"];
+        } else {
+            return false;
+        }
     }
     catch(Exception $e)
     {

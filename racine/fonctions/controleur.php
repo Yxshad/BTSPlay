@@ -316,6 +316,7 @@ function controleurRecupererDernierProjet(){
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
                 $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
+                $listeVideosFormatees[$key]["titreVideo"] = recupererTitreVideo($video["mtd_tech_titre"]);
                 $listeVideosFormatees[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["id"] = $video["id"];
             }
