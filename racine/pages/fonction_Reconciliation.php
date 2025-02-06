@@ -25,7 +25,6 @@
 	<br> <br>
 </form>
 
-<?php require_once '../ressources/Templates/footer.php';?>
 
 
 

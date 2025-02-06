@@ -38,3 +38,65 @@
 [2025-02-06 14:34:11] FAIL : Erreur d'authentification pour l'utilisateur nconguisti.
 [2025-02-06 14:34:17] FAIL : Erreur d'authentification pour l'utilisateur nconguisti.
 [2025-02-06 14:34:21] INFO : L'utilisateur nconguisti s'est connecté.
+[2025-02-06 14:48:35] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 14:50:14] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 14:50:20] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 14:50:24] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 14:51:31] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 14:59:53] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:05:13] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:07:43] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:07:57] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:08:00] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:08:09] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:10:24] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:10:34] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:15:44] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:16:00] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 15:25:37] SUCCESS : Fonction de réconciliation effectuée avec succès.
+[2025-02-06 16:13:30] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:13:31] INFO : Récupération des vidéos du NAS PAD. 1 fichiers trouvés.
+[2025-02-06 16:13:32] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:13:32] INFO : Alimentation du stockage local avec 1 fichiers.
+[2025-02-06 16:13:34] SUCCESS : Fichier ./23_6h_JIN_Fermetur.mp4 téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mp4.
+[2025-02-06 16:13:49] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-02-06 16:13:49] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:13:49] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:27:05] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:27:05] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:27:05] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:27:05] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:27:05] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:27:05] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:27:32] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:27:32] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:27:32] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:27:32] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:27:32] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:27:32] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:27:33] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:27:33] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:27:33] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:27:33] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:27:33] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:27:33] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:27:33] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:27:34] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:27:34] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:27:34] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:27:34] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:27:34] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:27:51] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:27:51] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:27:51] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:27:51] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:27:51] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:27:51] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:28:05] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-06 16:28:13] INFO : Lancement de la fonction de transfert.
+[2025-02-06 16:28:13] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-06 16:28:13] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-06 16:28:13] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-06 16:28:13] INFO : Insertion des informations dans la base de données.
+[2025-02-06 16:28:13] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-06 16:28:15] INFO : Récupération des informations à afficher sur la page d'accueil.
