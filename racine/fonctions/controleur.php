@@ -48,6 +48,8 @@ function controleurRecupererTitreIdVideo() {
         $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
         $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
 
+        $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
+
         $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
         $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
         
@@ -55,6 +57,7 @@ function controleurRecupererTitreIdVideo() {
             'id' => $id,
             'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
+            'titreVideo' => $titreVideo,
             'cheminMiniatureComplet' => $cheminMiniatureComplet
         ];
     }
