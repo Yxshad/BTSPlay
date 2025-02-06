@@ -14,7 +14,6 @@ $tabDernierProjet = controleurRecupererDernierProjet();
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
-    <script src="../ressources/Script/script.js"></script>
 
     <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
     <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>

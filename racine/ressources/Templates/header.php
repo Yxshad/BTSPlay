@@ -1,4 +1,5 @@
 <link href="../ressources/Style/header.css" rel="stylesheet">
+<script src="../ressources/Script/script.js"></script>
 </head>
 <body>
     <header>
@@ -38,11 +39,7 @@
 
                         <?php
                         if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
-                            <a href="transfert.php">Transfert</a>
-                            <a href="sauvegarde.php">Sauvegarde</a>
-                            <a href="reconciliation.php">Réconciliation</a>
-                            <a href="../ressources/historique.log">Logs</a>
-                            <hr/>
+                            <a id="lienAdmin" href="pageAdministration.php">Page d'administration</a>
                         <?php } ?>
 
                         <a href="logout.php">
@@ -60,6 +57,7 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {
+        console.log("test");
         affichageSousMenu();
     });
     </script>

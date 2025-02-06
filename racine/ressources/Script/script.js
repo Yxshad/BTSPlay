@@ -147,12 +147,15 @@ function affichageSousMenu(){
     let sousMenu = document.querySelector('.sousMenu');
     //Si le sous menu n'a pas été chargé car l'utilisateur est déconnecté, on ne fait rien
     if(!(sousMenu == null)){
-        sousMenu.hidden = true;
+        console.log("sous menu trouvé");
+        sousMenu.style.display = "none";
         document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
-        if (sousMenu.hidden == true) {
-            sousMenu.hidden = false;
+        if (sousMenu.style.display == "none") {
+            sousMenu.style.display = "block";
+            console.log("sous menu affiché");
         } else {
-            sousMenu.hidden = true;
+            sousMenu.style.display = "none";
+            console.log("sous menu caché");
         }
         })
     }
