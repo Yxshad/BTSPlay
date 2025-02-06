@@ -31,9 +31,6 @@ COPY ./racine /var/www/html
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-
-
-
 RUN ffmpeg -version
 
 # Exposer le port 80    

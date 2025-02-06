@@ -1,0 +1,157 @@
+\doxysection{Référence du fichier racine/fonctions/controleur.php}
+\hypertarget{controleur_8php}{}\label{controleur_8php}\index{racine/fonctions/controleur.php@{racine/fonctions/controleur.php}}
+
+
+Controleur servant d\textquotesingle{}intermédiaire entre les pages et les fonctions/méthodes exécutées en fond.  
+
+
+\doxysubsubsection*{Fonctions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{controleur_8php_a2ab39068c4bc8691bbdbe41af1d264c9}\label{controleur_8php_a2ab39068c4bc8691bbdbe41af1d264c9} 
+{\bfseries check\+Header} ()
+\begin{DoxyCompactList}\small\item\em Regarde le Header de la page pour exécuter les fonctions correspondantes. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a02ffb472016b1068864909d87533b391}{controleur\+Recuperer\+Titre\+Id\+Video}} ()
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a7e5a27d041977e649bba880657c34951}{controleur\+Recuperer\+Infos\+Video}} ()
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de récupérer les métadonnées techniques liées à une vidéo. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_aa9cbe5afcf56435752d1d1770216dfe1}{controleur\+Preparer\+Metadonnees}} (\$id\+Video)
+\begin{DoxyCompactList}\small\item\em Prépare les métadonnées à mettre dans la vidéo une fois qu\textquotesingle{}il y a modification. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a1a282e465f1f6f03b739ce9b09b24911}{controleur\+Recuperer\+Liste\+Professeurs}} ()
+\begin{DoxyCompactList}\small\item\em Renvoie la liste des professeurs. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a94ffc2b010395469e6db8a33c3774f83}{controleur\+Verifier\+Video\+Parametre}} ()
+\begin{DoxyCompactList}\small\item\em Vérifie qu\textquotesingle{}on a la bonne vidéo passée en paramètre quand on clique dessus. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a1ab339db214c725538578004268a2390}{controleur\+Identifier\+Utilisateur}} (\$login\+User, \$password\+User)
+\begin{DoxyCompactList}\small\item\em Vérifie les autorisations d\textquotesingle{}accès de l\textquotesingle{}utilisateur et le renvoie sur la page correspondante en fonction. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a3706830209ef40a7047d9c584e0170fc}{controleur\+Verifier\+Acces}} (\$roles\+Autorises)
+\begin{DoxyCompactList}\small\item\em Vérifie les autorisations d\textquotesingle{}accès de l\textquotesingle{}utilisateur et le renvoie sur la page correspondante en fonction. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{controleur_8php_a82bd0db24a3abc25326751fd02ab25df}{controleur\+Diffuser\+Video}} (\$chemin\+Local\+Complet)
+\begin{DoxyCompactList}\small\item\em Fonction qui permet de diffuser une vidéo dont l\textquotesingle{}id est passé en paramètre sur le NAS DIFF. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Description détaillée}
+Controleur servant d\textquotesingle{}intermédiaire entre les pages et les fonctions/méthodes exécutées en fond. 
+
+\begin{DoxyVersion}{Version}
+1.\+1 
+\end{DoxyVersion}
+\begin{DoxyAuthor}{Auteur}
+Nicolas Conguisti 
+\end{DoxyAuthor}
+
+
+\doxysubsection{Documentation des fonctions}
+\Hypertarget{controleur_8php_a82bd0db24a3abc25326751fd02ab25df}\index{controleur.php@{controleur.php}!controleurDiffuserVideo@{controleurDiffuserVideo}}
+\index{controleurDiffuserVideo@{controleurDiffuserVideo}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurDiffuserVideo()}{controleurDiffuserVideo()}}
+{\footnotesize\ttfamily \label{controleur_8php_a82bd0db24a3abc25326751fd02ab25df} 
+controleur\+Diffuser\+Video (\begin{DoxyParamCaption}\item[{}]{\$chemin\+Local\+Complet}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de diffuser une vidéo dont l\textquotesingle{}id est passé en paramètre sur le NAS DIFF. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em chemin\+Local\+Complet} & -\/ Le chemin d\textquotesingle{}accès à la vidéo \\
+\hline
+\end{DoxyParams}
+\Hypertarget{controleur_8php_a1ab339db214c725538578004268a2390}\index{controleur.php@{controleur.php}!controleurIdentifierUtilisateur@{controleurIdentifierUtilisateur}}
+\index{controleurIdentifierUtilisateur@{controleurIdentifierUtilisateur}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurIdentifierUtilisateur()}{controleurIdentifierUtilisateur()}}
+{\footnotesize\ttfamily \label{controleur_8php_a1ab339db214c725538578004268a2390} 
+controleur\+Identifier\+Utilisateur (\begin{DoxyParamCaption}\item[{}]{\$login\+User}{, }\item[{}]{\$password\+User}{}\end{DoxyParamCaption})}
+
+
+
+Vérifie les autorisations d\textquotesingle{}accès de l\textquotesingle{}utilisateur et le renvoie sur la page correspondante en fonction. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em login\+User} & -\/ identifiant de connexion de l\textquotesingle{}utilisateur \\
+\hline
+{\em password\+User} & -\/ mot de passe de connexion de l\textquotesingle{}utilisateur \\
+\hline
+\end{DoxyParams}
+\Hypertarget{controleur_8php_aa9cbe5afcf56435752d1d1770216dfe1}\index{controleur.php@{controleur.php}!controleurPreparerMetadonnees@{controleurPreparerMetadonnees}}
+\index{controleurPreparerMetadonnees@{controleurPreparerMetadonnees}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurPreparerMetadonnees()}{controleurPreparerMetadonnees()}}
+{\footnotesize\ttfamily \label{controleur_8php_aa9cbe5afcf56435752d1d1770216dfe1} 
+controleur\+Preparer\+Metadonnees (\begin{DoxyParamCaption}\item[{}]{\$id\+Video}{}\end{DoxyParamCaption})}
+
+
+
+Prépare les métadonnées à mettre dans la vidéo une fois qu\textquotesingle{}il y a modification. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em id\+Video} & -\/ L\textquotesingle{}Id de la vidéo \\
+\hline
+\end{DoxyParams}
+\Hypertarget{controleur_8php_a7e5a27d041977e649bba880657c34951}\index{controleur.php@{controleur.php}!controleurRecupererInfosVideo@{controleurRecupererInfosVideo}}
+\index{controleurRecupererInfosVideo@{controleurRecupererInfosVideo}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurRecupererInfosVideo()}{controleurRecupererInfosVideo()}}
+{\footnotesize\ttfamily \label{controleur_8php_a7e5a27d041977e649bba880657c34951} 
+controleur\+Recuperer\+Infos\+Video (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de récupérer les métadonnées techniques liées à une vidéo. 
+
+\begin{DoxyReturn}{Renvoie}
+tableau de métadonnées techniques 
+\end{DoxyReturn}
+\Hypertarget{controleur_8php_a1a282e465f1f6f03b739ce9b09b24911}\index{controleur.php@{controleur.php}!controleurRecupererListeProfesseurs@{controleurRecupererListeProfesseurs}}
+\index{controleurRecupererListeProfesseurs@{controleurRecupererListeProfesseurs}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurRecupererListeProfesseurs()}{controleurRecupererListeProfesseurs()}}
+{\footnotesize\ttfamily \label{controleur_8php_a1a282e465f1f6f03b739ce9b09b24911} 
+controleur\+Recuperer\+Liste\+Professeurs (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Renvoie la liste des professeurs. 
+
+\begin{DoxyReturn}{Renvoie}
+resultat -\/ la liste des professeurs 
+\end{DoxyReturn}
+\Hypertarget{controleur_8php_a02ffb472016b1068864909d87533b391}\index{controleur.php@{controleur.php}!controleurRecupererTitreIdVideo@{controleurRecupererTitreIdVideo}}
+\index{controleurRecupererTitreIdVideo@{controleurRecupererTitreIdVideo}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurRecupererTitreIdVideo()}{controleurRecupererTitreIdVideo()}}
+{\footnotesize\ttfamily \label{controleur_8php_a02ffb472016b1068864909d87533b391} 
+controleur\+Recuperer\+Titre\+Id\+Video (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local. 
+
+\begin{DoxyReturn}{Renvoie}
+un tableau d\textquotesingle{}URIS/titres/id et chemin\+Miniature 
+\end{DoxyReturn}
+\Hypertarget{controleur_8php_a3706830209ef40a7047d9c584e0170fc}\index{controleur.php@{controleur.php}!controleurVerifierAcces@{controleurVerifierAcces}}
+\index{controleurVerifierAcces@{controleurVerifierAcces}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurVerifierAcces()}{controleurVerifierAcces()}}
+{\footnotesize\ttfamily \label{controleur_8php_a3706830209ef40a7047d9c584e0170fc} 
+controleur\+Verifier\+Acces (\begin{DoxyParamCaption}\item[{}]{\$roles\+Autorises}{}\end{DoxyParamCaption})}
+
+
+
+Vérifie les autorisations d\textquotesingle{}accès de l\textquotesingle{}utilisateur et le renvoie sur la page correspondante en fonction. 
+
+
+\begin{DoxyParams}{Paramètres}
+{\em roles\+Autorises} & -\/ Rôles autorisés pour l\textquotesingle{}utilisateur \\
+\hline
+\end{DoxyParams}
+\Hypertarget{controleur_8php_a94ffc2b010395469e6db8a33c3774f83}\index{controleur.php@{controleur.php}!controleurVerifierVideoParametre@{controleurVerifierVideoParametre}}
+\index{controleurVerifierVideoParametre@{controleurVerifierVideoParametre}!controleur.php@{controleur.php}}
+\doxysubsubsection{\texorpdfstring{controleurVerifierVideoParametre()}{controleurVerifierVideoParametre()}}
+{\footnotesize\ttfamily \label{controleur_8php_a94ffc2b010395469e6db8a33c3774f83} 
+controleur\+Verifier\+Video\+Parametre (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+Vérifie qu\textquotesingle{}on a la bonne vidéo passée en paramètre quand on clique dessus. 
+
+\begin{DoxyReturn}{Renvoie}
+id\+Video -\/ l\textquotesingle{}id de la vidéo 
+\end{DoxyReturn}

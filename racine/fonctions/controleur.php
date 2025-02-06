@@ -1,40 +1,56 @@
 <?php
+
+/**
+ * \file controleur.php
+ * \version 1.1
+ * \brief Controleur servant d'intermédiaire entre les pages et les fonctions/méthodes exécutées
+ * en fond
+ * \author Nicolas Conguisti
+ */
+
 require_once "../ressources/constantes.php";
 require_once "ftp.php";
 require_once "ffmpeg.php";
 require_once "modele.php";
 require_once "fonctions.php";
 
-if (isset($_POST["action"])) {
+/**
+ * \fn checkHeader()
+ * \brief Regarde le Header de la page pour exécuter les fonctions correspondantes
+ */
+function checkHeader(){
+    if (isset($_POST["action"])) {
 
-    if ($_POST["action"] == "scanDossierDecoupeVideo") {
-        header('Content-Type: application/json');
-        scanDossierDecoupeVideo(); 
-        exit();
-    }
-    if ($_POST["action"] == "lancerConversion") {
-        fonctionTransfert();
-    }
-    if ($_POST["action"] == "ModifierMetadonnees") {
-        $idVideo = $_POST['idVideo'];
-        controleurPreparerMetadonnees($idVideo);
-    }
-    if ($_POST["action"] == "connexionUtilisateur") {
-        $loginUser = $_POST['loginUser'];
-        $passwordUser = $_POST['passwordUser'];
-        controleurIdentifierUtilisateur($loginUser, $passwordUser);
-    }
-    if ($_POST["action"] == "diffuserVideo") {
-        $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-        $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
-        controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
-    }
+      if ($_POST["action"] == "scanDossierDecoupeVideo") {
+          header('Content-Type: application/json');
+          scanDossierDecoupeVideo(); 
+          exit();
+      }
+      if ($_POST["action"] == "lancerConversion") {
+          fonctionTransfert();
+      }
+      if ($_POST["action"] == "ModifierMetadonnees") {
+          $idVideo = $_POST['idVideo'];
+          controleurPreparerMetadonnees($idVideo);
+      }
+      if ($_POST["action"] == "connexionUtilisateur") {
+          $loginUser = $_POST['loginUser'];
+          $passwordUser = $_POST['passwordUser'];
+          controleurIdentifierUtilisateur($loginUser, $passwordUser);
+      }
+      if ($_POST["action"] == "diffuserVideo") {
+          $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
+          $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
+          controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
+      }
+   }
 }
+checkHeader();
 
 /**
- * Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
- * Prend en paramètre le nombre d'URIS et titres à récupérer
- * Retourne un tableau d'URIS/titres/id et cheminMiniature
+ * \fn controleurRecupererTitreIdVideo()
+ * \brief Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
+ * \return un tableau d'URIS/titres/id et cheminMiniature
  */
 function controleurRecupererTitreIdProjetVideo() {
     $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
@@ -69,6 +85,12 @@ function controleurRecupererTitreIdProjetVideo() {
     return $videos;
 }
 
+
+/**
+ * \fn controleurRecupererInfosVideo()
+ * \brief Fonction qui permet de récupérer les métadonnées techniques liées à une vidéo
+ * \return tableau de métadonnées techniques
+ */
 function controleurRecupererInfosVideo() {
     $idVideo = controleurVerifierVideoParametre();
     $video = getInfosVideo($idVideo);
@@ -115,6 +137,11 @@ function controleurRecupererInfosVideo() {
     ];
 }
 
+/**
+ * \fn controleurPreparerMetadonnees($idVideo)
+ * \brief Prépare les métadonnées à mettre dans la vidéo une fois qu'il y a modification
+ * \param idVideo - L'Id de la vidéo
+ */
 function controleurPreparerMetadonnees($idVideo){
     if (
         isset($_POST["profReferent"]) ||
@@ -143,6 +170,12 @@ function controleurPreparerMetadonnees($idVideo){
     }
 }
 
+
+/**
+ * \fn controleurRecupererListeProfesseurs()
+ * \brief Renvoie la liste des professeurs
+ * \return resultat - la liste des professeurs
+ */
 function controleurRecupererListeProfesseurs() {
     $listeProfesseurs = getAllProfesseurs();
     $resultat = array_map(function($item) {
@@ -151,6 +184,11 @@ function controleurRecupererListeProfesseurs() {
     return $resultat;
 }
 
+/**
+ * \fn controleurVerifierVideoParametre(){
+ * \brief Vérifie qu'on a la bonne vidéo passée en paramètre quand on clique dessus
+ * \return idVideo - l'id de la vidéo
+ */
 function controleurVerifierVideoParametre(){
     // Vérifie si le paramètre 'v' est présent dans l'URL
     if (!isset($_GET['v']) || empty($_GET['v']) || !is_numeric($_GET['v'])) {
@@ -162,6 +200,13 @@ function controleurVerifierVideoParametre(){
     return $idVideo;
 }
 
+
+/**
+ * \fn controleurIdentifierUtilisateur($loginUser, $passwordUser)
+ * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction
+ * \param loginUser - identifiant de connexion de l'utilisateur
+ * \param passwordUser - mot de passe de connexion de l'utilisateur
+ */
 function controleurIdentifierUtilisateur($loginUser, $passwordUser){
 
     $passwordHache = hash('sha256', $passwordUser);
@@ -182,6 +227,12 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
     }
 }
 
+
+/**
+ * \fn controleurVerifierAcces($rolesAutorises)
+ * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction
+ * \param rolesAutorises - Rôles autorisés pour l'utilisateur
+ */
 // Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
 // $rolesAutorises est une liste des roles autorisé
 function controleurVerifierAcces($rolesAutorises){
@@ -192,7 +243,9 @@ function controleurVerifierAcces($rolesAutorises){
 }
 
 /**
- * Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
+ * \fn controleurDiffuserVideo($cheminLocalComplet)
+ * \brief Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
+ * \param cheminLocalComplet - Le chemin d'accès à la vidéo
  */
 function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
 
