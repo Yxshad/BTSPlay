@@ -99,6 +99,7 @@
                 </div>
                 <p>Télécharger</p>
             </a>
+            <?php if(isset($_SESSION["role"]) && in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
                 <div class="btnVideo">
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">

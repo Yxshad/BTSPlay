@@ -52,7 +52,7 @@ checkHeader();
  * \brief Fonction qui permet de récupérer des URIS, titres et id de X vidéos situées dans le stockage local
  * \return un tableau d'URIS/titres/id et cheminMiniature
  */
-function controleurRecupererTitreIdProjetVideo() {
+function controleurRecupererTitreIdVideo() {
     $tabURIS = getTitreURIEtId(NB_VIDEOS_PAR_SWIPER);
     $videos = [];
     if (!$tabURIS) {
@@ -66,20 +66,12 @@ function controleurRecupererTitreIdProjetVideo() {
 
         $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
         $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
-        $idProjet = getIdProjetVideo($id);
-        if ($idProjet) {
-            $intituleProjet = getProjetIntitule($idProjet);
-        } else{
-            $intituleProjet = "Vos Videos";
-        }
-        
         
         $videos[] = [
             'id' => $id,
             'URIEspaceLocal' => $URIEspaceLocal,
             'titre' => $titreSansExtension,
             'cheminMiniatureComplet' => $cheminMiniatureComplet,
-            'projet' => $intituleProjet
         ];
     }
     return $videos;
@@ -303,5 +295,33 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
         // #RISQUE : Message d'erreur
         return;
     }
+}
+
+
+function controleurRecupererDernierProjet(){
+    //recuperer dernière video avec projet
+    $id = recupererDerniereVideoModifiee();
+
+    // Vérifier si $id est valide avant de continuer
+    if ($id !== false && $id !== null) {
+        $listeVideo = recupererUriTitreVideosMemeProjet($id);
+
+        $listeVideoFormater = [];
+        // Vérifier si $listeVideo est un tableau valide
+        if (is_array($listeVideo) && getProjetIntitule($listeVideo[0]["projet"] != NULL)) {
+            foreach ($listeVideo as $key => $video) {
+                $listeVideoFormater[$key]["projet"] = getProjetIntitule($video["projet"]);
+                $listeVideoFormater[$key]["titre"] = $video["mtd_tech_titre"];
+                $listeVideoFormater[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
+                $listeVideoFormater[$key]["id"] = $video["id"];
+            }
+        } else {
+            $listeVideoFormater = []; // Assurer que $listeVideo est bien un tableau
+        }
+    } else {
+        $listeVideoFormater = [];
+    }
+
+    return $listeVideoFormater  ;
 }
 ?>

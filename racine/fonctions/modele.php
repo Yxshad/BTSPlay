@@ -148,7 +148,7 @@ function insertionEtudiant($etudiant)
             $idProjet = getProjet($projet);
         }
         $setIDProjet = $connexion->prepare('UPDATE media 
-                                          SET projet = ?
+                                          SET projet = ?, date_modification = CURRENT_TIMESTAMP
                                           WHERE id = ?');
         $setIDProjet->execute([
             $idProjet,
@@ -185,7 +185,7 @@ function insertionEtudiant($etudiant)
             if(!$idProf)
             {
                 $setIDProf = $connexion->prepare('UPDATE media 
-                SET professeurReferent = NULL
+                SET professeurReferent = NULL, date_modification = CURRENT_TIMESTAMP
                 WHERE id = ?');
                 $setIDProf->execute([
                 $idVideo
@@ -195,7 +195,7 @@ function insertionEtudiant($etudiant)
             else {
                 // Mettre à jour la table `media` avec l'ID du professeur
             $setIDProf = $connexion->prepare('UPDATE media 
-            SET professeurReferent = ?
+            SET professeurReferent = ?, date_modification = CURRENT_TIMESTAMP
             WHERE id = ?');
             $setIDProf->execute([
             $idProf,
@@ -348,8 +348,8 @@ function insertionEtudiant($etudiant)
  {
     $connexion = connexionBD();  
     try{
-        $promotion = $connexion->prepare('UPDATE Media SET promotion = ? WHERE id = ?');
-        $promotion->execute([$valPromo, $idVid]);
+        $cadreur = $connexion->prepare('UPDATE Media SET promotion = ?, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
+        $cadreur->execute([$valPromo, $idVid]);
         $connexion->commit();  
         $connexion = null;
     }
@@ -730,7 +730,6 @@ function etudiantInBD($etudiant)
     }
 }
 
-
 /**
  * \fn fetchAll($sql)
  * \brief fetchAll("SELECT * FROM Media"); va renvoyer toutes les infos des vidéos
@@ -782,7 +781,6 @@ function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
        $connexion = null;
    }
 }
@@ -808,9 +806,52 @@ function connexionProfesseur($loginUser, $passwordUser){
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
        $connexion = null;
    }
 }
+
+/**
+ * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
+ * renvoie le rôle si trouvé, false sinon
+ */
+function recupererDerniereVideoModifiee(){
+    $connexion = connexionBD();                     
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT projet FROM Media
+            WHERE projet IS NOT NULL
+            ORDER BY date_modification DESC
+            LIMIT 1;');   
+         $requeteConnexion->execute();
+         $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
+         $connexion = null;
+         return $resultatRequeteConnexion["projet"];
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+
+/**
+ * Fonction retourne toutes les vidéos d'un même projet
+ * renvoie une liste de vidéo si trouvé
+ */
+ function recupererUriTitreVideosMemeProjet($idProjet){
+    $connexion = connexionBD();                     
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
+            FROM Media
+            WHERE projet = ?');   
+         $requeteConnexion->execute([$idProjet]);
+         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+         $connexion = null;
+         return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+ 
 
 ?>
