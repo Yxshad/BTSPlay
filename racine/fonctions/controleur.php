@@ -308,8 +308,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
 
 function controleurRecupererDernierProjet(){
     //recuperer dernière video avec projet
-    $id = recupererDerniereVideoModifiee();
-
+    $id = recupererProjetDerniereVideoModifiee();
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
         $listeVideo = recupererUriTitreVideosMemeProjet($id);
@@ -321,6 +320,7 @@ function controleurRecupererDernierProjet(){
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
                 $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
+                $listeVideosFormatees[$key]["titreVideo"] = recupererTitreVideo($video["mtd_tech_titre"]);
                 $listeVideosFormatees[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["id"] = $video["id"];
             }
