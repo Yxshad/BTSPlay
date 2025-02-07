@@ -843,8 +843,10 @@ function recupererProjetDerniereVideoModifiee(){
  }
 
 /**
- * Fonction retourne toutes les vidéos d'un même projet
- * renvoie une liste de vidéo si trouvé
+ * \fn recupererUriTitreVideosMemeProjet($idProjet)
+ * \brief Fonction qui retourne id, URI_STOCKAGE_LOCAL, mtd_tech_titre et projet selon un projet
+ * \param idProjet - Identifiant d'un projet
+ * \return resultatRequeteConnexion - Retourne une vidéo si trouvé
  */
  function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
@@ -864,5 +866,4 @@ function recupererProjetDerniereVideoModifiee(){
     }
  }
  
-
 ?>
