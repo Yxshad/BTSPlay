@@ -1,29 +1,13 @@
-<?php
-
-require_once "../fonctions/controleur.php";
-
-$listeProfesseurs = controleurRecupererListeProfesseurs();
-
-?>
 <aside class="filtres">
-    <form action="recherche.php" method="POST">
+    <form action="recherche.php">
         <div>
-            <label>Promotion</label>
-            <input type="number" name="annee">
+            <label>Année</label>
+            <input type="number">
         </div>
         <div>
-            <label>Theme</label>
-            <input type="number" name="niveau">
+            <label>Niveau</label>
+            <input type="number">
         </div> 
-        <div>
-            <label>Professeur</label>
-            <select name="prof">
-                <option value=""></option>
-                <?php foreach ($listeProfesseurs as $prof) { ?>
-                    <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
-                <?php } ?>
-            </select>
-        </div>
         <input value="Rechercher" type="submit">
     </form>
     <button class="afficherFiltres"> > </button>
