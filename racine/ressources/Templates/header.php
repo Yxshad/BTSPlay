@@ -1,5 +1,4 @@
 <link href="../ressources/Style/header.css" rel="stylesheet">
-<script src="../ressources/Script/script.js"></script>
 </head>
 <body>
     <header>
@@ -57,7 +56,6 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        console.log("test");
         affichageSousMenu();
     });
     </script>
