@@ -2,6 +2,7 @@
 	session_start(); 
 	require_once '../fonctions/controleur.php';
     controleurVerifierAcces(AUTORISATION_ADMIN);
+    $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 ?>
 
 <!DOCTYPE html>
@@ -38,28 +39,35 @@
         <div class="colonne-2">
             <h2>Vidéos en attente de métadonnées</h2>
             <div class="dates">
-                <div class="nomColonne">
-                    <p>Date</p>
-                    <p>Nom</p>
-                </div>
-                <?php for ($i=0; $i < 6; $i++) { ?>
-                    <div class="ligne">
-                        <div>
-                            <p>04/05/2025 17:42</p>
-                            <p>vidéo.mp4</p>
-                        </div>
-                    </div>
-                <?php } ?>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Fichier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($tabDernieresVideos as $video) {
+                        $id = $video['id'];
+                        $date_creation = $video['date_creation'];
+                        $mtd_tech_titre = $video['mtd_tech_titre'];
+                        ?>
+                        <tr>
+                            <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $date_creation; ?></a></td>
+                            <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $mtd_tech_titre; ?></a></td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
             </div>
         </div>
     </div>
 </div>
-
+                
 <?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        scanDossierDecoupeVideo();
-        setInterval( scanDossierDecoupeVideo , 5000);
+        appelScanVideo();
     });
 </script>

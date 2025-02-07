@@ -83,9 +83,15 @@ function exporterFichierVersNAS($cheminLocal, $cheminDistantNAS, $nomFichier, $f
  */
 function exporterFichierVersNASAvecCheminComplet($cheminLocalComplet, $cheminDistantNASComplet, $ftp_server, $ftp_user, $ftp_pass) {
     $conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
+
     // Envoyer le fichier
     $exportSucces = true;
-    if (!(ftp_put($conn_id, $cheminDistantNASComplet, $cheminLocalComplet, FTP_BINARY))){
+    // Vérifier si le fichier existe déjà sur le NAS
+    if (ftp_size($conn_id, $cheminDistantNASComplet) !== -1) {
+        ajouterLog(LOG_INFORM, "Le fichier $cheminDistantNASComplet existe déjà dans $cheminDistantNASComplet. Export annulé.");
+        $exportSucces = false;
+    }
+    elseif (!(ftp_put($conn_id, $cheminDistantNASComplet, $cheminLocalComplet, FTP_BINARY))){
         ajouterLog(LOG_FAIL, "Échec de l'export du fichier $cheminLocalComplet vers $cheminDistantNASComplet");
         $exportSucces = false;
     }

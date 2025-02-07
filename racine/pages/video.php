@@ -14,12 +14,8 @@
     $URIS = $infosVideo["URIS"];
 
     $cheminCompletNAS_PAD = null;
-    $cheminCompletNAS_ARCH = null;
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
-    }
-    if(!empty($URIS['URI_NAS_ARCH'])){
-        $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
     }
 ?>
 
@@ -99,13 +95,13 @@
                 </div>
                 <p>Télécharger</p>
             </a>
-        
-            <div class="btnVideo">
-                <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
+
+            <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
+                <?php if(!empty($cheminCompletNAS_PAD)){ ?>
+                  <div class="btnVideo">
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">
                         <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
-                        <input type="hidden" name="URI_COMPLET_NAS_ARCH" value="<?php echo $cheminCompletNAS_ARCH; ?>">
                         <button type="submit" class="boutonSubmit">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/antenne.png" alt="">
@@ -113,8 +109,10 @@
                             <p>Diffuser</p>
                         </button>
                     </form>
-                <?php } ?>
-            </div>
+
+                </div>
+            <?php } ?>
+
             <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
                 <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                     <div class="logo-btnvideo">
@@ -123,14 +121,22 @@
                     <p>Modifier</p>
                 </a>
             <?php } ?>
+
             <?php if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>
-                <a href="#" class="btnVideo">
-                    <div class="logo-btnvideo">
-                        <img src="../ressources/Images/trash.png" alt="">
-                    </div>
-                    <p>Supprimer</p>
-                </a>
-            <?php } ?>
+                <div class="btnVideo">
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="supprimerVideo">
+                        <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
+                        <input type="hidden" name="URI_STOCKAGE_LOCAL" value="<?php echo $cheminVideoComplet; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/trash.png" alt="">
+                            </div>
+                            <p>Supprimer</p>
+                        </button>
+                    </form>
+                </div>
+             <?php } ?>
         </div>
     </div>
 </div>

@@ -20,33 +20,45 @@ require_once "fonctions.php";
  */
 function checkHeader(){
     if (isset($_POST["action"])) {
-
-        if ($_POST["action"] == "scanDossierDecoupeVideo") {
-            header('Content-Type: application/json');
-            scanDossierDecoupeVideo(); 
-            exit();
-        }
-        if ($_POST["action"] == "lancerConversion") {
-            fonctionTransfert();
-        }
-        if ($_POST["action"] == "ModifierMetadonnees") {
-            $idVideo = $_POST['idVideo'];
-            controleurPreparerMetadonnees($idVideo);
-        }
-        if ($_POST["action"] == "connexionUtilisateur") {
-            $loginUser = $_POST['loginUser'];
-            $passwordUser = $_POST['passwordUser'];
-            controleurIdentifierUtilisateur($loginUser, $passwordUser);
-        }
-        if ($_POST["action"] == "diffuserVideo") {
-            $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-            $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
-            controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
-        }
-        if ($_POST["action"] == "mettreAJourAutorisation") {
+      if ($_POST["action"] == "scanDossierDecoupeVideo") {
+          header('Content-Type: application/json');
+          scanDossierDecoupeVideo(); 
+          exit();
+      }
+      if ($_POST["action"] == "lancerConversion") {
+          fonctionTransfert();
+      }
+      if ($_POST["action"] == "ModifierMetadonnees") {
+          $idVideo = $_POST['idVideo'];
+          controleurPreparerMetadonnees($idVideo);
+      }
+      if ($_POST["action"] == "connexionUtilisateur") {
+          $loginUser = $_POST['loginUser'];
+          $passwordUser = $_POST['passwordUser'];
+          controleurIdentifierUtilisateur($loginUser, $passwordUser);
+      }
+      if ($_POST["action"] == "diffuserVideo") {
+          $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
+          controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
+      }
+      if ($_POST["action"] == "supprimerVideo") {
+        $idVideo = $_POST['idVideo'];
+        $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
+        controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+      }
+      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
+        ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
+        controleurReconciliation();
+        ob_end_clean(); // Nettoyer la sortie tamponnée
+    
+        // Redirection AVANT d'envoyer du contenu
+        header("Location: ?tab=reconciliation");
+        exit();
+      }
+      if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
-        }
-   }
+      }
+  }
 }
 checkHeader();
 
@@ -238,15 +250,11 @@ function controleurVerifierAcces($accesAVerifier){
 }
 
 /**
- * \fn controleurDiffuserVideo($cheminLocalComplet)
+ * \fn controleurDiffuserVideo($URI_COMPLET_NAS_PAD)
  * \brief Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
- * \param cheminLocalComplet - Le chemin d'accès à la vidéo
+ * \param URI_COMPLET_NAS_PAD - Le chemin d'accès à la vidéo du NAS PAD
  */
-function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
-
-    //Téléchargement du fichier dans la meilleure qualité possible
-    $cheminFichierDesination = null;
-    $cheminFichierSource = null;
+function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if(!empty($URI_COMPLET_NAS_PAD)){
         //On récupère met le nom à .mxf
@@ -261,17 +269,9 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
         telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
         ftp_close($conn_id);
     }
-    elseif(!empty($URI_COMPLET_NAS_ARCH)) {
-        $nomFichier = basename($URI_COMPLET_NAS_ARCH);
-        $cheminFichierDesination = URI_VIDEOS_A_DIFFUSER . $nomFichier;
-        $cheminFichierSource = $URI_COMPLET_NAS_ARCH;
-        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
-        ftp_close($conn_id);
-    }
     else{
-        // #RISQUE : Message d'erreur
-        exit();
+        // #RISQUE : La vidéo n'est pas présente dans le NAS PAD, il faudra juste supprimer le bouton
+        return;
     }
 
     //Inversion des URIs, la source devient la destination
@@ -300,27 +300,64 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
     }
 }
 
+function controleurAfficherLogs($filename, $lines) {
+    if (!file_exists($filename)) {
+        return ["Fichier introuvable."];
+    }
+    $file = fopen($filename, "r");
+    if (!$file) {
+        return ["Impossible d'ouvrir le fichier."];
+    }
+    $buffer = [];
+    while (!feof($file)) {
+        $buffer[] = fgets($file);
+        if (count($buffer) > $lines) {
+            array_shift($buffer);
+        }
+    }
+    fclose($file);
+    return array_filter($buffer);
+}
+
+
+function controleurReconciliation() {
+    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
+    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
+
+    ob_start(); // Capture la sortie pour éviter les erreurs de header
+    echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+
+    echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
+
+    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
+    afficherVideosManquantes($listeVideosManquantes);
+
+    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
+    $_SESSION['reconciliation_result'] = ob_get_clean(); // Stocker la sortie pour l'afficher après redirection
+}
 
 function controleurRecupererDernierProjet(){
     //recuperer dernière video avec projet
-    $id = recupererDerniereVideoModifiee();
-
+    $id = recupererProjetDerniereVideoModifiee();
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
-        $listeVideo = recupererUriTitreVideosMemeProjet($id);
+        $listeVideos = recupererUriTitreVideosMemeProjet($id);
 
         $listeVideosFormatees = [];
-        // Vérifier si $listeVideo est un tableau valide
-        if (is_array($listeVideo) && getProjetIntitule($listeVideo[0]["projet"] != NULL)) {
-            foreach ($listeVideo as $key => $video) {
+        // Vérifier si $listeVideos est un tableau valide
+        if (is_array($listeVideos) && getProjetIntitule($listeVideos[0]["projet"] != NULL)) {
+            foreach ($listeVideos as $key => $video) {
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
                 $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
+                $listeVideosFormatees[$key]["titreVideo"] = recupererTitreVideo($video["mtd_tech_titre"]);
                 $listeVideosFormatees[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["id"] = $video["id"];
             }
         } else {
-            $listeVideosFormatees = []; // Assurer que $listeVideo est bien un tableau
+            $listeVideosFormatees = []; // Assurer que $listeVideos est bien un tableau
         }
     } else {
         $listeVideosFormatees = [];
@@ -363,5 +400,45 @@ function controleurRecupererAutorisationsProfesseurs(){
 
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
+
+function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
+    //recuperer dernières videos sans métadonnées
+    $listeVideos = recupererDernieresVideosTransfereesSansMetadonnees(NB_VIDEOS_HISTORIQUE_TRANSFERT);
+    // Vérifier si $id est valide avant de continuer
+    if ($listeVideos !== false && $listeVideos !== null) {
+        $listeVideosFormatees = [];
+        // Vérifier si $listeVideos est un tableau valide
+        if (is_array($listeVideos)) {
+            foreach ($listeVideos as $key => $video) {
+                $listeVideosFormatees[$key]["id"] = $video["id"];
+                $listeVideosFormatees[$key]["date_creation"] = $video["date_creation"];
+                $listeVideosFormatees[$key]["mtd_tech_titre"] = $video["mtd_tech_titre"];
+            }
+        } else {
+            $listeVideosFormatees = []; // Assurer que $listeVideos est bien un tableau
+        }
+    } else {
+        $listeVideosFormatees = [];
+    }
+    return $listeVideosFormatees;
+}
+
+/**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief "Supprime" la vidéo du MAM
+ * \param idVideo - Id de la vidéo à supprimer
+ */
+function controleurSupprimerVideo($idVideo){
+    $video = getInfosVideo($idVideo);
+    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    foreach($allFiles as $file){
+        if(! is_dir($file)){
+        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+        }
+    }
+    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    supprimerVideoDeBD($idVideo);
+    header('Location: home.php');
+    exit();
 }
 ?>

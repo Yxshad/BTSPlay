@@ -37,6 +37,7 @@
                     </a>
                     <div class="sousMenu">
 
+
                         <?php if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
                             <a id="lienAdmin" href="pageAdministration.php">Page d'administration</a>
                         <?php } ?>

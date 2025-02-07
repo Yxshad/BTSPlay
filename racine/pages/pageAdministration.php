@@ -7,59 +7,130 @@ if(!controleurVerifierAcces(ACCES_ADMINISTRATION)){
 }
 
 $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
+$tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
-$maxLines = 100; // Nombre maximum de lignes à afficher
-$logs = getLastLines($logFile, $maxLines);
-
+$maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
+$logs = controleurAfficherLogs($logFile, $maxLines);
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
 
+
     <title>Administration du Site</title>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
+    <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/pageAdministration.css" rel="stylesheet">
+    <link href="../ressources/Style/transfert.css" rel="stylesheet">
+    <script src="../ressources/Script/script.js"></script>
+
+    <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
+    <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
+
 <?php require_once '../ressources/Templates/header.php'; ?>
 
 
 <body>
     <div><h1>Administration du Site</h1></div>
     <div class="tabs">
-        <div class="tab active" data-tab="database">Base de données</div>
+        <div class="tab" data-tab="database">Base de données</div>
         <div class="tab" data-tab="reconciliation">Réconciliation</div>
         <div class="tab" data-tab="transfer">Fonction de transfert</div>
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
-
         
         <?php //On cache la page des autorisation si on est pas admin
         if($_SESSION["role"] == "Administrateur"){ ?>
             <div class="tab" data-tab="users">Gérer les utilisateurs</div>
         <?php } ?>
-    </div>
+
     
-    <div class="tab-content active" id="database">
-        <h2>Base de données</h2>
-        <p>Interface de gestion des données...</p>
+    <div class="tab-content" id="database">
+        <h2>BDD</h2>
+        <p>WORK IN PROGRESS</p>
     </div>
+
     <div class="tab-content" id="reconciliation">
-        <h2>Réconciliation</h2>
-        <p>Gestion des opérations de réconciliation...</p>
+        <h2>Fonction de réconciliation</h2>
+        <form method="post">
+            <input type="hidden" name="action" value="declencherReconciliation">
+            <button type="submit">Réconciliation</button>
+        </form>
+        <?php
+        // Affichage du résultat de la réconciliation après redirection
+        if (isset($_SESSION['reconciliation_result'])) {
+            echo $_SESSION['reconciliation_result'];
+            unset($_SESSION['reconciliation_result']); // Nettoyer après affichage
+        }
+        ?>
     </div>
+
     <div class="tab-content" id="transfer">
         <h2>Fonction de transfert</h2>
-        <p>Outils pour le transfert des données...</p>
+        <div class="container">
+            <div class="colonnes">
+                <div class="colonne-1">
+                    <h1>Transferts</h1>
+                    <div class="transferts">
+                        <div class="lignes">
+                            <!-- Résultat ajax -->
+                        </div>
+                        <div class="commande">
+                            <p>Commande de conversion</p>
+                            <input type="text" placeholder="ffmpeg -i $video 2>&1">
+                            <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="symbole">
+                    >
+                </div>
+                <div class="colonne-2">
+                    <h2>Vidéos en attente de métadonnées</h2>
+                    <div class="dates">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Fichier</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($tabDernieresVideos as $video) {
+                                $id = $video['id'];
+                                $date_creation = $video['date_creation'];
+                                $mtd_tech_titre = $video['mtd_tech_titre'];
+                                ?>
+                                <tr>
+                                    <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $date_creation; ?></a></td>
+                                    <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $mtd_tech_titre; ?></a></td>
+                                </tr>
+                            <?php } ?>
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="tab-content" id="settings">
         <h2>Paramétrage du site</h2>
         <p>Configuration et personnalisation...</p>
     </div>
+
     <div class="tab-content" id="logs">
         <h2>Consulter les logs</h2>
         <pre><?php echo implode("\n", $logs); ?></pre>
     </div>
+
 
     <?php //On cache le contenu de la page si on est pas admin
     if($_SESSION["role"] == "Administrateur"){ ?>

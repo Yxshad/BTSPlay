@@ -457,7 +457,8 @@ function getInfosVideo($idVideo)
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT * 
    FROM Media
-   WHERE id = ?');                                                 
+   WHERE id = ?
+   AND archive = FALSE');                                                 
    try{
        $requeteVid->execute([$idVideo]);
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
@@ -475,6 +476,7 @@ function getInfosVideo($idVideo)
        $connexion = null;
    }
 }
+
 
 function getURISVideo($idVideo)
 {
@@ -515,6 +517,7 @@ function getTitreURIEtId($nbMaxVideo) {
         $requeteVid = $connexion->prepare('SELECT id,
         URI_STOCKAGE_LOCAL, mtd_tech_titre
         FROM Media
+        WHERE archive = FALSE
         ORDER BY date_modification DESC
         LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
@@ -590,7 +593,7 @@ function getProjetIntitule($idProjet){
 
 /**
  * @getIdProjetVideo
- * @return array|false Renvoie l'ID du projet associer à la vidéo, false si aucun projet n'est attribué
+ * @return array|false Renvoie l'ID du projet associé à la vidéo, false si aucun projet n'est attribué
  */
 function getIdProjetVideo($idVideo) {
     try {
@@ -815,10 +818,11 @@ function connexionProfesseur($loginUser, $passwordUser){
 }
 
 /**
- * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
- * renvoie le rôle si trouvé, false sinon
+ * \fn recupererProjetDerniereVideoModifiee()
+ * \brief Fonction qui récupère le projet contenant la dernière vidéo modifiée
+ * \return resultatRequeteConnexion - Données retournées par la requête de connexion
  */
-function recupererDerniereVideoModifiee(){
+function recupererProjetDerniereVideoModifiee(){
     $connexion = connexionBD();                     
     try{
          $requeteConnexion = $connexion->prepare('SELECT projet FROM Media
@@ -828,7 +832,12 @@ function recupererDerniereVideoModifiee(){
          $requeteConnexion->execute();
          $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
          $connexion = null;
-         return $resultatRequeteConnexion ? $resultatRequeteConnexion["projet"] : null;
+
+         if (!empty($resultatRequeteConnexion["projet"])) {
+            return $resultatRequeteConnexion["projet"];
+        } else {
+            return false;
+        }
     }
     catch(Exception $e)
     {
@@ -837,20 +846,57 @@ function recupererDerniereVideoModifiee(){
 }
 
 /**
- * Fonction retourne toutes les vidéos d'un même projet
- * renvoie une liste de vidéo si trouvé
+ * Fonction qui renvoie la liste des vidéos transférées récemment
+ * en attente de métadonnées
+ */
+function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historique_transfert){
+    $connexion = connexionBD();                  
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT id,date_creation,mtd_tech_titre FROM Media
+			WHERE `professeurReferent` IS NULL AND `promotion` IS NULL AND `Description` IS NULL AND `theme` IS NULL
+            ORDER BY date_creation DESC
+            LIMIT :nb_videos_historique_transfert');
+         $requeteConnexion->bindParam(":nb_videos_historique_transfert", $nb_videos_historique_transfert,PDO::PARAM_INT);
+         $requeteConnexion->execute();
+         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+         $connexion = null;
+         if (!empty($resultatRequeteConnexion)) {
+            return $resultatRequeteConnexion;
+        } else {
+            return false;
+        }
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+
+/**
+ * \fn recupererUriTitreVideosMemeProjet($idProjet)
+ * \brief Fonction qui retourne id, URI_STOCKAGE_LOCAL, mtd_tech_titre et projet selon un projet
+ * \param idProjet - Identifiant d'un projet
+ * \return resultatRequeteConnexion - Retourne une vidéo si trouvé
  */
 function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
     try{
-            $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
+
+        //#RISQUE : Ajouter une LIMIT avec la constante NB_VIDE_PAR_SLIDER
+         $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
+            AND archive = FALSE
             ORDER BY date_modification DESC');   
-            $requeteConnexion->execute([$idProjet]);
-            $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
-            $connexion = null;
+
+         $requeteConnexion->execute([$idProjet]);
+         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+         $connexion = null;
+         if (!empty($resultatRequeteConnexion)) {
             return $resultatRequeteConnexion;
+        } else {
+            return false;
+        }
     }
     catch(Exception $e)
     {
@@ -906,5 +952,16 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
         $connexion->rollback();
         $connexion = null;
     }
+  
+ /**
+ * \fn supprimerVideoDeBD($idVideo)
+ * \brief Indique dans la base de données que la vidéo est supprimée
+ * \param idVideo - L'ID de la vidéo qu'on veut supprimer
+ */
+function supprimerVideoDeBD($idVideo){
+    $connexion = connexionBD();
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
+    $requeteConnexion->execute([$idVideo]);
+    $connexion->commit();
 }
 ?>

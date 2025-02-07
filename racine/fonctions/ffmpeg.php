@@ -94,9 +94,13 @@ function decouperVideo($titre, $duree) {
         $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
         creerDossier($chemin_dossier, false);
         rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier . '/' . $titre);
+
+        $nombreParties = 0;
+
     } else {
         $nombreParties = 100; // Diviser en 100 parties
         $dureePartie = $total / $nombreParties; // Durée de chaque partie
+
         // Créer le dossier de sortie
         $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
         creerDossier($chemin_dossier, false);
@@ -123,13 +127,11 @@ function decouperVideo($titre, $duree) {
             // #RISQUE
             if ($return_var == 1) {
                 ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
-
             }
         }
         // Supprimer le fichier original
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
-        }
-    
+    }
 }
 
 

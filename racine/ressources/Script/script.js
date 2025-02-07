@@ -1,7 +1,6 @@
-
 // #RISQUE : Dégager ce truc DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function(event) {
-
+    
     if(document.querySelector('.transferts')){
         // Fonction pour déplacer une ligne vers le haut
         function moveUp(button) {
@@ -68,8 +67,8 @@ document.addEventListener("DOMContentLoaded", function(event) {
             });
         });
     }
-});
 
+});
 
 //Fonctions spécifiques à la page home.php et recherche.php
 function affichageFiltres(){
@@ -147,15 +146,12 @@ function affichageSousMenu(){
     let sousMenu = document.querySelector('.sousMenu');
     //Si le sous menu n'a pas été chargé car l'utilisateur est déconnecté, on ne fait rien
     if(!(sousMenu == null)){
-        console.log("sous menu trouvé");
         sousMenu.style.display = "none";
         document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
         if (sousMenu.style.display == "none") {
             sousMenu.style.display = "block";
-            console.log("sous menu affiché");
         } else {
             sousMenu.style.display = "none";
-            console.log("sous menu caché");
         }
         })
     }
@@ -213,6 +209,7 @@ function scanDossierDecoupeVideo() {
     xhttp.send("action=scanDossierDecoupeVideo");
 }
 
+
 function detectionCheckboxes(){
     document.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
         checkbox.addEventListener('change', function(e) {
@@ -234,3 +231,43 @@ function mettreAJourAutorisation(prof, colonne, etat){
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=mettreAJourAutorisation&prof=" + prof + "&colonne=" + colonne + "&etat=" + etat);
 }
+
+function gestionOngletsAdministration() {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    function setActiveTab(tabId) {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+        const activeContent = document.getElementById(tabId);
+
+        if (activeTab && activeContent) {
+            activeTab.classList.add('active');
+            activeContent.classList.add('active');
+        }
+    }
+
+    // Vérifie s'il y a un paramètre "tab" dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || "database"; // "database" par défaut
+
+    setActiveTab(activeTab);
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            setActiveTab(tabId);
+
+            // Met à jour l'URL sans recharger la page
+            const newUrl = `${window.location.pathname}?tab=${tabId}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        });
+    });
+}
+function appelScanVideo () {
+    scanDossierDecoupeVideo();
+    setInterval( scanDossierDecoupeVideo , 5000);
+}
+
