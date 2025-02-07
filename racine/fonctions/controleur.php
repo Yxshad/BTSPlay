@@ -303,8 +303,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
 
 function controleurRecupererDernierProjet(){
     //recuperer dernière video avec projet
-    $id = recupererDerniereVideoModifiee();
-
+    $id = recupererProjetDerniereVideoModifiee();
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
         $listeVideo = recupererUriTitreVideosMemeProjet($id);
