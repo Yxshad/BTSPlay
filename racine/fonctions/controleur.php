@@ -341,8 +341,13 @@ function controleurRecupererDernierProjet(){
  */
 function supprimerVideo($idVideo){
     $video = getInfosVideo($idVideo);
-    unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . "/" . $video['mtd_tech_titre']);
+    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    foreach($allFiles as $file){
+        if(! is_dir($file)){
+        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+        }
+    }
+    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
 }
-
 ?>

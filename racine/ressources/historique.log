@@ -96,3 +96,42 @@
 [2025-02-07 08:36:36] INFO : Chargement des informations de la vidéo n° 3
 [2025-02-07 08:37:32] INFO : Récupération des informations à afficher sur la page d'accueil.
 [2025-02-07 08:37:33] INFO : Chargement des informations de la vidéo n° 3
+[2025-02-07 09:01:31] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:01:54] INFO : Lancement de la fonction de transfert.
+[2025-02-07 09:01:54] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 09:01:55] INFO : Récupération des vidéos du NAS ARCH. 1 fichiers trouvés.
+[2025-02-07 09:01:55] INFO : Alimentation du stockage local avec 1 fichiers.
+[2025-02-07 09:01:59] SUCCESS : Fichier 23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
+[2025-02-07 09:02:04] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-02-07 09:02:04] INFO : Insertion des informations dans la base de données.
+[2025-02-07 09:02:04] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 09:02:15] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:02:16] INFO : Chargement des informations de la vidéo n° 4
+[2025-02-07 09:02:19] INFO : Chargement des informations de la vidéo n° 4
+[2025-02-07 09:05:00] INFO : Lancement de la fonction de transfert.
+[2025-02-07 09:05:00] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 09:05:01] INFO : Récupération des vidéos du NAS ARCH. 1 fichiers trouvés.
+[2025-02-07 09:05:01] INFO : Alimentation du stockage local avec 1 fichiers.
+[2025-02-07 09:05:05] SUCCESS : Fichier 23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
+[2025-02-07 09:05:09] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-02-07 09:05:10] INFO : Insertion des informations dans la base de données.
+[2025-02-07 09:05:10] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 09:05:13] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:05:14] INFO : Chargement des informations de la vidéo n° 5
+[2025-02-07 09:05:24] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:05:25] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:05:26] INFO : Chargement des informations de la vidéo n° 5
+[2025-02-07 09:09:20] INFO : Lancement de la fonction de transfert.
+[2025-02-07 09:09:20] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 09:09:20] INFO : Récupération des vidéos du NAS ARCH. 1 fichiers trouvés.
+[2025-02-07 09:09:20] INFO : Alimentation du stockage local avec 1 fichiers.
+[2025-02-07 09:09:24] SUCCESS : Fichier 23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
+[2025-02-07 09:09:29] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-02-07 09:09:29] INFO : Insertion des informations dans la base de données.
+[2025-02-07 09:09:29] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 09:09:38] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:09:39] INFO : Chargement des informations de la vidéo n° 6
+[2025-02-07 09:09:44] INFO : Chargement des informations de la vidéo n° 6
+[2025-02-07 09:11:46] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 09:11:47] INFO : Chargement des informations de la vidéo n° 6
+[2025-02-07 09:11:50] INFO : Chargement des informations de la vidéo n° 6
