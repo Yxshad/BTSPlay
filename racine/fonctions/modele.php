@@ -844,6 +844,33 @@ function recupererProjetDerniereVideoModifiee(){
  }
 
 /**
+ * Fonction qui renvoie la liste des vidéos transférées récemment
+ * en attente de métadonnées
+ */
+function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historique_transfert){
+    $connexion = connexionBD();                  
+    try{
+         $requeteConnexion = $connexion->prepare('SELECT id,date_creation,mtd_tech_titre FROM Media
+			WHERE `professeurReferent` IS NULL AND `promotion` IS NULL AND `Description` IS NULL AND `theme` IS NULL
+            ORDER BY date_creation DESC
+            LIMIT :nb_videos_historique_transfert');
+         $requeteConnexion->bindParam(":nb_videos_historique_transfert", $nb_videos_historique_transfert,PDO::PARAM_INT);
+         $requeteConnexion->execute();
+         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+         $connexion = null;
+         if (!empty($resultatRequeteConnexion)) {
+            return $resultatRequeteConnexion;
+        } else {
+            return false;
+        }
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+ }
+
+/**
  * \fn recupererUriTitreVideosMemeProjet($idProjet)
  * \brief Fonction qui retourne id, URI_STOCKAGE_LOCAL, mtd_tech_titre et projet selon un projet
  * \param idProjet - Identifiant d'un projet
