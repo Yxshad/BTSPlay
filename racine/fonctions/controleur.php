@@ -204,33 +204,7 @@ function controleurDiffuserVideo($cheminLocalComplet){
     }
 }
 
-
-function controleurRecupererTitreIdVideoFiltre($annee = null, $niveau = null, $prof = null) {
-    $sql = "SELECT id, mtd_tech_titre, URI_STOCKAGE_LOCAL FROM Media WHERE 1=1";
-
-
-
-    if ($annee != null) {
-        $sql .= " AND promotion like %$annee%";
-    }
-    if ($niveau != null) {
-        $sql .= " AND theme like %$niveau%";
-    }
-    if ($prof != null) {
-        //get prof id
-        $nom = explode(" ", $prof);
-        $profID = getProfId($nom[0], $nom[1]);
-        $sql .= " AND professeurReferent = '$profID'";
-    }
-
-    return fetchAll($sql);
-}
-
-
-
 # FONCTIONS DE LA PAGE D'ADMINISTRATION
-
-
 
 function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
