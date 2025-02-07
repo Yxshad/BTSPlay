@@ -1,7 +1,3 @@
-
-// #RISQUE : Dégager ce truc DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function(event) {
-
     if(document.querySelector('.transferts')){
         // Fonction pour déplacer une ligne vers le haut
         function moveUp(button) {
@@ -236,7 +232,7 @@ function gestionOngletsAdministration() {
         });
     });
 }
-function appelScanVideo () { //! SI QUESTION : APPELER MONSIEUR MARRIER
+function appelScanVideo () {
     scanDossierDecoupeVideo();
     setInterval( scanDossierDecoupeVideo , 5000);
 }
