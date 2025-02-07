@@ -367,12 +367,12 @@ function controleurRecupererDernierProjet(){
     $id = recupererProjetDerniereVideoModifiee();
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
-        $listeVideo = recupererUriTitreVideosMemeProjet($id);
+        $listeVideos = recupererUriTitreVideosMemeProjet($id);
 
         $listeVideosFormatees = [];
-        // Vérifier si $listeVideo est un tableau valide
-        if (is_array($listeVideo) && getProjetIntitule($listeVideo[0]["projet"] != NULL)) {
-            foreach ($listeVideo as $key => $video) {
+        // Vérifier si $listeVideos est un tableau valide
+        if (is_array($listeVideos) && getProjetIntitule($listeVideos[0]["projet"] != NULL)) {
+            foreach ($listeVideos as $key => $video) {
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
                 $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
@@ -381,7 +381,7 @@ function controleurRecupererDernierProjet(){
                 $listeVideosFormatees[$key]["id"] = $video["id"];
             }
         } else {
-            $listeVideosFormatees = []; // Assurer que $listeVideo est bien un tableau
+            $listeVideosFormatees = []; // Assurer que $listeVideos est bien un tableau
         }
     } else {
         $listeVideosFormatees = [];
@@ -392,19 +392,19 @@ function controleurRecupererDernierProjet(){
 
 function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
     //recuperer dernières videos sans métadonnées
-    $listeVideo = recupererDernieresVideosTransfereesSansMetadonnees(NB_VIDEOS_HISTORIQUE_TRANSFERT);
+    $listeVideos = recupererDernieresVideosTransfereesSansMetadonnees(NB_VIDEOS_HISTORIQUE_TRANSFERT);
     // Vérifier si $id est valide avant de continuer
-    if ($listeVideo !== false && $listeVideo !== null) {
+    if ($listeVideos !== false && $listeVideos !== null) {
         $listeVideosFormatees = [];
-        // Vérifier si $listeVideo est un tableau valide
-        if (is_array($listeVideo)) {
-            foreach ($listeVideo as $key => $video) {
+        // Vérifier si $listeVideos est un tableau valide
+        if (is_array($listeVideos)) {
+            foreach ($listeVideos as $key => $video) {
                 $listeVideosFormatees[$key]["id"] = $video["id"];
                 $listeVideosFormatees[$key]["date_creation"] = $video["date_creation"];
                 $listeVideosFormatees[$key]["mtd_tech_titre"] = $video["mtd_tech_titre"];
             }
         } else {
-            $listeVideosFormatees = []; // Assurer que $listeVideo est bien un tableau
+            $listeVideosFormatees = []; // Assurer que $listeVideos est bien un tableau
         }
     } else {
         $listeVideosFormatees = [];
@@ -427,5 +427,7 @@ function supprimerVideo($idVideo){
     }
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
+    header('Location: home.php');
+    exit();
 }
 ?>

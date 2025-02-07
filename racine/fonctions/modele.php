@@ -883,11 +883,16 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
+            AND archive = FALSE
             ORDER BY date_modification DESC');   
          $requeteConnexion->execute([$idProjet]);
          $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
          $connexion = null;
-         return $resultatRequeteConnexion;
+         if (!empty($resultatRequeteConnexion)) {
+            return $resultatRequeteConnexion;
+        } else {
+            return false;
+        }
     }
     catch(Exception $e)
     {
