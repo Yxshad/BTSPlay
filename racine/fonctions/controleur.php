@@ -39,13 +39,12 @@ function checkHeader(){
       }
       if ($_POST["action"] == "diffuserVideo") {
           $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-          $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
-          controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
+          controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
       }
       if ($_POST["action"] == "supprimerVideo") {
         $idVideo = $_POST['idVideo'];
         $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
-        supprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+        controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
       }
       if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
         ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
@@ -238,11 +237,9 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
 
 /**
  * \fn controleurVerifierAcces($rolesAutorises)
- * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction
+ * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction. 
  * \param rolesAutorises - Rôles autorisés pour l'utilisateur
  */
-// Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
-// $rolesAutorises est une liste des roles autorisé
 function controleurVerifierAcces($rolesAutorises){
     if ((!isset($_SESSION["role"])) || (!in_array($_SESSION["role"], $rolesAutorises))) {
         header('Location: home.php');
@@ -251,15 +248,11 @@ function controleurVerifierAcces($rolesAutorises){
 }
 
 /**
- * \fn controleurDiffuserVideo($cheminLocalComplet)
+ * \fn controleurDiffuserVideo($URI_COMPLET_NAS_PAD)
  * \brief Fonction qui permet de diffuser une vidéo dont l'id est passé en paramètre sur le NAS DIFF.
- * \param cheminLocalComplet - Le chemin d'accès à la vidéo
+ * \param URI_COMPLET_NAS_PAD - Le chemin d'accès à la vidéo du NAS PAD
  */
-function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
-
-    //Téléchargement du fichier dans la meilleure qualité possible
-    $cheminFichierDesination = null;
-    $cheminFichierSource = null;
+function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if(!empty($URI_COMPLET_NAS_PAD)){
         //On récupère met le nom à .mxf
@@ -274,17 +267,9 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
         telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
         ftp_close($conn_id);
     }
-    elseif(!empty($URI_COMPLET_NAS_ARCH)) {
-        $nomFichier = basename($URI_COMPLET_NAS_ARCH);
-        $cheminFichierDesination = URI_VIDEOS_A_DIFFUSER . $nomFichier;
-        $cheminFichierSource = $URI_COMPLET_NAS_ARCH;
-        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
-        ftp_close($conn_id);
-    }
     else{
-        // #RISQUE : Message d'erreur
-        exit();
+        // #RISQUE : La vidéo n'est pas présente dans le NAS PAD, il faudra juste supprimer le bouton
+        return;
     }
 
     //Inversion des URIs, la source devient la destination
@@ -313,25 +298,22 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
     }
 }
 
-# FONCTIONS DE LA PAGE D'ADMINISTRATION
-
 function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
     }
-
     // Utilisation de `tail` si disponible
     if (function_exists('shell_exec')) {
         $output = shell_exec("tail -n " . escapeshellarg($lines) . " " . escapeshellarg($filename));
+        ajouterLog(LOG_SUCCESS, "$output");
+        //#RISQUE : Erreur si le fichier de log est vide mais existant
         return explode("\n", trim($output));
     }
-
     // Alternative en PHP si `shell_exec` est désactivé
     $file = fopen($filename, "r");
     if (!$file) {
         return ["Impossible d'ouvrir le fichier."];
     }
-
     $buffer = [];
     while (!feof($file)) {
         $buffer[] = fgets($file);
@@ -413,11 +395,11 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
 }
 
 /**
- * \fn supprimerVideo($idVideo)
+ * \fn controleurSupprimerVideo($idVideo)
  * \brief "Supprime" la vidéo du MAM
  * \param idVideo - Id de la vidéo à supprimer
  */
-function supprimerVideo($idVideo){
+function controleurSupprimerVideo($idVideo){
     $video = getInfosVideo($idVideo);
     $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     foreach($allFiles as $file){

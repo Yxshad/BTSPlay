@@ -14,12 +14,8 @@
     $URIS = $infosVideo["URIS"];
 
     $cheminCompletNAS_PAD = null;
-    $cheminCompletNAS_ARCH = null;
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
-    }
-    if(!empty($URIS['URI_NAS_ARCH'])){
-        $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
     }
 ?>
 
@@ -104,7 +100,6 @@
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">
                         <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
-                        <input type="hidden" name="URI_COMPLET_NAS_ARCH" value="<?php echo $cheminCompletNAS_ARCH; ?>">
                         <button type="submit" class="boutonSubmit">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/antenne.png" alt="">

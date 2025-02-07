@@ -880,6 +880,7 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
     try{
+        //#RISQUE : Ajouter une LIMIT avec la constante NB_VIDE_PAR_SLIDER
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
