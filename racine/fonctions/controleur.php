@@ -42,6 +42,11 @@ function checkHeader(){
           $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
           controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
       }
+      if ($_POST["action"] == "supprimerVideo") {
+        $idVideo = $_POST['idVideo'];
+        $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
+        supprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+      }
       if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
         ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
         controleurReconciliation();
@@ -50,8 +55,8 @@ function checkHeader(){
         // Redirection AVANT d'envoyer du contenu
         header("Location: ?tab=reconciliation");
         exit();
-    }
-   }
+     }
+  }
 }
 checkHeader();
 
@@ -383,5 +388,22 @@ function controleurRecupererDernierProjet(){
     }
 
     return $listeVideosFormatees;
+}
+
+/**
+ * \fn supprimerVideo($idVideo)
+ * \brief "Supprime" la vidéo du MAM
+ * \param idVideo - Id de la vidéo à supprimer
+ */
+function supprimerVideo($idVideo){
+    $video = getInfosVideo($idVideo);
+    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    foreach($allFiles as $file){
+        if(! is_dir($file)){
+        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+        }
+    }
+    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    supprimerVideoDeBD($idVideo);
 }
 ?>

@@ -516,6 +516,7 @@ function getTitreURIEtId($nbMaxVideo) {
         $requeteVid = $connexion->prepare('SELECT id,
         URI_STOCKAGE_LOCAL, mtd_tech_titre
         FROM Media
+        WHERE archive = 0
         ORDER BY date_modification DESC
         LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
@@ -866,4 +867,15 @@ function recupererProjetDerniereVideoModifiee(){
     }
  }
  
+ /**
+ * \fn supprimerVideoDeBD($idVideo)
+ * \brief Indique dans la base de données que la vidéo est supprimée
+ * \param idVideo - L'ID de la vidéo qu'on veut supprimer
+ */
+function supprimerVideoDeBD($idVideo){
+    $connexion = connexionBD();
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE WHERE id = ?');
+    $requeteConnexion->execute([$idVideo]);
+    $connexion->commit();
+}
 ?>
