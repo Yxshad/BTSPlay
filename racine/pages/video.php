@@ -96,6 +96,7 @@
                 <p>Télécharger</p>
             </a>
             <?php if(isset($_SESSION["role"]) && in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
+                <?php if(!empty($cheminCompletNAS_PAD)){ ?>
                 <div class="btnVideo">
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">
@@ -108,6 +109,7 @@
                         </button>
                     </form>
                 </div>
+                <?php } ?>
                 <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                     <div class="logo-btnvideo">
                         <img src="../ressources/Images/modif.png" alt="">
