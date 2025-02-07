@@ -302,14 +302,6 @@ function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
     }
-    // Utilisation de `tail` si disponible
-    if (function_exists('shell_exec')) {
-        $output = shell_exec("tail -n " . escapeshellarg($lines) . " " . escapeshellarg($filename));
-        ajouterLog(LOG_SUCCESS, "$output");
-        //#RISQUE : Erreur si le fichier de log est vide mais existant
-        return explode("\n", trim($output));
-    }
-    // Alternative en PHP si `shell_exec` est désactivé
     $file = fopen($filename, "r");
     if (!$file) {
         return ["Impossible d'ouvrir le fichier."];
