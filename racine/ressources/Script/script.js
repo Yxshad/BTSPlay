@@ -212,3 +212,13 @@ function scanDossierDecoupeVideo() {
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=scanDossierDecoupeVideo");
 }
+
+function mettreAJourAutorisation(prof, colonne, etat){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=mettreAJourAutorisation&prof=" + prof + "&colonne=" + colonne + "&etat=" + etat);
+}

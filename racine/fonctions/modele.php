@@ -828,35 +828,66 @@ function recupererDerniereVideoModifiee(){
          $requeteConnexion->execute();
          $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
          $connexion = null;
-         return $resultatRequeteConnexion["projet"];
+         return $resultatRequeteConnexion ? $resultatRequeteConnexion["projet"] : null;
     }
     catch(Exception $e)
     {
         $connexion = null;
     }
- }
+}
 
 /**
  * Fonction retourne toutes les vidéos d'un même projet
  * renvoie une liste de vidéo si trouvé
  */
- function recupererUriTitreVideosMemeProjet($idProjet){
+function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
     try{
-         $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
+            $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
             ORDER BY date_modification DESC');   
-         $requeteConnexion->execute([$idProjet]);
-         $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
-         $connexion = null;
-         return $resultatRequeteConnexion;
+            $requeteConnexion->execute([$idProjet]);
+            $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+            $connexion = null;
+            return $resultatRequeteConnexion;
     }
     catch(Exception $e)
     {
         $connexion = null;
     }
- }
+}
  
+function recupererAutorisationsProfesseurs(){
+    $connexion = connexionBD();                     
+    try{
+            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser
+                FROM Autorisation
+                JOIN Professeur ON Professeur.identifiant = Autorisation.professeur');   
+            $requeteConnexion->execute();
+            $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+            $connexion = null;
+            return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+}
 
+function mettreAJourAutorisations($prof, $colonne, $etat){
+    $valeur = ($etat == "true") ? 1 : 0 ;
+    $connexion = connexionBD();
+    try{
+        $requete = $connexion->prepare('UPDATE Autorisation SET ' . $colonne . ' = ? WHERE professeur = ?');
+        $requete->execute([$valeur, $prof]);
+        $connexion->commit();  
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        $connexion->rollback();
+        $connexion = null;
+    }
+}
 ?>

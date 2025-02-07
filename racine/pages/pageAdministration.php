@@ -1,8 +1,8 @@
 <?php 
 session_start();
 require_once '../fonctions/controleur.php';
-
-
+controleurVerifierAcces(AUTORISATION_ADMIN);
+$listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
@@ -53,7 +53,44 @@ $logs = getLastLines($logFile, $maxLines);
     </div>
     <div class="tab-content" id="users">
         <h2>Gérer les utilisateurs</h2>
-        <p>Configuration des comptes utilisateurs...</p>
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                text-align: center;
+                table-layout: fixed;
+            }
+            th, td {
+                border: 1px solid black;
+                padding: 10px;
+                flex: 1;
+            }
+            th {
+                background-color: lightgray;
+            }
+        </style>
+        <table>
+        <tr>
+            <th></th>
+            <th>Modifier la vidéo</th>
+            <th>Diffuser la vidéo</th>
+            <th>Supprimer la vidéo</th>
+        </tr>
+        <?php foreach($listeProfesseurs as $professeur){ ?>
+            <tr>
+                <th><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
+                <td>
+                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
+                </td>
+                <td>
+                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
+                </td>
+                <td>
+                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
+                </td>
+            </tr>
+        <?php } ?>
+    </table>
     </div>
     
     
@@ -69,6 +106,16 @@ $logs = getLastLines($logFile, $maxLines);
                 tab.classList.add('active');
                 document.getElementById(tab.dataset.tab).classList.add('active');
             });
+        });
+
+        document.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
+            checkbox.addEventListener('change', function(e) {
+                let prof = this.getAttribute("data-prof")
+                let colonne = this.getAttribute("data-colonne")
+                let etat = this.checked
+                console.log(this.getAttribute("data-prof"), this.getAttribute("data-colonne"), this.checked);
+                mettreAJourAutorisation(prof, colonne, etat);
+            })
         });
     </script>
 </body>
