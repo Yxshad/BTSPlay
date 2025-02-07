@@ -27,8 +27,6 @@
 
 <?php require_once '../ressources/Templates/footer.php';?>
 
-
-
 <?php
 
 if (isset($_POST['declencherReconciliation'])) {
