@@ -341,7 +341,7 @@ function controleurRecupererDernierProjet(){
  */
 function supprimerVideo($idVideo){
     $video = getInfosVideo($idVideo);
-    unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . "/" . $video['mtd_tech_titre']);
     supprimerVideoDeBD($idVideo);
 }
 

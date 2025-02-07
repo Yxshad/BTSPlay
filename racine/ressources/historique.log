@@ -61,3 +61,38 @@
 [2025-02-06 16:35:33] INFO : Récupération des informations à afficher sur la page d'accueil.
 [2025-02-06 16:35:34] INFO : Chargement des informations de la vidéo n° 2
 [2025-02-06 16:35:37] INFO : Chargement des informations de la vidéo n° 2
+[2025-02-07 08:16:49] INFO : L'utilisateur nconguisti s'est connecté.
+[2025-02-07 08:17:12] INFO : Lancement de la fonction de transfert.
+[2025-02-07 08:17:12] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 08:17:12] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-07 08:17:12] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-07 08:17:12] INFO : Insertion des informations dans la base de données.
+[2025-02-07 08:17:12] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 08:20:06] INFO : Lancement de la fonction de transfert.
+[2025-02-07 08:20:07] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 08:20:07] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-07 08:20:07] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-07 08:20:07] INFO : Insertion des informations dans la base de données.
+[2025-02-07 08:20:07] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 08:20:09] INFO : Lancement de la fonction de transfert.
+[2025-02-07 08:20:09] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 08:20:09] INFO : Récupération des vidéos du NAS ARCH. 0 fichiers trouvés.
+[2025-02-07 08:20:09] INFO : Alimentation du stockage local avec 0 fichiers.
+[2025-02-07 08:20:09] INFO : Insertion des informations dans la base de données.
+[2025-02-07 08:20:09] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 08:21:54] INFO : Lancement de la fonction de transfert.
+[2025-02-07 08:21:54] INFO : Récupération des vidéos du NAS PAD. 0 fichiers trouvés.
+[2025-02-07 08:21:55] INFO : Récupération des vidéos du NAS ARCH. 1 fichiers trouvés.
+[2025-02-07 08:21:55] INFO : Alimentation du stockage local avec 1 fichiers.
+[2025-02-07 08:21:58] SUCCESS : Fichier 23_6h_JIN_Fermetur/23_6h_JIN_Fermetur.mxf téléchargé avec succès dans ../videos/videosAConvertir/attenteDeConversion/23_6h_JIN_Fermetur.mxf.
+[2025-02-07 08:22:03] SUCCESS : Miniature de la vidéo ../videos/videosAUpload/attenteDUpload/23_6h_JIN_Fermetur.mp4 générée avec succès.
+[2025-02-07 08:22:03] INFO : Insertion des informations dans la base de données.
+[2025-02-07 08:22:03] SUCCESS : Fonction de transfert effectuée avec succès.
+[2025-02-07 08:22:08] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 08:22:10] INFO : Chargement des informations de la vidéo n° 3
+[2025-02-07 08:22:15] INFO : Chargement des informations de la vidéo n° 3
+[2025-02-07 08:36:31] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 08:36:33] INFO : Chargement des informations de la vidéo n° 3
+[2025-02-07 08:36:36] INFO : Chargement des informations de la vidéo n° 3
+[2025-02-07 08:37:32] INFO : Récupération des informations à afficher sur la page d'accueil.
+[2025-02-07 08:37:33] INFO : Chargement des informations de la vidéo n° 3
