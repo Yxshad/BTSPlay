@@ -7,20 +7,24 @@ $logFile = '../ressources/historique.log'; // Chemin du fichier log
 $maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
 $logs = controleurAfficherLogs($logFile, $maxLines);
 
-// Vérification de la soumission du formulaire AVANT toute sortie HTML
-
-//fonction de réconciliation 
-
 ?>
 
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <title>Administration du Site</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
+    <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/pageAdministration.css" rel="stylesheet">
     <link href="../ressources/Style/transfert.css" rel="stylesheet">
-    <?php require_once '../ressources/Templates/header.php'; ?>
-</head>
+    <script src="../ressources/Script/script.js"></script>
+
+    <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
+    <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
+
+<?php require_once '../ressources/Templates/header.php'; ?>
+
 <body>
     <div><h1>Administration du Site</h1></div>
     <div class="tabs">

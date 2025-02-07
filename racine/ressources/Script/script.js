@@ -1,3 +1,6 @@
+// #RISQUE : Dégager ce truc DOMContentLoaded
+document.addEventListener("DOMContentLoaded", function(event) {
+    
     if(document.querySelector('.transferts')){
         // Fonction pour déplacer une ligne vers le haut
         function moveUp(button) {
@@ -64,8 +67,8 @@
             });
         });
     }
-});
 
+});
 
 //Fonctions spécifiques à la page home.php et recherche.php
 function affichageFiltres(){
