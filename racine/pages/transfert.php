@@ -68,7 +68,6 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        scanDossierDecoupeVideo();
-        setInterval( scanDossierDecoupeVideo , 5000);
+        appelScanVideo();
     });
 </script>

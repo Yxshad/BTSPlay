@@ -60,6 +60,7 @@ $tabDernierProjet = controleurRecupererDernierProjet();
                     foreach ($tabDernierProjet as $video) {
                         $id = $video['id'];
                         $titre = $video['titre'];
+                        $titreVideo = $video['titreVideo'];
                         $cheminMiniatureComplet = $video['cheminMiniatureComplet'];
                         echo "<div class='swiper-slide'>";
                             echo "<a href='video.php?v=$id'>";
@@ -67,6 +68,7 @@ $tabDernierProjet = controleurRecupererDernierProjet();
                                     echo "<img src='$cheminMiniatureComplet' alt='Miniature de la vidéo' class='imageMiniature'/>";
                                 echo "</div>";
                                 echo "<h3>$titre</h3>";
+                                echo "<h4>$titreVideo</h4>";
                             echo "</a>";
                         echo "</div>";
                     }

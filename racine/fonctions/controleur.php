@@ -20,7 +20,6 @@ require_once "fonctions.php";
  */
 function checkHeader(){
     if (isset($_POST["action"])) {
-
       if ($_POST["action"] == "scanDossierDecoupeVideo") {
           header('Content-Type: application/json');
           scanDossierDecoupeVideo(); 
@@ -43,7 +42,21 @@ function checkHeader(){
           $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
           controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH);
       }
-   }
+      if ($_POST["action"] == "supprimerVideo") {
+        $idVideo = $_POST['idVideo'];
+        $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
+        supprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+      }
+      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
+        ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
+        controleurReconciliation();
+        ob_end_clean(); // Nettoyer la sortie tamponnée
+    
+        // Redirection AVANT d'envoyer du contenu
+        header("Location: ?tab=reconciliation");
+        exit();
+     }
+  }
 }
 checkHeader();
 
@@ -300,11 +313,58 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD, $URI_COMPLET_NAS_ARCH){
     }
 }
 
+# FONCTIONS DE LA PAGE D'ADMINISTRATION
+
+function controleurAfficherLogs($filename, $lines) {
+    if (!file_exists($filename)) {
+        return ["Fichier introuvable."];
+    }
+
+    // Utilisation de `tail` si disponible
+    if (function_exists('shell_exec')) {
+        $output = shell_exec("tail -n " . escapeshellarg($lines) . " " . escapeshellarg($filename));
+        return explode("\n", trim($output));
+    }
+
+    // Alternative en PHP si `shell_exec` est désactivé
+    $file = fopen($filename, "r");
+    if (!$file) {
+        return ["Impossible d'ouvrir le fichier."];
+    }
+
+    $buffer = [];
+    while (!feof($file)) {
+        $buffer[] = fgets($file);
+        if (count($buffer) > $lines) {
+            array_shift($buffer);
+        }
+    }
+    fclose($file);
+    return array_filter($buffer);
+}
+
+
+function controleurReconciliation() {
+    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
+    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
+
+    ob_start(); // Capture la sortie pour éviter les erreurs de header
+    echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+
+    echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
+
+    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
+    afficherVideosManquantes($listeVideosManquantes);
+
+    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
+    $_SESSION['reconciliation_result'] = ob_get_clean(); // Stocker la sortie pour l'afficher après redirection
+}
 
 function controleurRecupererDernierProjet(){
     //recuperer dernière video avec projet
-    $id = recupererDerniereVideoModifiee();
-
+    $id = recupererProjetDerniereVideoModifiee();
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
         $listeVideo = recupererUriTitreVideosMemeProjet($id);
@@ -316,6 +376,7 @@ function controleurRecupererDernierProjet(){
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
                 $listeVideosFormatees[$key]["titre"] = $titreSansExtension;
+                $listeVideosFormatees[$key]["titreVideo"] = recupererTitreVideo($video["mtd_tech_titre"]);
                 $listeVideosFormatees[$key]["cheminMiniatureComplet"] = '/stockage/' . $video['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["id"] = $video["id"];
             }
@@ -349,5 +410,22 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
         $listeVideosFormatees = [];
     }
     return $listeVideosFormatees;
+}
+
+/**
+ * \fn supprimerVideo($idVideo)
+ * \brief "Supprime" la vidéo du MAM
+ * \param idVideo - Id de la vidéo à supprimer
+ */
+function supprimerVideo($idVideo){
+    $video = getInfosVideo($idVideo);
+    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    foreach($allFiles as $file){
+        if(! is_dir($file)){
+        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+        }
+    }
+    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+    supprimerVideoDeBD($idVideo);
 }
 ?>

@@ -476,6 +476,7 @@ function getInfosVideo($idVideo)
    }
 }
 
+
 function getURISVideo($idVideo)
 {
    $connexion = connexionBD();
@@ -515,6 +516,7 @@ function getTitreURIEtId($nbMaxVideo) {
         $requeteVid = $connexion->prepare('SELECT id,
         URI_STOCKAGE_LOCAL, mtd_tech_titre
         FROM Media
+        WHERE archive = 0
         ORDER BY date_modification DESC
         LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
@@ -590,7 +592,7 @@ function getProjetIntitule($idProjet){
 
 /**
  * @getIdProjetVideo
- * @return array|false Renvoie l'ID du projet associer à la vidéo, false si aucun projet n'est attribué
+ * @return array|false Renvoie l'ID du projet associé à la vidéo, false si aucun projet n'est attribué
  */
 function getIdProjetVideo($idVideo) {
     try {
@@ -815,10 +817,11 @@ function connexionProfesseur($loginUser, $passwordUser){
 }
 
 /**
- * Fonction qui regarde si un prof existe pour un couple login/mdp passé en paramètre
- * renvoie le rôle si trouvé, false sinon
+ * \fn recupererProjetDerniereVideoModifiee()
+ * \brief Fonction qui récupère le projet contenant la dernière vidéo modifiée
+ * \return resultatRequeteConnexion - Données retournées par la requête de connexion
  */
-function recupererDerniereVideoModifiee(){
+function recupererProjetDerniereVideoModifiee(){
     $connexion = connexionBD();                     
     try{
          $requeteConnexion = $connexion->prepare('SELECT projet FROM Media
@@ -868,8 +871,10 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  }
 
 /**
- * Fonction retourne toutes les vidéos d'un même projet
- * renvoie une liste de vidéo si trouvé
+ * \fn recupererUriTitreVideosMemeProjet($idProjet)
+ * \brief Fonction qui retourne id, URI_STOCKAGE_LOCAL, mtd_tech_titre et projet selon un projet
+ * \param idProjet - Identifiant d'un projet
+ * \return resultatRequeteConnexion - Retourne une vidéo si trouvé
  */
  function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
@@ -889,5 +894,15 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
     }
  }
  
-
+ /**
+ * \fn supprimerVideoDeBD($idVideo)
+ * \brief Indique dans la base de données que la vidéo est supprimée
+ * \param idVideo - L'ID de la vidéo qu'on veut supprimer
+ */
+function supprimerVideoDeBD($idVideo){
+    $connexion = connexionBD();
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE WHERE id = ?');
+    $requeteConnexion->execute([$idVideo]);
+    $connexion->commit();
+}
 ?>
