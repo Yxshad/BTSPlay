@@ -73,5 +73,9 @@
     const AUTORISATION_ADMIN = ["Administrateur"];
 
     //CONSTANTES DES PAGES
-    const NB_VIDEOS_PAR_SWIPER = 10
+    const NB_VIDEOS_PAR_SWIPER = 10; // HOME.PHP
+    const NBR_LIGNES_LOGS = 100; //PAGEADMINISTRATION.PHP
+
+
+
 ?>

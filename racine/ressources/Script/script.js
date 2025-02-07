@@ -201,3 +201,42 @@ function scanDossierDecoupeVideo() {
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
     xhttp.send("action=scanDossierDecoupeVideo");
 }
+
+function gestionOngletsAdministration() {
+    const tabs = document.querySelectorAll('.tab');
+    const contents = document.querySelectorAll('.tab-content');
+    
+    function setActiveTab(tabId) {
+        tabs.forEach(t => t.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+
+        const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
+        const activeContent = document.getElementById(tabId);
+
+        if (activeTab && activeContent) {
+            activeTab.classList.add('active');
+            activeContent.classList.add('active');
+        }
+    }
+
+    // Vérifie s'il y a un paramètre "tab" dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || "database"; // "database" par défaut
+
+    setActiveTab(activeTab);
+
+    tabs.forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabId = tab.dataset.tab;
+            setActiveTab(tabId);
+
+            // Met à jour l'URL sans recharger la page
+            const newUrl = `${window.location.pathname}?tab=${tabId}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        });
+    });
+}
+function appelScanVideo () { //! SI QUESTION : APPELER MONSIEUR MARRIER
+    scanDossierDecoupeVideo();
+    setInterval( scanDossierDecoupeVideo , 5000);
+}

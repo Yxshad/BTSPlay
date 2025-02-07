@@ -29,6 +29,16 @@ if (isset($_POST["action"])) {
         controleurDiffuserVideo($cheminVideoComplet);
         // #RISQUE : DIFFUSION stoppée, en attente du dev nico
     }
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
+        ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
+        controleurReconciliation();
+        ob_end_clean(); // Nettoyer la sortie tamponnée
+    
+        // Redirection AVANT d'envoyer du contenu
+        header("Location: ?tab=reconciliation");
+        exit();
+    }
+    
 }
 
 /**
@@ -217,7 +227,12 @@ function controleurRecupererTitreIdVideoFiltre($annee = null, $niveau = null, $p
 }
 
 
-function getLastLines($filename, $lines) {
+
+# FONCTIONS DE LA PAGE D'ADMINISTRATION
+
+
+
+function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
     }
@@ -243,5 +258,24 @@ function getLastLines($filename, $lines) {
     }
     fclose($file);
     return array_filter($buffer);
+}
+
+
+function controleurReconciliation() {
+    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
+    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
+
+    ob_start(); // Capture la sortie pour éviter les erreurs de header
+    echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+
+    echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
+    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
+
+    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
+    afficherVideosManquantes($listeVideosManquantes);
+
+    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
+    $_SESSION['reconciliation_result'] = ob_get_clean(); // Stocker la sortie pour l'afficher après redirection
 }
 ?>

@@ -4,37 +4,13 @@ require_once '../fonctions/controleur.php';
 
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
-$maxLines = 100; // Nombre maximum de lignes à afficher
-$logs = getLastLines($logFile, $maxLines);
+$maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
+$logs = controleurAfficherLogs($logFile, $maxLines);
 
 // Vérification de la soumission du formulaire AVANT toute sortie HTML
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
-    ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
-    fonctionReconciliationAffichee();
-    ob_end_clean(); // Nettoyer la sortie tamponnée
 
-    // Redirection AVANT d'envoyer du contenu
-    header("Location: ?tab=reconciliation");
-    exit();
-}
 //fonction de réconciliation 
-function fonctionReconciliationAffichee() {
-    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
-    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
 
-    ob_start(); // Capture la sortie pour éviter les erreurs de header
-    echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
-
-    echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
-
-    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
-    afficherVideosManquantes($listeVideosManquantes);
-
-    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
-    $_SESSION['reconciliation_result'] = ob_get_clean(); // Stocker la sortie pour l'afficher après redirection
-}
 ?>
 
 <!DOCTYPE html>
@@ -133,45 +109,11 @@ function fonctionReconciliationAffichee() {
         <p>Configuration des comptes utilisateurs...</p>
     </div>
     
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const tabs = document.querySelectorAll('.tab');
-            const contents = document.querySelectorAll('.tab-content');
-            
-            function setActiveTab(tabId) {
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
-
-                const activeTab = document.querySelector(`.tab[data-tab="${tabId}"]`);
-                const activeContent = document.getElementById(tabId);
-
-                if (activeTab && activeContent) {
-                    activeTab.classList.add('active');
-                    activeContent.classList.add('active');
-                }
-            }
-
-            // Vérifie s'il y a un paramètre "tab" dans l'URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const activeTab = urlParams.get('tab') || "database"; // "database" par défaut
-
-            setActiveTab(activeTab);
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const tabId = tab.dataset.tab;
-                    setActiveTab(tabId);
-
-                    // Met à jour l'URL sans recharger la page
-                    const newUrl = `${window.location.pathname}?tab=${tabId}`;
-                    window.history.pushState({ path: newUrl }, '', newUrl);
-                });
-            });
-        });
-        document.addEventListener("DOMContentLoaded", function () {
-            scanDossierDecoupeVideo();
-            setInterval( scanDossierDecoupeVideo , 5000);
-        });
-    </script>
 </body>
 </html>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        gestionOngletsAdministration();
+        appelScanVideo();
+    });
+</script>
