@@ -328,4 +328,26 @@ function controleurRecupererDernierProjet(){
 
     return $listeVideosFormatees;
 }
+
+function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
+    //recuperer dernières videos sans métadonnées
+    $listeVideo = recupererDernieresVideosTransfereesSansMetadonnees(NB_VIDEOS_HISTORIQUE_TRANSFERT);
+    // Vérifier si $id est valide avant de continuer
+    if ($listeVideo !== false && $listeVideo !== null) {
+        $listeVideosFormatees = [];
+        // Vérifier si $listeVideo est un tableau valide
+        if (is_array($listeVideo)) {
+            foreach ($listeVideo as $key => $video) {
+                $listeVideosFormatees[$key]["id"] = $video["id"];
+                $listeVideosFormatees[$key]["date_creation"] = $video["date_creation"];
+                $listeVideosFormatees[$key]["mtd_tech_titre"] = $video["mtd_tech_titre"];
+            }
+        } else {
+            $listeVideosFormatees = []; // Assurer que $listeVideo est bien un tableau
+        }
+    } else {
+        $listeVideosFormatees = [];
+    }
+    return $listeVideosFormatees;
+}
 ?>
