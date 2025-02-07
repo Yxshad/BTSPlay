@@ -132,15 +132,12 @@ function affichageSousMenu(){
     let sousMenu = document.querySelector('.sousMenu');
     //Si le sous menu n'a pas été chargé car l'utilisateur est déconnecté, on ne fait rien
     if(!(sousMenu == null)){
-        console.log("sous menu trouvé");
         sousMenu.style.display = "none";
         document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
         if (sousMenu.style.display == "none") {
             sousMenu.style.display = "block";
-            console.log("sous menu affiché");
         } else {
             sousMenu.style.display = "none";
-            console.log("sous menu caché");
         }
         })
     }
