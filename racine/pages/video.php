@@ -11,6 +11,16 @@
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
+    $URIS = $infosVideo["URIS"];
+
+    $cheminCompletNAS_PAD = null;
+    $cheminCompletNAS_ARCH = null;
+    if(!empty($URIS['URI_NAS_PAD'])){
+        $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
+    }
+    if(!empty($URIS['URI_NAS_ARCH'])){
+        $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -43,6 +53,12 @@
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
+            <p class="mtd">
+                <strong>URI du NAS PAD : </strong><?php echo $URIS['URI_NAS_PAD']; ?>
+            </p>
+            <p class="mtd">
+                <strong>URI du NAS ARCH : </strong><?php echo $URIS['URI_NAS_ARCH']; ?>
+            </p>
             <p class="mtd">
                 <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
             </p>
@@ -83,32 +99,33 @@
                 </div>
                 <p>Télécharger</p>
             </a>
-
-            <div class="btnVideo">
-                <form action="#" method="POST">
-                    <input type="hidden" name="action" value="diffuserVideo">
-                    <input type="hidden" name="cheminVideoComplet" value="<?php echo $cheminVideoComplet; ?>">
-                    <button type="submit" class="boutonSubmit">
-                        <div class="logo-btnvideo">
-                            <img src="../ressources/Images/antenne.png" alt="">
-                        </div>
-                        <p>Diffuser</p>
-                    </button>
-                </form>
-            </div>
-
-            <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/modif.png" alt="">
+            <?php if(isset($_SESSION["role"]) && in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
+                <div class="btnVideo">
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="diffuserVideo">
+                        <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
+                        <input type="hidden" name="URI_COMPLET_NAS_ARCH" value="<?php echo $cheminCompletNAS_ARCH; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/antenne.png" alt="">
+                            </div>
+                            <p>Diffuser</p>
+                        </button>
+                    </form>
                 </div>
-                <p>Modifier</p>
-            </a>
-            <a href="#" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/trash.png" alt="">
-                </div>
-                <p>Supprimer</p>
-            </a>
+                <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
+                    <div class="logo-btnvideo">
+                        <img src="../ressources/Images/modif.png" alt="">
+                    </div>
+                    <p>Modifier</p>
+                </a>
+                <a href="#" class="btnVideo">
+                    <div class="logo-btnvideo">
+                        <img src="../ressources/Images/trash.png" alt="">
+                    </div>
+                    <p>Supprimer</p>
+                </a>
+            <?php } ?>
         </div>
     </div>
 </div>

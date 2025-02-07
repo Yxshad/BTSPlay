@@ -93,6 +93,17 @@ function initCarrousel(){
             prevEl: '.swiper-button-prev',
         },
     });
+    if (document.querySelector(".swiperVideoProjet")) {
+        const swiperVideo = new Swiper('.swiperVideoProjet', {
+            speed: 400,
+            spaceBetween: 100,
+            slidesPerView: 3,
+            navigation: {
+                nextEl: '.swiper-projet-button-next',
+                prevEl: '.swiper-projet-button-prev',
+            },
+        });
+    }
 }
 
 
