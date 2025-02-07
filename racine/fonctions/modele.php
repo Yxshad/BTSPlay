@@ -457,7 +457,8 @@ function getInfosVideo($idVideo)
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT * 
    FROM Media
-   WHERE id = ?');                                                 
+   WHERE id = ?
+   AND archive = FALSE');                                                 
    try{
        $requeteVid->execute([$idVideo]);
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
@@ -516,7 +517,7 @@ function getTitreURIEtId($nbMaxVideo) {
         $requeteVid = $connexion->prepare('SELECT id,
         URI_STOCKAGE_LOCAL, mtd_tech_titre
         FROM Media
-        WHERE archive = 0
+        WHERE archive = FALSE
         ORDER BY date_modification DESC
         LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
@@ -879,14 +880,20 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
     try{
+        //#RISQUE : Ajouter une LIMIT avec la constante NB_VIDE_PAR_SLIDER
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
+            AND archive = FALSE
             ORDER BY date_modification DESC');   
          $requeteConnexion->execute([$idProjet]);
          $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
          $connexion = null;
-         return $resultatRequeteConnexion;
+         if (!empty($resultatRequeteConnexion)) {
+            return $resultatRequeteConnexion;
+        } else {
+            return false;
+        }
     }
     catch(Exception $e)
     {
@@ -901,7 +908,7 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  */
 function supprimerVideoDeBD($idVideo){
     $connexion = connexionBD();
-    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE WHERE id = ?');
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
     $requeteConnexion->execute([$idVideo]);
     $connexion->commit();
 }
