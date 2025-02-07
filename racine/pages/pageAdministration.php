@@ -1,7 +1,11 @@
 <?php 
 session_start();
 require_once '../fonctions/controleur.php';
-controleurVerifierAcces(AUTORISATION_ADMIN);
+
+if(!controleurVerifierAcces(ACCES_ADMINISTRATION)){
+    header('Location: home.php');
+}
+
 $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 
 // Appel des logs 
@@ -28,7 +32,12 @@ $logs = getLastLines($logFile, $maxLines);
         <div class="tab" data-tab="transfer">Fonction de transfert</div>
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
-        <div class="tab" data-tab="users">Gérer les utilisateurs</div>
+
+        
+        <?php //On cache la page des autorisation si on est pas admin
+        if($_SESSION["role"] == "Administrateur"){ ?>
+            <div class="tab" data-tab="users">Gérer les utilisateurs</div>
+        <?php } ?>
     </div>
     
     <div class="tab-content active" id="database">
@@ -51,72 +60,59 @@ $logs = getLastLines($logFile, $maxLines);
         <h2>Consulter les logs</h2>
         <pre><?php echo implode("\n", $logs); ?></pre>
     </div>
-    <div class="tab-content" id="users">
-        <h2>Gérer les utilisateurs</h2>
-        <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                text-align: center;
-                table-layout: fixed;
-            }
-            th, td {
-                border: 1px solid black;
-                padding: 10px;
-                flex: 1;
-            }
-            th {
-                background-color: lightgray;
-            }
-        </style>
-        <table>
-        <tr>
-            <th></th>
-            <th>Modifier la vidéo</th>
-            <th>Diffuser la vidéo</th>
-            <th>Supprimer la vidéo</th>
-        </tr>
-        <?php foreach($listeProfesseurs as $professeur){ ?>
-            <tr>
-                <th><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
-                <td>
-                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
-                </td>
-                <td>
-                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
-                </td>
-                <td>
-                    <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
-                </td>
-            </tr>
-        <?php } ?>
-    </table>
-    </div>
+
+    <?php //On cache le contenu de la page si on est pas admin
+    if($_SESSION["role"] == "Administrateur"){ ?>
+        <div class="tab-content" id="users">
+            <h2>Gérer les utilisateurs</h2>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Modifier la vidéo</th>
+                    <th>Diffuser la vidéo</th>
+                    <th>Supprimer la vidéo</th>
+                    <th>Administrer le site</th>
+                </tr>
+                <?php foreach($listeProfesseurs as $professeur){ ?>
+                    <tr>
+                        <th><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="administrer" <?php echo $professeur["administrer"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </table>
+        </div>
+    <?php } ?>
+
     
     
     <script>
-        const tabs = document.querySelectorAll('.tab');
-        const contents = document.querySelectorAll('.tab-content');
+        document.addEventListener("DOMContentLoaded", function(event) {
+            const tabs = document.querySelectorAll('.tab');
+            const contents = document.querySelectorAll('.tab-content');
 
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                tabs.forEach(t => t.classList.remove('active'));
-                contents.forEach(c => c.classList.remove('active'));
-                
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    contents.forEach(c => c.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.tab).classList.add('active');
+                });
             });
-        });
 
-        document.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
-            checkbox.addEventListener('change', function(e) {
-                let prof = this.getAttribute("data-prof")
-                let colonne = this.getAttribute("data-colonne")
-                let etat = this.checked
-                console.log(this.getAttribute("data-prof"), this.getAttribute("data-colonne"), this.checked);
-                mettreAJourAutorisation(prof, colonne, etat);
-            })
-        });
+            detectionCheckboxes();
+        })
     </script>
 </body>
 </html>

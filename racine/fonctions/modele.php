@@ -861,13 +861,30 @@ function recupererUriTitreVideosMemeProjet($idProjet){
 function recupererAutorisationsProfesseurs(){
     $connexion = connexionBD();                     
     try{
-            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser
+            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
                 FROM Autorisation
                 JOIN Professeur ON Professeur.identifiant = Autorisation.professeur');   
             $requeteConnexion->execute();
             $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
             $connexion = null;
             return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+}
+
+function recupererAutorisationsProfesseur($identifiant){
+    $connexion = connexionBD();
+    try{
+        $requeteConnexion = $connexion->prepare('SELECT modifier, diffuser, supprimer, administrer
+            FROM Autorisation
+            WHERE professeur = ?');   
+        $requeteConnexion->execute([$identifiant]);
+        $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return $resultatRequeteConnexion;
     }
     catch(Exception $e)
     {

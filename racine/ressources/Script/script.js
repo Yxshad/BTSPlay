@@ -213,6 +213,18 @@ function scanDossierDecoupeVideo() {
     xhttp.send("action=scanDossierDecoupeVideo");
 }
 
+function detectionCheckboxes(){
+    document.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
+        checkbox.addEventListener('change', function(e) {
+            let prof = this.getAttribute("data-prof")
+            let colonne = this.getAttribute("data-colonne")
+            let etat = this.checked
+            console.log(this.getAttribute("data-prof"), this.getAttribute("data-colonne"), this.checked);
+            mettreAJourAutorisation(prof, colonne, etat);
+        })
+    });
+}
+
 function mettreAJourAutorisation(prof, colonne, etat){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {

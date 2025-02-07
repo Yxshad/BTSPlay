@@ -1,7 +1,12 @@
 <?php 
     session_start();
     require_once '../fonctions/controleur.php';
-    controleurVerifierAcces(AUTORISATION_PROF);
+
+    //Si il n'est pas autoriser alors, on le renvoit sur la page d'accueil
+    if(!controleurVerifierAcces(ACCES_MODIFICATION)){
+        header('Location: home.php');
+    }
+
     $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];

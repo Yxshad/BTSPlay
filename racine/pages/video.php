@@ -1,8 +1,8 @@
 <?php 
     session_start();
     require_once '../fonctions/controleur.php';
-    $infosVideo = controleurRecupererInfosVideo();
 
+    $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
@@ -99,8 +99,9 @@
                 </div>
                 <p>Télécharger</p>
             </a>
-            <?php if(isset($_SESSION["role"]) && in_array($_SESSION["role"], AUTORISATION_PROF)){ ?>
-                <div class="btnVideo">
+        
+            <div class="btnVideo">
+                <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
                     <form action="#" method="POST">
                         <input type="hidden" name="action" value="diffuserVideo">
                         <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
@@ -112,13 +113,17 @@
                             <p>Diffuser</p>
                         </button>
                     </form>
-                </div>
+                <?php } ?>
+            </div>
+            <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
                 <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
                     <div class="logo-btnvideo">
                         <img src="../ressources/Images/modif.png" alt="">
                     </div>
                     <p>Modifier</p>
                 </a>
+            <?php } ?>
+            <?php if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>
                 <a href="#" class="btnVideo">
                     <div class="logo-btnvideo">
                         <img src="../ressources/Images/trash.png" alt="">

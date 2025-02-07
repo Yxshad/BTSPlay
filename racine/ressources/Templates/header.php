@@ -37,8 +37,7 @@
                     </a>
                     <div class="sousMenu">
 
-                        <?php
-                        if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
+                        <?php if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
                             <a id="lienAdmin" href="pageAdministration.php">Page d'administration</a>
                         <?php } ?>
 
@@ -57,7 +56,7 @@
 
     <script>
     document.addEventListener("DOMContentLoaded", function () {
-        console.log("test");
+        console.log("salut");
         affichageSousMenu();
     });
     </script>

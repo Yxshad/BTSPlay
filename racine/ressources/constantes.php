@@ -99,8 +99,10 @@
     const NOM_FICHIER_LOG = 'historique.log';
 
     //NIVEAU D'AUTORISATION
-    const AUTORISATION_PROF = ["Professeur", "Administrateur"];
-    const AUTORISATION_ADMIN = ["Administrateur"];
+    const ACCES_MODIFICATION = 'modifier';
+    const ACCES_SUPPRESSION = 'supprimer';
+    const ACCES_DIFFUSION = 'diffuser';
+    const ACCES_ADMINISTRATION = 'administrer';
 
     //CONSTANTES DES PAGES
     const NB_VIDEOS_PAR_SWIPER = 10

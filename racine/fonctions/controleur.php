@@ -206,7 +206,7 @@ function controleurVerifierVideoParametre(){
  * \param passwordUser - mot de passe de connexion de l'utilisateur
  */
 function controleurIdentifierUtilisateur($loginUser, $passwordUser){
-
+    
     $passwordHache = hash('sha256', $passwordUser);
 
     //regarder si login + mdp en base, récupérer le rôle si trouvé. Sinon, message d'erreur
@@ -220,24 +220,21 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
         $_SESSION["loginUser"] = $loginUser;
         $_SESSION["role"] = $role["role"];
 
+        //on récupère les droits depuis la base et on les insèrent dans la session
+        $_SESSION["autorisation"] = recupererAutorisationsProfesseur($_SESSION["loginUser"]);
         header('Location: home.php');
-        exit();
     }
+   
 }
 
 
 /**
  * \fn controleurVerifierAcces($rolesAutorises)
- * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction
- * \param rolesAutorises - Rôles autorisés pour l'utilisateur
+ * \brief Vérifie les autorisations d'accès de l'utilisateur et le booléen en fonction du droit l'accès demandé
+ * \param $accesAVerifier - Rôles que l'on souhaite modifier
  */
-// Si l'utilisateur n'a pas les autorisations pour accèder à la page, il est alors renvoyé sur la page d'accueil
-// $rolesAutorises est une liste des roles autorisé
-function controleurVerifierAcces($rolesAutorises){
-    if ((!isset($_SESSION["role"])) || (!in_array($_SESSION["role"], $rolesAutorises))) {
-        header('Location: home.php');
-        exit();
-    }
+function controleurVerifierAcces($accesAVerifier){
+    return ( isset($_SESSION["autorisation"][$accesAVerifier]) && $_SESSION["autorisation"][$accesAVerifier] == 1 );
 }
 
 /**
