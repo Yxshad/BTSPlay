@@ -240,14 +240,20 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
 
 
 /**
- * \fn controleurVerifierAcces($rolesAutorises)
- * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction. 
- * \param rolesAutorises - Rôles autorisés pour l'utilisateur
+ * \fn controleurVerifierAcces($accesAVerifier)
+ * \brief Vérifie l'autorisation d'accès à une fonctionnalité (diffuser, administrer, ...) d'un utilisateur
+ * \param accesAVerifier - un type d'accès
+ * \return true si l'accès est présent en session
  */
 function controleurVerifierAcces($accesAVerifier){
     return ( isset($_SESSION["autorisation"][$accesAVerifier]) && $_SESSION["autorisation"][$accesAVerifier] == 1 );
 }
 
+/**
+ * \fn controleurVerifierAccesPage($accesAVerifier)
+ * \brief Vérifie l'autorisation d'accès de l'utilisateur et le renvoie sur la page d'accueil si accès non-autorisé. 
+ * \param accesAVerifier - un type d'accès à une fonctionnalité (diffuser, administrer, ...)
+ */
 function controleurVerifierAccesPage($accesAVerifier){
     if(!controleurVerifierAcces($accesAVerifier)){
         header('Location: home.php');
@@ -275,7 +281,6 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         ftp_close($conn_id);
     }
     else{
-        // #RISQUE : La vidéo n'est pas présente dans le NAS PAD, il faudra juste supprimer le bouton
         return;
     }
 
@@ -305,6 +310,13 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
     }
 }
 
+/**
+ * \fn controleurAfficherLogs($filename, $lines)
+ * \brief Fonction qui permet de récupérer les logs dans un fichier de log
+ * \param filename - Le nom du fichier à récupérer
+ * \param lines - Nombre de lignes à récupérer
+ * \return les logs du fichier choisi
+ */
 function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
