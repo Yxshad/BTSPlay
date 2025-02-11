@@ -2,8 +2,9 @@
 session_start();
 require_once '../fonctions/controleur.php';
 controleurVerifierAccesPage(ACCES_ADMINISTRATION);
-$tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 
+$listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
+$tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
 $maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
@@ -117,11 +118,6 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
     <div class="tab-content" id="logs">
         <h2>Consulter les logs</h2>
         <pre><?php echo implode("\n", $logs); ?></pre>
-    </div>
-
-    <div class="tab-content" id="users">
-        <h2>Gérer les utilisateurs</h2>
-        <p>Configuration des comptes utilisateurs...</p>
     </div>
 
     <?php //On cache le contenu de la page si on est pas admin
