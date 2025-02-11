@@ -1,7 +1,7 @@
 <?php 
     session_start();
     require_once '../fonctions/controleur.php';
-    controleurVerifierAcces(AUTORISATION_PROF);
+    controleurVerifierAccesPage(ACCES_MODIFICATION);
     $infosVideo = controleurRecupererInfosVideo();
     $idVideo = $infosVideo["idVideo"];
     $nomFichier = $infosVideo["nomFichier"];

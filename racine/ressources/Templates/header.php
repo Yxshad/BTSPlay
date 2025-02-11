@@ -37,7 +37,7 @@
                     <div class="sousMenu">
 
                         <?php
-                        if(in_array($_SESSION["role"], AUTORISATION_ADMIN)){ ?>
+                        if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
                             <a id="lienAdmin" href="pageAdministration.php">Page d'administration</a>
                         <?php } ?>
 

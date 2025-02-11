@@ -69,4 +69,17 @@ body {
     }
 }
 
-
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    table-layout: fixed;
+}
+th, td {
+    border: 1px solid black;
+    padding: 10px;
+    flex: 1;
+}
+th {
+    background-color: lightgray;
+}

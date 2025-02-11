@@ -209,6 +209,28 @@ function scanDossierDecoupeVideo() {
     xhttp.send("action=scanDossierDecoupeVideo");
 }
 
+function detectionCheckboxes(){
+    document.querySelectorAll('input[type=checkbox]').forEach(checkbox => {
+        checkbox.addEventListener('change', function(e) {
+            let prof = this.getAttribute("data-prof")
+            let colonne = this.getAttribute("data-colonne")
+            let etat = this.checked
+            console.log(this.getAttribute("data-prof"), this.getAttribute("data-colonne"), this.checked);
+            mettreAJourAutorisation(prof, colonne, etat);
+        })
+    });
+}
+
+function mettreAJourAutorisation(prof, colonne, etat){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=mettreAJourAutorisation&prof=" + prof + "&colonne=" + colonne + "&etat=" + etat);
+}
+
 function gestionOngletsAdministration() {
     const tabs = document.querySelectorAll('.tab');
     const contents = document.querySelectorAll('.tab-content');

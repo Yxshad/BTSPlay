@@ -1,9 +1,10 @@
 <?php 
 session_start();
 require_once '../fonctions/controleur.php';
-controleurVerifierAcces(AUTORISATION_ADMIN);
-$tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
+controleurVerifierAccesPage(ACCES_ADMINISTRATION);
 
+$listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
+$tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
 $maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
@@ -35,7 +36,10 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
         <div class="tab" data-tab="transfer">Fonction de transfert</div>
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
-        <div class="tab" data-tab="users">Gérer les utilisateurs</div>
+        <?php //On cache la page des autorisation si on est pas admin
+            if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+                <div class="tab" data-tab="users">Gérer les utilisateurs</div>
+        <?php } ?>
     </div>
     
     <div class="tab-content" id="database">
@@ -70,10 +74,8 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
                         </div>
                         <div class="commande">
                             <p>Commande de conversion</p>
-                            <input type="text" placeholder="ffmpeg -i $video 2>&1">
                             <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
                         </div>
-                        
                     </div>
                 </div>
                 <div class="symbole">
@@ -118,10 +120,38 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
         <pre><?php echo implode("\n", $logs); ?></pre>
     </div>
 
-    <div class="tab-content" id="users">
-        <h2>Gérer les utilisateurs</h2>
-        <p>Configuration des comptes utilisateurs...</p>
-    </div>
+    <?php //On cache le contenu de la page si on est pas admin
+    if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+        <div class="tab-content" id="users">
+            <h2>Gérer les utilisateurs</h2>
+            <table>
+                <tr>
+                    <th></th>
+                    <th>Modifier la vidéo</th>
+                    <th>Diffuser la vidéo</th>
+                    <th>Supprimer la vidéo</th>
+                    <th>Administrer le site</th>
+                </tr>
+                <?php foreach($listeProfesseurs as $professeur){ ?>
+                    <tr>
+                        <th><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                        <td>
+                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="administrer" <?php echo $professeur["administrer"] == 1 ? "checked" : "" ;?>/>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </table>
+        </div>
+    <?php } ?>
     
 </body>
 </html>
@@ -129,5 +159,6 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
     document.addEventListener("DOMContentLoaded", function () {
         gestionOngletsAdministration();
         appelScanVideo();
+        detectionCheckboxes();
     });
 </script>
