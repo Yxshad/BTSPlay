@@ -912,4 +912,54 @@ function supprimerVideoDeBD($idVideo){
     $requeteConnexion->execute([$idVideo]);
     $connexion->commit();
 }
+
+function recupererAutorisationsProfesseurs(){
+    $connexion = connexionBD();
+    try{
+            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
+                FROM Autorisation
+                JOIN Professeur ON Professeur.identifiant = Autorisation.professeur');
+            $requeteConnexion->execute();
+            $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
+            $connexion = null;
+            return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+}
+
+function recupererAutorisationsProfesseur($identifiant){
+    $connexion = connexionBD();
+    try{
+        $requeteConnexion = $connexion->prepare('SELECT modifier, diffuser, supprimer, administrer
+            FROM Autorisation
+            WHERE professeur = ?');
+        $requeteConnexion->execute([$identifiant]);
+        $resultatRequeteConnexion = $requeteConnexion->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return $resultatRequeteConnexion;
+    }
+    catch(Exception $e)
+    {
+        $connexion = null;
+    }
+}
+
+function mettreAJourAutorisations($prof, $colonne, $etat){
+    $valeur = ($etat == "true") ? 1 : 0 ;
+    $connexion = connexionBD();
+    try{
+        $requete = $connexion->prepare('UPDATE Autorisation SET ' . $colonne . ' = ? WHERE professeur = ?');
+        $requete->execute([$valeur, $prof]);
+        $connexion->commit();
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        $connexion->rollback();
+        $connexion = null;
+    }
+}
 ?>

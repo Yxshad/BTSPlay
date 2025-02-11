@@ -20,42 +20,45 @@ require_once "fonctions.php";
  */
 function checkHeader(){
     if (isset($_POST["action"])) {
-      if ($_POST["action"] == "scanDossierDecoupeVideo") {
-          header('Content-Type: application/json');
-          scanDossierDecoupeVideo(); 
-          exit();
-      }
-      if ($_POST["action"] == "lancerConversion") {
-          fonctionTransfert();
-      }
-      if ($_POST["action"] == "ModifierMetadonnees") {
-          $idVideo = $_POST['idVideo'];
-          controleurPreparerMetadonnees($idVideo);
-      }
-      if ($_POST["action"] == "connexionUtilisateur") {
-          $loginUser = $_POST['loginUser'];
-          $passwordUser = $_POST['passwordUser'];
-          controleurIdentifierUtilisateur($loginUser, $passwordUser);
-      }
-      if ($_POST["action"] == "diffuserVideo") {
-          $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-          controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
-      }
-      if ($_POST["action"] == "supprimerVideo") {
-        $idVideo = $_POST['idVideo'];
-        $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
-        controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
-      }
-      if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
-        ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
-        controleurReconciliation();
-        ob_end_clean(); // Nettoyer la sortie tamponnée
-    
-        // Redirection AVANT d'envoyer du contenu
-        header("Location: ?tab=reconciliation");
-        exit();
-     }
-  }
+        if ($_POST["action"] == "scanDossierDecoupeVideo") {
+            header('Content-Type: application/json');
+            scanDossierDecoupeVideo(); 
+            exit();
+        }
+        if ($_POST["action"] == "lancerConversion") {
+            fonctionTransfert();
+        }
+        if ($_POST["action"] == "ModifierMetadonnees") {
+            $idVideo = $_POST['idVideo'];
+            controleurPreparerMetadonnees($idVideo);
+        }
+        if ($_POST["action"] == "connexionUtilisateur") {
+            $loginUser = $_POST['loginUser'];
+            $passwordUser = $_POST['passwordUser'];
+            controleurIdentifierUtilisateur($loginUser, $passwordUser);
+        }
+        if ($_POST["action"] == "diffuserVideo") {
+            $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
+            controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
+        }
+        if ($_POST["action"] == "supprimerVideo") {
+            $idVideo = $_POST['idVideo'];
+            $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
+            controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
+            ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
+            controleurReconciliation();
+            ob_end_clean(); // Nettoyer la sortie tamponnée
+
+            // Redirection AVANT d'envoyer du contenu
+            header("Location: ?tab=reconciliation");
+            exit();
+        }
+        if ($_POST["action"] == "mettreAJourAutorisation") {
+            controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
+        }
+    }
 }
 checkHeader();
 
@@ -229,8 +232,9 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
         $_SESSION["loginUser"] = $loginUser;
         $_SESSION["role"] = $role["role"];
 
+        //on récupère les droits depuis la base et on les insèrent dans la session
+        $_SESSION["autorisation"] = recupererAutorisationsProfesseur($_SESSION["loginUser"]);
         header('Location: home.php');
-        exit();
     }
 }
 
@@ -240,10 +244,13 @@ function controleurIdentifierUtilisateur($loginUser, $passwordUser){
  * \brief Vérifie les autorisations d'accès de l'utilisateur et le renvoie sur la page correspondante en fonction. 
  * \param rolesAutorises - Rôles autorisés pour l'utilisateur
  */
-function controleurVerifierAcces($rolesAutorises){
-    if ((!isset($_SESSION["role"])) || (!in_array($_SESSION["role"], $rolesAutorises))) {
+function controleurVerifierAcces($accesAVerifier){
+    return ( isset($_SESSION["autorisation"][$accesAVerifier]) && $_SESSION["autorisation"][$accesAVerifier] == 1 );
+}
+
+function controleurVerifierAccesPage($accesAVerifier){
+    if(!controleurVerifierAcces($accesAVerifier)){
         header('Location: home.php');
-        exit();
     }
 }
 
@@ -403,5 +410,13 @@ function controleurSupprimerVideo($idVideo){
     supprimerVideoDeBD($idVideo);
     header('Location: home.php');
     exit();
+}
+
+function controleurRecupererAutorisationsProfesseurs(){
+    return recupererAutorisationsProfesseurs();
+}
+
+function controleurMettreAJourAutorisations($prof, $colonne, $etat){
+    mettreAJourAutorisations($prof, $colonne, $etat);
 }
 ?>
