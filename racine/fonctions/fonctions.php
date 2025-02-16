@@ -147,77 +147,104 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
  * \fn alimenterStockageLocal($COLLECT_STOCK_LOCAL)
  * \brief Alimente le stockage en local des différentes vidéos récupérées dans les autres NAS
  * \param COLLECT_STOCK_LOCAL - Collection des vidéos à stocker sur le serveur local
- * \param COLLECT_STOCK_LOCAL - Liste des vidéos qui ont été implémentées dans le stockage local
+ * \return COLLECT_STOCK_LOCAL - Liste des vidéos qui ont été implémentées dans le stockage local
  */
-function alimenterStockageLocal($COLLECT_STOCK_LOCAL){
+function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
+    $PIDsEnfants = [];
 
-	foreach($COLLECT_STOCK_LOCAL as &$video){
-		//Téléchargement du fichier dans le répertoire local
-		$cheminFichierDesination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+    foreach ($COLLECT_STOCK_LOCAL as &$video) {
+        usleep(1000000);
 
-		//Savoir dans quel NAS chercher la vidéo. Si on a le choix, on prend le NAS ARCH
-		if($video[MTD_URI_NAS_ARCH] != null && $video[MTD_URI_NAS_ARCH] != ""){
-			$conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-			$cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
-			ftp_close($conn_id);
-			$URI_NAS = $video[MTD_URI_NAS_ARCH];
+        // Tant qu'on a déjà NB_MAX_PROCESSUS_TRANSFERT en cours, on attend
+		$pid = null;
+        if (count($PIDsEnfants) < NB_MAX_PROCESSUS_TRANSFERT) {
+            // Création du processus enfant
+        	$pid = pcntl_fork();
+        }
+
+        if ($pid == -1) {
+            ajouterLog(LOG_CRITICAL, "Erreur critique sur le multithreading.");
+            die('Duplication impossible');
+        } elseif ($pid) {
+            // Processus parent : on enregistre le PID du fils
+            ajouterLog(LOG_INFORM, "Processus parent - Fils lancé avec PID : $pid");
+            $PIDsEnfants[] = $pid;
+        } else {
+            // **PROCESSUS ENFANT**
+            ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
+
+            // **Téléchargement**
+            $cheminFichierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+
+            if (!empty($video[MTD_URI_NAS_ARCH])) {
+                $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+                $cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+            } elseif (!empty($video[MTD_URI_NAS_PAD])) {
+                $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+                $cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+            } else {
+                ajouterLog(LOG_FAIL, "Erreur, la vidéo " . $video[MTD_TITRE] . " n'est présente dans aucun NAS.");
+                exit(1);
+            }
+
+            telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
+            ftp_close($conn_id);
+
+            // **Conversion**
+            decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
+            convertirVideo($video[MTD_TITRE]);
+            fusionnerVideo($video[MTD_TITRE]);
+
+            $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
+
+            // **Export dans stockage local**
+            $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+            $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
+
+            $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
+            creerDossier($cheminFichierDestination, false);
+            creerDossier($dossierVideo, false);
+
+            copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
+
+            // **Miniature**
+            $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
+            copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
+
+            // **Nettoyage**
+            unlink($cheminCompletFichierSource);
+            unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
+
+            // **Stockage de l'URI**
+            if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
+                $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
+            }
+            $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+
+            ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
+			//sleep(500000);
+            exit(0);
+        }
+    }
+
+    // **Attendre que tous les processus restants finissent**
+	while (!empty($PIDsEnfants)) {
+		foreach ($PIDsEnfants as $key => $pid) {
+			//$res = pcntl_wait($status, WNOHANG);
+			$res = pcntl_waitpid($pid, $status, WNOHANG);
+			//$exitStatus = pcntl_wexitstatus($status);
+			//ajouterLog(LOG_CRITICAL, "Processus $res a terminé avec le code de sortie : $exitStatus");
+			if ($res > 0 || $res == -1) {
+				unset($PIDsEnfants[$key]);
+				posix_kill($pid, SIGKILL);
+				ajouterLog(LOG_INFORM, "Processus fils terminé avec PID : $res");
+			}
 		}
-		elseif($video[MTD_URI_NAS_PAD] != null && $video[MTD_URI_NAS_PAD] != ""){
-			$conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-			$cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
-			telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
-			ftp_close($conn_id);
-			$URI_NAS = $video[MTD_URI_NAS_PAD];
-		}
-		else{
-			ajouterLog(LOG_FAIL, "Erreur, la vidéo $video n'est présente dans aucun des 2 NAS .");
-            exit();
-		}
-		
-		decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-		convertirVideo($video[MTD_TITRE]);
-		fusionnerVideo($video[MTD_TITRE]);
-
-		// Forcer l'extension à .mp4
-		$video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
-
-		$cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		$cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . $URI_NAS;
-
-		//Créer le dossier dans le NAS si celui-ci n'existe pas déjà.
-		$nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
-		$dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
-		creerDossier($cheminFichierDestination, false);
-		creerDossier($dossierVideo, false);
-
-		// #RISQUE : S'assurer de l'export des fichiers par le booléen renvoyé par exporterFichierVersNAS()
-
-		//Export de la vidéo dans le stockage local
-		$cheminCompletDestination = $dossierVideo . $video[MTD_TITRE];
-		$cheminCompletOrigine = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-		copy($cheminCompletOrigine, $cheminCompletDestination);
-
-		//Générer la miniature de la vidéo
-		$miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-
-		$cheminCompletDestination = $dossierVideo . $miniature;
-		$cheminCompletOrigine = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature;
-		copy($cheminCompletOrigine, $cheminCompletDestination);
-
-		//Supprimer la vidéo de l'espace local et sa miniature
-		unlink($cheminCompletFichierSource);
-		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
-
-		//Ajouter l'URI du stockage local à $video dans COLLECT_STOCK_LOCAL
-		//On retire la racine du stockage local
-		if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) == 0) {
-			$dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
-		}
-		$video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+		usleep(500000); // Petite pause pour éviter une surcharge CPU
+		ajouterLog(LOG_CRITICAL, print_r($PIDsEnfants, true));
 	}
-
-	return $COLLECT_STOCK_LOCAL;
+    ajouterLog(LOG_CRITICAL, "ON SORT");
+    return $COLLECT_STOCK_LOCAL;
 }
 
 
@@ -550,7 +577,7 @@ function scanDossierDecoupeVideo() {
         }
         $result[] = [
             'nomVideo' => $video,
-            'poidsVideo' => recupererTailleFichier(),
+            'poidsVideo' => recupererTailleFichier($video, null),
             'status' => $status
         ];
     }
