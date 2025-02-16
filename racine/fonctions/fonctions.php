@@ -58,20 +58,23 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 	foreach ($fichiersNAS as $cheminFichierComplet) {
 
         $nomFichier = basename($cheminFichierComplet);
-		$cheminFichier = dirname($cheminFichierComplet) . '/';	
-		$extensionFichier = recupererExtensionFichier($nomFichier);
+		$cheminFichier = dirname($cheminFichierComplet) . '/';
 
-		//Si le fichier est une vidéo
-		if ($nomFichier !== '.' && $nomFichier !== '..'
-			&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
+		if($cheminFichier != "./"){
+			$extensionFichier = recupererExtensionFichier($nomFichier);
 
-			// Si le fichier n'est pas présent en base
-			if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
+			//Si le fichier est une vidéo
+			if ($nomFichier !== '.' && $nomFichier !== '..'
+				&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
 
-				//RECUPERATION VIA LECTURE FTP
-				$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
+				// Si le fichier n'est pas présent en base
+				if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
 
-				$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
+					//RECUPERATION VIA LECTURE FTP
+					$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
+
+					$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
+				}
 			}
 		}
     }
