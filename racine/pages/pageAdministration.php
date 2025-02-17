@@ -7,9 +7,9 @@ $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
-$maxLines = 300; // Nombre maximum de lignes à afficher
+$maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
 $logs = controleurAfficherLogs($logFile, $maxLines);
-
+$logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux plus vieilles
 ?>
 
 <!DOCTYPE html>
