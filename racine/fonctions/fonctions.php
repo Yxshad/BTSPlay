@@ -206,8 +206,8 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL){
 		copy($cheminCompletOrigine, $cheminCompletDestination);
 
 		//Supprimer la vidéo de l'espace local et sa miniature
-		unlink($cheminCompletFichierSource);
-		unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
+		//unlink($cheminCompletFichierSource);
+		//unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD.$miniature);
 
 		//Ajouter l'URI du stockage local à $video dans COLLECT_STOCK_LOCAL
 		//On retire la racine du stockage local
@@ -684,4 +684,76 @@ function getMetadonneesEditorialesVideo($video){
 
 	return $mtdEdito;
 }
+
+/**
+ * \fn scan($directory)
+ * \brief Affiche le contenu d'un répertoire
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
+function scan($directory){
+    $items = scandir($directory);
+    
+
+    foreach ($items as $item) {
+        if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+            continue;
+        }
+        
+        $path = $directory . '/' . $item;
+        if (is_dir($path)) {
+            afficherDossier($path, $item);
+        } elseif (isVideo($item)) {
+            afficherVideo($path, $item);
+        } else {
+            afficherFichier($path, $item);
+        }
+    }
+}
+
+/**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief Renvoit vrai si le fichier donné est une vidéo 
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
+function controleurSupprimerVideo($idVideo) {
+    $videoExtensions = ['mp4', 'mxf'];
+    $extension = pathinfo($file, PATHINFO_EXTENSION);
+    return in_array(strtolower($extension), $videoExtensions);
+}
+
+/**
+ * \fn afficherDossier($path, $item)
+ * \brief Affiche une div avec la classe dossier, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que dossier
+ */
+function afficherDossier($path, $item){ ?>
+    <div data-path ="<?php echo $path; ?>" class="dossier">
+        <?php echo $item; ?>
+    </div>
+<?php }
+
+/**
+ * \fn afficherVideo($path, $item)
+ * \brief Affiche une div avec la classe vidéo, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que vidéo
+ */
+function afficherVideo($path, $item){ ?>
+    <div data-path ="<?php echo $path; ?>" class="video">
+        <?php echo $item; ?>
+    </div>
+<?php }
+
+/**
+ * \fn afficherFichier($path, $item)
+ * \brief Affiche une div avec la classe fichier, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que ficher
+ */
+function afficherFichier($path, $item){ ?>
+    <div data-path ="<?php echo $path; ?>" class="fichier">
+        <?php echo $item; ?>
+    </div>
+<?php }
 ?>

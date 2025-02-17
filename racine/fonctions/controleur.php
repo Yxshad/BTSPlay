@@ -58,6 +58,11 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path'])) {
+            $path = $_POST['path'];
+            return controleurArborescence($path);
+            exit;
+        }
     }
 }
 checkHeader();
@@ -430,5 +435,14 @@ function controleurRecupererAutorisationsProfesseurs(){
 
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
+}
+
+/**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief Lance la fonction qui scan le répertoire local
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
+function controleurArborescence($directory){
+    return scan($directory);
 }
 ?>
