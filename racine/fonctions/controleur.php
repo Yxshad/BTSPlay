@@ -321,19 +321,25 @@ function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
     }
-    $file = fopen($filename, "r");
+
+    $file = fopen($filename, "rb"); // Mode binaire pour compatibilité Windows/Linux
     if (!$file) {
         return ["Impossible d'ouvrir le fichier."];
     }
+
     $buffer = [];
     while (!feof($file)) {
-        $buffer[] = fgets($file);
-        if (count($buffer) > $lines) {
-            array_shift($buffer);
+        $line = fgets($file);
+        if ($line !== false) {
+            $buffer[] = rtrim($line); // Supprime les retours à la ligne inutiles
+            if (count($buffer) > $lines) {
+                array_shift($buffer);
+            }
         }
     }
     fclose($file);
-    return array_filter($buffer);
+
+    return $buffer; // Retourne les logs sous forme de tableau
 }
 
 

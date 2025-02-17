@@ -68,7 +68,25 @@ document.addEventListener("DOMContentLoaded", function(event) {
         });
     }
 
+
 });
+
+//Fonction qui affiche les logs en couleurs
+function affichageLogsCouleurs() {
+    document.querySelectorAll(".log-line").forEach(line => {
+        let text = line.textContent.toUpperCase();
+
+        if (text.includes("CRITICAL")) line.classList.add("critical");
+        if (text.includes("FAIL")) line.classList.add("fail");
+        if (text.includes("WARNING")) line.classList.add("warning");
+        if (text.includes("SUCCESS")) line.classList.add("success");
+        if (text.includes("INFO")) line.classList.add("info");
+    });
+
+    // Défilement automatique vers le haut (car les plus récentes sont en haut)
+    let logContainer = document.querySelector(".log-container");
+    logContainer.scrollTop = 0; 
+}
 
 //Fonctions spécifiques à la page home.php et recherche.php
 function affichageFiltres(){
@@ -109,7 +127,6 @@ function initCarrousel(){
     }
 }
 
-
 //Fonctions spécifiques à la page video.php
 function initLectureVideo(){
     const player = new Plyr('#player', {
@@ -139,7 +156,6 @@ function initLectureVideo(){
         },
     });
 }
-
 
 //Fonctions spécifiques au header.php.
 function affichageSousMenu(){
@@ -265,6 +281,7 @@ function gestionOngletsAdministration() {
         });
     });
 }
+
 function appelScanVideo () {
     scanDossierDecoupeVideo();
     setInterval( scanDossierDecoupeVideo , 5000);

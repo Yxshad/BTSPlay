@@ -107,7 +107,7 @@
     const ACCES_SUPPRESSION = 'supprimer';
     const ACCES_DIFFUSION = 'diffuser';
     const ACCES_ADMINISTRATION = 'administrer';
-    const ROLE_ADMINISTEUR = 'Administrateur';
+    const ROLE_ADMINISTRATEUR = 'Administrateur';
 
     //CONSTANTES DES PAGES
     const NB_VIDEOS_PAR_SWIPER = 10;
@@ -116,4 +116,4 @@
     const NB_VIDEOS_HISTORIQUE_TRANSFERT = 10;
 
     //CONSTANTES DES LOGS
-    const NBR_LIGNES_LOGS = 100;
+    const NB_LIGNES_LOGS = 500;

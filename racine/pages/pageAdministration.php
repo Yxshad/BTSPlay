@@ -7,9 +7,9 @@ $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
 $logFile = '../ressources/historique.log'; // Chemin du fichier log
-$maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
+$maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
 $logs = controleurAfficherLogs($logFile, $maxLines);
-
+$logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux plus vieilles
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +37,7 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
         <?php //On cache la page des autorisation si on est pas admin
-            if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+            if($_SESSION["role"] == ROLE_ADMINISTRATEUR){ ?>
                 <div class="tab" data-tab="users">Gérer les utilisateurs</div>
         <?php } ?>
     </div>
@@ -117,11 +117,15 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
 
     <div class="tab-content" id="logs">
         <h2>Consulter les logs</h2>
-        <pre><?php echo implode("\n", $logs); ?></pre>
+        <div class="log-container">
+            <?php foreach ($logs as $line): ?>
+                <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <?php //On cache le contenu de la page si on est pas admin
-    if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+    if($_SESSION["role"] == ROLE_ADMINISTRATEUR){ ?>
         <div class="tab-content" id="users">
             <h2>Gérer les utilisateurs</h2>
             <table>
@@ -157,8 +161,9 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
 </html>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        affichageLogsCouleurs();
         gestionOngletsAdministration();
         appelScanVideo();
-        detectionCheckboxes();
+        detectionCheckboxes(); 
     });
 </script>

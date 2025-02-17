@@ -1,3 +1,25 @@
+/* --- Affichage des logs --- */
+.log-container {
+    max-height: 400px; /* Limite la hauteur pour activer la scrollbar */
+    overflow-y: auto;  /* Active la scrollbar verticale */
+    background: #222;
+    color: #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    font-family: monospace;
+    white-space: pre-wrap; /* Garde la mise en forme */
+}
+
+.log-line {
+    padding: 2px 0;
+}
+
+/* Couleurs pour différents niveaux de logs */
+.log-line.fail { color: orange; }
+.log-line.critical { color: red; }
+.log-line.warning { color: yellow; }
+.log-line.info { color: lightblue; }
+.log-line.success { color: lightgreen; }
 
 /* --- Styles Généraux --- */
 body {
@@ -83,3 +105,4 @@ th, td {
 th {
     background-color: lightgray;
 }
+
