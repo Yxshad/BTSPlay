@@ -150,17 +150,14 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
  * \return COLLECT_STOCK_LOCAL - Liste des vidéos qui ont été implémentées dans le stockage local
  */
 function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
+    $tailleDuTableau = count($COLLECT_STOCK_LOCAL);
+    $elementsParProcessus = ceil($tailleDuTableau / NB_MAX_PROCESSUS_TRANSFERT);
+
     $PIDsEnfants = [];
 
-    foreach ($COLLECT_STOCK_LOCAL as &$video) {
-        usleep(1000000);
-
-        // Tant qu'on a déjà NB_MAX_PROCESSUS_TRANSFERT en cours, on attend
-		$pid = null;
-        if (count($PIDsEnfants) < NB_MAX_PROCESSUS_TRANSFERT) {
-            // Création du processus enfant
-        	$pid = pcntl_fork();
-        }
+    for ($i = 0; $i < NB_MAX_PROCESSUS_TRANSFERT; $i++) {
+        //usleep(500000);
+        $pid = pcntl_fork();
 
         if ($pid == -1) {
             ajouterLog(LOG_CRITICAL, "Erreur critique sur le multithreading.");
@@ -171,79 +168,88 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             $PIDsEnfants[] = $pid;
         } else {
             // **PROCESSUS ENFANT**
-            ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
+            $debut = $i * $elementsParProcessus;
+            $fin = min(($i + 1) * $elementsParProcessus, $tailleDuTableau);
 
-            // **Téléchargement**
-            $cheminFichierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+            for ($j = $debut; $j < $fin; $j++) {
+                //usleep(50000);
+                $video = $COLLECT_STOCK_LOCAL[$j];
+                ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
 
-            if (!empty($video[MTD_URI_NAS_ARCH])) {
-                $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-                $cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
-            } elseif (!empty($video[MTD_URI_NAS_PAD])) {
-                $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-                $cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
-            } else {
-                ajouterLog(LOG_FAIL, "Erreur, la vidéo " . $video[MTD_TITRE] . " n'est présente dans aucun NAS.");
-                exit(1);
+                // **Téléchargement**
+                $cheminFichierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+
+                if (!empty($video[MTD_URI_NAS_ARCH])) {
+                    $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+                    $cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+                } elseif (!empty($video[MTD_URI_NAS_PAD])) {
+                    $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+                    $cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+                } else {
+                    ajouterLog(LOG_FAIL, "Erreur, la vidéo " . $video[MTD_TITRE] . " n'est présente dans aucun NAS.");
+                    exit(1);
+                }
+
+                telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
+                ftp_close($conn_id);
+
+                // **Conversion**
+                decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
+                convertirVideo($video[MTD_TITRE]);
+                fusionnerVideo($video[MTD_TITRE]);
+
+                $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
+
+                // **Export dans stockage local**
+                $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+                $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
+
+                $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
+                creerDossier($cheminFichierDestination, false);
+                creerDossier($dossierVideo, false);
+
+                copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
+
+                // **Miniature**
+                $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
+                copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
+
+                // **Nettoyage**
+                unlink($cheminCompletFichierSource);
+                unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
+
+                // **Stockage de l'URI**
+                if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
+                    $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
+                }
+                $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+
+                ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " a terminé la vidéo : " . $video[MTD_TITRE]);
             }
-
-            telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
-            ftp_close($conn_id);
-
-            // **Conversion**
-            decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-            convertirVideo($video[MTD_TITRE]);
-            fusionnerVideo($video[MTD_TITRE]);
-
-            $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
-
-            // **Export dans stockage local**
-            $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-            $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
-
-            $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-            creerDossier($cheminFichierDestination, false);
-            creerDossier($dossierVideo, false);
-
-            copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
-
-            // **Miniature**
-            $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-            copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
-
-            // **Nettoyage**
-            unlink($cheminCompletFichierSource);
-            unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
-
-            // **Stockage de l'URI**
-            if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
-                $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
-            }
-            $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
 
             ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
-			//sleep(500000);
+            //usleep(50000);
             exit(0);
         }
     }
 
-    // **Attendre que tous les processus restants finissent**
-	while (!empty($PIDsEnfants)) {
-		foreach ($PIDsEnfants as $key => $pid) {
-			//$res = pcntl_wait($status, WNOHANG);
-			$res = pcntl_waitpid($pid, $status, WNOHANG);
-			//$exitStatus = pcntl_wexitstatus($status);
-			//ajouterLog(LOG_CRITICAL, "Processus $res a terminé avec le code de sortie : $exitStatus");
-			if ($res > 0 || $res == -1) {
-				unset($PIDsEnfants[$key]);
-				posix_kill($pid, SIGKILL);
-				ajouterLog(LOG_INFORM, "Processus fils terminé avec PID : $res");
-			}
-		}
-		usleep(500000); // Petite pause pour éviter une surcharge CPU
-		ajouterLog(LOG_CRITICAL, print_r($PIDsEnfants, true));
-	}
-    ajouterLog(LOG_CRITICAL, "ON SORT");
+    // **Attente de la fin de tous les processus enfants**
+    ajouterLog(LOG_CRITICAL, "PARTIE PERE");
+    ajouterLog(LOG_CRITICAL, print_r($PIDsEnfants, true));
+    //usleep(5000000);
+    while (count($PIDsEnfants) > 0) {
+        ajouterLog(LOG_CRITICAL, count($PIDsEnfants));
+        $pidTermine = pcntl_waitpid(-1, $status);
+        ajouterLog(LOG_CRITICAL, $pidTermine);
+        if ($pidTermine > 0) {
+            // Supprime le PID terminé du tableau
+            $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
+            ajouterLog(LOG_INFORM, "Père : Processus fils PID $pidTermine terminé.");
+        }
+        //usleep(50000); // Petite pause pour éviter une surcharge CPU
+        ajouterLog(LOG_CRITICAL, print_r($PIDsEnfants, true));
+    }
+    ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé.");
     return $COLLECT_STOCK_LOCAL;
 }
 
