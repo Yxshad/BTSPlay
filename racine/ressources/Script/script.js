@@ -71,6 +71,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 });
 
 //Fonctions spécifiques à la page home.php et recherche.php
+
 function affichageFiltres(){
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
         let filtres = document.querySelector('.filtres');
@@ -85,6 +86,7 @@ function affichageFiltres(){
         }
     });
 }
+
 
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {

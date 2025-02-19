@@ -715,7 +715,7 @@ function scan($directory){
  * \brief Renvoit vrai si le fichier donné est une vidéo 
  * \param directory - Racine de l'endroit qu'on veut scanner
  */
-function isVideo($idVideo) {
+function isVideo($file) {
     $videoExtensions = ['mp4', 'mxf'];
     $extension = pathinfo($file, PATHINFO_EXTENSION);
     return in_array(strtolower($extension), $videoExtensions);
@@ -739,10 +739,19 @@ function afficherDossier($path, $item){ ?>
  * \param path - Chemin de l'objet
  * \param item - Nom de l'objet à afficher en tant que vidéo
  */
-function afficherVideo($path, $item){ ?>
-    <div data-path ="<?php echo $path; ?>" class="video">
+function afficherVideo($path, $item){
+	// épure l'url
+	preg_match("/(?<=\.\.\/stockage\/).*(?<=\/)/", $path, $resultat);
+
+	//retourne l'id de la vidéo avec le même uri_local
+	$id = getVideo($resultat[0]);
+	var_dump($id);
+	$href = "video.php?v=$id";
+
+	?>
+    <a data-path ="<?php echo $path; ?>" class="video" href=<?php echo $href; ?>>
         <?php echo $item; ?>
-    </div>
+	</a>
 <?php }
 
 /**

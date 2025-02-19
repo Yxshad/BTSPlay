@@ -18,8 +18,17 @@
     
 }
 
-.menuArbo div{
+.menuArbo div,
+.main-menuArbo a{
+    display: block;
     padding-left: 25px;
+}
+
+.main-menuArbo a:hover,
+.main-menuArbo a:focus{
+    transform: none;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .main-menuArbo button{
@@ -29,8 +38,6 @@
     transform: translateY(-50%);
     font-size: 50px;
 }
-
-
 
 .dossier::before {
     background-image: url("../Images/closed-file.png");
