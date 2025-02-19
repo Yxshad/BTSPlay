@@ -715,7 +715,7 @@ function scan($directory){
  * \brief Renvoit vrai si le fichier donné est une vidéo 
  * \param directory - Racine de l'endroit qu'on veut scanner
  */
-function controleurSupprimerVideo($idVideo) {
+function isVideo($idVideo) {
     $videoExtensions = ['mp4', 'mxf'];
     $extension = pathinfo($file, PATHINFO_EXTENSION);
     return in_array(strtolower($extension), $videoExtensions);
