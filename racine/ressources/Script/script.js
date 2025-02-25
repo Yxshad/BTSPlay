@@ -185,6 +185,18 @@ function lancerConversion() {
     xhttp.send("action=lancerConversion");
 }
 
+function createDatabaseSave() {
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=createDatabaseSave");
+}
+
 function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {

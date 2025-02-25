@@ -95,7 +95,7 @@
     const LOG_CRITICAL = 'CRITICAL';
 
     //URI DES FICHIERS GÉNÉRÉS
-    const URI_FICHIER_GENERES = '../ressources/datas';
+    const URI_FICHIER_GENERES = '../ressources/datas/';
 
 
     //NOMS DES FICHIERS GÉNÉRÉS

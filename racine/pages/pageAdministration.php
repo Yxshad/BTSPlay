@@ -6,7 +6,7 @@ controleurVerifierAccesPage(ACCES_ADMINISTRATION);
 $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
-$logFile = '../ressources/historique.log'; // Chemin du fichier log
+$logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_GENERAL; // Chemin du fichier log
 $maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
 $logs = controleurAfficherLogs($logFile, $maxLines);
 $logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux plus vieilles

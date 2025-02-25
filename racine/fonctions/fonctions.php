@@ -693,14 +693,8 @@ function getMetadonneesEditorialesVideo($video){
  * \brief Permet de lancer une sauvegarde de la base de données
  */
 function createDatabaseSave(){
-    $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_RACINE_STOCKAGE_LOCAL .date("jmY_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
-    $operationSucces = exec($commandSql);
-	if(!$operationSucces)
-	{
-		ajouterLog(LOG_FAIL, "Erreur lors de la création de la sauvegarde de la base de données le ". date("jmY_").".", SUFFIXE_FICHIER_DUMP_SAUVEGARDE);
-	}
-	else{
-		ajouterLog(LOG_SUCCESS, "Création d'une sauvegarde de la base de données le ". date("jmY_").".", SUFFIXE_FICHIER_DUMP_SAUVEGARDE);
-	}
+    $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_FICHIER_GENERES .date("j-m-Y_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
+	$operationSucces = exec($commandSql);
+	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j/m/Y").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 ?>
