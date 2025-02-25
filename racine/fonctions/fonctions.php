@@ -409,9 +409,9 @@ function afficherVideosManquantes($listeVideosManquantes) {
  * \param typeLog - Le type de log qu'on veut retourner
  * \param message - Le message qu'on veut mettre dans le log
  */
-function ajouterLog($typeLog, $message){
-    $repertoireLog = URI_FICHIER_LOG;
-    $fichierLog = $repertoireLog . NOM_FICHIER_LOG;
+function ajouterLog($typeLog, $message, $nomFichierLog = NOM_FICHIER_LOG_GENERAL){
+    $repertoireLog = URI_FICHIER_GENERES;
+    $fichierLog = $repertoireLog . $nomFichierLog;
 
     // Vérifier si le fichier log.log existe, sinon le créer
     if (!file_exists($fichierLog)) {
@@ -686,5 +686,21 @@ function getMetadonneesEditorialesVideo($video){
 	];
 
 	return $mtdEdito;
+}
+
+/**
+ * \fn createDatabaseSave()
+ * \brief Permet de lancer une sauvegarde de la base de données
+ */
+function createDatabaseSave(){
+    $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_RACINE_STOCKAGE_LOCAL .date("jmY_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
+    $operationSucces = exec($commandSql);
+	if(!$operationSucces)
+	{
+		ajouterLog(LOG_FAIL, "Erreur lors de la création de la sauvegarde de la base de données le ". date("jmY_").".", SUFFIXE_FICHIER_DUMP_SAUVEGARDE);
+	}
+	else{
+		ajouterLog(LOG_SUCCESS, "Création d'une sauvegarde de la base de données le ". date("jmY_").".", SUFFIXE_FICHIER_DUMP_SAUVEGARDE);
+	}
 }
 ?>

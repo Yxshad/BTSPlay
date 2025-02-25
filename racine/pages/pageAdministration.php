@@ -21,6 +21,7 @@ $logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux p
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/pageAdministration.css" rel="stylesheet">
     <link href="../ressources/Style/transfert.css" rel="stylesheet">
+    <link href="../ressources/Style/sauvegarde.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
     <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
@@ -43,8 +44,31 @@ $logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux p
     </div>
     
     <div class="tab-content" id="database">
-        <h2>BDD</h2>
-        <p>WORK IN PROGRESS</p>
+        <h2>Sauvegarde de la base de données</h2>
+        <div class="colonne-1">
+            <div class="intervalSauvegarde">
+                <p>Sauvegarder toutes les </p>
+                <input type="number" name="" id="">
+            </div>
+            <div class="options">
+                <input type="radio" name="drone" id=""> Jours
+            </div>
+            <div class="options">
+                <input type="radio" name="drone" id=""> Mois
+            </div>
+            <div class="options">
+                <input type="radio" name="drone" id=""> Années
+            </div>
+
+            <div class="dateSauvegarde">
+                <p>à partir du : </p>
+                <input type="date" name="" id="">
+            </div>
+
+            <a href="#" class="btn parametre">Enregistrer les paramètres</a>
+            <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+
+        </div>
     </div>
 
     <div class="tab-content" id="reconciliation">
