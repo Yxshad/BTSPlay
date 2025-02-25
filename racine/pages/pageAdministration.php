@@ -8,8 +8,14 @@ $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonne
 // Appel des logs 
 $logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_GENERAL; // Chemin du fichier log
 $maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
-$logs = controleurAfficherLogs($logFile, $maxLines);
-$logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux plus vieilles
+$logsGeneraux = controleurAfficherLogs($logFile, $maxLines);
+$logsGeneraux = array_reverse($logsGeneraux); // Pour afficher les logs les plus récentes aux plus vieilles
+
+//Pour les logs des sauvegardes de la BD
+$logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_SAUVEGARDE;
+$maxLines = NB_LIGNES_LOGS;
+$logsSauvegardesBDD = controleurAfficherLogs($logFile, $maxLines);
+$logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 ?>
 
 <!DOCTYPE html>
@@ -45,29 +51,37 @@ $logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux p
     
     <div class="tab-content" id="database">
         <h2>Sauvegarde de la base de données</h2>
-        <div class="colonne-1">
-            <div class="intervalSauvegarde">
-                <p>Sauvegarder toutes les </p>
-                <input type="number" name="" id="">
-            </div>
-            <div class="options">
-                <input type="radio" name="drone" id=""> Jours
-            </div>
-            <div class="options">
-                <input type="radio" name="drone" id=""> Mois
-            </div>
-            <div class="options">
-                <input type="radio" name="drone" id=""> Années
+        <div class="colonnes">
+            <div class="colonne-1">
+                <h1>Paramètre des sauvegardes</h1>
+                <div class="intervalSauvegarde">
+                    <p>Sauvegarder toutes les </p>
+                    <input type="number" name="" id="">
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Jours
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Mois
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Années
+                </div>
+
+                <div class="dateSauvegarde">
+                    <p>à partir du : </p>
+                    <input type="date" name="" id="">
+                </div>
+
+                <a href="#" class="btn parametre">Enregistrer les paramètres</a>
+                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
             </div>
 
-            <div class="dateSauvegarde">
-                <p>à partir du : </p>
-                <input type="date" name="" id="">
+            <div class="log-container colonne-2">
+                <?php foreach ($logsSauvegardesBDD as $line): ?>
+                    <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
+                <?php endforeach; ?>
             </div>
-
-            <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-            <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
-
         </div>
     </div>
 
@@ -142,7 +156,7 @@ $logs = array_reverse($logs); // Pour afficher les logs les plus récentes aux p
     <div class="tab-content" id="logs">
         <h2>Consulter les logs</h2>
         <div class="log-container">
-            <?php foreach ($logs as $line): ?>
+            <?php foreach ($logsGeneraux as $line): ?>
                 <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
             <?php endforeach; ?>
         </div>
