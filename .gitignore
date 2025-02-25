@@ -1,3 +1,4 @@
 stockage/
 docs/
-racine/ressources/datas/
+racine/ressources/datas/*.log
+racine/ressources/datas/*.sql
