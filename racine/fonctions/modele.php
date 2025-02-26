@@ -645,7 +645,7 @@ function getProjetIntitule($idProjet){
 
 /**
  * @getIdProjetVideo
- * @return array|false Renvoie l'ID du projet associé à la vidéo, false si aucun projet n'est attribué
+ * @return array|false Renvoie le projet associé à la vidéo via un ID, false si aucun projet n'est attribué
  */
 function getIdProjetVideo($idVideo) {
     try {

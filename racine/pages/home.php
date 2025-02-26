@@ -88,7 +88,7 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        affichageFiltres();
+        //affichageFiltres();
         initCarrousel();
     });
 </script>
