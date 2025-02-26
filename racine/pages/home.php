@@ -3,6 +3,7 @@ session_start();
 require_once '../fonctions/controleur.php';
 $tabVideos = controleurRecupererTitreIdVideo();
 $tabDernierProjet = controleurRecupererDernierProjet();
+//exec('php /var/www/html/pages/test_mt.php > /dev/null 2>&1 &');
 ?>
 
 <!DOCTYPE html>

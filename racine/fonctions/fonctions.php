@@ -27,7 +27,23 @@ function fonctionTransfert(){
 	$COLLECT_STOCK_LOCAL = remplirCOLLECT_STOCK_LOCAL($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_STOCK_LOCAL);
 	//Alimenter le Stockage local
 	ajouterLog(LOG_INFORM, "Alimentation du stockage local avec " . count($COLLECT_STOCK_LOCAL) . " fichiers." );
-	$COLLECT_STOCK_LOCAL = alimenterStockageLocal($COLLECT_STOCK_LOCAL);
+
+	//$COLLECT_STOCK_LOCAL = alimenterStockageLocal($COLLECT_STOCK_LOCAL);
+    //exec('php /var/www/html/pages/test_mt.php ' . escapeshellarg($COLLECT_STOCK_LOCAL) . ' 2>&1', $output, $return_var);
+    // Sérialiser le tableau en JSON
+    $serializedData = json_encode($COLLECT_STOCK_LOCAL);
+
+    // Passer le tableau sérialisé en argument
+    exec('php /var/www/html/pages/test_mt.php ' . escapeshellarg($serializedData) . ' 2>&1', $output, $return_var);
+
+    // Récupérer la sortie du script
+    $outputString = implode("\n", $output);
+
+    // Désérialiser la sortie en tableau
+    $COLLECT_STOCK_LOCAL = json_decode($outputString, true);
+
+    ajouterLog(LOG_INFORM, print_r($COLLECT_STOCK_LOCAL, true));
+
 	//Mettre à jour la base avec $COLLECT_STOCK_LOCAL
 	ajouterLog(LOG_INFORM, "Insertion des informations dans la base de données.");
 	insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL);
