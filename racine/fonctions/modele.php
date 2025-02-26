@@ -423,14 +423,14 @@ function insertionEtudiant($etudiant)
  * \brief Renvoie l'id d'une vidéo
  * \param path - chemin de l'espace local de la vidéo
  */
-function getVideo($path)
+function getVideoLocal($path, $titre)
 {
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT id 
    FROM Media
-   WHERE URI_STOCKAGE_LOCAL = ?');                                                 
+   WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');                                                 
    try{
-       $requeteVid->execute([$path]);
+       $requeteVid->execute([$path, $titre]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($vidID) {
@@ -444,6 +444,58 @@ function getVideo($path)
    {
        $connexion->rollback();
        $connexion = null;
+       return false;
+   }
+}
+
+
+function getVideoPAD($path, $titre)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT id 
+   FROM Media
+   WHERE URI_NAS_PAD = ? AND mtd_tech_titre = ?');                                                 
+   try{
+       $requeteVid->execute([$path, $titre]);
+       $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($vidID) {
+        return $vidID['id'];
+       } 
+       else {
+           return false;
+       }   
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+       return false;
+   }
+}
+
+function getVideoARCH($path, $titre)
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT id 
+   FROM Media
+   WHERE URI_NAS_ARCH = ? AND mtd_tech_titre = ?');                                                 
+   try{
+       $requeteVid->execute([$path, $titre]);
+       $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($vidID) {
+        return $vidID['id'];
+       } 
+       else {
+           return false;
+       }   
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+       return false;
    }
 }
 
@@ -962,4 +1014,5 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
         $connexion = null;
     }
 }
+
 ?>

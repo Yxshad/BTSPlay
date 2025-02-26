@@ -58,9 +58,24 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path'])) {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
-            return controleurArborescence($path);
+            $menuType = $_POST['menuType'];
+        
+            switch ($menuType) {
+                case 'local':
+                    echo controleurArborescenceLocal($path);
+                    break;
+                case 'PAD':
+                    echo controleurArborescencePAD($path);
+                    break;
+                case 'ARCH':
+                    echo controleurArborescenceARCH($path);
+                    break;
+                default:
+                    echo "Type de menu non reconnu.";
+                    break;
+            }
             exit;
         }
     }
@@ -442,7 +457,60 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
  * \brief Lance la fonction qui scan le répertoire local
  * \param directory - Racine de l'endroit qu'on veut scanner
  */
-function controleurArborescence($directory){
+function controleurArborescenceLocal($directory){
     return scan($directory);
+}
+
+function controleurArborescencePAD($directory){
+    $connexion_PAD = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+    $fichiers_PAD = ftp_nlist($connexion_PAD, $directory);
+
+    foreach ($fichiers_PAD as $item) {
+        if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+            continue;
+        }
+        
+        $path = $directory . '/' . $item;
+        if (@ftp_chdir($connexion_PAD, $path)) {
+            afficherDossier($path, $item);
+        } elseif (isVideo($item)) {
+            
+            $directory_id = substr($directory, 1) . '/';
+            $item_id = substr($item, 0, -3) . "mp4";
+
+            $id = getVideoPAD($directory_id, $item_id);
+            afficherVideo($path, $item, $id);
+
+        } else {
+            afficherFichier($path, $item);
+        }
+    }
+}
+
+function controleurArborescenceARCH($directory){
+    $connexion_ARCH = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+    $fichiers_ARCH = ftp_nlist($connexion_ARCH, $directory);
+
+    foreach ($fichiers_ARCH as $item) {
+        if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+            continue;
+        }
+        
+        $path = $directory . '/' . $item;
+        
+        
+        if (@ftp_chdir($connexion_ARCH, $path)) {
+            afficherDossier($path, $item);
+        } elseif (isVideo($item)) {
+            
+            $directory_id = substr($directory, 1) . '/';
+            $id = getVideoARCH($directory_id, $item);
+            afficherVideo($path, $item, $id);
+            
+        } else {
+            
+            afficherFichier($path, $item);
+        }
+    }
 }
 ?>

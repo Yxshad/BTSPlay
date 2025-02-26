@@ -691,10 +691,10 @@ function getMetadonneesEditorialesVideo($video){
  * \param directory - Racine de l'endroit qu'on veut scanner
  */
 function scan($directory){
-    $items = scandir($directory);
+    $itemsLocal = scandir($directory);
     
 
-    foreach ($items as $item) {
+    foreach ($itemsLocal as $item) {
         if ($item == '.' || $item == '..' || $item == '.gitkeep') {
             continue;
         }
@@ -703,7 +703,12 @@ function scan($directory){
         if (is_dir($path)) {
             afficherDossier($path, $item);
         } elseif (isVideo($item)) {
-            afficherVideo($path, $item);
+
+			preg_match("/(?<=stockage\/).*/", $directory, $matches);
+			$directory_id = $matches[0] . "/";
+
+			$id = getVideoLocal($directory_id, $item);
+            afficherVideo($path, $item, $id);
         } else {
             afficherFichier($path, $item);
         }
@@ -739,10 +744,14 @@ function afficherDossier($path, $item){ ?>
  * \param path - Chemin de l'objet
  * \param item - Nom de l'objet à afficher en tant que vidéo
  */
-function afficherVideo($path, $item){ ?>
-    <div data-path ="<?php echo $path; ?>" class="video">
-        <?php echo $item; ?>
-    </div>
+function afficherVideo($path, $item, $id){ ?>
+
+    <div data-path ="<?php echo $path; ?>" class="video" >
+		<a href="video.php?v=<?php echo $id; ?>">
+			<?php echo $item; ?>
+		</a>
+	</div>
+
 <?php }
 
 /**

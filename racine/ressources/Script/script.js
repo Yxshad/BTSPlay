@@ -265,43 +265,53 @@ function gestionOngletsAdministration() {
         });
     });
 }
+
 function appelScanVideo () {
     scanDossierDecoupeVideo();
     setInterval( scanDossierDecoupeVideo , 5000);
 }
 
-function gestion_click_dossier(){
-    const dossiers = document.querySelectorAll('.dossier');
-    dossiers.forEach(dossier => {
-        if (!dossier.hasListener) {
-            dossier.addEventListener('click', function(event) {
-                if (event.target === dossier) {
-                    const path = dossier.getAttribute('data-path');
-                    console.log(path);
-                    if(!dossier.classList.contains("ouvert")) {
-                        dossier.classList.add("ouvert");
-                        fetch('../../fonctions/controleur.php', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded'
-                            },
-                            body: 'action=fetchPath&path=' + encodeURIComponent(path)
-                        })
-                        .then(response => response.text())
-                        .then(data => {
-                            dossier.innerHTML += data;
-                            gestion_click_dossier();
-                        });
-                    } else {
-                        dossier.classList.remove("ouvert");
-                        while(dossier.childElementCount > 0) {
-                            dossier.removeChild(dossier.lastChild);
+function gestion_click_dossier() {
+    const menus = document.querySelectorAll('.menuArbo.local, .menuArbo.PAD, .menuArbo.ARCH');
+
+    menus.forEach(menu => {
+        const dossiers = menu.querySelectorAll('.dossier');
+        dossiers.forEach(dossier => {
+            if (!dossier.hasListener) {
+                dossier.addEventListener('click', function(event) {
+                    if (event.target === dossier) {
+                        const path = dossier.getAttribute('data-path');
+                        const menuType = menu.classList.contains('local') ? 'local' : 
+                                        menu.classList.contains('PAD') ? 'PAD' : 
+                                        'ARCH'; // Détermine le type de menu
+
+                        console.log(`Menu: ${menuType}, Path: ${path}`);
+
+                        if (!dossier.classList.contains("ouvert")) {
+                            dossier.classList.add("ouvert");
+                            fetch('../../fonctions/controleur.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `action=fetchPath&path=${encodeURIComponent(path)}&menuType=${menuType}`
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                dossier.innerHTML += data;
+                                gestion_click_dossier(); // Réattacher les écouteurs aux nouveaux dossiers
+                            });
+                        } else {
+                            dossier.classList.remove("ouvert");
+                            while (dossier.childElementCount > 0) {
+                                dossier.removeChild(dossier.lastChild);
+                            }
+                            gestion_click_dossier(); // Réattacher les écouteurs après la fermeture
                         }
-                        gestion_click_dossier();
                     }
-                }
-            });
-            dossier.hasListener = true;
-        }
+                });
+                dossier.hasListener = true; // Marquer le dossier comme ayant un écouteur
+            }
+        });
     });
 }

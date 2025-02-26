@@ -2,8 +2,8 @@
     background: gray;
     position: fixed;
     height: 100vh;
-    width: 50%;
-    left: -50%;
+    width: 40%;
+    left: -40%;
     top: 0;
     transition: all 0.2s ease-in-out;
     z-index: 11;
@@ -15,11 +15,11 @@
 
 .menuArbo{
     margin-top: 90px;
-    
+    overflow:auto;
 }
 
 .menuArbo div{
-    padding-left: 25px;
+    padding-left: 40px;
 }
 
 .main-menuArbo button{
@@ -30,19 +30,18 @@
     font-size: 50px;
 }
 
-
-
-.dossier::before {
-    background-image: url("../Images/closed-file.png");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    content: " ";
-    width: 25px;
-    height: 25px;
-    display: inline-block;
+.main-menuArbo .dossier{
+    cursor: pointer;
 }
 
-.dossier.ouvert::before {
-    background-image: url("../Images/open-file.png");
+.main-menuArbo .PAD,
+.main-menuArbo .ARCH{
+    display: none;
+}
+
+.main-menuArbo .radio{
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
 }
