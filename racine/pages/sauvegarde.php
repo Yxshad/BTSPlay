@@ -1,7 +1,7 @@
 <?php 
 	session_start(); 
 	require_once '../fonctions/controleur.php';
-    controleurVerifierAcces(AUTORISATION_ADMIN);
+    controleurVerifierAccesPage(ACCES_ADMINISTRATION);
 ?>
 
 <!DOCTYPE html>

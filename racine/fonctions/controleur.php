@@ -58,6 +58,9 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
+        if($_POST["action"] == "createDatabaseSave"){
+            controleurcreateDBDumpLauncher();
+          }
     }
 }
 checkHeader();
@@ -430,11 +433,31 @@ function controleurSupprimerVideo($idVideo){
     exit();
 }
 
+/**
+ * \fn controleurRecupererAutorisationsProfesseurs()
+ * \brief Récupère les autorisations des professeurs
+ */
 function controleurRecupererAutorisationsProfesseurs(){
     return recupererAutorisationsProfesseurs();
 }
 
+/**
+ * \fn controleurMettreAJourAutorisations($prof, $colonne, $etat)
+ * \brief Appelle la fonction met à jour les autorisations des utilisateurs
+ * \param prof - utilisateur (professeur) dont on meut modifier les informations
+ * \param colonne - Type de l'autorisation à modifier (modifier, diffuser, ...)
+ * \param etat - Booléen : 1 si case cochée
+ */
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
 }
+
+/**
+ * \fn controleurcreateDBDumpLauncher()
+ * \brief Appelle la fonction qui créé la sauvegarde de la base de données
+ */
+function controleurcreateDBDumpLauncher(){
+    createDatabaseSave();
+}
+
 ?>

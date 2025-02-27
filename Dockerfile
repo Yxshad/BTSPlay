@@ -10,6 +10,7 @@ RUN apt-get update && apt-get install -y \
     unzip \
     git \
     pure-ftpd \
+    default-mysql-client \
     && docker-php-ext-install pdo pdo_mysql mysqli ftp zip curl
 
 # Activer le module Apache rewrite
