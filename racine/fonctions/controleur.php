@@ -26,7 +26,7 @@ function checkHeader(){
             exit();
         }
         if ($_POST["action"] == "lancerConversion") {
-            fonctionTransfert();
+            controleurLancerFonctionTransfert();
         }
         if ($_POST["action"] == "ModifierMetadonnees") {
             $idVideo = $_POST['idVideo'];
@@ -436,5 +436,14 @@ function controleurRecupererAutorisationsProfesseurs(){
 
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
+}
+
+/**
+ * \fn controleucontroleurLancerFonctionTransfertrSupprimerVideo()
+ * \brief Lance la fonction de transfert via une commande exec
+ */
+function controleurLancerFonctionTransfert(){
+    exec('php /var/www/html/fonctions/scriptFonctionTransfert.php > /dev/null 2>&1 &');
+    //#RISQUE : Afficher un message d'erreur si le script a renvoyé un output d'erreur.
 }
 ?>
