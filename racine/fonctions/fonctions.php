@@ -192,9 +192,9 @@ function afficherVideosManquantes($listeVideosManquantes) {
  * \param typeLog - Le type de log qu'on veut retourner
  * \param message - Le message qu'on veut mettre dans le log
  */
-function ajouterLog($typeLog, $message){
-    $repertoireLog = URI_FICHIER_LOG;
-    $fichierLog = $repertoireLog . NOM_FICHIER_LOG;
+function ajouterLog($typeLog, $message, $nomFichierLog = NOM_FICHIER_LOG_GENERAL){
+    $repertoireLog = URI_FICHIER_GENERES;
+    $fichierLog = $repertoireLog . $nomFichierLog;
 
     // Vérifier si le fichier log.log existe, sinon le créer
     if (!file_exists($fichierLog)) {
@@ -458,5 +458,15 @@ function getMetadonneesEditorialesVideo($video){
 	];
 
 	return $mtdEdito;
+}
+
+/**
+ * \fn createDatabaseSave()
+ * \brief Permet de lancer une sauvegarde de la base de données
+ */
+function createDatabaseSave(){
+    $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_FICHIER_GENERES .date("j-m-Y_H-i-s_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
+	$operationSucces = exec($commandSql);
+	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s_").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 ?>
