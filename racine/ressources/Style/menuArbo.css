@@ -47,6 +47,11 @@
     margin: 10px 0;
 }
 
+.main-menuArbo .video.inaccessible a,
+.main-menuArbo .fichier.inaccessible{
+    color: #8f8f8f;
+}
+
 .main-menuArbo .dossier{
     cursor: pointer;
 }

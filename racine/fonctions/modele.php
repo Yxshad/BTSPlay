@@ -419,68 +419,29 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * \fn getVideo($path)
+ * \fn getIdVideoURIetTitre($path, $titre, $ftp_server)
  * \brief Renvoie l'id d'une vidéo
  * \param path - chemin de l'espace local de la vidéo
  * \param titre - Nom de la vidéo à retourner
+ * \param ftp_server - Nom du server pour définir le champ
  */
-function getVideoLocal($path, $titre)
-{
-   $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT id 
-   FROM Media
-   WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');                                                 
-   try{
-       $requeteVid->execute([$path, $titre]);
-       $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
-       $connexion = null;
-       if ($vidID) {
-        return $vidID['id'];
-       } 
-       else {
-           return false;
-       }   
-   }
-   catch(Exception $e)
-   {
-       $connexion->rollback();
-       $connexion = null;
-       return false;
-   }
-}
+function getIdVideoURIetTitre($path, $titre, $ftp_server){
+    $connexion = connexionBD();
 
-
-function getVideoPAD($path, $titre)
-{
-   $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT id 
-   FROM Media
-   WHERE URI_NAS_PAD = ? AND mtd_tech_titre = ?');                                                 
-   try{
-       $requeteVid->execute([$path, $titre]);
-       $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
-       $connexion = null;
-       if ($vidID) {
-        return $vidID['id'];
-       } 
-       else {
-           return false;
-       }   
-   }
-   catch(Exception $e)
-   {
-       $connexion->rollback();
-       $connexion = null;
-       return false;
-   }
-}
-
-function getVideoARCH($path, $titre)
-{
-   $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT id 
-   FROM Media
-   WHERE URI_NAS_ARCH = ? AND mtd_tech_titre = ?');                                                 
+    if ($ftp_server == NAS_ARCH) {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_NAS_ARCH = ? AND mtd_tech_titre = ?'); 
+    } elseif ($ftp_server == NAS_PAD) {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_NAS_PAD = ? AND mtd_tech_titre = ?'); 
+    } else {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');
+    }
+                                                
    try{
        $requeteVid->execute([$path, $titre]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);

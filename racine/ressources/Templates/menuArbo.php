@@ -8,13 +8,13 @@ $directory_local = __DIR__ . "/../../stockage";
 <div class="main-menuArbo">
     <div class="dossiers">
         <div class="menuArbo local">
-            <?php echo controleurArborescenceLocal($directory_local); ?>
+            <?php echo controleurArborescence($directory_local, "local"); ?>
         </div>
         <div class="menuArbo PAD">
-            <?php echo controleurArborescencePAD(""); ?>
+            <?php echo controleurArborescence("", NAS_PAD); ?>
         </div>
         <div class="menuArbo ARCH">
-            <?php echo controleurArborescenceARCH(""); ?>
+            <?php echo controleurArborescence("", NAS_ARCH); ?>
         </div>
     </div>
 
@@ -25,12 +25,12 @@ $directory_local = __DIR__ . "/../../stockage";
         </label>
 
         <label>
-            PAD
+            NAS PAD
             <input type="radio" name="a" id="PAD">
         </label>
 
         <label>
-            ARCH
+            NAS ARCH
             <input type="radio" name="a" id="ARCH">
         </label>
         

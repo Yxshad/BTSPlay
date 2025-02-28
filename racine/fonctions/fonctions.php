@@ -686,36 +686,6 @@ function getMetadonneesEditorialesVideo($video){
 }
 
 /**
- * \fn scan($directory)
- * \brief Affiche le contenu d'un répertoire
- * \param directory - Racine de l'endroit qu'on veut scanner
- */
-function scan($directory){
-    $itemsLocal = scandir($directory);
-    
-
-    foreach ($itemsLocal as $item) {
-        if ($item == '.' || $item == '..' || $item == '.gitkeep') {
-            continue;
-        }
-        
-        $path = $directory . '/' . $item;
-        if (is_dir($path)) {
-            afficherDossier($path, $item);
-        } elseif (isVideo($item)) {
-
-			preg_match("/(?<=stockage\/).*/", $directory, $matches);
-			$directory_id = $matches[0] . "/";
-
-			$id = getVideoLocal($directory_id, $item);
-            afficherVideo($path, $item, $id);
-        } else {
-            afficherFichier($path, $item);
-        }
-    }
-}
-
-/**
  * \fn controleurSupprimerVideo($idVideo)
  * \brief Renvoit vrai si le fichier donné est une vidéo 
  * \param directory - Racine de l'endroit qu'on veut scanner
@@ -754,8 +724,10 @@ function afficherVideo($path, $item, $id){ ?>
 			</a>
 		</div>
 	<?php } else { ?>
-		<div data-path ="<?php echo $path; ?>" class="video" >
-			<?php echo $item; ?>
+		<div data-path ="<?php echo $path; ?>" class="video inaccessible" >
+			<a href="erreur.php?code=415">
+				<?php echo $item; ?>
+			</a>
 		</div>
 	<?php } ?>
 
@@ -768,7 +740,7 @@ function afficherVideo($path, $item, $id){ ?>
  * \param item - Nom de l'objet à afficher en tant que ficher
  */
 function afficherFichier($path, $item){ ?>
-    <div data-path ="<?php echo $path; ?>" class="fichier">
+    <div data-path ="<?php echo $path; ?>" class="fichier inaccessible">
         <?php echo $item; ?>
     </div>
 <?php }
