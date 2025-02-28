@@ -1,5 +1,5 @@
 .main-menuArbo{
-    background: gray;
+    background: #27323d;
     position: fixed;
     height: 100vh;
     width: 40%;
@@ -16,6 +16,11 @@
 .menuArbo{
     margin-top: 90px;
     overflow:auto;
+}
+
+.main-menuArbo .dossiers{
+    max-height: calc(100% - 150px);
+    height: 100%;
 }
 
 .menuArbo div{
@@ -37,8 +42,28 @@
     font-size: 50px;
 }
 
+.dossier, .video a, .video{
+    color: #FFF;
+    margin: 10px 0;
+}
+
 .main-menuArbo .dossier{
     cursor: pointer;
+}
+
+.main-menuArbo .dossier::before{
+    content: " ";
+    display: inline-block;
+    width: 25px;
+    height: 21px;
+    background-image: url("../Images/closed-file.png");
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.main-menuArbo .dossier.ouvert::before{
+    background-image: url("../Images/open-file.png");
 }
 
 .main-menuArbo .PAD,
@@ -48,7 +73,56 @@
 
 .main-menuArbo .radio{
     position: absolute;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    height: 50px;
+    color: #FFF;
+    padding-top: 10px;
+    border-top: 1px solid #FFF;
+}
+
+.main-menuArbo input[type="radio"]{
+    appearance: none;
+    font: inherit;
+    color: currentColor;
+    width: 1em;
+    height: 1em;
+    border: 0.15em solid currentColor;
+    border-radius: 100%;
+    transform: translateY(2px);
+}
+
+input[type="radio"]::before{
+    content: "";
+    display: block;
+    width: 0.5em;
+    height: 0.5em;
+    margin: 2px;    
+    box-shadow: inset 1em 1em #FFF;
+    border-radius: 100%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+}
+
+input[type="radio"]:checked::before {
+    transform: scale(1);
+  }
+
+.voile{
+    opacity: 0;
+    background-color: #000;
+    z-index: -1;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    transition: all 0.2s ease;
+}
+
+.voile.ouvert{
+    z-index: 10;
+    opacity: 0.6;
 }

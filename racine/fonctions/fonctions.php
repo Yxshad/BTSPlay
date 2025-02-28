@@ -739,18 +739,25 @@ function afficherDossier($path, $item){ ?>
 <?php }
 
 /**
- * \fn afficherVideo($path, $item)
+ * \fn afficherVideo($path, $item, $item)
  * \brief Affiche une div avec la classe vidéo, et l'arborescence en data-path
  * \param path - Chemin de l'objet
  * \param item - Nom de l'objet à afficher en tant que vidéo
+ * \param id - Identifiant de la vidéo à mettre dans le lien
  */
 function afficherVideo($path, $item, $id){ ?>
-
-    <div data-path ="<?php echo $path; ?>" class="video" >
-		<a href="video.php?v=<?php echo $id; ?>">
+	
+	<?php if ($id) { ?>
+		<div data-path ="<?php echo $path; ?>" class="video" >
+			<a href="video.php?v=<?php echo $id; ?>">
+				<?php echo $item; ?>
+			</a>
+		</div>
+	<?php } else { ?>
+		<div data-path ="<?php echo $path; ?>" class="video" >
 			<?php echo $item; ?>
-		</a>
-	</div>
+		</div>
+	<?php } ?>
 
 <?php }
 

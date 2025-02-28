@@ -422,6 +422,7 @@ function insertionEtudiant($etudiant)
  * \fn getVideo($path)
  * \brief Renvoie l'id d'une vidéo
  * \param path - chemin de l'espace local de la vidéo
+ * \param titre - Nom de la vidéo à retourner
  */
 function getVideoLocal($path, $titre)
 {

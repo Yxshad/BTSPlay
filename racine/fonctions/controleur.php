@@ -461,6 +461,11 @@ function controleurArborescenceLocal($directory){
     return scan($directory);
 }
 
+/**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief Lance la fonction qui scan le NAS PAD
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
 function controleurArborescencePAD($directory){
     $connexion_PAD = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
     $fichiers_PAD = ftp_nlist($connexion_PAD, $directory);
@@ -487,6 +492,11 @@ function controleurArborescencePAD($directory){
     }
 }
 
+/**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief Lance la fonction qui scan le NAS ARCH
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
 function controleurArborescenceARCH($directory){
     $connexion_ARCH = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
     $fichiers_ARCH = ftp_nlist($connexion_ARCH, $directory);
