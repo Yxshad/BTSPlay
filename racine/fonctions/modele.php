@@ -927,10 +927,14 @@ function supprimerVideoDeBD($idVideo){
     $connexion->commit();
 }
 
+ /**
+ * \fn recupererAutorisationsProfesseurs()
+ * \brief Retourne la listes des professeurs et de leurs autorisations
+ */
 function recupererAutorisationsProfesseurs(){
     $connexion = connexionBD();
     try{
-            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
+            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Professeur.role, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
                 FROM Autorisation
                 JOIN Professeur ON Professeur.identifiant = Autorisation.professeur');
             $requeteConnexion->execute();

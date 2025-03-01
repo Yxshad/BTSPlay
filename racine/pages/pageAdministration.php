@@ -132,20 +132,31 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
                     <th>Supprimer la vidéo</th>
                     <th>Administrer le site</th>
                 </tr>
-                <?php foreach($listeProfesseurs as $professeur){ ?>
+                <?php foreach($listeProfesseurs as $professeur){ ?>                    
                     <tr>
-                        <th><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
+                        <?php 
+                        if ($professeur["role"] == ROLE_ADMINISTEUR) {
+                            $desactivation = "disabled";
+                            $class = "class='gris'";
+                        } else {
+                            $desactivation = "";
+                            $class = "";
+                        }
+                        ?>
+
+                        <th <?php echo $class; ?>><?php echo($professeur['nom'] . " " . $professeur['prenom']); ?></th>
+
                         <td>
-                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
+                            <input <?php echo $desactivation; ?> type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="modifier" <?php echo $professeur["modifier"] == 1 ? "checked" : "" ;?>/>
                         </td>
                         <td>
-                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
+                            <input <?php echo $desactivation; ?> type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="diffuser" <?php echo $professeur["diffuser"] == 1 ? "checked" : "" ;?>/>
                         </td>
                         <td>
-                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
+                            <input <?php echo $desactivation; ?> type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="supprimer" <?php echo $professeur["supprimer"] == 1 ? "checked" : "" ;?>/>
                         </td>
                         <td>
-                            <input type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="administrer" <?php echo $professeur["administrer"] == 1 ? "checked" : "" ;?>/>
+                            <input <?php echo $desactivation; ?> type="checkbox" data-prof="<?php echo $professeur["professeur"]; ?>" data-colonne="administrer" <?php echo $professeur["administrer"] == 1 ? "checked" : "" ;?>/>
                         </td>
                     </tr>
                 <?php } ?>
