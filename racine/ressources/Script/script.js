@@ -311,7 +311,7 @@ function gestion_click_dossier() {
                 dossier.addEventListener('click', function(event) {
                     if (event.target === dossier) {
                         const path = dossier.getAttribute('data-path');
-                        const menuType = menu.classList.contains('local') ? 'local' : 
+                        const menuType = menu.classList.contains('local') ? 'ESPACE_LOCAL' : 
                                         menu.classList.contains('PAD') ? 'PAD' : 
                                         'ARCH'; // Détermine le type de menu
 

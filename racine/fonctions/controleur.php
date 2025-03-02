@@ -66,8 +66,8 @@ function checkHeader(){
             $menuType = $_POST['menuType'];
         
             switch ($menuType) {
-                case 'local':
-                    echo controleurArborescence($path, "local");
+                case 'ESPACE_LOCAL':
+                    echo controleurArborescence($path, ESPACE_LOCAL);
                     break;
                 case 'PAD':
                     echo controleurArborescence($path, NAS_PAD);
