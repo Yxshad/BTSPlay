@@ -467,6 +467,6 @@ function getMetadonneesEditorialesVideo($video){
 function createDatabaseSave(){
     $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_FICHIER_GENERES .date("j-m-Y_H-i-s_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
 	$operationSucces = exec($commandSql);
-	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s_").".", NOM_FICHIER_LOG_SAUVEGARDE);
+	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 ?>
