@@ -17,7 +17,7 @@ require_once '../ressources/Templates/header.php';
 ?>
 
 <?php
-$code = isset($_GET['code']);
+$code = $_GET['code'];
 // #RISQUE : Plus tard, faire des constantes pour les codes et messages d'erreur
 switch ($code) {
     case 404:
@@ -26,11 +26,14 @@ switch ($code) {
     case 403:
         $message = "Erreur 403 : Accès refusé.";
         break;
+    case 415:
+        $message = "Erreur 415 : Le fichier n'a pas encore été transféré. Veuillez contacter votre administrateur.";
+        break;
     case 500:
-        $message = "Erreur 500 : Erreur interne du serveur.";
+        $message = "Erreur 500 : Erreur interne du serveur. Veuillez contacter votre administrateur.";
         break;
     default:
-        $message = "Une erreur inconnue est survenue.";
+        $message = "Une erreur inconnue est survenue. Veuillez contacter votre administrateur.";
         break;
 }
 

@@ -24,6 +24,8 @@
     const LOGIN_NAS_DIFF = 'user4';
     const PASSWORD_NAS_DIFF = 'pass4';
 
+    const ESPACE_LOCAL = 'ESPACE_LOCAL';
+
     //CONSTANTES DE LA BASE DE DONNEES
     // #RISQUE : Changement des informations de la base de données
 

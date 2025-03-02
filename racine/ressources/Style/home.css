@@ -18,4 +18,5 @@
 .swiper-rtl .swiper-button-next{
     bottom: 0px !important;
     top: unset !important;
+    z-index: 5 !important;
 }

@@ -461,6 +461,66 @@ function getMetadonneesEditorialesVideo($video){
 }
 
 /**
+ * \fn controleurSupprimerVideo($idVideo)
+ * \brief Renvoit vrai si le fichier donné est une vidéo 
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ */
+function isVideo($file) {
+    $videoExtensions = ['mp4', 'mxf'];
+    $extension = pathinfo($file, PATHINFO_EXTENSION);
+    return in_array(strtolower($extension), $videoExtensions);
+}
+
+/**
+ * \fn afficherDossier($path, $item)
+ * \brief Affiche une div avec la classe dossier, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que dossier
+ */
+function afficherDossier($path, $item){ ?>
+    <div data-path ="<?php echo $path; ?>" class="dossier">
+        <?php echo $item; ?>
+    </div>
+<?php }
+
+/**
+ * \fn afficherVideo($path, $item, $item)
+ * \brief Affiche une div avec la classe vidéo, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que vidéo
+ * \param id - Identifiant de la vidéo à mettre dans le lien
+ */
+function afficherVideo($path, $item, $id){ ?>
+	
+	<?php if ($id) { ?>
+		<div data-path ="<?php echo $path; ?>" class="video" >
+			<a href="video.php?v=<?php echo $id; ?>">
+				<?php echo $item; ?>
+			</a>
+		</div>
+	<?php } else { ?>
+		<div data-path ="<?php echo $path; ?>" class="video inaccessible" >
+			<a href="erreur.php?code=415">
+				<?php echo $item; ?>
+			</a>
+		</div>
+	<?php } ?>
+
+<?php }
+
+/**
+ * \fn afficherFichier($path, $item)
+ * \brief Affiche une div avec la classe fichier, et l'arborescence en data-path
+ * \param path - Chemin de l'objet
+ * \param item - Nom de l'objet à afficher en tant que ficher
+ */
+function afficherFichier($path, $item){ ?>
+    <div data-path ="<?php echo $path; ?>" class="fichier inaccessible">
+        <?php echo $item; ?>
+    </div>
+<?php }
+
+/*
  * \fn createDatabaseSave()
  * \brief Permet de lancer une sauvegarde de la base de données
  */
@@ -469,4 +529,5 @@ function createDatabaseSave(){
 	$operationSucces = exec($commandSql);
 	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
+
 ?>

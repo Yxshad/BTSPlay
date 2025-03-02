@@ -60,7 +60,27 @@ function checkHeader(){
         }
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
-          }
+        }
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
+            $path = $_POST['path'];
+            $menuType = $_POST['menuType'];
+        
+            switch ($menuType) {
+                case 'ESPACE_LOCAL':
+                    echo controleurArborescence($path, ESPACE_LOCAL);
+                    break;
+                case 'PAD':
+                    echo controleurArborescence($path, NAS_PAD);
+                    break;
+                case 'ARCH':
+                    echo controleurArborescence($path, NAS_ARCH);
+                    break;
+                default:
+                    echo "Type de menu non reconnu.";
+                    break;
+            }
+            exit;
+        }
     }
 }
 checkHeader();
@@ -450,6 +470,92 @@ function controleurRecupererAutorisationsProfesseurs(){
  */
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
+}
+
+/**
+ * \fn controleurArborescence($directory, $ftp_server)
+ * \brief Lance la fonction qui scan le répertoire local
+ * \param directory - Racine de l'endroit qu'on veut scanner
+ * \param ftp_server - Serveur dans lequelle la fonction va chercher les fichier
+ */
+function controleurArborescence($directory, $ftp_server){
+
+    if ($ftp_server == NAS_PAD) {
+        $connexion_PAD = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+        $fichiers_PAD = ftp_nlist($connexion_PAD, $directory);
+
+        foreach ($fichiers_PAD as $item) {
+            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+                continue;
+            }
+            
+            $path = $directory . '/' . $item;
+            if (@ftp_chdir($connexion_PAD, $path)) {
+                afficherDossier($path, $item);
+            } elseif (isVideo($item)) {
+                
+                $directory_id = substr($directory, 1) . '/';
+                $item_id = forcerExtensionMP4($item);
+    
+                $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
+                afficherVideo($path, $item, $id);
+    
+            } else {
+                afficherFichier($path, $item);
+            }
+        }
+
+    } elseif ($ftp_server == NAS_ARCH) {
+        $connexion_ARCH = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        $fichiers_ARCH = ftp_nlist($connexion_ARCH, $directory);
+
+        foreach ($fichiers_ARCH as $item) {
+            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+                continue;
+            }
+            
+            $path = $directory . '/' . $item;
+            
+            
+            if (@ftp_chdir($connexion_ARCH, $path)) {
+                afficherDossier($path, $item);
+            } elseif (isVideo($item)) {
+                
+                $directory_id = substr($directory, 1) . '/';
+                $item_id = forcerExtensionMP4($item);
+                
+                $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
+                afficherVideo($path, $item, $id);
+                
+            } else {
+                
+                afficherFichier($path, $item);
+            }
+        }
+    } else {
+        
+        $itemsLocal = scandir($directory);
+        foreach ($itemsLocal as $item) {
+
+            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
+                continue;
+            }
+            
+            $path = $directory . '/' . $item;
+            if (is_dir($path)) {
+                afficherDossier($path, $item);
+            } elseif (isVideo($item)) {
+
+                preg_match("/(?<=stockage\/).*/", $directory, $matches);
+                $directory_id = $matches[0] . "/";
+
+                $id = getIdVideoURIetTitre($directory_id, $item, $ftp_server);
+                afficherVideo($path, $item, $id);
+            } else {
+                afficherFichier($path, $item);
+            }
+        }
+    }    
 }
 
 /**

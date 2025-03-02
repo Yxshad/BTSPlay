@@ -89,6 +89,7 @@ function affichageLogsCouleurs() {
 }
 
 //Fonctions spécifiques à la page home.php et recherche.php
+
 function affichageFiltres(){
     document.querySelector('.afficherFiltres').addEventListener('click', (e) => {
         let filtres = document.querySelector('.filtres');
@@ -103,6 +104,7 @@ function affichageFiltres(){
         }
     });
 }
+
 
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {
@@ -297,4 +299,104 @@ function gestionOngletsAdministration() {
 function appelScanVideo () {
     scanDossierDecoupeVideo();
     setInterval( scanDossierDecoupeVideo , 5000);
+}
+
+function gestion_click_dossier() {
+    const menus = document.querySelectorAll('.menuArbo.local, .menuArbo.PAD, .menuArbo.ARCH');
+
+    menus.forEach(menu => {
+        const dossiers = menu.querySelectorAll('.dossier');
+        dossiers.forEach(dossier => {
+            if (!dossier.hasListener) {
+                dossier.addEventListener('click', function(event) {
+                    if (event.target === dossier) {
+                        const path = dossier.getAttribute('data-path');
+                        const menuType = menu.classList.contains('local') ? 'ESPACE_LOCAL' : 
+                                        menu.classList.contains('PAD') ? 'PAD' : 
+                                        'ARCH'; // Détermine le type de menu
+
+                        console.log(`Menu: ${menuType}, Path: ${path}`);
+
+                        if (!dossier.classList.contains("ouvert")) {
+                            dossier.classList.add("ouvert");
+                            fetch('../../fonctions/controleur.php', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded'
+                                },
+                                body: `action=fetchPath&path=${encodeURIComponent(path)}&menuType=${menuType}`
+                            })
+                            .then(response => response.text())
+                            .then(data => {
+                                dossier.innerHTML += data;
+                                gestion_click_dossier(); // Réattacher les écouteurs aux nouveaux dossiers
+                            });
+                        } else {
+                            dossier.classList.remove("ouvert");
+                            while (dossier.childElementCount > 0) {
+                                dossier.removeChild(dossier.lastChild);
+                            }
+                            gestion_click_dossier(); // Réattacher les écouteurs après la fermeture
+                        }
+                    }
+                });
+                dossier.hasListener = true; // Marquer le dossier comme ayant un écouteur
+            }
+        });
+    });
+}
+
+// Permet d'ouvrir et fermer le menu latéral
+function ouvrirMenuArbo(){
+    let mainMenu = document.querySelector(".main-menuArbo");
+    let voile = document.querySelector(".voile");
+    if (mainMenu.classList.contains('ouvert')) {
+        mainMenu.classList.remove('ouvert');
+        voile.classList.remove('ouvert');
+    } else {
+        mainMenu.classList.add('ouvert');
+        voile.classList.add('ouvert');
+    }
+}
+
+
+// Gère l'appartition et la suppresion des fichiers dans menuArbo
+function gestionOngletsArborescence() {
+    const radios = document.querySelectorAll('.radio input[type="radio"]');
+    const menus = document.querySelectorAll('.menuArbo');
+    
+    function setActiveTab(tabId) {
+        // Désactiver tous les menus
+        menus.forEach(menu => menu.style.display = 'none');
+        
+        // Activer le menu correspondant à l'onglet sélectionné
+        const activeMenu = document.querySelector(`.menuArbo.${tabId}`);
+        if (activeMenu) {
+            activeMenu.style.display = 'block';
+        }
+    }
+
+    // Vérifie s'il y a un paramètre "tab" dans l'URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const activeTab = urlParams.get('tab') || "local"; // "local" par défaut
+
+    // Activer l'onglet correspondant au paramètre de l'URL
+    setActiveTab(activeTab);
+
+    // Cocher le bouton radio correspondant
+    const activeRadio = document.getElementById(activeTab);
+    if (activeRadio) {
+        activeRadio.checked = true;
+    }
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', () => {
+            const tabId = radio.id;
+            setActiveTab(tabId);
+
+            // Met à jour l'URL sans recharger la page
+            const newUrl = `${window.location.pathname}?tab=${tabId}`;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+        });
+    });
 }

@@ -419,18 +419,31 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * \fn getVideo($path)
+ * \fn getIdVideoURIetTitre($path, $titre, $ftp_server)
  * \brief Renvoie l'id d'une vidéo
  * \param path - chemin de l'espace local de la vidéo
+ * \param titre - Nom de la vidéo à retourner
+ * \param ftp_server - Nom du server pour définir le champ
  */
-function getVideo($path)
-{
-   $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT id 
-   FROM Media
-   WHERE URI_STOCKAGE_LOCAL = ?');                                                 
+function getIdVideoURIetTitre($path, $titre, $ftp_server){
+    $connexion = connexionBD();
+
+    if ($ftp_server == NAS_ARCH) {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_NAS_ARCH = ? AND mtd_tech_titre = ?'); 
+    } elseif ($ftp_server == NAS_PAD) {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_NAS_PAD = ? AND mtd_tech_titre = ?'); 
+    } else {
+        $requeteVid = $connexion->prepare('SELECT id 
+            FROM Media
+            WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');
+    }
+                                                
    try{
-       $requeteVid->execute([$path]);
+       $requeteVid->execute([$path, $titre]);
        $vidID = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($vidID) {
@@ -444,6 +457,7 @@ function getVideo($path)
    {
        $connexion->rollback();
        $connexion = null;
+       return false;
    }
 }
 
@@ -593,7 +607,7 @@ function getProjetIntitule($idProjet){
 
 /**
  * @getIdProjetVideo
- * @return array|false Renvoie l'ID du projet associé à la vidéo, false si aucun projet n'est attribué
+ * @return array|false Renvoie le projet associé à la vidéo via un ID, false si aucun projet n'est attribué
  */
 function getIdProjetVideo($idVideo) {
     try {
@@ -913,10 +927,14 @@ function supprimerVideoDeBD($idVideo){
     $connexion->commit();
 }
 
+ /**
+ * \fn recupererAutorisationsProfesseurs()
+ * \brief Retourne la listes des professeurs et de leurs autorisations
+ */
 function recupererAutorisationsProfesseurs(){
     $connexion = connexionBD();
     try{
-            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
+            $requeteConnexion = $connexion->prepare('SELECT Professeur.nom, Professeur.prenom, Professeur.role, Autorisation.professeur, Autorisation.modifier, Autorisation.supprimer, Autorisation.diffuser, Autorisation.administrer
                 FROM Autorisation
                 JOIN Professeur ON Professeur.identifiant = Autorisation.professeur');
             $requeteConnexion->execute();
@@ -962,4 +980,5 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
         $connexion = null;
     }
 }
+
 ?>
