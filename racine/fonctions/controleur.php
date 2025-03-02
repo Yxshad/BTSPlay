@@ -495,7 +495,7 @@ function controleurArborescence($directory, $ftp_server){
             } elseif (isVideo($item)) {
                 
                 $directory_id = substr($directory, 1) . '/';
-                $item_id = substr($item, 0, -3) . "mp4";
+                $item_id = forcerExtensionMP4($item);
     
                 $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
                 afficherVideo($path, $item, $id);
@@ -522,6 +522,8 @@ function controleurArborescence($directory, $ftp_server){
             } elseif (isVideo($item)) {
                 
                 $directory_id = substr($directory, 1) . '/';
+                $item_id = forcerExtensionMP4($item);
+                
                 $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
                 afficherVideo($path, $item, $id);
                 
