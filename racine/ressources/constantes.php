@@ -94,9 +94,14 @@
     const LOG_FAIL = 'FAIL';
     const LOG_CRITICAL = 'CRITICAL';
 
-    //URI DU FICHIER DE LOG
-    const URI_FICHIER_LOG = '../ressources/';
-    const NOM_FICHIER_LOG = 'historique.log';
+    //URI DES FICHIERS GÉNÉRÉS
+    const URI_FICHIER_GENERES = '../ressources/datas/';
+
+
+    //NOMS DES FICHIERS GÉNÉRÉS
+    const NOM_FICHIER_LOG_GENERAL = 'historique.log';
+    const NOM_FICHIER_LOG_SAUVEGARDE = 'sauvegardes.log';
+    const SUFFIXE_FICHIER_DUMP_SAUVEGARDE = 'sauvegarde.sql';
 
     //NIVEAU D'AUTORISATION
     //const AUTORISATION_PROF = ["Professeur", "Administrateur"];
@@ -107,7 +112,7 @@
     const ACCES_SUPPRESSION = 'supprimer';
     const ACCES_DIFFUSION = 'diffuser';
     const ACCES_ADMINISTRATION = 'administrer';
-    const ROLE_ADMINISTEUR = 'Administrateur';
+    const ROLE_ADMINISTRATEUR = 'Administrateur';
 
     //CONSTANTES DES PAGES
     const NB_VIDEOS_PAR_SWIPER = 10;
@@ -116,4 +121,7 @@
     const NB_VIDEOS_HISTORIQUE_TRANSFERT = 10;
 
     //CONSTANTES DES LOGS
-    const NBR_LIGNES_LOGS = 100;
+    const NB_LIGNES_LOGS = 500;
+
+    //CONSTANTES POUR LE MULTITHREADING
+    const NB_MAX_PROCESSUS_TRANSFERT = 3;

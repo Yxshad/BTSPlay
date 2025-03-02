@@ -406,9 +406,9 @@ function afficherVideosManquantes($listeVideosManquantes) {
  * \param typeLog - Le type de log qu'on veut retourner
  * \param message - Le message qu'on veut mettre dans le log
  */
-function ajouterLog($typeLog, $message){
-    $repertoireLog = URI_FICHIER_LOG;
-    $fichierLog = $repertoireLog . NOM_FICHIER_LOG;
+function ajouterLog($typeLog, $message, $nomFichierLog = NOM_FICHIER_LOG_GENERAL){
+    $repertoireLog = URI_FICHIER_GENERES;
+    $fichierLog = $repertoireLog . $nomFichierLog;
 
     // Vérifier si le fichier log.log existe, sinon le créer
     if (!file_exists($fichierLog)) {
@@ -510,17 +510,6 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 }
 
 /**
- * \fn insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL)
- * \brief Lance l'insertion des métadonnées techniques en bd de toutes les vidéos ajoutées dans le serveur
- * \param COLLECT_STOCK_LOCAL - Collection des vidéos à ajouter sur le serveur
- */
-function insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL){
-	foreach($COLLECT_STOCK_LOCAL as $ligneMetadonneesTechniques){
-		insertionDonneesTechniques($ligneMetadonneesTechniques);
-	}
-}
-
-/**
  * \fn scanDossierDecoupeVideo()
  * \brief Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
  */
@@ -550,7 +539,7 @@ function scanDossierDecoupeVideo() {
         }
         $result[] = [
             'nomVideo' => $video,
-            'poidsVideo' => recupererTailleFichier(),
+            'poidsVideo' => recupererTailleFichier($video, null),
             'status' => $status
         ];
     }
@@ -744,4 +733,14 @@ function afficherFichier($path, $item){ ?>
         <?php echo $item; ?>
     </div>
 <?php }
+
+/*
+ * \fn createDatabaseSave()
+ * \brief Permet de lancer une sauvegarde de la base de données
+ */
+function createDatabaseSave(){
+    $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_FICHIER_GENERES .date("j-m-Y_H-i-s_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
+	$operationSucces = exec($commandSql);
+	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s_").".", NOM_FICHIER_LOG_SAUVEGARDE);
+}
 ?>

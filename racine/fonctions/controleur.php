@@ -26,7 +26,7 @@ function checkHeader(){
             exit();
         }
         if ($_POST["action"] == "lancerConversion") {
-            fonctionTransfert();
+            controleurLancerFonctionTransfert();
         }
         if ($_POST["action"] == "ModifierMetadonnees") {
             $idVideo = $_POST['idVideo'];
@@ -58,6 +58,7 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
+      
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
             $menuType = $_POST['menuType'];
@@ -341,19 +342,25 @@ function controleurAfficherLogs($filename, $lines) {
     if (!file_exists($filename)) {
         return ["Fichier introuvable."];
     }
-    $file = fopen($filename, "r");
+
+    $file = fopen($filename, "rb"); // Mode binaire pour compatibilité Windows/Linux
     if (!$file) {
         return ["Impossible d'ouvrir le fichier."];
     }
+
     $buffer = [];
     while (!feof($file)) {
-        $buffer[] = fgets($file);
-        if (count($buffer) > $lines) {
-            array_shift($buffer);
+        $line = fgets($file);
+        if ($line !== false) {
+            $buffer[] = rtrim($line); // Supprime les retours à la ligne inutiles
+            if (count($buffer) > $lines) {
+                array_shift($buffer);
+            }
         }
     }
     fclose($file);
-    return array_filter($buffer);
+
+    return $buffer; // Retourne les logs sous forme de tableau
 }
 
 
@@ -444,10 +451,21 @@ function controleurSupprimerVideo($idVideo){
     exit();
 }
 
+/**
+ * \fn controleurRecupererAutorisationsProfesseurs()
+ * \brief Récupère les autorisations des professeurs
+ */
 function controleurRecupererAutorisationsProfesseurs(){
     return recupererAutorisationsProfesseurs();
 }
 
+/**
+ * \fn controleurMettreAJourAutorisations($prof, $colonne, $etat)
+ * \brief Appelle la fonction met à jour les autorisations des utilisateurs
+ * \param prof - utilisateur (professeur) dont on meut modifier les informations
+ * \param colonne - Type de l'autorisation à modifier (modifier, diffuser, ...)
+ * \param etat - Booléen : 1 si case cochée
+ */
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
 }
@@ -534,5 +552,22 @@ function controleurArborescence($directory, $ftp_server){
             }
         }
     }    
+}
+
+/**
+ * \fn controleucontroleurLancerFonctionTransfertrSupprimerVideo()
+ * \brief Lance la fonction de transfert via une commande exec
+ */
+function controleurLancerFonctionTransfert(){
+    exec('php /var/www/html/fonctions/scriptFonctionTransfert.php > /dev/null 2>&1 &');
+    //#RISQUE : Afficher un message d'erreur si le script a renvoyé un output d'erreur.
+}
+
+ /**
+ * \fn controleurcreateDBDumpLauncher()
+ * \brief Appelle la fonction qui créé la sauvegarde de la base de données
+ */
+function controleurcreateDBDumpLauncher(){
+    createDatabaseSave();
 }
 ?>

@@ -6,10 +6,16 @@ controleurVerifierAccesPage(ACCES_ADMINISTRATION);
 $listeProfesseurs = controleurRecupererAutorisationsProfesseurs();
 $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonnees();
 // Appel des logs 
-$logFile = '../ressources/historique.log'; // Chemin du fichier log
-$maxLines = NBR_LIGNES_LOGS; // Nombre maximum de lignes à afficher
-$logs = controleurAfficherLogs($logFile, $maxLines);
+$logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_GENERAL; // Chemin du fichier log
+$maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
+$logsGeneraux = controleurAfficherLogs($logFile, $maxLines);
+$logsGeneraux = array_reverse($logsGeneraux); // Pour afficher les logs les plus récentes aux plus vieilles
 
+//Pour les logs des sauvegardes de la BD
+$logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_SAUVEGARDE;
+$maxLines = NB_LIGNES_LOGS;
+$logsSauvegardesBDD = controleurAfficherLogs($logFile, $maxLines);
+$logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +27,7 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/pageAdministration.css" rel="stylesheet">
     <link href="../ressources/Style/transfert.css" rel="stylesheet">
+    <link href="../ressources/Style/sauvegarde.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
 
     <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
@@ -37,14 +44,45 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
         <?php //On cache la page des autorisation si on est pas admin
-            if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+            if($_SESSION["role"] == ROLE_ADMINISTRATEUR){ ?>
                 <div class="tab" data-tab="users">Gérer les utilisateurs</div>
         <?php } ?>
     </div>
     
     <div class="tab-content" id="database">
-        <h2>BDD</h2>
-        <p>WORK IN PROGRESS</p>
+        <h2>Sauvegarde de la base de données</h2>
+        <div class="colonnes">
+            <div class="colonne-1">
+                <h1>Paramètre des sauvegardes</h1>
+                <div class="intervalSauvegarde">
+                    <p>Sauvegarder toutes les </p>
+                    <input type="number" name="" id="">
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Jours
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Mois
+                </div>
+                <div class="options">
+                    <input type="radio" name="drone" id=""> Années
+                </div>
+
+                <div class="dateSauvegarde">
+                    <p>à partir du : </p>
+                    <input type="date" name="" id="">
+                </div>
+
+                <a href="#" class="btn parametre">Enregistrer les paramètres</a>
+                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+            </div>
+
+            <div class="log-container colonne-2">
+                <?php foreach ($logsSauvegardesBDD as $line): ?>
+                    <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
+                <?php endforeach; ?>
+            </div>
+        </div>
     </div>
 
     <div class="tab-content" id="reconciliation">
@@ -117,11 +155,15 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
 
     <div class="tab-content" id="logs">
         <h2>Consulter les logs</h2>
-        <pre><?php echo implode("\n", $logs); ?></pre>
+        <div class="log-container">
+            <?php foreach ($logsGeneraux as $line): ?>
+                <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
+            <?php endforeach; ?>
+        </div>
     </div>
 
     <?php //On cache le contenu de la page si on est pas admin
-    if($_SESSION["role"] == ROLE_ADMINISTEUR){ ?>
+    if($_SESSION["role"] == ROLE_ADMINISTRATEUR){ ?>
         <div class="tab-content" id="users">
             <h2>Gérer les utilisateurs</h2>
             <table>
@@ -168,8 +210,9 @@ $logs = controleurAfficherLogs($logFile, $maxLines);
 </html>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
+        affichageLogsCouleurs();
         gestionOngletsAdministration();
         appelScanVideo();
-        detectionCheckboxes();
+        detectionCheckboxes(); 
     });
 </script>

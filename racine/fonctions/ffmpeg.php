@@ -72,10 +72,16 @@ function recupererMetadonnees($meta, $fichier){
     return $liste;
 }
 
-function recupererTailleFichier(){
+/**
+ * \fn recupererTailleFichier($video, $cheminFichier)
+ * \brief Fonction qui récupère la taille d'un fichier vidéo via ffmpeg
+ * \param video - Nom du fichier vidéo
+ * \param cheminFichier - Chemin complet du fichier vidéo
+ * \return string - Taille du fichier en Mo
+ */
+function recupererTailleFichier($video, $cheminFichier){
     return "XX Mb"; #RISQUE pas encore implémenté : Changement par une fonction qui récupère la taille du fichier
 }
-
 
 
 /**
@@ -124,7 +130,6 @@ function decouperVideo($titre, $duree) {
                     " -c copy \"" . $output_path . "\" -y";
             // Exécuter la commande ffmpeg
             exec($command, $output, $return_var);
-            // #RISQUE
             if ($return_var == 1) {
                 ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
             }
@@ -158,12 +163,14 @@ function convertirVideo($video){
             // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
             $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
                        "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                       "-c:a aac -b:a 64k " .                      // Bitrate audio réduit à 64 kbps
+                       "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
                        "-movflags +faststart " .                   // Optimisation pour le streaming
                        "\"$chemin_fichier_destination\"";
-            exec($command, $output, $return_var);
+            //exec($command, $output, $return_var);
+            exec($command . " 2>&1", $output, $return_var);
             if ($return_var == 1) {
-                ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($files[$file] + 1)."de la vidéo $chemin_fichier_origine.");
+                //ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($files[$file] + 1)."de la vidéo $chemin_fichier_origine.");
+                ajouterLog(LOG_CRITICAL, "Erreur FFmpeg : " . implode("\n", $output));
             }
         }
     }
