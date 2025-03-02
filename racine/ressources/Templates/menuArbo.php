@@ -8,7 +8,7 @@ $directory_local = __DIR__ . "/../../stockage";
 <div class="main-menuArbo">
     <div class="dossiers">
         <div class="menuArbo local">
-            <?php echo controleurArborescence($directory_local, "local"); ?>
+            <?php echo controleurArborescence($directory_local, ESPACE_LOCAL); ?>
         </div>
         <div class="menuArbo PAD">
             <?php echo controleurArborescence("", NAS_PAD); ?>
