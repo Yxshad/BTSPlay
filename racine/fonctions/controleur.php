@@ -58,7 +58,9 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
-      
+        if($_POST["action"] == "createDatabaseSave"){
+            controleurcreateDBDumpLauncher();
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
             $menuType = $_POST['menuType'];
@@ -570,4 +572,5 @@ function controleurLancerFonctionTransfert(){
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
 }
+
 ?>

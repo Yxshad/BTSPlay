@@ -174,7 +174,7 @@ $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
                     <th>Supprimer la vidéo</th>
                     <th>Administrer le site</th>
                 </tr>
-                <?php foreach($listeProfesseurs as $professeur){ ?>                    
+                <?php foreach($listeProfesseurs as $professeur){ ?>
                     <tr>
                         <?php 
                         if ($professeur["role"] == ROLE_ADMINISTEUR) {
