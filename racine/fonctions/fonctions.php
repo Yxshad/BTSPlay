@@ -7,7 +7,6 @@
  * \author Julien Loridant
  */
 
-
 /**
  * \fn afficherCollect($titre, $COLLECT_NAS)
  * \brief Fonction qui affiche à l'écran une collection passée en paramètre sous forme de tableau
