@@ -41,39 +41,42 @@ function connexionBD()
   */
   function insertionDonneesTechniques($listeMetadonnees)
   {
-      $connexion = connexionBD();
-      // Construction de la requête
-      $videoAAjouter = $connexion->prepare(
-          'INSERT INTO Media (
-              URI_NAS_PAD, 
-              URI_NAS_ARCH, 
-              URI_STOCKAGE_LOCAL,
-              mtd_tech_titre,
-              mtd_tech_duree,
-              mtd_tech_resolution,
-              mtd_tech_fps,
-              mtd_tech_format
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-      );
-      try {
-        if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
-          // Ajout des paramètres
-          $videoAAjouter->execute([
-            $listeMetadonnees[MTD_URI_NAS_PAD],
-            $listeMetadonnees[MTD_URI_NAS_ARCH],
-              $listeMetadonnees[MTD_URI_STOCKAGE_LOCAL],
-              $listeMetadonnees[MTD_TITRE],
-              $listeMetadonnees[MTD_DUREE],
-              $listeMetadonnees[MTD_RESOLUTION],
-              $listeMetadonnees[MTD_FPS],
-              $listeMetadonnees[MTD_FORMAT]
-          ]);
-          $connexion->commit();
-          $connexion = null;
-      } catch (Exception $e) {
-          $connexion->rollback();
-          $connexion = null;
-      }
+    ajouterLog(LOG_CRITICAL, print_r($listeMetadonnees, true));
+    $connexion = connexionBD();
+    // Construction de la requête
+    $videoAAjouter = $connexion->prepare(
+        'INSERT INTO Media (
+            URI_NAS_PAD, 
+            URI_NAS_ARCH, 
+            URI_STOCKAGE_LOCAL,
+            mtd_tech_titre,
+            mtd_tech_duree,
+            mtd_tech_resolution,
+            mtd_tech_fps,
+            mtd_tech_format
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
+    );
+    try {
+    if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
+        // Ajout des paramètres
+        $videoAAjouter->execute([
+        $listeMetadonnees[MTD_URI_NAS_PAD],
+        $listeMetadonnees[MTD_URI_NAS_ARCH],
+            $listeMetadonnees[MTD_URI_STOCKAGE_LOCAL],
+            $listeMetadonnees[MTD_TITRE],
+            $listeMetadonnees[MTD_DUREE],
+            $listeMetadonnees[MTD_RESOLUTION],
+            $listeMetadonnees[MTD_FPS],
+            $listeMetadonnees[MTD_FORMAT]
+        ]);
+        ajouterLog(LOG_CRITICAL, "Insertion correcte des données de la vidéo " . $listeMetadonnees[MTD_TITRE]);
+        $connexion->commit();
+        $connexion = null;
+    } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'insertion des données de la vidéo " . $listeMetadonnees[MTD_TITRE]);
+        $connexion->rollback();
+        $connexion = null;
+    }
   }
 
 
@@ -419,6 +422,35 @@ function insertionEtudiant($etudiant)
  }
 
  /**
+ * \fn getVideo($path)
+ * \brief Renvoie 1 si la vidéo existe dans la base de données
+ * \param path - chemin de l'espace local de la vidéo
+ */
+function getVideo($path){
+    $connexion = connexionBD();
+    $requeteVid = $connexion->prepare('SELECT 1 
+    FROM Media
+    WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');                             
+   try{
+       $requeteVid->execute([$path]);
+       $videoPresente = $requeteVid->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       if ($videoPresente) {
+            return true;
+       } 
+       else {
+           return false;
+       }   
+   }
+   catch(Exception $e)
+   {
+       $connexion->rollback();
+       $connexion = null;
+       return false;
+   }
+}
+
+ /**
  * \fn getIdVideoURIetTitre($path, $titre, $ftp_server)
  * \brief Renvoie l'id d'une vidéo
  * \param path - chemin de l'espace local de la vidéo
@@ -461,7 +493,7 @@ function getIdVideoURIetTitre($path, $titre, $ftp_server){
    }
 }
 
-/**
+ /**
  * \fn getInfosVideo($idVideo)
  * \brief Renvoie toutes les informations d'une vidéo
  * \param idVideo - ID de la vidéo dont on veut les informations
