@@ -488,23 +488,18 @@ function controleurArborescence($directory, $ftp_server){
             if ($item == '.' || $item == '..' || $item == '.gitkeep') {
                 continue;
             }
-            
             $path = $directory . '/' . $item;
             if (@ftp_chdir($connexion_PAD, $path)) {
                 afficherDossier($path, $item);
             } elseif (isVideo($item)) {
-                
                 $directory_id = substr($directory, 1) . '/';
                 $item_id = forcerExtensionMP4($item);
-    
                 $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
                 afficherVideo($path, $item, $id);
-    
             } else {
                 afficherFichier($path, $item);
             }
         }
-
     } elseif ($ftp_server == NAS_ARCH) {
         $connexion_ARCH = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
         $fichiers_ARCH = ftp_nlist($connexion_ARCH, $directory);
@@ -513,22 +508,15 @@ function controleurArborescence($directory, $ftp_server){
             if ($item == '.' || $item == '..' || $item == '.gitkeep') {
                 continue;
             }
-            
             $path = $directory . '/' . $item;
-            
-            
             if (@ftp_chdir($connexion_ARCH, $path)) {
                 afficherDossier($path, $item);
             } elseif (isVideo($item)) {
-                
                 $directory_id = substr($directory, 1) . '/';
                 $item_id = forcerExtensionMP4($item);
-                
                 $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
                 afficherVideo($path, $item, $id);
-                
             } else {
-                
                 afficherFichier($path, $item);
             }
         }
