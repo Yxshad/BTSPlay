@@ -98,6 +98,7 @@
 
     //URI DES FICHIERS GÉNÉRÉS
     const URI_FICHIER_GENERES = '../ressources/datas/';
+    const URI_DUMP_SAUVEGARDE = '../ressources/datas/dumpBD/';
 
 
     //NOMS DES FICHIERS GÉNÉRÉS
