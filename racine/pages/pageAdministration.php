@@ -177,7 +177,7 @@ $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
                 <?php foreach($listeProfesseurs as $professeur){ ?>
                     <tr>
                         <?php 
-                        if ($professeur["role"] == ROLE_ADMINISTEUR) {
+                        if ($professeur["role"] == ROLE_ADMINISTRATEUR) {
                             $desactivation = "disabled";
                             $class = "class='gris'";
                         } else {
