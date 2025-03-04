@@ -1,5 +1,9 @@
+:root{
+    --mainSombre: #27323d;
+}
+
 .main-menuArbo{
-    background: #27323d;
+    background: var(--mainSombre);
     position: fixed;
     height: 100vh;
     width: 40%;
@@ -40,6 +44,20 @@
     top: 50%;
     transform: translateY(-50%);
     font-size: 50px;
+    background: var(--mainSombre);
+    border: 1px solid var(--mainSombre);
+    color: #FFF;
+    border-radius: 0 15px 15px 0;
+}
+
+.main-menuArbo button svg{
+    width: 35px;
+    height: 35px;
+    transition: all 0.5s ease;
+}
+
+.main-menuArbo.ouvert button svg{
+    transform: rotate(180deg);
 }
 
 .dossier, .video a, .video{
