@@ -81,6 +81,9 @@ function checkHeader(){
             }
             exit;
         }
+        if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
+            echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+        }
     }
 }
 checkHeader();
@@ -573,6 +576,15 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
+}
+
+function controleurPopUp($titre, $explication, $btn1, $btn2){
+    $btn1 = json_decode($btn1, true);
+    $btn2 = json_decode($btn2, true);
+
+
+    echo '<link href="../ressources/Style/popup.css" rel="stylesheet">';
+    require '../ressources/Templates/popup.php';
 }
 
 ?>

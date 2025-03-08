@@ -26,6 +26,23 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
 <div class="container">
+
+<script>
+
+    titre = "Diffusion";
+    description = "Faire une sauvegarde de la bdd"
+    btn1 = {
+        "libelle" : 'Oui',
+        "arguments" : [["action", "scanDossierDecoupeVideo"]]
+    }
+    btn2 = {
+        "libelle" : 'Non',
+        "arguments" : []
+    }
+    afficherPopUp(titre, description, btn1, btn2);
+
+</script>
+   
     <div class="sliderVideo">
         <h2>Vos vidéos</h2>
         <div class="swiperVideo">

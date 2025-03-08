@@ -1,0 +1,57 @@
+.popup{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: 1px solid black;
+    z-index: 20;
+    padding: 20px;
+    background: #FFF;
+    border-radius: 5px;
+}
+
+.popup .btns{
+    display: flex;
+}
+
+.popup button{
+    background: #f09520;
+    font-weight: 700;
+    width: 100px;
+    padding: 10px;
+    margin: auto;
+    display: block;
+    border: none;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+}
+
+.popup button:hover,
+.popup button:focus{
+    background: #c72027;
+    color: #FFFFFF;
+}
+
+.voile-popup{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #000;
+    opacity: 0.7;
+}
+
+.popup button.cross{
+    background: transparent;
+    position: absolute;
+    top: 0;
+    background: red;
+    right: 0;
+    border-radius: 0;
+}
+
+.popup button.cross:hover,
+.popup button.cross:focus{
+    background: #c72027;
+}

@@ -400,3 +400,25 @@ function gestionOngletsArborescence() {
         });
     });
 }
+
+function retirerPopUp(){
+    document.querySelector(".popup").remove()
+    document.querySelector(".voile-popup").remove()
+}
+
+function afficherPopUp(titre, description, btn1, btn2){
+    btn1 = JSON.stringify(btn1);
+    btn2 = JSON.stringify(btn2);
+
+    fetch('../../fonctions/controleur.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1}&btn2=${btn2}`
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector('body').innerHTML += data;
+    });
+}
