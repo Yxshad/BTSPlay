@@ -1,4 +1,4 @@
 stockage/
 docs/
 racine/ressources/datas/*.log
-racine/ressources/datas/*.sql
+racine/ressources/datas/dumpBD/*.sql

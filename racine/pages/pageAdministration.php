@@ -111,7 +111,6 @@ $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
                             <!-- Résultat ajax -->
                         </div>
                         <div class="commande">
-                            <p>Commande de conversion</p>
                             <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
                         </div>
                     </div>

@@ -482,80 +482,44 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
  * \param ftp_server - Serveur dans lequelle la fonction va chercher les fichier
  */
 function controleurArborescence($directory, $ftp_server){
-
-    if ($ftp_server == NAS_PAD) {
-        $connexion_PAD = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-        $fichiers_PAD = ftp_nlist($connexion_PAD, $directory);
-
-        foreach ($fichiers_PAD as $item) {
-            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
-                continue;
-            }
-            
-            $path = $directory . '/' . $item;
-            if (@ftp_chdir($connexion_PAD, $path)) {
-                afficherDossier($path, $item);
-            } elseif (isVideo($item)) {
-                
-                $directory_id = substr($directory, 1) . '/';
-                $item_id = forcerExtensionMP4($item);
-    
-                $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
-                afficherVideo($path, $item, $id);
-    
-            } else {
-                afficherFichier($path, $item);
+    if($ftp_server == NAS_PAD || $ftp_server == NAS_ARCH){
+        if ($ftp_server == NAS_PAD) {
+            $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+        } else {
+            $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        }
+        $fichiers_NAS = ftp_nlist($conn_id, $directory);
+        foreach ($fichiers_NAS as $item) {
+            if ($item !== '.' && $item !== '..' && $item !== '.gitkeep') {
+                $path = $directory . '/' . $item;
+                if (@ftp_chdir($conn_id, $path)) {
+                    afficherDossier($path, $item);
+                } elseif (isVideo($item)) {
+                    $directory_id = substr($directory, 1) . '/';
+                    $item_id = forcerExtensionMP4($item);
+                    $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
+                    afficherVideo($path, $item, $id);
+                } else {
+                    afficherFichier($path, $item);
+                }
             }
         }
-
-    } elseif ($ftp_server == NAS_ARCH) {
-        $connexion_ARCH = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-        $fichiers_ARCH = ftp_nlist($connexion_ARCH, $directory);
-
-        foreach ($fichiers_ARCH as $item) {
-            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
-                continue;
-            }
-            
-            $path = $directory . '/' . $item;
-            
-            
-            if (@ftp_chdir($connexion_ARCH, $path)) {
-                afficherDossier($path, $item);
-            } elseif (isVideo($item)) {
-                
-                $directory_id = substr($directory, 1) . '/';
-                $item_id = forcerExtensionMP4($item);
-                
-                $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
-                afficherVideo($path, $item, $id);
-                
-            } else {
-                
-                afficherFichier($path, $item);
-            }
-        }
+        ftp_close($conn_id);
     } else {
-        
         $itemsLocal = scandir($directory);
         foreach ($itemsLocal as $item) {
-
-            if ($item == '.' || $item == '..' || $item == '.gitkeep') {
-                continue;
-            }
-            
-            $path = $directory . '/' . $item;
-            if (is_dir($path)) {
-                afficherDossier($path, $item);
-            } elseif (isVideo($item)) {
-
-                preg_match("/(?<=stockage\/).*/", $directory, $matches);
-                $directory_id = $matches[0] . "/";
-
-                $id = getIdVideoURIetTitre($directory_id, $item, $ftp_server);
-                afficherVideo($path, $item, $id);
-            } else {
-                afficherFichier($path, $item);
+            if ($item !== '.' && $item !== '..' && $item !== '.gitkeep') {
+                $path = $directory . '/' . $item;
+                if (is_dir($path)) {
+                    afficherDossier($path, $item);
+                } elseif (isVideo($item)) {
+                    preg_match("/(?<=stockage\/).*/", $directory, $matches);
+                    $directory_id = $matches[0] . "/";
+                    $id = getIdVideoURIetTitre($directory_id, $item, $ftp_server);
+                    afficherVideo($path, $item, $id);
+                } else {
+                    afficherFichier($path, $item);
+                }
             }
         }
     }    
