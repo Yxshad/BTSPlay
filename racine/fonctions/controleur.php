@@ -579,10 +579,6 @@ function controleurcreateDBDumpLauncher(){
 }
 
 function controleurPopUp($titre, $explication, $btn1, $btn2){
-    $btn1 = json_decode($btn1, true);
-    $btn2 = json_decode($btn2, true);
-
-
     echo '<link href="../ressources/Style/popup.css" rel="stylesheet">';
     require '../ressources/Templates/popup.php';
 }

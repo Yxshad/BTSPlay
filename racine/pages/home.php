@@ -29,11 +29,11 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 
 <script>
 
-    titre = "Diffusion";
-    description = "Faire une sauvegarde de la bdd"
-    btn1 = {
+    titre = "Sauvegarde de la bdd";
+    description = "Voulez-vous faire une sauvegarde de la bdd ?"
+    btn1 = { 
         "libelle" : 'Oui',
-        "arguments" : [["action", "scanDossierDecoupeVideo"]]
+        "arguments" : [["action", "createDatabaseSave"]]
     }
     btn2 = {
         "libelle" : 'Non',

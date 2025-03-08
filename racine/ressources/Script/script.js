@@ -407,18 +407,55 @@ function retirerPopUp(){
 }
 
 function afficherPopUp(titre, description, btn1, btn2){
-    btn1 = JSON.stringify(btn1);
-    btn2 = JSON.stringify(btn2);
+    btn1PHP = btn1["libelle"];
+    btn2PHP = btn2["libelle"];
 
     fetch('../../fonctions/controleur.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1}&btn2=${btn2}`
+        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1PHP}&btn2=${btn2PHP}`
     })
     .then(response => response.text())
     .then(data => {
         document.querySelector('body').innerHTML += data;
+        boutonsPopUp(btn1, btn2);
     });
+
+    
+}
+
+function boutonsPopUp(btn1, btn2){
+    document.querySelector('#btn1').addEventListener('click', function(){
+
+        let stringBody = btn1["arguments"].map((argument, index) => {
+            return argument.join('=');
+        }).join('&');
+
+        fetch('../../fonctions/controleur.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: stringBody
+        })
+        retirerPopUp()
+    })
+
+    document.querySelector('#btn2').addEventListener('click', function(){
+
+        let stringBody = btn2["arguments"].map((argument, index) => {
+            return argument.join('=');
+        }).join('&');
+
+        fetch('../../fonctions/controleur.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: stringBody
+        })
+        retirerPopUp()
+    })
 }
