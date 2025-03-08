@@ -542,9 +542,18 @@ function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
 }
 
+ /**
+ * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
+ * \brief Appelle la fonction qui créé la sauvegarde de la base de données
+ * \param titre - Racine de l'endroit qu'on veut scanner
+ * \param explication - Racine de l'endroit qu'on veut scanner
+ * \param btn1 - Racine de l'endroit qu'on veut scanner
+ * \param btn2 - Racine de l'endroit qu'on veut scanner
+ */
 function controleurPopUp($titre, $explication, $btn1, $btn2){
     echo '<link href="../ressources/Style/popup.css" rel="stylesheet">';
     require '../ressources/Templates/popup.php';
+    exit();
 }
 
 ?>

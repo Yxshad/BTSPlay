@@ -28,7 +28,7 @@
                     </a>
                 <?php }else{ ?>
 
-                    <a class="btnSousMenu">
+                    <a class="btnSousMenu" onclick="affichageSousMenu()">
                         <?php echo $_SESSION["loginUser"]; ?>
                         <div class="logo-compte">
                             <img src="../ressources/Images/account.png" alt="Compte">

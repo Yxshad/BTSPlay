@@ -25,24 +25,7 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 <?php //require_once '../ressources/Templates/menuFiltres.php'; ?>
 <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
-<div class="container">
-
-<script>
-
-    titre = "Sauvegarde de la bdd";
-    description = "Voulez-vous faire une sauvegarde de la bdd ?"
-    btn1 = { 
-        "libelle" : 'Oui',
-        "arguments" : [["action", "createDatabaseSave"]]
-    }
-    btn2 = {
-        "libelle" : 'Non',
-        "arguments" : []
-    }
-    afficherPopUp(titre, description, btn1, btn2);
-
-</script>
-   
+<div class="container">   
     <div class="sliderVideo">
         <h2>Vos vidéos</h2>
         <div class="swiperVideo">

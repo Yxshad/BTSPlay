@@ -166,11 +166,11 @@ function affichageSousMenu(){
     if(!(sousMenu == null)){
         sousMenu.style.display = "none";
         document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
-        if (sousMenu.style.display == "none") {
-            sousMenu.style.display = "block";
-        } else {
-            sousMenu.style.display = "none";
-        }
+            if (sousMenu.style.display == "none") {
+                sousMenu.style.display = "block";
+            } else {
+                sousMenu.style.display = "none";
+            }
         })
     }
 }
@@ -401,11 +401,6 @@ function gestionOngletsArborescence() {
     });
 }
 
-function retirerPopUp(){
-    document.querySelector(".popup").remove()
-    document.querySelector(".voile-popup").remove()
-}
-
 function afficherPopUp(titre, description, btn1, btn2){
     btn1PHP = btn1["libelle"];
     btn2PHP = btn2["libelle"];
@@ -426,6 +421,11 @@ function afficherPopUp(titre, description, btn1, btn2){
     
 }
 
+function retirerPopUp(){
+    document.querySelector(".popup").remove()
+    document.querySelector(".voile-popup").remove()
+}
+
 function boutonsPopUp(btn1, btn2){
     document.querySelector('#btn1').addEventListener('click', function(){
 
@@ -440,7 +440,7 @@ function boutonsPopUp(btn1, btn2){
             },
             body: stringBody
         })
-        retirerPopUp()
+        retirerPopUp();
     })
 
     document.querySelector('#btn2').addEventListener('click', function(){
