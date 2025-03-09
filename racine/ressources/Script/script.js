@@ -175,7 +175,7 @@ function affichageSousMenu(){
     }
 }
 
-function lancerConversion(event) {
+function lancerConversion() {
 
     //On bloque le bouton pour ne pas spammer la fonction de transfert
     let bouton = document.getElementById("btnConversion");
