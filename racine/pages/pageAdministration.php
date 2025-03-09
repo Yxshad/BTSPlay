@@ -114,7 +114,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS){
                             <!-- Résultat ajax -->
                         </div>
                         <div class="commande">
-                            <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
+                            <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
                         </div>
                     </div>
                 </div>

@@ -176,6 +176,13 @@ function affichageSousMenu(){
 }
 
 function lancerConversion() {
+
+    //On bloque le bouton pour ne pas spammer la fonction de transfert
+    let bouton = document.getElementById("btnConversion");
+    bouton.disabled = true;
+    bouton.innerText = "Rafraîchir la page pour relancer...";
+    bouton.classList.add("boutonGrise");
+
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         console.log(this.responseText);
