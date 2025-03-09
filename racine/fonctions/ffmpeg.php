@@ -92,24 +92,21 @@ function recupererTailleFichier($video, $cheminFichier){
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function decouperVideo($titre, $duree) {
-    
+
+    //Créer le dossier de sortie
+    $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+    creerDossier($chemin_dossier, false);
+
     $total = formaterDuree($duree);
     
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
-        $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-        creerDossier($chemin_dossier, false);
+        //Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
         rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier . '/' . $titre);
-
-        $nombreParties = 0;
-
     } else {
         $nombreParties = 100; // Diviser en 100 parties
         $dureePartie = $total / $nombreParties; // Durée de chaque partie
 
-        // Créer le dossier de sortie
-        $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-        creerDossier($chemin_dossier, false);
         for ($i = 0; $i < $nombreParties; $i++) {
             // Calculer le temps de début pour chaque partie
             $start_time = $i * $dureePartie;
