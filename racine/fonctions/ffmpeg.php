@@ -87,29 +87,28 @@ function recupererTailleFichier($video, $cheminFichier){
 /**
  * \fn decouperVideo($titre, $duree)
  * \brief Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
- * \param titre - duree de la vidéo 
+ * \param titre - nom de la vidéo 
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function decouperVideo($titre, $duree) {
-    
+
     $total = formaterDuree($duree);
     
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
+        //Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
         $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
         creerDossier($chemin_dossier, false);
         rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier . '/' . $titre);
-
-        $nombreParties = 0;
-
     } else {
         $nombreParties = 100; // Diviser en 100 parties
         $dureePartie = $total / $nombreParties; // Durée de chaque partie
 
-        // Créer le dossier de sortie
+        //Créer le dossier de sortie
         $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
         creerDossier($chemin_dossier, false);
+
         for ($i = 0; $i < $nombreParties; $i++) {
             // Calculer le temps de début pour chaque partie
             $start_time = $i * $dureePartie;
@@ -242,9 +241,13 @@ function genererMiniature($video, $duree){
 
     $miniature = $videoSansExtension . SUFFIXE_MINIATURE_VIDEO;
 
-    $command = URI_FFMPEG." -i " . $video . 
+    $command = URI_FFMPEG . " -i " . $video . 
                " -ss " . $timecode . 
-               " -vframes 1 " . $miniature;
+               " -vframes 1 " . 
+               " -vf scale=320:-1 " . // Réduction de la résolution
+               " -pix_fmt rgb8 " . // Limite à 256 couleurs
+               " -compression_level 9 " . // Compression maximale du PNG
+               $miniature;
         
     exec($command, $output, $returnVar);
     ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
