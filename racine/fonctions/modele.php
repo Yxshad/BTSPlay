@@ -41,7 +41,6 @@ function connexionBD()
   */
   function insertionDonneesTechniques($listeMetadonnees)
   {
-    ajouterLog(LOG_CRITICAL, print_r($listeMetadonnees, true));
     $connexion = connexionBD();
     // Construction de la requête
     $videoAAjouter = $connexion->prepare(
@@ -69,7 +68,6 @@ function connexionBD()
             $listeMetadonnees[MTD_FPS],
             $listeMetadonnees[MTD_FORMAT]
         ]);
-        ajouterLog(LOG_CRITICAL, "Insertion correcte des données de la vidéo " . $listeMetadonnees[MTD_TITRE]);
         $connexion->commit();
         $connexion = null;
     } catch (Exception $e) {
