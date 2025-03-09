@@ -57,7 +57,7 @@ function connexionBD()
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
     try {
-    if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
+    if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL], $listeMetadonnees[MTD_TITRE]))
         // Ajout des paramètres
         $videoAAjouter->execute([
         $listeMetadonnees[MTD_URI_NAS_PAD],
@@ -442,17 +442,18 @@ function insertionEtudiant($etudiant)
  }
 
  /**
- * \fn getVideo($path)
+ * \fn getVideo($URIStockageLocal, titreVideo)
  * \brief Renvoie 1 si la vidéo existe dans la base de données
- * \param path - chemin de l'espace local de la vidéo
+ * \param URIStockageLocal - chemin de l'espace local de la vidéo
+ * \param titreVideo - titre de la vidéo
  */
-function getVideo($path){
+function getVideo($URIStockageLocal, $titreVideo){
     $connexion = connexionBD();
     $requeteVid = $connexion->prepare('SELECT 1 
     FROM Media
     WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');                             
    try{
-       $requeteVid->execute([$path]);
+       $requeteVid->execute([$URIStockageLocal, $titreVideo]);
        $videoPresente = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($videoPresente) {
@@ -464,7 +465,7 @@ function getVideo($path){
    }
    catch(Exception $e)
    {
-        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de la vidéo " . $path .
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de la vidéo " . $URIStockageLocal . $titreVideo .
         " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
