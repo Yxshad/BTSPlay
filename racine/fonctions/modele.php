@@ -958,7 +958,7 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
     }
     catch(Exception $e)
     {
-        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des vidéos transférées sans métadonnées "
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des vidéos transférées sans métadonnées " .
         " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
