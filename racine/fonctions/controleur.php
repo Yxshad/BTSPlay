@@ -81,6 +81,9 @@ function checkHeader(){
             }
             exit;
         }
+        if($_POST["action"] == "mettreAJourParametres"){
+            controleurMettreAJourParametres();
+        }
     }
 }
 checkHeader();
@@ -540,4 +543,14 @@ function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
 }
 
+function controleurMettreAJourParametres(){
+    mettreAJourParametres();
+    
+    // Forcer un refresh de la page après la mise à jour
+    header("Refresh:0");
+    exit();
+
+    // Afficher un message de succès
+    $successMessage = "Les paramètres ont été mis à jour avec succès!";
+}
 ?>
