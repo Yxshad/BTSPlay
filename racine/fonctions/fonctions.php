@@ -561,9 +561,11 @@ function mettreAJourParametres(){
             'BD_PASSWORD' => $_POST['bd_password'],
             'URI_FICHIER_GENERES' => $_POST['uri_fichier_generes'],
             'URI_DUMP_SAUVEGARDE' => $_POST['uri_dump_sauvegarde'],
+            'URI_CONSTANTES_SAUVEGARDE' => $_POST['uri_constantes_sauvegarde'],
             'NOM_FICHIER_LOG_GENERAL' => $_POST['nom_fichier_log_general'],
             'NOM_FICHIER_LOG_SAUVEGARDE' => $_POST['nom_fichier_log_sauvegarde'],
             'SUFFIXE_FICHIER_DUMP_SAUVEGARDE' => $_POST['suffixe_fichier_dump_sauvegarde'],
+            'SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE' => $_POST['suffixe_fichier_constantes_sauvegarde'],
             'NB_VIDEOS_PAR_SWIPER' => $_POST['nb_videos_par_swiper'],
             'NB_VIDEOS_HISTORIQUE_TRANSFERT' => $_POST['nb_videos_historique_transfert'],
             'NB_LIGNES_LOGS' => $_POST['nb_lignes_logs'],
@@ -582,6 +584,14 @@ function mettreAJourParametres(){
  * \param data - Données mises à jour du formulaire de la page de paramètres
  */
 function mettreAJourConstantes($data) {
+    // Réaliser la sauvegarde du fichier
+    $cheminFichier = '../ressources/constantes.php';
+    $dossierSauvegarde = URI_CONSTANTES_SAUVEGARDE;
+
+    // Créer une copie du fichier avec un horodatage
+    $nomSauvegarde = date("j-m-Y_H-i-s_") . SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE;
+    copy($cheminFichier, $dossierSauvegarde . $nomSauvegarde);
+
     // Lire le fichier constantes.php dans un tableau
     $lines = file('../ressources/constantes.php');
 

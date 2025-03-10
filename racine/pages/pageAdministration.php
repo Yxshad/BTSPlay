@@ -226,6 +226,9 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <label for="uri_dump_sauvegarde">URI Dump Sauvegarde:</label>
             <input type="text" id="uri_dump_sauvegarde" name="uri_dump_sauvegarde" value="<?php echo URI_DUMP_SAUVEGARDE; ?>"><br><br>
             
+            <label for="uri_constantes_sauvegarde">URI Constantes Sauvegarde:</label>
+            <input type="text" id="uri_constantes_sauvegarde" name="uri_constantes_sauvegarde" value="<?php echo URI_CONSTANTES_SAUVEGARDE; ?>"><br><br>
+
             <label for="nom_fichier_log_general">Nom Fichier Log Général:</label>
             <input type="text" id="nom_fichier_log_general" name="nom_fichier_log_general" value="<?php echo NOM_FICHIER_LOG_GENERAL; ?>"><br><br>
             
@@ -235,6 +238,9 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <label for="suffixe_fichier_dump_sauvegarde">Suffixe Fichier Dump Sauvegarde:</label>
             <input type="text" id="suffixe_fichier_dump_sauvegarde" name="suffixe_fichier_dump_sauvegarde" value="<?php echo SUFFIXE_FICHIER_DUMP_SAUVEGARDE; ?>"><br><br>
             
+            <label for="suffixe_fichier_constantes_sauvegarde">Suffixe Fichier Constantes Sauvegarde:</label>
+            <input type="text" id="suffixe_fichier_constantes_sauvegarde" name="suffixe_fichier_constantes_sauvegarde" value="<?php echo SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE; ?>"><br><br>
+
             <h3>Pages</h3>
             <label for="nb_videos_par_swiper">Nombre de vidéos par Swiper:</label>
             <input type="number" id="nb_videos_par_swiper" name="nb_videos_par_swiper" value="<?php echo NB_VIDEOS_PAR_SWIPER; ?>"><br><br>

@@ -115,11 +115,13 @@ const BD_PASSWORD = 'mypassword';
 //URI DES FICHIERS GÉNÉRÉS
 const URI_FICHIER_GENERES = '../ressources/datas/';
 const URI_DUMP_SAUVEGARDE = '../ressources/datas/dumpBD/';
+const URI_CONSTANTES_SAUVEGARDE = '../ressources/datas/sauvegardeConstantes/';
 
 //NOMS DES FICHIERS GÉNÉRÉS
 const NOM_FICHIER_LOG_GENERAL = 'historique.log';
 const NOM_FICHIER_LOG_SAUVEGARDE = 'sauvegardes.log';
 const SUFFIXE_FICHIER_DUMP_SAUVEGARDE = 'sauvegarde.sql';
+const SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE = 'constantes.php';
 
 //CONSTANTES DES PAGES
 const NB_VIDEOS_PAR_SWIPER = 10;
