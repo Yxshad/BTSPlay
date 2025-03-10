@@ -40,12 +40,22 @@
 
 <div class="container">
     <div class="lecteurVideo">
-    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniatureComplet; ?>>
-        <source src="<?php echo $cheminVideoComplet; ?>" type="video/mp4"/>
-    </video>
-</div>
+        <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniatureComplet; ?>>
+            <source src="<?php echo $cheminVideoComplet; ?>" type="video/mp4"/>
+        </video>
+    </div>
     <h1 class="titre"><?php echo $nomFichier; ?></h1>
     <h2 ><?php echo $titreVideo; ?></h2>
+
+
+
+
+
+
+
+
+
+
     <div class="colonnes">
         <div class="colonne-1">
             <p class="description"><?php echo $mtdTech["Description"]; ?></p>
