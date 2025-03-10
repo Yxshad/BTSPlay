@@ -108,6 +108,9 @@
                             <p>Diffuser</p>
                         </button>
                     </form>
+                    <button onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo $nomFichier; ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', <?php echo $cheminCompletNAS_PAD; ?>]]}, {libelle : 'Oui!', arguments : []})">
+                        Diffuser
+                    </button>
                 </div>
                 <?php }
             }

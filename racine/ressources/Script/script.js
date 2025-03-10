@@ -402,8 +402,8 @@ function gestionOngletsArborescence() {
 }
 
 function afficherPopUp(titre, description, btn1, btn2){
-    btn1PHP = btn1["libelle"];
-    btn2PHP = btn2["libelle"];
+    btn1PHP = JSON.stringify(btn1);
+    btn2PHP = JSON.stringify(btn2);
 
     fetch('../../fonctions/controleur.php', {
         method: 'POST',
@@ -427,6 +427,7 @@ function retirerPopUp(){
 }
 
 function boutonsPopUp(btn1, btn2){
+    console.log(btn1);
     document.querySelector('#btn1').addEventListener('click', function(){
 
         let stringBody = btn1["arguments"].map((argument, index) => {

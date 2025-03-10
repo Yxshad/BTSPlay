@@ -25,7 +25,7 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 <?php //require_once '../ressources/Templates/menuFiltres.php'; ?>
 <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
-<div class="container">   
+<div class="container">
     <div class="sliderVideo">
         <h2>Vos vidéos</h2>
         <div class="swiperVideo">

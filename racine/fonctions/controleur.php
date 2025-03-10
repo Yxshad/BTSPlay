@@ -83,6 +83,7 @@ function checkHeader(){
         }
         if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
             echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+            exit(0);
         }
     }
 }
@@ -551,9 +552,13 @@ function controleurcreateDBDumpLauncher(){
  * \param btn2 - Racine de l'endroit qu'on veut scanner
  */
 function controleurPopUp($titre, $explication, $btn1, $btn2){
-    echo '<link href="../ressources/Style/popup.css" rel="stylesheet">';
+    if (is_string($btn1)) {
+        $btn1 = json_decode($btn1, true);
+    }
+    if (is_string($btn2)) {
+        $btn2 = json_decode($btn2, true);
+    }
     require '../ressources/Templates/popup.php';
-    exit();
 }
 
 ?>
