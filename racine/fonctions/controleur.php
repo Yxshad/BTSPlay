@@ -81,6 +81,10 @@ function checkHeader(){
             }
             exit;
         }
+        if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
+            echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+            exit(0);
+        }
     }
 }
 checkHeader();
@@ -538,6 +542,24 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
+}
+
+ /**
+ * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
+ * \brief Appelle la fonction qui créé la sauvegarde de la base de données
+ * \param titre - Racine de l'endroit qu'on veut scanner
+ * \param explication - Racine de l'endroit qu'on veut scanner
+ * \param btn1 - Racine de l'endroit qu'on veut scanner
+ * \param btn2 - Racine de l'endroit qu'on veut scanner
+ */
+function controleurPopUp($titre, $explication, $btn1, $btn2){
+    if (is_string($btn1)) {
+        $btn1 = json_decode($btn1, true);
+    }
+    if (is_string($btn2)) {
+        $btn2 = json_decode($btn2, true);
+    }
+    require '../ressources/Templates/popup.php';
 }
 
 ?>
