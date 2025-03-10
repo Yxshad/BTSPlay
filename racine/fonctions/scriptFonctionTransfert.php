@@ -210,7 +210,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
 
                 $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-                creerDossier($cheminFichierDestination, false);
+                creerDossier($cheminFichierDestination, false, false);
                 creerDossier($dossierVideo, false);
 
                 copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
