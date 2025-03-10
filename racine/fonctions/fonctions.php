@@ -237,13 +237,15 @@ function trouverNomVideo($nomFichierMiniature) {
  * \param cheminDossier - l'URI du dossier à créer
  * \param creationIncrementale - booléen qui indique si on créé de manière incrémentale
  */
-function creerDossier(&$cheminDossier, $creationIncrementale){
+function creerDossier(&$cheminDossier, $creationIncrementale, $modeErreur=true){
 	
 	// Vérifie si le dossier existe, sinon le crée
 	if (!is_dir($cheminDossier)) {
 		if (!(mkdir($cheminDossier, 0777, true))) {
-			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
-			exit();
+			if($modeErreur){
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
+                exit();
+            }
 		}
 	}
 	//Si le dossier n'existe pas, on regarde si on créé de manière incrémentale
@@ -257,7 +259,9 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
             }
             if (!(mkdir($nouveauChemin, 0777, true))) {
                 ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $nouveauChemin.");
-                exit();
+                if($modeErreur){
+                    exit();
+                }
             }
 			//Pour le passage par référence
 			$cheminDossier = $nouveauChemin;
