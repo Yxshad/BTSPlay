@@ -24,6 +24,7 @@ function connexionBD()
     }
     catch (Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la connexion à la BD : " . $e->getMessage());
         die('Erreur : ' . $e->getMessage());
     }
 }
@@ -41,7 +42,6 @@ function connexionBD()
   */
   function insertionDonneesTechniques($listeMetadonnees)
   {
-    ajouterLog(LOG_CRITICAL, print_r($listeMetadonnees, true));
     $connexion = connexionBD();
     // Construction de la requête
     $videoAAjouter = $connexion->prepare(
@@ -57,7 +57,7 @@ function connexionBD()
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
     );
     try {
-    if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL]))
+    if(!getVideo($listeMetadonnees[MTD_URI_STOCKAGE_LOCAL], $listeMetadonnees[MTD_TITRE]))
         // Ajout des paramètres
         $videoAAjouter->execute([
         $listeMetadonnees[MTD_URI_NAS_PAD],
@@ -69,11 +69,11 @@ function connexionBD()
             $listeMetadonnees[MTD_FPS],
             $listeMetadonnees[MTD_FORMAT]
         ]);
-        ajouterLog(LOG_CRITICAL, "Insertion correcte des données de la vidéo " . $listeMetadonnees[MTD_TITRE]);
         $connexion->commit();
         $connexion = null;
     } catch (Exception $e) {
-        ajouterLog(LOG_CRITICAL, "Erreur lors de l'insertion des données de la vidéo " . $listeMetadonnees[MTD_TITRE]);
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'insertion des données de la vidéo " . $listeMetadonnees[MTD_TITRE] .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }
@@ -101,6 +101,8 @@ function insertionProjet($projet)
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'insertion du projet " . $projet .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }
@@ -124,6 +126,8 @@ function insertionEtudiant($etudiant)
         }
         catch(Exception $e)
         {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de l'insertion de l'étudiant " . $etudiant .
+            " : " . $e->getMessage());
             $connexion->rollback();
             $connexion = null;
         }
@@ -160,6 +164,8 @@ function insertionEtudiant($etudiant)
         $connexion->commit();
         $connexion = null;
     } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du projet " . $projet . " à la vidéo " . $idVideo .
+        " : " . $e->getMessage());
         if ($connexion) {
             $connexion->rollback();
         }
@@ -208,6 +214,8 @@ function insertionEtudiant($etudiant)
             $connexion = null;
             }
         } catch (Exception $e) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du professeur " . $prof . " à la vidéo " . $idVideo .
+            " : " . $e->getMessage());
             if ($connexion) {
                 $connexion->rollback();
             }
@@ -252,6 +260,8 @@ function insertionEtudiant($etudiant)
         }
         catch(Exception $e)
         {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du cadreur " . $listeCadreurs . " à la vidéo " . $idVideo .
+            " : " . $e->getMessage());
             $connexion->rollback();
             $connexion = null;
         }
@@ -294,6 +304,8 @@ function insertionEtudiant($etudiant)
         }
         catch(Exception $e)
         {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du responsable son " . $listeResponsable . " à la vidéo " . $idVideo .
+            " : " . $e->getMessage());
             $connexion->rollback();
             $connexion = null;
         }
@@ -335,6 +347,8 @@ function insertionEtudiant($etudiant)
         }
         catch(Exception $e)
         {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du réalisateur " . $listeRealisateurs . " à la vidéo " . $idVideo .
+            " : " . $e->getMessage());
             $connexion->rollback();
             $connexion = null;
         }
@@ -358,6 +372,8 @@ function insertionEtudiant($etudiant)
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation de la promotion " . $valPromo . " à la vidéo " . $idVideo .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }
@@ -393,13 +409,15 @@ function insertionEtudiant($etudiant)
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du projet " . $projet .
+        " : " . $e->getMessage());
         $connexion = null;
     }
  }
 
 /**
  * \fn getIdEtudiant($etudiant)
- * \brief Renvoie l'id d'un élève
+ * \brief Renvoie l'id d'un étudiant
  * \param etudiant - Nom complet de l'étudiant
  */
  function getIdEtudiant($etudiant)
@@ -416,23 +434,26 @@ function insertionEtudiant($etudiant)
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de l'id de l'étudiant " . $etudiant .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }
  }
 
  /**
- * \fn getVideo($path)
+ * \fn getVideo($URIStockageLocal, titreVideo)
  * \brief Renvoie 1 si la vidéo existe dans la base de données
- * \param path - chemin de l'espace local de la vidéo
+ * \param URIStockageLocal - chemin de l'espace local de la vidéo
+ * \param titreVideo - titre de la vidéo
  */
-function getVideo($path){
+function getVideo($URIStockageLocal, $titreVideo){
     $connexion = connexionBD();
     $requeteVid = $connexion->prepare('SELECT 1 
     FROM Media
     WHERE URI_STOCKAGE_LOCAL = ? AND mtd_tech_titre = ?');                             
    try{
-       $requeteVid->execute([$path]);
+       $requeteVid->execute([$URIStockageLocal, $titreVideo]);
        $videoPresente = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($videoPresente) {
@@ -444,9 +465,11 @@ function getVideo($path){
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
-       return false;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de la vidéo " . $URIStockageLocal . $titreVideo .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+        return false;
    }
 }
 
@@ -487,9 +510,11 @@ function getIdVideoURIetTitre($path, $titre, $ftp_server){
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
-       return false;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de la vidéo " . $path . $titre .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+        return false;
    }
 }
 
@@ -518,8 +543,10 @@ function getInfosVideo($idVideo)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations de la vidéo " . $idVideo .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -545,9 +572,10 @@ function getURISVideo($idVideo)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       ajouterLog(LOG_INFORM, "err");
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de l'URI de la vidéo " . $idVideo . 
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -576,7 +604,7 @@ function getTitreURIEtId($nbMaxVideo) {
             return false; // Aucun résultat trouvé
         }
     } catch (Exception $e) {
-        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des URIs et titres des vidéos : " . $e->getMessage());
         if ($connexion) {
             $connexion->rollback();
         }
@@ -607,8 +635,10 @@ function getProfId($profNom, $profPrenom)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de l'id du professeur " . $profNom . $profPrenom .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -620,26 +650,26 @@ function getProfId($profNom, $profPrenom)
  */
 function getProjetIntitule($idProjet){
     $connexion = connexionBD();
-    
-    if (!$connexion) {
-        return false; // Retourner false si la connexion échoue
-    }
     try {
         $requeteProjet = $connexion->prepare('SELECT intitule FROM Projet WHERE id = ?');
         $requeteProjet->execute([$idProjet]);
         $projet = $requeteProjet->fetch(PDO::FETCH_ASSOC);
+        $connexion = null;
         return $projet ? $projet["intitule"] : false;
     } catch (Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du nom du projet " . $idProjet .
+        " : " . $e->getMessage());
         error_log("Erreur lors de la récupération du projet: " . $e->getMessage());
-        return false;
-    } finally {
-        $connexion = null; // Fermeture propre de la connexion
+        $connexion->rollback();
+        $connexion = null;
     }
 }
 
 /**
- * @getIdProjetVideo
- * @return array|false Renvoie le projet associé à la vidéo via un ID, false si aucun projet n'est attribué
+ * \fn getIdProjetVideo
+ * \brief Renvoie le projet associé à la vidéo via un ID, false si aucun projet n'est attribué
+ * \param idVideo - Id de la vidéo dont on cherche le projet
+ * \return projet - Intitulé du projet
  */
 function getIdProjetVideo($idVideo) {
     try {
@@ -652,10 +682,11 @@ function getIdProjetVideo($idVideo) {
         if (!empty($resultat)) {
             return $resultat; // Retourne un tableau
         } else {
-            return false; // Aucun résultat trouvé
+            return false;
         }
     } catch (Exception $e) {
-        ajouterLog(LOG_CRITICAL, "Erreur SQL: " . $e->getMessage());
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du nom du projet avec la vidéo " . $idVideo .
+        " : " . $e->getMessage());
         if ($connexion) {
             $connexion->rollback();
         }
@@ -685,8 +716,10 @@ function getProfNomPrenom($identifiant)
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations du professeur " . $identifiant .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -707,8 +740,10 @@ function getAllProfesseurs(){
    }
    catch(Exception $e)
    {
-       $connexion->rollback();
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations des professeurs " .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -740,6 +775,7 @@ function getParticipants($idVid) {
     $connexion = null;
 
     // #RISQUE traitement des variables si plusieurs personnes ont le même rôle
+    // #RISQUE Pas de try catch
     return [
         $realisateur ? $realisateur[0]["nomComplet"] : "",
         $cadreur ? $cadreur[0]["nomComplet"] : "",
@@ -778,6 +814,8 @@ function etudiantInBD($etudiant)
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération de l'étudiant " . $etudiant .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }
@@ -803,12 +841,11 @@ function fetchAll($sql){
             return false;
         }
     } catch (Exception $e) {
-        if ($connexion) {
-            $connexion->rollback();
-        }
+        ajouterLog(LOG_CRITICAL, "Erreur SQL " .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
         error_log('Erreur : ' . $e->getMessage());
-        return false;
     }
 }
 
@@ -834,7 +871,10 @@ function verifierPresenceVideoStockageLocal($cheminFichier, $nomFichier)
    }
    catch(Exception $e)
    {
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la vérification de la présence de la vidéo " . $cheminFichier . $nomFichier .
+        "dans le stock local : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -859,7 +899,10 @@ function connexionProfesseur($loginUser, $passwordUser){
    }
    catch(Exception $e)
    {
-       $connexion = null;
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la connexion du professeur " . $loginUser .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
    }
 }
 
@@ -886,6 +929,9 @@ function recupererProjetDerniereVideoModifiee(){
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du projet de la dernière vidéo modifiée " .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
     }
  }
@@ -913,6 +959,9 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des vidéos transférées sans métadonnées " .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
     }
  }
@@ -926,7 +975,7 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  function recupererUriTitreVideosMemeProjet($idProjet){
     $connexion = connexionBD();                     
     try{
-        //#RISQUE : Ajouter une LIMIT avec la constante NB_VIDE_PAR_SLIDER
+        //#RISQUE : Ajouter une LIMIT avec la constante NB_VIDEO_PAR_SLIDER
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
@@ -943,6 +992,9 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des vidéos du projet " . $idProjet .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
     }
  }
@@ -952,7 +1004,7 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  * \brief Indique dans la base de données que la vidéo est supprimée
  * \param idVideo - L'ID de la vidéo qu'on veut supprimer
  */
-function supprimerVideoDeBD($idVideo){
+function supprimerVideoDeBD($idVideo){ //#RISQUE : Ajouter un try catch
     $connexion = connexionBD();
     $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
     $requeteConnexion->execute([$idVideo]);
@@ -976,6 +1028,9 @@ function recupererAutorisationsProfesseurs(){
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des autorisations des professeurs " .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
     }
 }
@@ -993,6 +1048,9 @@ function recupererAutorisationsProfesseur($identifiant){
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des autorisations du professeur " . $identifiant .
+        " : " . $e->getMessage());
+        $connexion->rollback();
         $connexion = null;
     }
 }
@@ -1008,6 +1066,8 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
     }
     catch(Exception $e)
     {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la mise à jour des autorisations du professeur " . $prof .
+        " : " . $e->getMessage());
         $connexion->rollback();
         $connexion = null;
     }

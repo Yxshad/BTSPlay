@@ -474,6 +474,7 @@ function controleurRecupererAutorisationsProfesseurs(){
  */
 function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
+    ajouterLog(LOG_INFORM, "Mise à jour des autorisations du professeur " . $prof);
 }
 
 /**

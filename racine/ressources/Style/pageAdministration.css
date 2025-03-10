@@ -127,3 +127,23 @@ th {
     background-color: lightgray;
 }
 
+button{
+    background: none;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+}
+
+button:hover{
+    transform: scale(1.05);
+}
+
+.boutonGrise {
+    background-color: #ccc !important;
+    color: #666 !important;
+    border: 1px solid #aaa !important;
+    cursor: not-allowed !important;
+    opacity: 0.7 !important;
+}

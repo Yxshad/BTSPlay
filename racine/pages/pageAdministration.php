@@ -9,13 +9,16 @@ $tabDernieresVideos = controleurRecupererDernieresVideosTransfereesSansMetadonne
 $logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_GENERAL; // Chemin du fichier log
 $maxLines = NB_LIGNES_LOGS; // Nombre maximum de lignes à afficher dans les logs
 $logsGeneraux = controleurAfficherLogs($logFile, $maxLines);
-$logsGeneraux = array_reverse($logsGeneraux); // Pour afficher les logs les plus récentes aux plus vieilles
 
 //Pour les logs des sauvegardes de la BD
 $logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_SAUVEGARDE;
 $maxLines = NB_LIGNES_LOGS;
 $logsSauvegardesBDD = controleurAfficherLogs($logFile, $maxLines);
-$logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
+
+if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS){
+    $logsGeneraux = array_reverse($logsGeneraux);
+    $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
+}
 ?>
 
 <!DOCTYPE html>
@@ -111,7 +114,7 @@ $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
                             <!-- Résultat ajax -->
                         </div>
                         <div class="commande">
-                            <a class="btn" onclick="lancerConversion()">Lancer conversion</a>
+                            <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
                         </div>
                     </div>
                 </div>
