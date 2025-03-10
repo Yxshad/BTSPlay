@@ -308,7 +308,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         ftp_close($conn_id);
     }
     else{
-        return;
+        exit();
     }
 
     //Inversion des URIs, la source devient la destination
@@ -329,11 +329,13 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if($isExportSucces){
         // #RISQUE : Message de validation à l'utilisateur
-        return;
+        ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
+        //TEST EN AJOUTANT UNE POPUP DE VALIDATION
+        exit();
     }
     else{
         // #RISQUE : Message d'erreur
-        return;
+        exit();
     }
 }
 
