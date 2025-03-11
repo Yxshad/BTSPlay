@@ -423,7 +423,7 @@ function afficherMotDePasse(inputId, eyeId) {
 }
 
 // Vérifie le format de l'URI dans la page d'administration et alerte si champ incorrect
-function valideURI(inputId) {
+function validerURI(inputId) {
     var input = document.getElementById(inputId);
     var value = input.value.trim();
 
