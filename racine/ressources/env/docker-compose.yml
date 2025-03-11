@@ -1,0 +1,100 @@
+#version: '3.1'
+services:
+  php:
+    build:
+      context: ./PHP
+      dockerfile: Dockerfile
+    image: custom-php:8.3
+    container_name: php_BTSPlay
+    volumes:
+      - ./PHP/racine:/var/www/html
+      - ./PHP/apachedefaultconf:/etc/apache2/sites-available
+      - ./PHP/php.ini:/usr/local/etc/php/php.ini
+      - ./PHP/stockage/:/var/www/html/stockage
+      # - pureftpd-MAM:/etc/pure-ftpd
+    environment:
+      - PUBLICHOST=localhost
+    ports:
+      - "8000:80"
+      - "25000:21"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_BTSPlay
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: myuser
+      MYSQL_PASSWORD: mypassword
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: phpmyadmin_BTSPlay
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - "8082:80"
+    depends_on:
+      - mysql
+
+  # NAS 1 - Pure-FTPd
+  NAS_PAD:
+    image: stilliard/pure-ftpd
+    container_name: NAS_PAD
+    ports:
+      - "21000:21"
+      - "30000-30009:30000-30009"
+    environment:
+      - PUBLICHOST=localhost
+      - FTP_USER_NAME=user1
+      - FTP_USER_PASS=pass1
+      - FTP_USER_HOME=/home/ftpusers/user1
+    volumes:
+      - ./NAS_PAD:/home/ftpusers/user1
+      - pureftpd-nas-pad:/etc/pure-ftpd
+    
+  # NAS 2 - Pure-FTPd
+  NAS_ARCH:
+    image: stilliard/pure-ftpd
+    container_name: NAS_ARCH
+    ports:
+      - "22000:21"
+      - "31000-31009:30000-30009"
+    environment:
+      - PUBLICHOST=localhost
+      - FTP_USER_NAME=user2
+      - FTP_USER_PASS=pass2
+      - FTP_USER_HOME=/home/ftpusers/user2
+    volumes:
+      - ./NAS_ARCH:/home/ftpusers/user2
+      - pureftpd-nas-arch:/etc/pure-ftpd
+
+  # NAS 4 - Pure-FTPd
+  NAS_DIFF:
+    image: stilliard/pure-ftpd
+    container_name: NAS_DIFF
+    ports:
+      - "24000:21"
+      - "33000-33009:30000-30009"
+    environment:
+      - PUBLICHOST=localhost
+      - FTP_USER_NAME=user4
+      - FTP_USER_PASS=pass4
+      - FTP_USER_HOME=/home/ftpusers/user4
+    volumes:
+      - ./NAS_DIFF:/home/ftpusers/user4
+      - pureftpd-nas-diff:/etc/pure-ftpd
+
+# Définir les volumes persistants pour chaque instance de Pure-FTPd
+volumes:
+  mysql_data:
+  pureftpd-nas-pad:
+  pureftpd-nas-arch:
+  pureftpd-nas-diff:
+  # pureftpd-MAM:
