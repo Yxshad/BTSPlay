@@ -166,11 +166,11 @@ function affichageSousMenu(){
     if(!(sousMenu == null)){
         sousMenu.style.display = "none";
         document.querySelector('.btnSousMenu').addEventListener('click', (e) => {
-        if (sousMenu.style.display == "none") {
-            sousMenu.style.display = "block";
-        } else {
-            sousMenu.style.display = "none";
-        }
+            if (sousMenu.style.display == "none") {
+                sousMenu.style.display = "block";
+            } else {
+                sousMenu.style.display = "none";
+            }
         })
     }
 }
@@ -406,4 +406,70 @@ function gestionOngletsArborescence() {
             window.history.pushState({ path: newUrl }, '', newUrl);
         });
     });
+}
+
+function afficherPopUp(titre, description, btn1, btn2){
+    btn1PHP = JSON.stringify(btn1);
+    btn2PHP = JSON.stringify(btn2);
+
+    fetch('../../fonctions/controleur.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1PHP}&btn2=${btn2PHP}`
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector('body').innerHTML += data;
+        boutonsPopUp(btn1, btn2);
+    });
+
+    
+}
+
+function retirerPopUp(){
+    document.querySelector(".popup").remove()
+    document.querySelector(".voile-popup").remove()
+}
+
+function boutonsPopUp(btn1, btn2){
+    document.querySelector('#btn1').addEventListener('click', function(){
+
+        let stringBody = btn1["arguments"].map((argument, index) => {
+            return argument.join('=');
+        }).join('&');
+
+        fetch('../../fonctions/controleur.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: stringBody
+        })
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector('body').innerHTML += data;
+            boutonsPopUp(btn1, btn2);
+        });
+        retirerPopUp();
+    })
+
+    if (document.querySelector('#btn2')) {
+        document.querySelector('#btn2').addEventListener('click', function(){
+
+            let stringBody = btn2["arguments"].map((argument, index) => {
+                return argument.join('=');
+            }).join('&');
+    
+            fetch('../../fonctions/controleur.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: stringBody
+            })
+            retirerPopUp()
+        })
+    }
 }

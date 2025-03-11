@@ -48,6 +48,8 @@
     border: 1px solid var(--mainSombre);
     color: #FFF;
     border-radius: 0 15px 15px 0;
+    display: flex;
+    padding: 10px 5px;
 }
 
 .main-menuArbo button svg{
