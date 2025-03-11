@@ -480,7 +480,7 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
  * \fn controleurArborescence($directory, $ftp_server)
  * \brief Lance la fonction qui scan le répertoire local
  * \param directory - Racine de l'endroit qu'on veut scanner
- * \param ftp_server - Serveur dans lequelle la fonction va chercher les fichier
+ * \param ftp_server - Serveur dans lequel la fonction va chercher les fichiers
  */
 function controleurArborescence($directory, $ftp_server){
     if($ftp_server == NAS_PAD || $ftp_server == NAS_ARCH){
