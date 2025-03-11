@@ -271,4 +271,83 @@ function formaterDuree($duree){
     $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
     return $total;
 }
+
+function traiterVideo($titre, $duree){
+    $total = formaterDuree($duree);
+
+    $chemin_dossier_decoupe = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+    creerDossier($chemin_dossier_decoupe, false);
+
+    $chemin_dossier_convertion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
+    creerDossier($chemin_dossier_convertion, false);
+    
+    // Vérifier si la durée totale est inférieure à 100 secondes
+    if ($total < 100) {
+        //Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
+        
+        creerDossier($chemin_dossier_decoupe, false);
+        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier_decoupe . '/' . $titre);
+    } else {
+        $nombreParties = 100; // Diviser en 100 parties
+        $dureePartie = $total / $nombreParties; // Durée de chaque partie
+
+        for ($i = 0; $i < $nombreParties; $i++) {
+            // Calculer le temps de début pour chaque partie
+            $start_time = $i * $dureePartie;
+            // Formater le temps de début avec une précision correcte
+            $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
+            // Déterminer la durée effective de la partie (dernier segment peut être plus court)
+            $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+            // Chemin de sortie pour l'extrait
+            if (substr($titre, -1) == "4" ) {
+                $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+            } else{
+                $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
+            }
+            // Construire la commande ffmpeg
+            $command = URI_FFMPEG." -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
+                    " -ss " . $start_time_formatted .
+                    " -t " . $current_part_duration .
+                    " -c copy \"" . $output_path . "\" -y";
+            // Exécuter la commande ffmpeg
+            exec($command, $output, $return_var);
+            if ($return_var == 1) {
+                ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
+            }
+
+
+            
+            $chemin_fichier_origine = $output_path;
+            $chemin_fichier_destination = $chemin_dossier_convertion. '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+
+            $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
+                       "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                       "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                       "-movflags +faststart " .                   // Optimisation pour le streaming
+                       "\"$chemin_fichier_destination\"";
+            //exec($command, $output, $return_var);
+            exec($command . " 2>&1", $output, $return_var);
+            if ($return_var == 1) {
+                //ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($files[$file] + 1)."de la vidéo $chemin_fichier_origine.");
+                ajouterLog(LOG_CRITICAL, "Erreur FFmpeg : " . implode("\n", $output));
+            }
+
+
+
+
+        }
+        // Supprimer le fichier original
+        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
+
+        // On supprime le dossier des morceaux de vidéos à convertir 
+        $files = scandir($chemin_dossier_decoupe);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                unlink($chemin_dossier_decoupe . "/" . $file);
+            }
+            
+        }
+        rmdir($chemin_dossier_decoupe);
+    }
+}
 ?>

@@ -548,11 +548,11 @@ function controleurcreateDBDumpLauncher(){
 
  /**
  * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
- * \brief Appelle la fonction qui créé la sauvegarde de la base de données
- * \param titre - Racine de l'endroit qu'on veut scanner
- * \param explication - Racine de l'endroit qu'on veut scanner
- * \param btn1 - Racine de l'endroit qu'on veut scanner
- * \param btn2 - Racine de l'endroit qu'on veut scanner
+ * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
+ * \param titre - Titre afficher dans la popup
+ * \param explication - Bloc de texte afficher dans la popup
+ * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
+ * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  */
 function controleurPopUp($titre, $explication, $btn1, $btn2){
     if (is_string($btn1)) {
@@ -561,6 +561,14 @@ function controleurPopUp($titre, $explication, $btn1, $btn2){
     if (is_string($btn2)) {
         $btn2 = json_decode($btn2, true);
     }
+
+    if (!isset($btn1) && !isset($btn2)) {
+        $btn1 = [
+            "libelle" => "Oui!",
+            "arguments" => [["action","supprimerVideo"], ["idvideo", "5"]]
+        ];
+    }
+
     require '../ressources/Templates/popup.php';
 }
 
