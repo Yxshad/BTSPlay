@@ -39,7 +39,7 @@ function checkHeader(){
         }
         if ($_POST["action"] == "diffuserVideo") {
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-            controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
+            echo controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
         if ($_POST["action"] == "supprimerVideo") {
             $idVideo = $_POST['idVideo'];
@@ -331,6 +331,9 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         // #RISQUE : Message de validation à l'utilisateur
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
         //TEST EN AJOUTANT UNE POPUP DE VALIDATION
+        ajouterLog(LOG_INFORM, "Pop up activé");
+        controleurPopUp("Diffusion", "La <strong>diffusion</strong> de la vidéo <strong>$nomFichier</strong> a été réalisé avec succès");
+
         exit();
     }
     else{
@@ -554,21 +557,20 @@ function controleurcreateDBDumpLauncher(){
  * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  */
-function controleurPopUp($titre, $explication, $btn1, $btn2){
-    if (is_string($btn1)) {
-        $btn1 = json_decode($btn1, true);
-    }
-    if (is_string($btn2)) {
-        $btn2 = json_decode($btn2, true);
-    }
-
-    if (!isset($btn1) && !isset($btn2)) {
+function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
+    // Définir les boutons par défaut si aucun n'est fourni
+    if ($btn1 === null && $btn2 === null) {
         $btn1 = [
-            "libelle" => "Oui!",
-            "arguments" => [["action","supprimerVideo"], ["idvideo", "5"]]
+            "libelle" => "Confirmer",
+            "arguments" => []
         ];
     }
 
+    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
+    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
+    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
+
+    // Inclure le template de la popup
     require '../ressources/Templates/popup.php';
 }
 

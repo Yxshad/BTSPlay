@@ -434,7 +434,6 @@ function retirerPopUp(){
 }
 
 function boutonsPopUp(btn1, btn2){
-    console.log(btn1);
     document.querySelector('#btn1').addEventListener('click', function(){
 
         let stringBody = btn1["arguments"].map((argument, index) => {
@@ -448,22 +447,29 @@ function boutonsPopUp(btn1, btn2){
             },
             body: stringBody
         })
+        .then(response => response.text())
+        .then(data => {
+            document.querySelector('body').innerHTML += data;
+            boutonsPopUp(btn1, btn2);
+        });
         retirerPopUp();
     })
 
-    document.querySelector('#btn2').addEventListener('click', function(){
+    if (document.querySelector('#btn2')) {
+        document.querySelector('#btn2').addEventListener('click', function(){
 
-        let stringBody = btn2["arguments"].map((argument, index) => {
-            return argument.join('=');
-        }).join('&');
-
-        fetch('../../fonctions/controleur.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: stringBody
+            let stringBody = btn2["arguments"].map((argument, index) => {
+                return argument.join('=');
+            }).join('&');
+    
+            fetch('../../fonctions/controleur.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: stringBody
+            })
+            retirerPopUp()
         })
-        retirerPopUp()
-    })
+    }
 }
