@@ -29,9 +29,9 @@ Dans le dossier du projet, créez les sous-dossiers suivants pour organiser les 
 ```bash
 Copier
 Modifier
-mkdir NAS_ARCH NAS_PAD NAS_MPEG PHP`
-Ces dossiers serviront à stocker des fichiers de différents types de données et à configurer les services Docker correctement.`
+mkdir NAS_ARCH NAS_PAD NAS_MPEG PHP
 ```
+Ces dossiers serviront à stocker des fichiers de différents types de données et à configurer les services Docker correctement.
 
 ### 4. Initialiser le dépôt Git
 Dans le dossier PHP, ouvrez Git Bash et initialisez un dépôt Git. Ensuite, récupérez le code source du projet depuis le dépôt GitHub :
@@ -43,22 +43,23 @@ cd PHP
 git init
 git remote add bts https://github.com/Yxshad/BTSAudiovisuel.git
 git pull bts
-git switch DEV_Julien
-Cette commande va télécharger les fichiers du dépôt, et passer à la branche DEV_Julien pour la version de développement du projet.
 ```
+Cette commande va télécharger les fichiers du dépôt.
+
 ### 5. Lancer Docker
 Lancez Docker Desktop et assurez-vous qu'il fonctionne correctement. Docker devrait être en cours d'exécution avant de continuer à la prochaine étape.
 
 ### 6. Construire et démarrer les services Docker
-Dans le dossier où se trouve le fichier docker-compose.yml, exécutez les commandes suivantes pour construire les images Docker et démarrer les services :
+Dans le dossier où se trouve le fichier `docker-compose.yml`, exécutez les commandes suivantes pour construire les images Docker et démarrer les services :
 
 ```bash
 Copier
 Modifier
 docker-compose build --no-cache
 docker compose up -d
-La commande docker-compose build --no-cache construit les images sans utiliser les caches précédents, et docker compose up -d démarre les services en mode détaché.
 ```
+La commande docker-compose build `--no-cache` construit les images sans utiliser les caches précédents, et docker compose up -d démarre les services en mode détaché.
+
 ### 7. Accéder à l'application
 Une fois les services Docker démarrés, vous pouvez accéder à l'application à travers les adresses suivantes dans votre navigateur :
 
@@ -71,8 +72,8 @@ Pour accéder à la base de données via phpMyAdmin, utilisez les identifiants s
 ```bash
 Utilisateur : myuser
 Mot de passe : mypassword
-Ces identifiants permettent de vous connecter à la base de données MySQL du projet.
 ```
+Ces identifiants permettent de vous connecter à la base de données MySQL du projet.
 
 ## Commandes Docker utiles
 Voici quelques commandes Docker pratiques pour gérer le projet :
