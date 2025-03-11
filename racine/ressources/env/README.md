@@ -113,27 +113,16 @@ Copier
 Modifier
 docker exec -it <nom_du_conteneur> bash
 ```
-## Problèmes courants
-Si vous rencontrez des problèmes lors de l'installation ou de l'exécution du projet, voici quelques vérifications à effectuer :
-
-- Docker ne démarre pas ?
-Assurez-vous que Docker Desktop est bien installé et que le service Docker est en cours d'exécution.
-
-- Erreur lors du git pull ?
-Vérifiez votre connexion Internet et assurez-vous que vous avez bien les droits d'accès au dépôt Git.
-
-- phpMyAdmin ne s'affiche pas ?
-Vérifiez que tous les conteneurs sont bien démarrés avec docker ps et que le port 8082 est disponible.
 
 ## À propos
 Ce projet est destiné à fournir un environnement de développement configuré avec Docker pour le projet BTSAudiovisuel. Il comprend des services pour exécuter des applications PHP et gérer une base de données MySQL via phpMyAdmin.
 
 ## Auteurs
-CONGUISTI Nicolas
-LAVERGNE Elsa
-LORIDANT Julien
-MARRIER Axel
-MARTIN Solène
+- CONGUISTI Nicolas
+- LAVERGNE Elsa
+- LORIDANT Julien
+- MARRIER Axel
+- MARTIN Solène
 
 
 Bon travail et bienvenue sur le projet !
