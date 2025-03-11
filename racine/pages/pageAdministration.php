@@ -164,16 +164,19 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="hidden" name="action" value="mettreAJourParametres">
             <h3>URIs</h3>
             <label for="uri_racine_nas_pad">URI Racine NAS PAD:</label>
-            <input type="text" id="uri_racine_nas_pad" name="uri_racine_nas_pad" value="<?php echo URI_RACINE_NAS_PAD; ?>"><br><br>
+            <input type="text" id="uri_racine_nas_pad" name="uri_racine_nas_pad" value="<?php echo URI_RACINE_NAS_PAD; ?>" 
+                oninput="validerURI('uri_racine_nas_pad')" required><br><br>
             
             <label for="uri_racine_nas_arch">URI Racine NAS ARCH:</label>
-            <input type="text" id="uri_racine_nas_arch" name="uri_racine_nas_arch" value="<?php echo URI_RACINE_NAS_ARCH; ?>"><br><br>
+            <input type="text" id="uri_racine_nas_arch" name="uri_racine_nas_arch" value="<?php echo URI_RACINE_NAS_ARCH; ?>" 
+                oninput="validerURI('uri_racine_nas_arch')" required><br><br>
             
             <label for="uri_racine_stockage_local">URI Racine Stockage Local:</label>
             <input type="text" id="uri_racine_stockage_local" name="uri_racine_stockage_local" value="<?php echo URI_RACINE_STOCKAGE_LOCAL; ?>"><br><br>
             
             <label for="uri_racine_nas_diff">URI Racine NAS DIFF:</label>
-            <input type="text" id="uri_racine_nas_diff" name="uri_racine_nas_diff" value="<?php echo URI_RACINE_NAS_DIFF; ?>"><br><br>
+            <input type="text" id="uri_racine_nas_diff" name="uri_racine_nas_diff" value="<?php echo URI_RACINE_NAS_DIFF; ?>" 
+                oninput="validerURI('uri_racine_nas_diff')" required><br><br>
             
             <h3>Connexions FTP</h3>
             <label for="nas_pad">NAS PAD:</label>
@@ -183,8 +186,11 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="text" id="login_nas_pad" name="login_nas_pad" value="<?php echo LOGIN_NAS_PAD; ?>"><br><br>
             
             <label for="password_nas_pad">Password NAS PAD:</label>
-            <input type="password" id="password_nas_pad" name="password_nas_pad" value="<?php echo PASSWORD_NAS_PAD; ?>"><br><br>
-            
+            <input type="password" id="password_nas_pad" name="password_nas_pad" value="<?php echo PASSWORD_NAS_PAD; ?>">
+            <button type="button" onclick="afficherMotDePasse('password_nas_pad', 'eye_bd')">
+                <img id="eye_pad" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+
             <label for="nas_arch">NAS ARCH:</label>
             <input type="text" id="nas_arch" name="nas_arch" value="<?php echo NAS_ARCH; ?>"><br><br>
             
@@ -192,8 +198,11 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="text" id="login_nas_arch" name="login_nas_arch" value="<?php echo LOGIN_NAS_ARCH; ?>"><br><br>
             
             <label for="password_nas_arch">Password NAS ARCH:</label>
-            <input type="password" id="password_nas_arch" name="password_nas_arch" value="<?php echo PASSWORD_NAS_ARCH; ?>"><br><br>
-            
+            <input type="password" id="password_nas_arch" name="password_nas_arch" value="<?php echo PASSWORD_NAS_ARCH; ?>">
+            <button type="button" onclick="afficherMotDePasse('password_nas_arch', 'eye_bd')">
+                <img id="eye_arch" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+
             <label for="nas_diff">NAS DIFF:</label>
             <input type="text" id="nas_diff" name="nas_diff" value="<?php echo NAS_DIFF; ?>"><br><br>
             
@@ -201,7 +210,10 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="text" id="login_nas_diff" name="login_nas_diff" value="<?php echo LOGIN_NAS_DIFF; ?>"><br><br>
             
             <label for="password_nas_diff">Password NAS DIFF:</label>
-            <input type="password" id="password_nas_diff" name="password_nas_diff" value="<?php echo PASSWORD_NAS_DIFF; ?>"><br><br>
+            <input type="password" id="password_nas_diff" name="password_nas_diff" value="<?php echo PASSWORD_NAS_DIFF; ?>">
+            <button type="button" onclick="afficherMotDePasse('password_nas_diff', 'eye_bd')">
+                <img id="eye_diff" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
             
             <h3>Base de données</h3>
             <label for="bd_host">BD Host:</label>
@@ -217,7 +229,10 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="text" id="bd_user" name="bd_user" value="<?php echo BD_USER; ?>"><br><br>
             
             <label for="bd_password">BD Password:</label>
-            <input type="password" id="bd_password" name="bd_password" value="<?php echo BD_PASSWORD; ?>"><br><br>
+            <input type="password" id="bd_password" name="bd_password" value="<?php echo BD_PASSWORD; ?>">
+            <button type="button" onclick="afficherMotDePasse('bd_password', 'eye_bd')">
+                <img id="eye_bd" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
             
             <h3>Fichiers générés</h3>
             <label for="uri_fichier_generes">URI Fichiers Générés:</label>
@@ -230,32 +245,32 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             <input type="text" id="uri_constantes_sauvegarde" name="uri_constantes_sauvegarde" value="<?php echo URI_CONSTANTES_SAUVEGARDE; ?>"><br><br>
 
             <label for="nom_fichier_log_general">Nom Fichier Log Général:</label>
-            <input type="text" id="nom_fichier_log_general" name="nom_fichier_log_general" value="<?php echo NOM_FICHIER_LOG_GENERAL; ?>"><br><br>
+            <input type="text" id="nom_fichier_log_general" name="nom_fichier_log_general" value="<?php echo NOM_FICHIER_LOG_GENERAL; ?>" pattern=".*\.log$" title="Le fichier doit se terminer par .log" required><br><br>
             
             <label for="nom_fichier_log_sauvegarde">Nom Fichier Log Sauvegarde:</label>
-            <input type="text" id="nom_fichier_log_sauvegarde" name="nom_fichier_log_sauvegarde" value="<?php echo NOM_FICHIER_LOG_SAUVEGARDE; ?>"><br><br>
+            <input type="text" id="nom_fichier_log_sauvegarde" name="nom_fichier_log_sauvegarde" value="<?php echo NOM_FICHIER_LOG_SAUVEGARDE; ?>" pattern=".*\.log$" title="Le fichier doit se terminer par .log" required><br><br>
             
             <label for="suffixe_fichier_dump_sauvegarde">Suffixe Fichier Dump Sauvegarde:</label>
-            <input type="text" id="suffixe_fichier_dump_sauvegarde" name="suffixe_fichier_dump_sauvegarde" value="<?php echo SUFFIXE_FICHIER_DUMP_SAUVEGARDE; ?>"><br><br>
+            <input type="text" id="suffixe_fichier_dump_sauvegarde" name="suffixe_fichier_dump_sauvegarde" value="<?php echo SUFFIXE_FICHIER_DUMP_SAUVEGARDE; ?>" pattern=".*\.sql$" title="Le fichier doit se terminer par .log" required><br><br>
             
             <label for="suffixe_fichier_constantes_sauvegarde">Suffixe Fichier Constantes Sauvegarde:</label>
-            <input type="text" id="suffixe_fichier_constantes_sauvegarde" name="suffixe_fichier_constantes_sauvegarde" value="<?php echo SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE; ?>"><br><br>
+            <input type="text" id="suffixe_fichier_constantes_sauvegarde" name="suffixe_fichier_constantes_sauvegarde" value="<?php echo SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE; ?>" pattern=".*\.php$" title="Le fichier doit se terminer par .log" required><br><br>
 
             <h3>Pages</h3>
             <label for="nb_videos_par_swiper">Nombre de vidéos par Swiper:</label>
-            <input type="number" id="nb_videos_par_swiper" name="nb_videos_par_swiper" value="<?php echo NB_VIDEOS_PAR_SWIPER; ?>"><br><br>
+            <input type="number" id="nb_videos_par_swiper" min=0 name="nb_videos_par_swiper" value="<?php echo NB_VIDEOS_PAR_SWIPER; ?>"><br><br>
             
             <h3>Historique du transfert</h3>
             <label for="nb_videos_historique_transfert">Nombre de vidéos dans l'historique:</label>
-            <input type="number" id="nb_videos_historique_transfert" name="nb_videos_historique_transfert" value="<?php echo NB_VIDEOS_HISTORIQUE_TRANSFERT; ?>"><br><br>
+            <input type="number" id="nb_videos_historique_transfert" min=0  name="nb_videos_historique_transfert" value="<?php echo NB_VIDEOS_HISTORIQUE_TRANSFERT; ?>"><br><br>
             
             <h3>Logs</h3>
             <label for="nb_lignes_logs">Nombre de lignes de logs:</label>
-            <input type="number" id="nb_lignes_logs" name="nb_lignes_logs" value="<?php echo NB_LIGNES_LOGS; ?>"><br><br>
+            <input type="number" id="nb_lignes_logs" name="nb_lignes_logs" min=0 value="<?php echo NB_LIGNES_LOGS; ?>"><br><br>
             
             <h3>Multithreading</h3>
             <label for="nb_max_processus_transfert">Nombre maximum de processus de transfert:</label>
-            <input type="number" id="nb_max_processus_transfert" name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>"><br><br>
+            <input type="number" id="nb_max_processus_transfert" min=1 max=20 name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>"><br><br>
             
             <h3>Affichage des logs</h3>
             <label for="affichage_logs_plus_recents_premiers">Afficher les logs les plus récents en premier:</label>
@@ -326,5 +341,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         gestionOngletsAdministration();
         appelScanVideo();
         detectionCheckboxes(); 
+        afficherMotDePasse(inputId, eyeId);
+        validerURI(inputId);
     });
 </script>
