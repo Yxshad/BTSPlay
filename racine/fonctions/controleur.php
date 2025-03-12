@@ -84,6 +84,10 @@ function checkHeader(){
         if($_POST["action"] == "mettreAJourParametres"){
             controleurMettreAJourParametres();
         }
+        if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
+            echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+            exit(0);
+        }
     }
 }
 checkHeader();
@@ -307,7 +311,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         ftp_close($conn_id);
     }
     else{
-        return;
+        exit();
     }
 
     //Inversion des URIs, la source devient la destination
@@ -328,11 +332,15 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if($isExportSucces){
         // #RISQUE : Message de validation à l'utilisateur
-        return;
+        ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
+        //TEST EN AJOUTANT UNE POPUP DE VALIDATION
+        controleurPopUp("Diffusion", "La <strong>diffusion</strong> de la vidéo <strong>$nomFichier</strong> a été réalisé avec succès");
+
+        exit();
     }
     else{
         // #RISQUE : Message d'erreur
-        return;
+        exit();
     }
 }
 
@@ -553,4 +561,29 @@ function controleurMettreAJourParametres(){
     // Afficher un message de succès
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
+ /**
+ * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
+ * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
+ * \param titre - Titre affiché dans la popup
+ * \param explication - Bloc de texte affiché dans la popup
+ * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
+ * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
+ */
+function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
+    // Définir les boutons par défaut si aucun n'est fourni
+    if ($btn1 === null && $btn2 === null) {
+        $btn1 = [
+            "libelle" => "Confirmer",
+            "arguments" => []
+        ];
+    }
+
+    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
+    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
+    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
+
+    // Inclure le template de la popup
+    require '../ressources/Templates/popup.php';
+}
+
 ?>
