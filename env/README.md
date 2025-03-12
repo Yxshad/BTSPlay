@@ -54,14 +54,17 @@ docker compose up -d
 ```
 La commande docker-compose build `--no-cache` construit les images sans utiliser les caches précédents, et docker compose up -d démarre les services en mode détaché.
 
-### 7. Accéder à l'application
+### 7. Alimenter les serveurs NAS PAD et ARCH
+Afin de pouvoir utiliser l'application, il faut ajouter des fichiers vidéos dans les serveurs NAS PAD au format MXF et dans le NAS ARCH au format MP4.
+
+### 8. Accéder à l'application
 Une fois les services Docker démarrés, vous pouvez accéder à l'application à travers les adresses suivantes dans votre navigateur :
 
 ```bash
 PHP : http://localhost:8000
 phpMyAdmin : http://localhost:8082
 ```
-### 8. Connexion à phpMyAdmin
+### 9. Connexion à phpMyAdmin
 Pour accéder à la base de données via phpMyAdmin, utilisez les identifiants suivants :
 ```bash
 Utilisateur : myuser
