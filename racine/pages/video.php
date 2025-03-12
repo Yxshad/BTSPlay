@@ -98,7 +98,7 @@
             <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
                 <?php if(!empty($cheminCompletNAS_PAD)){ ?>
                 <div class="btnVideo">
-                    <button onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Non!', arguments : []})">
+                    <button onclick="afficherPopUp('Diffusion', 'Voulez-vous diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Continuer', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Annuler', arguments : []})">
                         Diffuser
                     </button>
                 </div>
@@ -114,7 +114,7 @@
             <?php }
             if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
                 <div class="btnVideo">
-                    <button onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment Supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
+                    <button onclick="afficherPopUp('Suppression', 'Voulez-vous supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Continuer', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Annuler', arguments : []})">
                         Supprimer
                     </button>
                 </div>

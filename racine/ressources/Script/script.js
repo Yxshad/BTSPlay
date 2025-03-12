@@ -434,42 +434,67 @@ function retirerPopUp(){
 }
 
 function boutonsPopUp(btn1, btn2){
-    document.querySelector('#btn1').addEventListener('click', function(){
+    if(document.querySelector('#btn1')){
+        document.querySelector('#btn1').addEventListener('click', function(){
+            if (btn1) {
+                if ("arguments" in btn1) {
+                    let stringBody = btn1["arguments"].map((argument, index) => {
+                        return argument.join('=');
+                    }).join('&');
 
-        let stringBody = btn1["arguments"].map((argument, index) => {
-            return argument.join('=');
-        }).join('&');
-
-        fetch('../../fonctions/controleur.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: stringBody
+                    fetch('../../fonctions/controleur.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: stringBody
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.querySelector('body').innerHTML += data;
+                        boutonsPopUp(btn1, btn2);
+                    });
+                    retirerPopUp();
+                    btn1 = null;
+                    btn2 = null;
+                } else {
+                    retirerPopUp();
+                }
+            } else{
+                retirerPopUp();
+            }
         })
-        .then(response => response.text())
-        .then(data => {
-            document.querySelector('body').innerHTML += data;
-            boutonsPopUp(btn1, btn2);
-        });
-        retirerPopUp();
-    })
+    }
 
     if (document.querySelector('#btn2')) {
         document.querySelector('#btn2').addEventListener('click', function(){
+            if (btn2) {
+                if ("arguments" in btn2) {
+                    let stringBody = btn2["arguments"].map((argument, index) => {
+                        return argument.join('=');
+                    }).join('&');
 
-            let stringBody = btn2["arguments"].map((argument, index) => {
-                return argument.join('=');
-            }).join('&');
-    
-            fetch('../../fonctions/controleur.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: stringBody
-            })
-            retirerPopUp()
+                    fetch('../../fonctions/controleur.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: stringBody
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.querySelector('body').innerHTML += data;
+                        boutonsPopUp(btn1, btn2);
+                    });
+                    retirerPopUp();
+                    btn1 = null;
+                    btn2 = null;
+                } else {
+                    retirerPopUp();
+                }
+            } else{
+                retirerPopUp();
+            }
         })
     }
 }
