@@ -68,7 +68,7 @@
                         <?php }
                     }
                     if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
-                        <button title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
+                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/modifier_video_blanc.png" alt="">
                             </div>
@@ -86,44 +86,26 @@
             </div>
         </div>
 
-        <div class="metadata_detaillee"  >
-            <p class="description"><?php echo $mtdTech["Description"]; ?></p>
-            <p class="mtd">
-                <strong>URI du NAS PAD : </strong><?php echo $URIS['URI_NAS_PAD']; ?>
-            </p>
-            <p class="mtd">
-                <strong>URI du NAS ARCH : </strong><?php echo $URIS['URI_NAS_ARCH']; ?>
-            </p>
-            <p class="mtd">
-                <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Image par secondes : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps
-            </p>
-            <p class="mtd">
-                <strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Promotion : </strong><?php echo $promotion; ?>
-            </p>
-            <p class="mtd">
-                <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?>
-            </p>
+        <div class="metadata_detaillee">
+            <p class="description"><strong>Description : </strong><?php echo $mtdTech["Description"]; ?></p>
+            <div class="metadata">
+                <div class="colonne">
+                    <p class="mtd"><strong>URI du NAS PAD : </strong><?php echo $URIS['URI_NAS_PAD']; ?></p>
+                    <p class="mtd"><strong>URI du NAS ARCH : </strong><?php echo $URIS['URI_NAS_ARCH']; ?></p>
+                    <p class="mtd"><strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?></p>
+                    <p class="mtd"><strong>Image par seconde : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps</p>
+                    <p class="mtd"><strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?></p>
+                    <p class="mtd"><strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?></p>
+                </div>
+                <div class="colonne">
+                    <p class="mtd"><strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?></p>
+                    <p class="mtd"><strong>Promotion : </strong><?php echo $promotion; ?></p>
+                    <p class="mtd"><strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?></p>
+                    <p class="mtd"><strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?></p>
+                    <p class="mtd"><strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?></p>
+                    <p class="mtd"><strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?></p>
+                </div>
+            </div>
         </div>
     </div>
 

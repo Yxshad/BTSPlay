@@ -18,9 +18,10 @@ header .container {
     align-items: center;
     background-color: #2C3E50;
     margin : 0 !important;
-    padding-right: 10%;
-    padding-left: 10%;
+
     height: 100%;
+    padding-right: 3%;
+    padding-left: 3%;
 }
 
 /* --- Logo --- */
