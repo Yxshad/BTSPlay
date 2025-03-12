@@ -334,7 +334,6 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         // #RISQUE : Message de validation à l'utilisateur
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
         //TEST EN AJOUTANT UNE POPUP DE VALIDATION
-        ajouterLog(LOG_INFORM, "Pop up activé");
         controleurPopUp("Diffusion", "La <strong>diffusion</strong> de la vidéo <strong>$nomFichier</strong> a été réalisé avec succès");
 
         exit();
