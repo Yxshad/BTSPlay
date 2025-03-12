@@ -473,3 +473,30 @@ function boutonsPopUp(btn1, btn2){
         })
     }
 }
+
+// Gère l'affichage des mots de passe de la page d'administration
+function afficherMotDePasse(inputId, eyeId) {
+    var input = document.getElementById(inputId);
+    var eyeIcon = document.getElementById(eyeId);
+
+    if (input.type === "password") {
+        input.type = "text";
+        eyeIcon.src = "../ressources/Images/eye-opened.png";
+    } else {
+        input.type = "password";
+        eyeIcon.src = "../ressources/Images/eye-closed.png";
+    }
+}
+
+// Vérifie le format de l'URI dans la page d'administration et alerte si champ incorrect
+function validerURI(inputId) {
+    var input = document.getElementById(inputId);
+    var value = input.value.trim();
+
+    if (value !== "/" && (value.startsWith("/") || !value.endsWith("/"))) {
+        input.setCustomValidity("Si l'URI est différente de '/', elle doit commencer par un caractère autre que '/' et finir par '/' (par exemple: uri/).");
+    } else {
+        input.setCustomValidity("");
+    }
+}
+

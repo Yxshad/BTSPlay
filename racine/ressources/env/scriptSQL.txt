@@ -1,0 +1,300 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Hôte : mysql
+-- Généré le : mar. 11 fév. 2025 à 17:25
+-- Version du serveur : 5.7.44
+-- Version de PHP : 8.2.26
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Base de données : `mydatabase`
+--
+
+DROP TABLE IF EXISTS `Autorisation`;
+DROP TABLE IF EXISTS `Participer`;
+DROP TABLE IF EXISTS `Media`;
+DROP TABLE IF EXISTS `Professeur`;
+DROP TABLE IF EXISTS `Projet`;
+DROP TABLE IF EXISTS `Role`;
+DROP TABLE IF EXISTS `Etudiant`;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Autorisation`
+--
+
+CREATE TABLE `Autorisation` (
+  `professeur` varchar(100) NOT NULL,
+  `modifier` tinyint(1) NOT NULL DEFAULT '0',
+  `supprimer` tinyint(1) NOT NULL DEFAULT '0',
+  `diffuser` tinyint(1) NOT NULL DEFAULT '0',
+  `administrer` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `Autorisation`
+--
+
+INSERT INTO `Autorisation` (`professeur`, `modifier`, `supprimer`, `diffuser`, `administrer`) VALUES
+('amakdessi', 0, 0, 0, 0),
+('blagoarde', 0, 0, 0, 0),
+('claplace', 0, 0, 0, 0),
+('flafittehoussat', 0, 0, 0, 0),
+('gberthome', 0, 0, 0, 0),
+('jlmathieu', 0, 0, 0, 0),
+('jmjeault', 0, 0, 0, 0),
+('jmlamagnere', 0, 0, 0, 0),
+('jrlafourcade', 0, 0, 0, 0),
+('llagoardesegot', 0, 0, 0, 0),
+('lmariesainte', 0, 0, 0, 0),
+('nconguisti', 1, 1, 1, 1),
+('plucu', 0, 0, 0, 0),
+('pverdier', 0, 0, 0, 0),
+('schareyron', 0, 0, 0, 0),
+('slescoulier', 0, 0, 0, 0),
+('smartin', 1, 1, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Etudiant`
+--
+
+CREATE TABLE `Etudiant` (
+  `id` int(11) NOT NULL,
+  `nomComplet` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Media`
+--
+
+CREATE TABLE `Media` (
+  `id` int(11) NOT NULL,
+  `projet` int(11) DEFAULT NULL,
+  `professeurReferent` varchar(100) DEFAULT NULL,
+  `promotion` varchar(100) DEFAULT NULL,
+  `Description` varchar(100) DEFAULT NULL,
+  `theme` varchar(100) DEFAULT NULL,
+  `URI_NAS_PAD` varchar(100) DEFAULT NULL,
+  `URI_NAS_ARCH` varchar(100) DEFAULT NULL,
+  `URI_STOCKAGE_LOCAL` varchar(100) DEFAULT NULL,
+  `mtd_tech_titre` varchar(100) NOT NULL,
+  `mtd_tech_duree` varchar(100) NOT NULL,
+  `mtd_tech_resolution` varchar(100) NOT NULL,
+  `mtd_tech_fps` varchar(100) NOT NULL,
+  `mtd_tech_format` varchar(100) NOT NULL,
+  `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `archive` tinyint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Participer`
+--
+
+CREATE TABLE `Participer` (
+  `idMedia` int(11) NOT NULL,
+  `idEtudiant` int(11) NOT NULL,
+  `idRole` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Professeur`
+--
+
+CREATE TABLE `Professeur` (
+  `identifiant` varchar(100) NOT NULL,
+  `nom` varchar(50) NOT NULL,
+  `prenom` varchar(50) NOT NULL,
+  `motdepasse` varchar(255) NOT NULL,
+  `role` varchar(15) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `Professeur`
+--
+
+INSERT INTO `Professeur` (`identifiant`, `nom`, `prenom`, `motdepasse`, `role`) VALUES
+('amakdessi', 'MAKDESSI', 'Aurélia', 'ca665281ccbbf4c28959d40437617a681d6d6f7088e71997ba6fbfc9e887d09b', 'Professeur'),
+('blagoarde', 'LAGOARDE', 'Beñat', '80a52be04dcfde4543a339650213e8b28be32d4e99ccef9fb1a87cf192e1ff5f', 'Professeur'),
+('claplace', 'LAPLACE', 'Christophe', '81e234882ad395d8452fc392423af728f3d2a757e4ed46f1379fa8ce8b69562f', 'Professeur'),
+('flafittehoussat', 'LAFITTE-HOUSSAT', 'François', '5000575b3421b9d731484fdbbdc42819fe851d36df7fc421ef3f5f236a6bbc85', 'Professeur'),
+('gberthome', 'BERTHOME', 'Gilles', '55184f0f32987091611a6356d91377fc071762c84928a89476a088e1fb813af3', 'Professeur'),
+('jlmathieu', 'MATHIEU', 'Jean-Luc', '6f0a4134ceed36a892514fffd50b01704dc703e75c5ba3ea160a773382a3300c', 'Professeur'),
+('jmjeault', 'JEAULT', 'Jean-Michel', 'ff2f99f2c0825a9d5795bfd6dfc34985e779c0c4f0379ece35191424132eadcc', 'Professeur'),
+('jmlamagnere', 'LAMAGNERE', 'Jean-Michel', '94f89a938f13131c33c3e51106f81463bfa5c7fcad5bf911ab8c76fd7bc39f82', 'Professeur'),
+('jrlafourcade', 'LAFOURCADE', 'Jean-Robert', 'f9ba07f33a2f948cfcdd4fd88566116c8d459868b73fefc94e33e66d9a3328a6', 'Professeur'),
+('llagoardesegot', 'LAGOARDE SEGOT', 'Lison', 'aaff1c6c3a015682d1f312bebcd6e8287ef03d1fbf83b783ba431beb03d1c9a7', 'Professeur'),
+('lmariesainte', 'MARIE SAINTE', 'Luc', '0273b8998352c94f3c52a9fb95b0e86aff8ee28f0b966ceb9e89152261d03ee0', 'Professeur'),
+('nconguisti', 'CONGUISTI', 'Nicolas', '4c5cddb7859b93eebf26c551518c021a31fa0013b2c03afa5b541cbc8bd079a6', 'Administrateur'),
+('plucu', 'LUCU', 'Pascal', 'bb9bd039139a013c3b32923a80c0b7281c7de4dee780e011067c8cd4c3a01c1a', 'Professeur'),
+('pverdier', 'VERDIER', 'Pascal', '3ba03ab1d3dd55b1d8fd836a71b916d560fba8fa595ede55b47c34a4cba72dfe', 'Professeur'),
+('schareyron', 'CHAREYRON', 'Sophie', '1ee641b706e1da6c74b0b61938fde85318b64641b0192332bb8a2eb17e09a4a4', 'Professeur'),
+('slescoulier', 'LESCOULIER', 'Serge', '4400c8bae84ecc59b13ccb5ff8bd2fad3e4b2660ac4a9b5b22e08f939da0ea22', 'Professeur'),
+('smartin', 'MARTIN', 'Solene', 'ac320379ddef12cb1c7a662727e57271b2558d8e192516eb541b9008b0941133', 'Professeur');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Projet`
+--
+
+CREATE TABLE `Projet` (
+  `id` int(11) NOT NULL,
+  `intitule` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `Projet`
+--
+
+INSERT INTO `Projet` (`id`, `intitule`) VALUES
+(1, '6h');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `Role`
+--
+
+CREATE TABLE `Role` (
+  `id` int(11) NOT NULL,
+  `libelle` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Déchargement des données de la table `Role`
+--
+
+INSERT INTO `Role` (`id`, `libelle`) VALUES
+(1, 'Cadreur'),
+(2, 'Réalisateur'),
+(3, 'Responsable Son');
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `Autorisation`
+--
+ALTER TABLE `Autorisation`
+  ADD PRIMARY KEY (`professeur`);
+
+--
+-- Index pour la table `Etudiant`
+--
+ALTER TABLE `Etudiant`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `Media`
+--
+ALTER TABLE `Media`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_projet` (`projet`),
+  ADD KEY `fk_professeur` (`professeurReferent`);
+
+--
+-- Index pour la table `Participer`
+--
+ALTER TABLE `Participer`
+  ADD PRIMARY KEY (`idMedia`,`idEtudiant`,`idRole`),
+  ADD KEY `fk_Etudiant` (`idEtudiant`),
+  ADD KEY `fk_role` (`idRole`);
+
+--
+-- Index pour la table `Professeur`
+--
+ALTER TABLE `Professeur`
+  ADD PRIMARY KEY (`identifiant`);
+
+--
+-- Index pour la table `Projet`
+--
+ALTER TABLE `Projet`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `Role`
+--
+ALTER TABLE `Role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `Etudiant`
+--
+ALTER TABLE `Etudiant`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT pour la table `Media`
+--
+ALTER TABLE `Media`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT pour la table `Projet`
+--
+ALTER TABLE `Projet`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `Role`
+--
+ALTER TABLE `Role`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- Contraintes pour les tables déchargées
+--
+
+--
+-- Contraintes pour la table `Autorisation`
+--
+ALTER TABLE `Autorisation`
+  ADD CONSTRAINT `fk_professeur_autorisation` FOREIGN KEY (`professeur`) REFERENCES `Professeur` (`identifiant`) ON DELETE CASCADE;
+
+--
+-- Contraintes pour la table `Media`
+--
+ALTER TABLE `Media`
+  ADD CONSTRAINT `fk_professeur` FOREIGN KEY (`professeurReferent`) REFERENCES `Professeur` (`identifiant`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_projet` FOREIGN KEY (`projet`) REFERENCES `Projet` (`id`) ON DELETE SET NULL;
+
+--
+-- Contraintes pour la table `Participer`
+--
+ALTER TABLE `Participer`
+  ADD CONSTRAINT `fk_Etudiant` FOREIGN KEY (`idEtudiant`) REFERENCES `Etudiant` (`id`),
+  ADD CONSTRAINT `fk_media` FOREIGN KEY (`idMedia`) REFERENCES `Media` (`id`),
+  ADD CONSTRAINT `fk_role` FOREIGN KEY (`idRole`) REFERENCES `Role` (`id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

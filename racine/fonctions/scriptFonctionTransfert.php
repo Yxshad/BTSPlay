@@ -198,9 +198,8 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
                 ftp_close($conn_id);
 
-                // **Conversion**
-                decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-                convertirVideo($video[MTD_TITRE]);
+                // **Découpe / Conversion / Fusion**
+                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
                 fusionnerVideo($video[MTD_TITRE]);
 
                 $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
