@@ -459,7 +459,7 @@ function controleurSupprimerVideo($idVideo){
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
     //controleurPopUp("Suppression", "La vidéo <strong>".$video['mtd_tech_titre']."</strong> a été supprimée avec succès.");
-    header('Location: home.php');
+    header('Location: /pages/home.php');
     exit();
 }
 
@@ -548,7 +548,6 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
-    controleurPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
 }
 
 function controleurMettreAJourParametres(){
@@ -571,16 +570,26 @@ function controleurMettreAJourParametres(){
  */
 function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
     // Définir les boutons par défaut si aucun n'est fourni
-    if ($btn1 === null && $btn2 === null) {
+    if (($btn1 === null && $btn2 === null) || ($btn1 == "null" && $btn2 == "null")) {
         $btn1 = [
             "libelle" => "Confirmer",
             "arguments" => []
         ];
     }
 
-    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
-    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
-    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
+    // Décoder les boutons si ils sont passés sous forme de chaîne JSON
+    if (is_string($btn1)) {
+        $btn1 = json_decode($btn1, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON for btn1");
+        }
+    }
+    if (is_string($btn2)) {
+        $btn2 = json_decode($btn2, true);
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new Exception("Invalid JSON for btn2");
+        }
+    }
 
     // Inclure le template de la popup
     require_once '../ressources/Templates/popup.php';

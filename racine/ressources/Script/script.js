@@ -195,15 +195,18 @@ function lancerConversion() {
 }
 
 function createDatabaseSave() {
-    const xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        console.log(this.responseText);
-    }
-    xhttp.open("POST", "../fonctions/controleur.php");
-    
-    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
-    xhttp.send("action=createDatabaseSave");
+    fetch('../../fonctions/controleur.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: "action=createDatabaseSave"
+    })
+    .then(response => response.text())
+    .then(data => {
+        document.querySelector('body').innerHTML += data;
+        afficherPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
+    });
 }
 
 function scanDossierDecoupeVideo() {
@@ -408,24 +411,30 @@ function gestionOngletsArborescence() {
     });
 }
 
-function afficherPopUp(titre, description, btn1, btn2){
-    btn1PHP = JSON.stringify(btn1);
-    btn2PHP = JSON.stringify(btn2);
+function afficherPopUp(titre, description, btn1 = null, btn2 = null) {
+    let btn1PHP = btn1 ? JSON.stringify(btn1) : null;
+    let btn2PHP = btn2 ? JSON.stringify(btn2) : null;
 
     fetch('../../fonctions/controleur.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1PHP}&btn2=${btn2PHP}`
+        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${encodeURIComponent(description)}&btn1=${btn1PHP}&btn2=${btn2PHP}`
     })
-    .then(response => response.text())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
     .then(data => {
-        document.querySelector('body').innerHTML += data;
+        document.body.insertAdjacentHTML('beforeend', data);
         boutonsPopUp(btn1, btn2);
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
     });
-
-    
 }
 
 function retirerPopUp(){

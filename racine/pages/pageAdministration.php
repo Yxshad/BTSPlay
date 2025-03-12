@@ -77,7 +77,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
 
                 <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+                <a onclick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
             </div>
 
             <div class="log-container colonne-2">
