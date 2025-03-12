@@ -27,8 +27,6 @@ Téléchargez le fichier docker-compose.yml fourni dans la ressource et placez-l
 Dans le dossier du projet, créez les sous-dossiers suivants pour organiser les fichiers et les données :
 
 ```bash
-Copier
-Modifier
 mkdir NAS_ARCH NAS_PAD NAS_MPEG PHP
 ```
 Ces dossiers serviront à stocker des fichiers de différents types de données et à configurer les services Docker correctement.
@@ -37,8 +35,6 @@ Ces dossiers serviront à stocker des fichiers de différents types de données 
 Dans le dossier PHP, ouvrez Git Bash et initialisez un dépôt Git. Ensuite, récupérez le code source du projet depuis le dépôt GitHub :
 
 ```bash
-Copier
-Modifier
 cd PHP
 git init
 git remote add bts https://github.com/Yxshad/BTSAudiovisuel.git
