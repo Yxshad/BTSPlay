@@ -237,13 +237,15 @@ function trouverNomVideo($nomFichierMiniature) {
  * \param cheminDossier - l'URI du dossier à créer
  * \param creationIncrementale - booléen qui indique si on créé de manière incrémentale
  */
-function creerDossier(&$cheminDossier, $creationIncrementale){
+function creerDossier(&$cheminDossier, $creationIncrementale, $modeErreur=true){
 	
 	// Vérifie si le dossier existe, sinon le crée
 	if (!is_dir($cheminDossier)) {
 		if (!(mkdir($cheminDossier, 0777, true))) {
-			ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
-			exit();
+			if($modeErreur){
+                ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $cheminDossier.");
+                exit();
+            }
 		}
 	}
 	//Si le dossier n'existe pas, on regarde si on créé de manière incrémentale
@@ -257,7 +259,9 @@ function creerDossier(&$cheminDossier, $creationIncrementale){
             }
             if (!(mkdir($nouveauChemin, 0777, true))) {
                 ajouterLog(LOG_FAIL, "Échec lors de la création du dossier $nouveauChemin.");
-                exit();
+                if($modeErreur){
+                    exit();
+                }
             }
 			//Pour le passage par référence
 			$cheminDossier = $nouveauChemin;
@@ -530,4 +534,88 @@ function createDatabaseSave(){
 	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 
+/*
+ * \fn mettreAJourParametres()
+ * \brief Récupère les données du formulaire de la page de paramètres et met à jour les constantes
+ */
+function mettreAJourParametres(){
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        if(empty($_POST['affichage_logs_plus_recents_premiers'])){
+            $_POST['affichage_logs_plus_recents_premiers']='off';
+        }
+        // Récupérer les données du formulaire
+        $formData = [
+            'URI_RACINE_NAS_PAD' => $_POST['uri_racine_nas_pad'],
+            'URI_RACINE_NAS_ARCH' => $_POST['uri_racine_nas_arch'],
+            'URI_RACINE_STOCKAGE_LOCAL' => $_POST['uri_racine_stockage_local'],
+            'URI_RACINE_NAS_DIFF' => $_POST['uri_racine_nas_diff'],
+            'NAS_PAD' => $_POST['nas_pad'],
+            'LOGIN_NAS_PAD' => $_POST['login_nas_pad'],
+            'PASSWORD_NAS_PAD' => $_POST['password_nas_pad'],
+            'NAS_ARCH' => $_POST['nas_arch'],
+            'LOGIN_NAS_ARCH' => $_POST['login_nas_arch'],
+            'PASSWORD_NAS_ARCH' => $_POST['password_nas_arch'],
+            'NAS_DIFF' => $_POST['nas_diff'],
+            'LOGIN_NAS_DIFF' => $_POST['login_nas_diff'],
+            'PASSWORD_NAS_DIFF' => $_POST['password_nas_diff'],
+            'BD_HOST' => $_POST['bd_host'],
+            'BD_PORT' => $_POST['bd_port'],
+            'BD_NAME' => $_POST['bd_name'],
+            'BD_USER' => $_POST['bd_user'],
+            'BD_PASSWORD' => $_POST['bd_password'],
+            'URI_FICHIER_GENERES' => $_POST['uri_fichier_generes'],
+            'URI_DUMP_SAUVEGARDE' => $_POST['uri_dump_sauvegarde'],
+            'URI_CONSTANTES_SAUVEGARDE' => $_POST['uri_constantes_sauvegarde'],
+            'NOM_FICHIER_LOG_GENERAL' => $_POST['nom_fichier_log_general'],
+            'NOM_FICHIER_LOG_SAUVEGARDE' => $_POST['nom_fichier_log_sauvegarde'],
+            'SUFFIXE_FICHIER_DUMP_SAUVEGARDE' => $_POST['suffixe_fichier_dump_sauvegarde'],
+            'SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE' => $_POST['suffixe_fichier_constantes_sauvegarde'],
+            'NB_VIDEOS_PAR_SWIPER' => $_POST['nb_videos_par_swiper'],
+            'NB_VIDEOS_HISTORIQUE_TRANSFERT' => $_POST['nb_videos_historique_transfert'],
+            'NB_LIGNES_LOGS' => $_POST['nb_lignes_logs'],
+            'NB_MAX_PROCESSUS_TRANSFERT' => $_POST['nb_max_processus_transfert'],
+            'AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS' => $_POST['affichage_logs_plus_recents_premiers'],
+        ];
+    
+        // Appeler la fonction pour mettre à jour les constantes
+        mettreAJourConstantes($formData);
+    }
+}
+
+/*
+ * \fn mettreAJourConstantes($data)
+ * \brief Met à jour les constantes pour le paramétrage du site
+ * \param data - Données mises à jour du formulaire de la page de paramètres
+ */
+function mettreAJourConstantes($data) {
+    // Réaliser la sauvegarde du fichier
+    $cheminFichier = '../ressources/constantes.php';
+    $dossierSauvegarde = URI_CONSTANTES_SAUVEGARDE;
+
+    // Créer une copie du fichier avec un horodatage
+    $nomSauvegarde = date("j-m-Y_H-i-s_") . SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE;
+    copy($cheminFichier, $dossierSauvegarde . $nomSauvegarde);
+
+    // Lire le fichier constantes.php dans un tableau
+    $lines = file('../ressources/constantes.php');
+
+    // Parcourir chaque ligne du fichier
+    foreach ($lines as &$line) {
+        // Vérifier si la ligne contient une constante
+        if (preg_match('/^\s*const\s+(\w+)\s*=\s*[\'"]?(.*?)[\'"]?\s*;/', $line, $matches)) {
+            $constantName = $matches[1]; // Nom de la constante
+            $currentValue = $matches[2]; // Valeur actuelle de la constante
+
+            // Si la constante est dans les données du formulaire et que la valeur est différente
+            if (isset($data[$constantName]) && $data[$constantName] !== $currentValue) {
+                // Mettre à jour la ligne avec la nouvelle valeur
+                $line = "const $constantName = '{$data[$constantName]}';\n";
+            }
+        }
+    }
+
+    // Réécrire le fichier avec les modifications
+    file_put_contents('../ressources/constantes.php', implode('', $lines));
+    ajouterLog(LOG_SUCCESS, "Mise à jour des paramétrages du site le ". date("j-m-Y_H-i-s").".");
+}
 ?>

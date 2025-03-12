@@ -81,6 +81,9 @@ function checkHeader(){
             }
             exit;
         }
+        if($_POST["action"] == "mettreAJourParametres"){
+            controleurMettreAJourParametres();
+        }
         if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
             echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
             exit(0);
@@ -486,7 +489,7 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
  * \fn controleurArborescence($directory, $ftp_server)
  * \brief Lance la fonction qui scan le répertoire local
  * \param directory - Racine de l'endroit qu'on veut scanner
- * \param ftp_server - Serveur dans lequelle la fonction va chercher les fichier
+ * \param ftp_server - Serveur dans lequel la fonction va chercher les fichiers
  */
 function controleurArborescence($directory, $ftp_server){
     if($ftp_server == NAS_PAD || $ftp_server == NAS_ARCH){
@@ -549,6 +552,16 @@ function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
 }
 
+function controleurMettreAJourParametres(){
+    mettreAJourParametres();
+    
+    // Forcer un refresh de la page après la mise à jour
+    header("Refresh:0");
+    exit();
+
+    // Afficher un message de succès
+    $successMessage = "Les paramètres ont été mis à jour avec succès!";
+}
  /**
  * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
  * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
