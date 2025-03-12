@@ -39,7 +39,7 @@ function checkHeader(){
         }
         if ($_POST["action"] == "diffuserVideo") {
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
-            echo controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
+            controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
         if ($_POST["action"] == "supprimerVideo") {
             $idVideo = $_POST['idVideo'];
