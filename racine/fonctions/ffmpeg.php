@@ -85,28 +85,34 @@ function recupererTailleFichier($video, $cheminFichier){
 
 
 /**
- * \fn decouperVideo($titre, $duree)
- * \brief Fonction qui permet de découper une vidéo située dans un espace local en plusieurs fragments
+ * \fn traiterVideo($titre, $duree)
+ * \brief Fonction qui permet de découper et de convertir une vidéo située dans un espace local en plusieurs fragments
  * \param titre - nom de la vidéo 
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-function decouperVideo($titre, $duree) {
-
+function traiterVideo($titre, $duree){
     $total = formaterDuree($duree);
 
-    //Créer le dossier de sortie
-    $chemin_dossier = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier, false);
+    $chemin_dossier_decoupe = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
+    creerDossier($chemin_dossier_decoupe, false);
+
+    $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
+    creerDossier($chemin_dossier_conversion, false);
     
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         //Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $chemin_dossier . '/' . $titre);
+        creerDossier($chemin_dossier_decoupe, false);
+        $output_path = $chemin_dossier_decoupe . '/' . $titre;
+        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $output_path);
+        convertirVideo($output_path, $chemin_dossier_conversion, $titre, 0, true);
+        unlink($chemin_dossier_decoupe . "/" . $titre);
+        rmdir($chemin_dossier_decoupe);
+        rmdir($chemin_dossier_conversion);
     } else {
         $nombreParties = 100; // Diviser en 100 parties
         $dureePartie = $total / $nombreParties; // Durée de chaque partie
-
         for ($i = 0; $i < $nombreParties; $i++) {
             // Calculer le temps de début pour chaque partie
             $start_time = $i * $dureePartie;
@@ -115,10 +121,10 @@ function decouperVideo($titre, $duree) {
             // Déterminer la durée effective de la partie (dernier segment peut être plus court)
             $current_part_duration = ($i == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
             // Chemin de sortie pour l'extrait
-            if (substr($titre, -1) == "4" ) {
-                $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
+            if (substr($titre, -1) == "4" ) { //#RISQUE : A refacto pour clarté avec RecupérerExtensionFichier
+                $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mp4';
             } else{
-                $output_path = $chemin_dossier . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
+                $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $i + 1) . '.mxf';
             }
             // Construire la commande ffmpeg
             $command = URI_FFMPEG." -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
@@ -130,56 +136,49 @@ function decouperVideo($titre, $duree) {
             if ($return_var == 1) {
                 ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($i + 1)."de la vidéo $titre.");
             }
+            convertirVideo($output_path, $chemin_dossier_conversion, $titre, $i+1, false);
         }
         // Supprimer le fichier original
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
+
+        // On supprime le dossier des morceaux de vidéos à convertir 
+        $files = scandir($chemin_dossier_decoupe);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                unlink($chemin_dossier_decoupe . "/" . $file);
+            }
+        }
+        rmdir($chemin_dossier_decoupe);
     }
 }
 
-
 /**
- * \fn convertirVideo($video)
- * \brief Fonction qui converti l'ensemble des parties de vidéo situées dans URI_VIDEOS_EN_ATTENTE_DE_CONVERSION et les place dans URI_VIDEOS_EN_COURS_DE_CONVERSION (à upload)
- * \param video - nom de la video 
+ * \fn convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i)
+ * \brief Fonction qui permet de convertir une vidéo passée en paramètre
+ * \param titre - nom de la vidéo 
+ * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-function convertirVideo($video){
-    // Chemin pour accéder aux dossiers des vidéos
-    $chemin_dossier_origine = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $video . '_parts';
-    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . "_parts";
-    // Création du dossier qui va stocker les morceaux de videos compressées    
-    creerDossier($chemin_dossier_destination, false);
-    // On récupère toutes les morceaux de vidéos à convertir
-    $files = scandir($chemin_dossier_origine);
-    // Pour chaque fichier on le compresse
-    foreach ($files as $file) {
-        if($file != '.' && $file != '..'){
-            $chemin_fichier_origine = $chemin_dossier_origine . '/' . $file;
-            $chemin_fichier_destination = $chemin_dossier_destination . '/' . pathinfo($file, PATHINFO_FILENAME) . '.mp4';
-            
-            // Commande pour convertir la vidéo avec des paramètres de qualité très réduits
-            $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
-                       "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                       "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
-                       "-movflags +faststart " .                   // Optimisation pour le streaming
-                       "\"$chemin_fichier_destination\"";
-            //exec($command, $output, $return_var);
-            exec($command . " 2>&1", $output, $return_var);
-            if ($return_var == 1) {
-                //ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie".($files[$file] + 1)."de la vidéo $chemin_fichier_origine.");
-                ajouterLog(LOG_CRITICAL, "Erreur FFmpeg : " . implode("\n", $output));
-            }
-        }
+function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i, $partieUnique){
+    if($partieUnique){
+        $chemin_fichier_destination = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
     }
-    // On supprime le dossier des morceaux de vidéos à convertir 
-    $files = scandir($chemin_dossier_origine);
-    foreach ($files as $file) {
-        if ($file != "." && $file != "..") {
-            unlink($chemin_dossier_origine . "/" . $file);
-        }
-        
+    else{
+        $chemin_fichier_destination = $chemin_dossier_conversion. '/' . $titre . '_part_' . sprintf('%03d', $i) . '.mp4';
     }
-    rmdir($chemin_dossier_origine);
+    $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
+                "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                "-movflags +faststart " .                   // Optimisation pour le streaming
+                "\"$chemin_fichier_destination\"";
+    //exec($command, $output, $return_var);
+    exec($command . " 2>&1", $output, $return_var);
+    if ($return_var == 1) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+        $chemin_fichier_origine . " : " . implode("\n", $output));
+
+        exit();
+    }
 }
 
 /**
@@ -203,7 +202,7 @@ function fusionnerVideo($video){
             $fileListContent .= "file '" . $file . "'\n";
         }
     }
-    // On donne le fichier txt à ffmpeg pour qu'il fusionne toutes les vidéos suivant l'ordre naturel, LE TXT N'EST PAS OPIONEL
+    // On donne le fichier txt à ffmpeg pour qu'il fusionne toutes les vidéos suivant l'ordre naturel, LE TXT N'EST PAS OPIONNEL
     $fileListPath = $chemin_dossier_origine . '/file_list.txt';
     file_put_contents($fileListPath, $fileListContent);
     $outputFile = $chemin_dossier_destination . "/" . $video;
