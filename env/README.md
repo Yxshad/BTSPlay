@@ -21,13 +21,13 @@ cd mon_projet
 ```
 
 ### 2. Télécharger le fichier docker-compose.yml
-Téléchargez le fichier docker-compose.yml fourni dans la ressource et placez-le dans ce dossier.
+Téléchargez le fichier `docker-compose.yml` fourni dans la ressource et placez-le dans ce dossier.
 
 ### 3. Créer les dossiers nécessaires
 Dans le dossier du projet, créez les sous-dossiers suivants pour organiser les fichiers et les données :
 
 ```bash
-mkdir NAS_ARCH NAS_PAD NAS_MPEG PHP
+mkdir NAS_ARCH NAS_PAD NAS_DIFF PHP
 ```
 Ces dossiers serviront à stocker des fichiers de différents types de données et à configurer les services Docker correctement.
 
@@ -75,7 +75,7 @@ Voici quelques commandes Docker pratiques pour gérer le projet :
 Construire l'image sans cache :
 
 ```bash
-docker-compose build --no-cach
+docker-compose build --no-cache
 ```
 Démarrer les services en mode détaché :
 
@@ -86,11 +86,6 @@ Arrêter les services :
 
 ```bash
 docker-compose down
-```
-Vérifier les logs des conteneurs :
-
-```bash
-docker-compose logs
 ```
 Accéder à un conteneur en cours d'exécution :
 
