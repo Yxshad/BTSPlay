@@ -434,10 +434,12 @@ function validerURI(inputId) {
     }
 }
 
+// Met en première lettre capitale les chaines de caractères
 function capitalizeWords(str) {
     return str.replace(/\b\w/g, char => char.toUpperCase());
 }
 
+// Gère les paramètres plugin de tags Tagify
 function initTagify(selector) {
     let input = document.querySelector(selector);
     let tagify = new Tagify(input, {
