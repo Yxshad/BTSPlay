@@ -53,8 +53,6 @@ Lancez Docker Desktop et assurez-vous qu'il fonctionne correctement. Docker devr
 Dans le dossier où se trouve le fichier `docker-compose.yml`, exécutez les commandes suivantes pour construire les images Docker et démarrer les services :
 
 ```bash
-Copier
-Modifier
 docker-compose build --no-cache
 docker compose up -d
 ```
@@ -81,36 +79,26 @@ Voici quelques commandes Docker pratiques pour gérer le projet :
 Construire l'image sans cache :
 
 ```bash
-Copier
-Modifier
 docker-compose build --no-cach
 ```
 Démarrer les services en mode détaché :
 
 ```bash
-Copier
-Modifier
 docker-compose up -d
 ```
 Arrêter les services :
 
 ```bash
-Copier
-Modifier
 docker-compose down
 ```
 Vérifier les logs des conteneurs :
 
 ```bash
-Copier
-Modifier
 docker-compose logs
 ```
 Accéder à un conteneur en cours d'exécution :
 
 ```bash
-Copier
-Modifier
 docker exec -it <nom_du_conteneur> bash
 ```
 
