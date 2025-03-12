@@ -564,8 +564,8 @@ function controleurMettreAJourParametres(){
  /**
  * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
  * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
- * \param titre - Titre afficher dans la popup
- * \param explication - Bloc de texte afficher dans la popup
+ * \param titre - Titre affiché dans la popup
+ * \param explication - Bloc de texte affiché dans la popup
  * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  */
