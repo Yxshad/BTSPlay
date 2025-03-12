@@ -433,3 +433,32 @@ function validerURI(inputId) {
         input.setCustomValidity("");
     }
 }
+
+function capitalizeWords(str) {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+}
+
+function initTagify(selector) {
+    let input = document.querySelector(selector);
+    let tagify = new Tagify(input, {
+        enforceWhitelist: false,
+        delimiters: ",",
+        maxTags: 10,
+        trim: true
+    });
+
+    // Avant d'ajouter un tag, on corrige la capitalisation
+    tagify.on('add', function(e) {
+        let formattedValue = capitalizeWords(e.detail.data.value);
+        e.detail.data.value = formattedValue;
+
+        // Mise à jour manuelle du tag pour afficher la version corrigée
+        tagify.replaceTag(e.detail.tag, { value: formattedValue });
+    });
+
+    // Avant l’envoi du formulaire, convertir les tags en une chaîne propre
+    input.closest("form").addEventListener("submit", function () {
+        let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
+        input.value = tags;
+    });
+}

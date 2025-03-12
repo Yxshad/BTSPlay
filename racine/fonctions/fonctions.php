@@ -416,27 +416,23 @@ function miseAJourMetadonneesVideo(
 	$cadreur, 
 	$responsableSon){
 
-		// #RISQUE : Une seule requête d'insertion sur des rôles multiples. Là c'est criminel.
-		//A voir au moment de l'ajout de multiples personnes pour un même rôle
-
 	if (!$profReferent == "") {
 		assignerProfReferent($idVid, $profReferent);
 	}
-	if (!$realisateur == "") {
-		assignerRealisateur($idVid, $realisateur);
-	}
+    
+	assignerRealisateur($idVid, $realisateur);
+	
 	if (!$promotion == "") {
 		assignerPromotion($idVid, $promotion);
 	}
 	if (!$projet == "") {
 		assignerProjet($idVid, $projet);
 	}
-	if (!$cadreur == "") {
+    
 		assignerCadreur($idVid, $cadreur);
-	}
-	if (!$responsableSon == "") {
+
 		assignerResponsable($idVid, $responsableSon);
-	}
+	
 	ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
 }
 
@@ -446,22 +442,21 @@ function miseAJourMetadonneesVideo(
  * \param video - id de la vidéo
  * \return mtdEdito - Tableau de métadonnées éditoriales qui doivent être insérées
  */
-function getMetadonneesEditorialesVideo($video){
-
-	$projet = getProjetIntitule($video["projet"]);
-	$nomPrenom = getProfNomPrenom($video["professeurReferent"]);
-	$nomPrenom = implode(" ", $nomPrenom);
-	$etudiant = getParticipants($video["id"]); 
-	
-	$mtdEdito = [
-		"projet" => $projet,
-		"professeur" => $nomPrenom,
-		"realisateur" => $etudiant[0],
-		"cadreur" => $etudiant[1],
-		"responsableSon" => $etudiant[2]
-	];
-
-	return $mtdEdito;
+function getMetadonneesEditorialesVideo($video) {
+    $projet = getProjetIntitule($video["projet"]);
+    $nomPrenom = getProfNomPrenom($video["professeurReferent"]);
+    $nomPrenom = implode(" ", $nomPrenom);
+    $etudiants = getParticipants($video["id"]);
+    
+    $mtdEdito = [
+        "projet" => $projet,
+        "professeur" => $nomPrenom,
+        "realisateur" => $etudiants['Realisateur'],
+        "cadreur" => $etudiants['Cadreur'],
+        "responsableSon" => $etudiants['Son']
+    ];
+    
+    return $mtdEdito;
 }
 
 /**
