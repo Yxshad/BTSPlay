@@ -21,15 +21,13 @@ cd mon_projet
 ```
 
 ### 2. Télécharger le fichier docker-compose.yml
-Téléchargez le fichier docker-compose.yml fourni dans la ressource et placez-le dans ce dossier.
+Téléchargez le fichier `docker-compose.yml` fourni dans la ressource et placez-le dans ce dossier.
 
 ### 3. Créer les dossiers nécessaires
 Dans le dossier du projet, créez les sous-dossiers suivants pour organiser les fichiers et les données :
 
 ```bash
-Copier
-Modifier
-mkdir NAS_ARCH NAS_PAD NAS_MPEG PHP
+mkdir NAS_ARCH NAS_PAD NAS_DIFF PHP
 ```
 Ces dossiers serviront à stocker des fichiers de différents types de données et à configurer les services Docker correctement.
 
@@ -37,8 +35,6 @@ Ces dossiers serviront à stocker des fichiers de différents types de données 
 Dans le dossier PHP, ouvrez Git Bash et initialisez un dépôt Git. Ensuite, récupérez le code source du projet depuis le dépôt GitHub :
 
 ```bash
-Copier
-Modifier
 cd PHP
 git init
 git remote add bts https://github.com/Yxshad/BTSAudiovisuel.git
@@ -53,21 +49,22 @@ Lancez Docker Desktop et assurez-vous qu'il fonctionne correctement. Docker devr
 Dans le dossier où se trouve le fichier `docker-compose.yml`, exécutez les commandes suivantes pour construire les images Docker et démarrer les services :
 
 ```bash
-Copier
-Modifier
 docker-compose build --no-cache
 docker compose up -d
 ```
 La commande docker-compose build `--no-cache` construit les images sans utiliser les caches précédents, et docker compose up -d démarre les services en mode détaché.
 
-### 7. Accéder à l'application
+### 7. Alimenter les serveurs NAS PAD et ARCH
+Afin de pouvoir utiliser l'application, il faut ajouter des fichiers vidéos dans les serveurs NAS PAD au format MXF et dans le NAS ARCH au format MP4.
+
+### 8. Accéder à l'application
 Une fois les services Docker démarrés, vous pouvez accéder à l'application à travers les adresses suivantes dans votre navigateur :
 
 ```bash
 PHP : http://localhost:8000
 phpMyAdmin : http://localhost:8082
 ```
-### 8. Connexion à phpMyAdmin
+### 9. Connexion à phpMyAdmin
 Pour accéder à la base de données via phpMyAdmin, utilisez les identifiants suivants :
 ```bash
 Utilisateur : myuser
@@ -81,36 +78,21 @@ Voici quelques commandes Docker pratiques pour gérer le projet :
 Construire l'image sans cache :
 
 ```bash
-Copier
-Modifier
-docker-compose build --no-cach
+docker-compose build --no-cache
 ```
 Démarrer les services en mode détaché :
 
 ```bash
-Copier
-Modifier
 docker-compose up -d
 ```
 Arrêter les services :
 
 ```bash
-Copier
-Modifier
 docker-compose down
-```
-Vérifier les logs des conteneurs :
-
-```bash
-Copier
-Modifier
-docker-compose logs
 ```
 Accéder à un conteneur en cours d'exécution :
 
 ```bash
-Copier
-Modifier
 docker exec -it <nom_du_conteneur> bash
 ```
 
