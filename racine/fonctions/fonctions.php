@@ -413,6 +413,7 @@ function miseAJourMetadonneesVideo(
 	$realisateur, 
 	$promotion, 
 	$projet, 
+    $description,
 	$cadreur, 
 	$responsableSon){
 
@@ -425,7 +426,7 @@ function miseAJourMetadonneesVideo(
 	if (!$projet == "") {
 		assignerProjet($idVid, $projet);
 	}
-
+    assignerDescription($idVid, $description);
     assignerRealisateur($idVid, $realisateur);
     assignerCadreur($idVid, $cadreur);
     assignerResponsable($idVid, $responsableSon);

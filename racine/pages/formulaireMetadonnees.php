@@ -7,6 +7,7 @@
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
     $titreVideo = $infosVideo["titreVideo"];
+    $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
@@ -59,6 +60,11 @@
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
                         <?php } ?>
                     </select>
+                </div>
+
+                <div class="champ">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" placeholder="<?php echo $description; ?>">
                 </div>
 
                 <div class="champ">
