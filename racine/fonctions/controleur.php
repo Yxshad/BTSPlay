@@ -323,13 +323,11 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if($isExportSucces){
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
-        //controleurPopUp("Diffusion", "La vidéo <strong>$nomFichier</strong> a été diffusée avec succès.");
-        //exit();
+        exit();
     }
     else{
-        /*controleurPopUp("Erreur", "Erreur lors de la diffusion de la vidéo <strong>$nomFichier</strong>. <br>
-        Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
-        //exit();
+        /* Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
+        exit();
     }
 }
 
@@ -552,29 +550,4 @@ function controleurMettreAJourParametres(){
     // Afficher un message de succès
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
- /**
- * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
- * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
- * \param titre - Titre affiché dans la popup
- * \param explication - Bloc de texte affiché dans la popup
- * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
- * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
- */
-/*function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
-    // Définir les boutons par défaut si aucun n'est fourni
-    if ($btn1 === null && $btn2 === null) {
-        $btn1 = [
-            "libelle" => "Confirmer",
-            "arguments" => []
-        ];
-    }
-
-    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
-    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
-    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
-
-    // Inclure le template de la popup
-    require_once '../ressources/Templates/popup.php';
-}
-*/
 ?>
