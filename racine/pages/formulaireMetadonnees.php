@@ -21,6 +21,8 @@
     <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/formulaire.css" rel="stylesheet">
+    <link rel="stylesheet" href="../ressources/lib/Tagify/tagify.css">
+    <script src="../ressources/lib/Tagify/tagify.js"></script>
     <script src="../ressources/Script/script.js"></script>
 
     <?php require_once '../ressources/Templates/header.php'; ?>
@@ -46,40 +48,45 @@
             <form method="post" action="#">
                 <input type="hidden" name="action" value="ModifierMetadonnees">
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
+
                 <div class="champ">
                     <label for="profReferent" class="form-label">Professeur référant</label>
                     <select id="profReferent" name="profReferent">
-                        <option value="<?php echo $mtdEdito["professeur"]; ?>">Professeur actuel : <?php echo $mtdEdito["professeur"]; ?></option>
+                        <option value="<?php echo $mtdEdito["professeur"]; ?>">
+                            Professeur actuel : <?php echo $mtdEdito["professeur"]; ?>
+                        </option>
                         <?php foreach ($listeProfesseurs as $prof) { ?>
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
                         <?php } ?>
                     </select>
                 </div>
-                <div class="champ">
-                    <label for="realisateur" class="form-label">Réalisateur</label>
-                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $mtdEdito["realisateur"]; ?>">
-                </div>
+
                 <div class="champ">
                     <label for="promotion">Promotion</label>
                     <input type="text" id="promotion" name="promotion" placeholder="<?php echo $promotion; ?>">
                 </div>
+
                 <div class="champ">
                     <label for="projet">Projet</label>
                     <input type="text" id="projet" name="projet" placeholder="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
+
                 <div class="champ">
-                    <label for="cadreurNom">Cadreur</label>
-                    <div class="inputs">
-                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $mtdEdito["cadreur"]; ?>">
-                    </div>
+                    <label for="realisateur">Réalisateur</label>
+                    <input type="text" id="realisateur" name="realisateur" value="<?php echo $mtdEdito["realisateur"]; ?>">
                 </div>
+
+                <div class="champ">
+                    <label for="cadreur">Cadreur</label>
+                    <input type="text" id="cadreur" name="cadreur" value="<?php echo $mtdEdito["cadreur"]; ?>">
+                </div>
+
                 <div class="champ">
                     <label for="responsableSon">Responsable son</label>
-                    <div class="inputs">
-                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $mtdEdito["responsableSon"]; ?>">
-                    </div>
+                    <input type="text" id="responsableSon" name="responsableSon" value="<?php echo $mtdEdito["responsableSon"]; ?>">
                 </div>
-                <button type="submit" class="btn">Confirmer</button> 
+
+                <button type="submit" class="btn">Confirmer</button>
             </form>
         </div>
     </div>
@@ -90,3 +97,9 @@
 </div>
 
 <?php require_once '../ressources/Templates/footer.php';?>
+
+<script>
+    initTagify("#realisateur");
+    initTagify("#cadreur");
+    initTagify("#responsableSon");
+</script>
