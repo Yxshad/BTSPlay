@@ -407,7 +407,7 @@ function gestionOngletsArborescence() {
         });
     });
 }
-
+/*
 function afficherPopUp(titre, description, btn1, btn2){
     btn1PHP = JSON.stringify(btn1);
     btn2PHP = JSON.stringify(btn2);
@@ -498,7 +498,7 @@ function boutonsPopUp(btn1, btn2){
         })
     }
 }
-
+*/
 // Gère l'affichage des mots de passe de la page d'administration
 function afficherMotDePasse(inputId, eyeId) {
     var input = document.getElementById(inputId);

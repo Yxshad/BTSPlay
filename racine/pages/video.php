@@ -98,9 +98,16 @@
             <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
                 <?php if(!empty($cheminCompletNAS_PAD)){ ?>
                 <div class="btnVideo">
-                    <button onclick="afficherPopUp('Diffusion', 'Voulez-vous diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Continuer', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Annuler', arguments : []})">
-                        Diffuser
-                    </button>
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="diffuserVideo">
+                        <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/antenne.png" alt="">
+                            </div>
+                            <p>Diffuser</p>
+                        </button>
+                    </form>
                 </div>
                 <?php }
             }
@@ -114,9 +121,17 @@
             <?php }
             if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
                 <div class="btnVideo">
-                    <button onclick="afficherPopUp('Suppression', 'Voulez-vous supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Continuer', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Annuler', arguments : []})">
-                        Supprimer
-                    </button>
+                    <form action="#" method="POST">
+                        <input type="hidden" name="action" value="supprimerVideo">
+                        <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
+                        <input type="hidden" name="URI_STOCKAGE_LOCAL" value="<?php echo $cheminVideoComplet; ?>">
+                        <button type="submit" class="boutonSubmit">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/trash.png" alt="">
+                            </div>
+                            <p>Supprimer</p>
+                        </button>
+                    </form>
                 </div>
             <?php } ?>
         </div>
