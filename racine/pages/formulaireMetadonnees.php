@@ -64,17 +64,17 @@
 
                 <div class="champ">
                     <label for="description">Description</label>
-                    <input type="text" id="description" name="description" placeholder="<?php echo $description; ?>">
+                    <input type="text" id="description" name="description" value="<?php echo $description; ?>">
                 </div>
 
                 <div class="champ">
                     <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $promotion; ?>">
+                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>">
                 </div>
 
                 <div class="champ">
                     <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet" placeholder="<?php echo $mtdEdito["projet"]; ?>">
+                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
 
                 <div class="champ">
