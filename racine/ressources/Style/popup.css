@@ -8,6 +8,8 @@
     padding: 20px;
     background: #FFF;
     border-radius: 25px;
+
+    display: none; /* Pour cacher la popup au chargement de la page */
 }
 
 .popup h1{
@@ -30,6 +32,10 @@
 
 .popup .btns{
     display: flex;
+}
+
+.popup .btn2{
+    display: None;
 }
 
 .popup button{
@@ -59,6 +65,8 @@
     height: 100vh;
     background: #000;
     opacity: 0.7;
+
+    display: none; /* Pour cacher la popup au chargement de la page */
 }
 
 .popup button.cross{

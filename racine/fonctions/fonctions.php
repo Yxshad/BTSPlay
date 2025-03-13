@@ -521,7 +521,7 @@ function afficherFichier($path, $item){ ?>
  */
 function createDatabaseSave(){
     $commandSql = 'mysqldump --user='.BD_USER.' --password='.BD_PASSWORD.' --host=mysql '.BD_NAME.' > '. URI_DUMP_SAUVEGARDE .date("j-m-Y_H-i-s_").SUFFIXE_FICHIER_DUMP_SAUVEGARDE;
-	$operationSucces = exec($commandSql);
+	$operationSucces = exec($commandSql, $output, $exitCode);
 	ajouterLog(LOG_INFORM, "Création d'une sauvegarde manuelle de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
 }
 

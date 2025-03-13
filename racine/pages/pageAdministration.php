@@ -38,6 +38,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
 
 <?php require_once '../ressources/Templates/header.php'; ?>
 
+
 <body>
     <div><h1>Administration du Site</h1></div>
     <div class="tabs">
@@ -77,7 +78,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
 
                 <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+                <a onclick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
             </div>
 
             <div class="log-container colonne-2">

@@ -197,7 +197,13 @@ function lancerConversion() {
 function createDatabaseSave() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        console.log(this.responseText);
+        
+        console.log(xhttp.responseText)
+        const reponse = xhttp.responseText.trim();
+        changerTitrePopup("Sauvegarde Réussite");
+        changerTextePopup("La sauvegarde a bien été effectué !");
+        afficherPopup();
+        
     }
     xhttp.open("POST", "../fonctions/controleur.php");
     
@@ -463,4 +469,22 @@ function initTagify(selector) {
         let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
         input.value = tags;
     });
+}
+
+function afficherPopup(){
+    document.querySelector('.popup').style.display = 'block';
+    document.querySelector('.voile-popup').style.display = 'block';
+}
+
+function cacherPopup(){
+    document.querySelector('.popup').style.display = 'none';
+    document.querySelector('.voile-popup').style.display = 'none';
+}
+
+function changerTitrePopup(nouveauTitre){
+    document.querySelector('.popup h1').innerHTML = nouveauTitre;
+}
+
+function changerTextePopup(nouveauTexte){
+    document.querySelector('.popup p').innerHTML = nouveauTexte;
 }

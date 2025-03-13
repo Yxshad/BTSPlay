@@ -550,4 +550,8 @@ function controleurMettreAJourParametres(){
     // Afficher un message de succès
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
+
+function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
+    require_once '../ressources/Templates/popup.php';
+}
 ?>
