@@ -41,7 +41,7 @@
 .main-menuArbo button{
     position: absolute;
     right: -45px;
-    top: 50%;
+    top: calc(50% + 45px);
     transform: translateY(-50%);
     font-size: 50px;
     background: var(--mainSombre);
