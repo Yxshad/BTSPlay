@@ -146,9 +146,8 @@ function initLectureVideo(){
           'captions', // Toggle captions
           'settings', // Settings menu
           'pip', // Picture-in-picture (currently Safari only)
-          'airplay', // Airplay (currently Safari only)
-          'download', // Custom download button
-          'fullscreen' // Toggle fullscreen
+          'fullscreen', // Toggle fullscreen
+          'buffered' // Buffer
         ],
         settings: ['captions', 'quality', 'speed', 'loop'],
         captions: {
@@ -467,3 +466,4 @@ function boutonsPopUp(btn1, btn2){
         retirerPopUp()
     })
 }
+

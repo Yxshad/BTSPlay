@@ -47,7 +47,7 @@
                 <input type="hidden" name="action" value="ModifierMetadonnees">
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
                 <div class="champ">
-                    <label for="profReferent" class="form-label">Professeur référant</label>
+                    <label for="profReferent" class="form-label">Professeur référent</label>
                     <select id="profReferent" name="profReferent">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">Professeur actuel : <?php echo $mtdEdito["professeur"]; ?></option>
                         <?php foreach ($listeProfesseurs as $prof) { ?>
@@ -56,7 +56,7 @@
                     </select>
                 </div>
                 <div class="champ">
-                    <label for="realisateur" class="form-label">Réalisateur</label>
+                    <label for="realisateur" class="form-label">Réalisateur(s)</label>
                     <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $mtdEdito["realisateur"]; ?>">
                 </div>
                 <div class="champ">
@@ -68,13 +68,13 @@
                     <input type="text" id="projet" name="projet" placeholder="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
                 <div class="champ">
-                    <label for="cadreurNom">Cadreur</label>
+                    <label for="cadreurNom">Cadreur(s)</label>
                     <div class="inputs">
                         <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $mtdEdito["cadreur"]; ?>">
                     </div>
                 </div>
                 <div class="champ">
-                    <label for="responsableSon">Responsable son</label>
+                    <label for="responsableSon">Responsable(s) son</label>
                     <div class="inputs">
                         <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $mtdEdito["responsableSon"]; ?>">
                     </div>

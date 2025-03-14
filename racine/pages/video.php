@@ -27,6 +27,7 @@
     <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
+    <link href="../ressources/Style/menuArbo.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
     
     <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -37,6 +38,7 @@
     <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
 
     <?php require_once '../ressources/Templates/header.php';?>
+    <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
     <div class="contenu">
         <div class="container_principal">
@@ -47,7 +49,7 @@
                     </video>
                 </div>
             </div>
-            <div class="info_video">
+                <div class="info_video">
 
                 <div class ="titre_nom">
                     <h1 class="titre"><?php echo $nomFichier; ?></h1>
@@ -62,50 +64,66 @@
                         </div>
                     </button>
 
-                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
-                        <?php if(!empty($cheminCompletNAS_PAD)){ ?>
-                            <button class="btnVideo" onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Non!', arguments : []})"></button>
-                        <?php }
-                    }
-                    if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
+                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION) && !empty($cheminCompletNAS_PAD)){ ?>
+                        <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Non!', arguments : []})">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/diffuser.png" alt="">
+                            </div>
+                        </button>
+                    <?php } ?>
+
+                    <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
                         <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/modifier_video_blanc.png" alt="">
                             </div>
                         </button>
-                    <?php }
+                    <?php } 
+
                     if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
                         <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment Supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
                             <p>
-                                supprimer
+                                Supprimer
                             </p>
                         </button>
                     <?php } ?>
                 </div>
 
             </div>
+            <div class="containerDescription">
+                <p class="description">
+                    <?php echo htmlspecialchars($mtdTech["Description"]); ?>
+                </p>
+            </div>
+            
         </div>
 
         <div class="metadata_detaillee">
-            <p class="description"><strong>Description : </strong><?php echo $mtdTech["Description"]; ?></p>
-            <div class="metadata">
-                <div class="colonne">
-                    <p class="mtd"><strong>URI du NAS PAD : </strong><?php echo $URIS['URI_NAS_PAD']; ?></p>
-                    <p class="mtd"><strong>URI du NAS ARCH : </strong><?php echo $URIS['URI_NAS_ARCH']; ?></p>
-                    <p class="mtd"><strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?></p>
-                    <p class="mtd"><strong>Image par seconde : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps</p>
-                    <p class="mtd"><strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?></p>
-                    <p class="mtd"><strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?></p>
-                </div>
-                <div class="colonne">
-                    <p class="mtd"><strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?></p>
-                    <p class="mtd"><strong>Promotion : </strong><?php echo $promotion; ?></p>
-                    <p class="mtd"><strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?></p>
-                    <p class="mtd"><strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?></p>
-                    <p class="mtd"><strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?></p>
-                    <p class="mtd"><strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?></p>
-                </div>
-            </div>
+            <table>
+                <?php
+                $metadata = [
+                    "URI du NAS PAD" => $URIS['URI_NAS_PAD'],
+                    "URI du NAS ARCH" => $URIS['URI_NAS_ARCH'],
+                    "Durée" => $mtdTech["mtd_tech_duree"],
+                    "Image par seconde" => $mtdTech["mtd_tech_fps"] . " fps",
+                    "Résolution" => $mtdTech["mtd_tech_resolution"],
+                    "Format" => $mtdTech["mtd_tech_format"],
+                    "Projet" => $mtdEdito["projet"],
+                    "Promotion" => $promotion,
+                    "Professeur référent" => $mtdEdito["professeur"],
+                    "Réalisateur(s)" => $mtdEdito["realisateur"],
+                    "Cadreur(s)" => $mtdEdito["cadreur"],
+                    "Responsable(s) Son" => $mtdEdito["responsableSon"]
+                ];
+
+                foreach ($metadata as $key => $value) {
+                    echo "<tr>";
+                    echo "<td><strong>$key</strong></td>";
+                    echo "<td>$value</td>";
+                    echo "</tr>";
+                }
+                ?>
+            </table>
         </div>
     </div>
 
@@ -115,5 +133,44 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         initLectureVideo();
+        const descriptionElement = document.querySelector(".description");
+        const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+
+        if (fullText.length > 100) {
+            const truncatedText = fullText.substring(0, 100);
+            const remainingText = fullText.substring(100);
+
+            // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+            descriptionElement.innerHTML = `
+                ${truncatedText}<span class="dots">...</span>
+                <span class="more-text" style="display: none;">${remainingText}</span>
+                <a href="#" class="toggleDescription"> voir plus</a>
+            `;
+
+            const toggleButton = descriptionElement.querySelector(".toggleDescription");
+            const moreTextElement = descriptionElement.querySelector(".more-text");
+            const dots = descriptionElement.querySelector(".dots");
+
+            toggleButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                const isHidden = moreTextElement.style.display === "none";
+
+                // Basculer entre l'affichage du texte complet et tronqué
+                moreTextElement.style.display = isHidden ? "inline" : "none";
+                dots.style.display = isHidden ? "none" : "inline";
+                toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+            });
+        }
     });
+
 </script>
+
+
+
+
+
+
+
+
+
+
