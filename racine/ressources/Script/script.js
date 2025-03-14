@@ -198,7 +198,6 @@ function createDatabaseSave() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         
-        console.log(xhttp.responseText)
         const reponse = xhttp.responseText.trim();
         changerTitrePopup("Sauvegarde Réussite");
         changerTextePopup("La sauvegarde a bien été effectué !");
@@ -487,4 +486,89 @@ function changerTitrePopup(nouveauTitre){
 
 function changerTextePopup(nouveauTexte){
     document.querySelector('.popup p').innerHTML = nouveauTexte;
+}
+
+function changerTexteBtn1(nouveauTexte){
+    document.querySelector('.popup .btn1').innerText = nouveauTexte;
+}
+
+function changerTexteBtn2(nouveauTexte){
+    document.querySelector('.popup .btn2').innerText = nouveauTexte;
+}
+
+function afficherBtn2(){
+    document.querySelector('.popup .btn2').style.display = "block";
+}
+
+function cacherBtn2(){
+    document.querySelector('.popup .btn2').style.display = "none";
+}
+
+function attribuerFonctionBtn1(fonction, args=""){
+    document.querySelector('.popup .btn1').setAttribute('data-fonctions', fonction);
+    document.querySelector('.popup .btn1').setAttribute('data-args', args);
+}
+
+function btn1(){
+    let fonction = document.querySelector('.popup .btn1').dataset["fonctions"];
+    let args = document.querySelector('.popup .btn1').dataset["args"]
+    if (args.includes(',')) {
+        args = args.split(',').map(Number)
+        if (fonction != "") {
+            window[fonction](...args);
+            attribuerFonctionBtn1(""); //détache la fonction pour évité des boucles
+        }
+    } else{
+        if (fonction != "") {
+            window[fonction](args);
+            attribuerFonctionBtn1(""); //détache la fonction pour évité des boucles
+        }
+    }
+
+    
+}
+
+function attribuerFonctionBtn2(fonction){
+    document.querySelector('.popup .btn2').setAttribute('data-fonctions', fonction);
+}
+
+function btn2(){
+    let fonction = document.querySelector('.popup .btn2').dataset["fonctions"];
+    if (fonction != "") {
+        window[fonction]();
+        attribuerFonctionBtn2(""); //détache la fonction pour évité des boucles
+    }
+}
+
+function supprimerVideo(id, chemin){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Suppression Réussite");
+            changerTextePopup("La suppression a bien été effectué !");
+            changerTexteBtn1("Confirmer");
+            attribuerFonctionBtn1("redirection","home.php")
+            cacherBtn2();
+            afficherPopup();
+        } else{
+            changerTitrePopup("Suppression raté");
+            changerTextePopup("La suppression a échoué !<br/>Erreur: " + reponse);
+            changerTexteBtn1("Confirmer");
+            cacherBtn2();
+            afficherPopup();
+        }
+        
+        
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=supprimerVideo&idVideo=" + id + "&URI_STOCKAGE_LOCAL=" + chemin);
+}
+
+function redirection(page){
+    window.location.href = "./" + page;
 }

@@ -19,6 +19,8 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     $logsGeneraux = array_reverse($logsGeneraux);
     $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 }
+
+chargerPopup();
 ?>
 
 <!DOCTYPE html>

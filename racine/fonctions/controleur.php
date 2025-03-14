@@ -447,9 +447,8 @@ function controleurSupprimerVideo($idVideo){
     }
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
-    //controleurPopUp("Suppression", "La vidéo <strong>".$video['mtd_tech_titre']."</strong> a été supprimée avec succès.");
-    header('Location: home.php');
-    exit();
+    echo "1"; //on renvoit 1 quand tout se passe bien
+    exit(0);
 }
 
 /**
@@ -551,7 +550,7 @@ function controleurMettreAJourParametres(){
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
 
-function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
+function chargerPopup($nouveauTitre = null, $nouveauTexte = null, $libelleBtn1 = "Confirmer", $libelleBtn2 = null){
     require_once '../ressources/Templates/popup.php';
 }
 ?>

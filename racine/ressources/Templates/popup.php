@@ -9,8 +9,8 @@
     <hr/>
     <p class="explication"><?php echo $nouveauTexte; ?></p>
     <div class="btns">
-        <button class="btn1" onclick="cacherPopup()">Confirmer</button>
-        <button class="btn2" onclick="cacherPopup()">Annuler</button>
+        <button class="btn1" onclick="btn1(); cacherPopup();" data-fonctions="" data-args="">Confirmer</button>
+        <button class="btn2" onclick="btn2(); cacherPopup()" data-fonctions="">Annuler</button>
     </div>
 </div>
 

@@ -17,6 +17,8 @@
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
+
+    chargerPopup();
 ?>
 
 <!DOCTYPE html>
@@ -106,7 +108,7 @@
                                 <img src="../ressources/Images/antenne.png" alt="">
                             </div>
                             <p>Diffuser</p>
-                        </button>
+                        </button onclick="changerTitrePopup('Diffusion'); changerTextePopup('Voulez-vous vraiment diffuser la vidéo <?php echo $nomFichier; ?>');">
                     </form>
                 </div>
                 <?php }
@@ -121,17 +123,19 @@
             <?php }
             if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
                 <div class="btnVideo">
-                    <form action="#" method="POST">
-                        <input type="hidden" name="action" value="supprimerVideo">
-                        <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
-                        <input type="hidden" name="URI_STOCKAGE_LOCAL" value="<?php echo $cheminVideoComplet; ?>">
-                        <button type="submit" class="boutonSubmit">
-                            <div class="logo-btnvideo">
-                                <img src="../ressources/Images/trash.png" alt="">
-                            </div>
-                            <p>Supprimer</p>
-                        </button>
-                    </form>
+                    <button class="boutonSubmit" onclick="  changerTitrePopup('Suppression'); 
+                                                            changerTextePopup('Voulez-vous vraiment supprimer la vidéo <?php echo $nomFichier; ?>');
+                                                            changerTexteBtn1('Confirmer');
+                                                            attribuerFonctionBtn1('supprimerVideo','<?php echo $idVideo; ?>, <?php echo $cheminVideoComplet; ?>');
+                                                            changerTexteBtn2('Annuler');
+                                                            attribuerFonctionBtn2('');
+                                                            afficherBtn2();
+                                                            afficherPopup();">
+                        <div class="logo-btnvideo">
+                            <img src="../ressources/Images/trash.png" alt="">
+                        </div>
+                        <p>Supprimer</p>
+                    </button>
                 </div>
             <?php } ?>
         </div>
