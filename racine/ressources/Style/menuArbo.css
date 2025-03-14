@@ -50,6 +50,7 @@
     border-radius: 0 15px 15px 0;
     display: flex;
     padding: 10px 5px;
+    cursor: pointer;
 }
 
 .main-menuArbo button svg{
