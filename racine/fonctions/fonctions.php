@@ -567,6 +567,7 @@ function mettreAJourParametres(){
             'NB_VIDEOS_HISTORIQUE_TRANSFERT' => $_POST['nb_videos_historique_transfert'],
             'NB_LIGNES_LOGS' => $_POST['nb_lignes_logs'],
             'NB_MAX_PROCESSUS_TRANSFERT' => $_POST['nb_max_processus_transfert'],
+            'NB_MAX_SOUS_PROCESSUS_TRANSFERT' => $_POST['nb_max_sous_processus_transfert'],
             'AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS' => $_POST['affichage_logs_plus_recents_premiers'],
         ];
     
