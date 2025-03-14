@@ -84,10 +84,10 @@ function checkHeader(){
         if($_POST["action"] == "mettreAJourParametres"){
             controleurMettreAJourParametres();
         }
-        if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
-            echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
-            exit(0);
-        }
+        // if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
+        //     echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+        //     exit(0);
+        // }
     }
 }
 checkHeader();
@@ -322,16 +322,14 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
     unlink($cheminFichierSource);
 
     if($isExportSucces){
-        // #RISQUE : Message de validation à l'utilisateur
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
-        //TEST EN AJOUTANT UNE POPUP DE VALIDATION
-        controleurPopUp("Diffusion", "La <strong>diffusion</strong> de la vidéo <strong>$nomFichier</strong> a été réalisé avec succès");
-
-        exit();
+        //controleurPopUp("Diffusion", "La vidéo <strong>$nomFichier</strong> a été diffusée avec succès.");
+        //exit();
     }
     else{
-        // #RISQUE : Message d'erreur
-        exit();
+        /*controleurPopUp("Erreur", "Erreur lors de la diffusion de la vidéo <strong>$nomFichier</strong>. <br>
+        Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
+        //exit();
     }
 }
 
@@ -451,6 +449,7 @@ function controleurSupprimerVideo($idVideo){
     }
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
+    //controleurPopUp("Suppression", "La vidéo <strong>".$video['mtd_tech_titre']."</strong> a été supprimée avec succès.");
     header('Location: home.php');
     exit();
 }
@@ -540,6 +539,7 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
+    //controleurPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
 }
 
 function controleurMettreAJourParametres(){
@@ -560,7 +560,7 @@ function controleurMettreAJourParametres(){
  * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  */
-function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
+/*function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
     // Définir les boutons par défaut si aucun n'est fourni
     if ($btn1 === null && $btn2 === null) {
         $btn1 = [
@@ -574,7 +574,7 @@ function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
     $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
 
     // Inclure le template de la popup
-    require '../ressources/Templates/popup.php';
+    require_once '../ressources/Templates/popup.php';
 }
-
+*/
 ?>

@@ -341,7 +341,5 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         gestionOngletsAdministration();
         appelScanVideo();
         detectionCheckboxes(); 
-        afficherMotDePasse(inputId, eyeId);
-        validerURI(inputId);
     });
 </script>
