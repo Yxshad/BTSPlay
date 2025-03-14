@@ -109,8 +109,8 @@ function affichageFiltres(){
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {
         speed: 400,
-        spaceBetween: 100,
-        slidesPerView: 3,
+        spaceBetween: 20,
+        slidesPerView: 4,
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',

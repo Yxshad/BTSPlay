@@ -114,5 +114,5 @@ header .container {
 
 /* --- Ajustement du body pour compenser le header fixe --- */
 body {
-    margin-top: 140px;
+    margin-top: 90px;
 }

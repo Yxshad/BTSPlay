@@ -1,22 +1,72 @@
 .sliderVideo, .sliderVideoProjet{
     overflow-x: hidden;
     position: relative;
-    padding-bottom: 50px;
+    height: 100%;
 }
 
-.sliderVideo .swiper-slide .miniature,
-.sliderVideoProjet .swiper-slide .miniature{
+.sliderVideo{
+    padding-bottom: 30px;
+}
+
+.sliderVideoProjet{
+    border-top: 1px solid #CCC;
+}
+
+a:hover{
+    transform: scale(1.03);
+}
+
+.miniature{
     background: grey;
     display: flex;
-    border-radius: 20px;
+    border-radius: 10px;
     overflow: hidden;
+    margin-bottom: 10px;
+    transition: all 0.2s ease;
+    aspect-ratio: 16 / 9;
 }
 
-.swiper-button-next, 
-.swiper-rtl .swiper-button-prev,
-.swiper-button-prev, 
-.swiper-rtl .swiper-button-next{
-    bottom: 0px !important;
-    top: unset !important;
-    z-index: 5 !important;
+.swiper-slide a{
+    display: block;
+}
+
+.swiper-slide a:hover .miniature{
+    border-radius: 0;
+    opacity: 0.8;
+}
+
+.swiper-button-next,
+.swiper-button-prev{
+    background: #fff7;
+    width: 35px !important;
+    border: 1px solid #000;
+    height: 35px !important;
+    display: flex;
+    border-radius: 40%;
+    transition: all 0.2s ease;
+    
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after{
+    display: block;
+    font-size: 1.5em !important;
+    color: #000;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover{
+    transform: scale(1.1);
+}
+
+h3, h4{
+    margin: 0;
+}
+
+h3{
+    margin-bottom: 10px;
+}
+
+h4{
+    font-weight: 300;
 }
