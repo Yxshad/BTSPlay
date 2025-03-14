@@ -177,7 +177,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             $fin = min(($i + 1) * $elementsParProcessus, $tailleDuTableau);
 
             for ($j = $debut; $j < $fin; $j++) {
-                usleep(100000);
+                usleep(50000);
                 $video = $COLLECT_STOCK_LOCAL[$j];
                 //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
 
@@ -198,9 +198,8 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
                 ftp_close($conn_id);
 
-                // **Conversion**
-                decouperVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-                convertirVideo($video[MTD_TITRE]);
+                // **Découpe / Conversion / Fusion**
+                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
                 fusionnerVideo($video[MTD_TITRE]);
 
                 $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
@@ -210,7 +209,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
 
                 $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-                creerDossier($cheminFichierDestination, false);
+                creerDossier($cheminFichierDestination, false, false);
                 creerDossier($dossierVideo, false);
 
                 copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);

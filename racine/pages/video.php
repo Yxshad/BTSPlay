@@ -8,6 +8,7 @@
     $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
     $cheminVideoComplet = $infosVideo["cheminVideoComplet"];
     $titreVideo = $infosVideo["titreVideo"];
+    $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];

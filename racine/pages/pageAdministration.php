@@ -15,7 +15,7 @@ $logFile = URI_FICHIER_GENERES . NOM_FICHIER_LOG_SAUVEGARDE;
 $maxLines = NB_LIGNES_LOGS;
 $logsSauvegardesBDD = controleurAfficherLogs($logFile, $maxLines);
 
-if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS){
+if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     $logsGeneraux = array_reverse($logsGeneraux);
     $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 }
@@ -152,7 +152,135 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS){
 
     <div class="tab-content" id="settings">
         <h2>Paramétrage du site</h2>
-        <p>Configuration et personnalisation...</p>
+        
+        <?php
+        // Afficher un message de succès si les constantes ont été mises à jour
+        if (isset($successMessage)) {
+            echo "<p style='color:green;'>$successMessage</p>";
+        }
+        ?>
+        
+        <form method="post" action="#">
+            <input type="hidden" name="action" value="mettreAJourParametres">
+            <h3>URIs</h3>
+            <label for="uri_racine_nas_pad">URI Racine NAS PAD:</label>
+            <input type="text" id="uri_racine_nas_pad" name="uri_racine_nas_pad" value="<?php echo URI_RACINE_NAS_PAD; ?>" 
+                oninput="validerURI('uri_racine_nas_pad')" pattern="^\S+$" title="Les espaces ne sont pas autorisés"  required><br><br>
+            
+            <label for="uri_racine_nas_arch">URI Racine NAS ARCH:</label>
+            <input type="text" id="uri_racine_nas_arch" name="uri_racine_nas_arch" value="<?php echo URI_RACINE_NAS_ARCH; ?>" 
+                oninput="validerURI('uri_racine_nas_arch')" pattern="^\S+$" title="Les espaces ne sont pas autorisés"  required><br><br>
+            
+            <label for="uri_racine_stockage_local">URI Racine Stockage Local:</label>
+            <input type="text" id="uri_racine_stockage_local" name="uri_racine_stockage_local" value="<?php echo URI_RACINE_STOCKAGE_LOCAL; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés" ><br><br>
+            
+            <label for="uri_racine_nas_diff">URI Racine NAS DIFF:</label>
+            <input type="text" id="uri_racine_nas_diff" name="uri_racine_nas_diff" value="<?php echo URI_RACINE_NAS_DIFF; ?>" 
+                oninput="validerURI('uri_racine_nas_diff')" pattern="^\S+$" title="Les espaces ne sont pas autorisés"  required><br><br>
+            
+            <h3>Connexions FTP</h3>
+            <label for="nas_pad">NAS PAD:</label>
+            <input type="text" id="nas_pad" name="nas_pad" value="<?php echo NAS_PAD; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="login_nas_pad">Login NAS PAD:</label>
+            <input type="text" id="login_nas_pad" name="login_nas_pad" value="<?php echo LOGIN_NAS_PAD; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="password_nas_pad">Password NAS PAD:</label>
+            <input type="password" id="password_nas_pad" name="password_nas_pad" value="<?php echo PASSWORD_NAS_PAD; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés">
+            <button type="button" onclick="afficherMotDePasse('password_nas_pad', 'eye_bd')">
+                <img id="eye_pad" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+
+            <label for="nas_arch">NAS ARCH:</label>
+            <input type="text" id="nas_arch" name="nas_arch" value="<?php echo NAS_ARCH; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="login_nas_arch">Login NAS ARCH:</label>
+            <input type="text" id="login_nas_arch" name="login_nas_arch" value="<?php echo LOGIN_NAS_ARCH; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="password_nas_arch">Password NAS ARCH:</label>
+            <input type="password" id="password_nas_arch" name="password_nas_arch" value="<?php echo PASSWORD_NAS_ARCH; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés">
+            <button type="button" onclick="afficherMotDePasse('password_nas_arch', 'eye_bd')">
+                <img id="eye_arch" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+
+            <label for="nas_diff">NAS DIFF:</label>
+            <input type="text" id="nas_diff" name="nas_diff" value="<?php echo NAS_DIFF; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="login_nas_diff">Login NAS DIFF:</label>
+            <input type="text" id="login_nas_diff" name="login_nas_diff" value="<?php echo LOGIN_NAS_DIFF; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="password_nas_diff">Password NAS DIFF:</label>
+            <input type="password" id="password_nas_diff" name="password_nas_diff" value="<?php echo PASSWORD_NAS_DIFF; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés">
+            <button type="button" onclick="afficherMotDePasse('password_nas_diff', 'eye_bd')">
+                <img id="eye_diff" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+            
+            <h3>Base de données</h3>
+            <label for="bd_host">BD Host:</label>
+            <input type="text" id="bd_host" name="bd_host" value="<?php echo BD_HOST; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="bd_port">BD Port:</label>
+            <input type="text" id="bd_port" name="bd_port" value="<?php echo BD_PORT; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="bd_name">BD Name:</label>
+            <input type="text" id="bd_name" name="bd_name" value="<?php echo BD_NAME; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="bd_user">BD User:</label>
+            <input type="text" id="bd_user" name="bd_user" value="<?php echo BD_USER; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="bd_password">BD Password:</label>
+            <input type="password" id="bd_password" name="bd_password" value="<?php echo BD_PASSWORD; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés">
+            <button type="button" onclick="afficherMotDePasse('bd_password', 'eye_bd')">
+                <img id="eye_bd" src="../ressources/Images/eye-closed.png" alt="Afficher/Masquer" class="eye-icon">
+            </button><br><br>
+            
+            <h3>Fichiers générés</h3>
+            <label for="uri_fichier_generes">URI Fichiers Générés:</label>
+            <input type="text" id="uri_fichier_generes" name="uri_fichier_generes" value="<?php echo URI_FICHIER_GENERES; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="uri_dump_sauvegarde">URI Dump Sauvegarde:</label>
+            <input type="text" id="uri_dump_sauvegarde" name="uri_dump_sauvegarde" value="<?php echo URI_DUMP_SAUVEGARDE; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+            
+            <label for="uri_constantes_sauvegarde">URI Constantes Sauvegarde:</label>
+            <input type="text" id="uri_constantes_sauvegarde" name="uri_constantes_sauvegarde" value="<?php echo URI_CONSTANTES_SAUVEGARDE; ?>" pattern="^\S+$" title="Les espaces ne sont pas autorisés"><br><br>
+
+            <label for="nom_fichier_log_general">Nom Fichier Log Général:</label>
+            <input type="text" id="nom_fichier_log_general" name="nom_fichier_log_general" value="<?php echo NOM_FICHIER_LOG_GENERAL; ?>" pattern="^\S*\.log$" title="Doit se terminer par .log et ne pas contenir d'espaces" required><br><br>
+            
+            <label for="nom_fichier_log_sauvegarde">Nom Fichier Log Sauvegarde:</label>
+            <input type="text" id="nom_fichier_log_sauvegarde" name="nom_fichier_log_sauvegarde" value="<?php echo NOM_FICHIER_LOG_SAUVEGARDE; ?>" pattern="^\S*\.log$" title="Doit se terminer par .log et ne pas contenir d'espaces" required><br><br>
+            
+            <label for="suffixe_fichier_dump_sauvegarde">Suffixe Fichier Dump Sauvegarde:</label>
+            <input type="text" id="suffixe_fichier_dump_sauvegarde" name="suffixe_fichier_dump_sauvegarde" value="<?php echo SUFFIXE_FICHIER_DUMP_SAUVEGARDE; ?>" pattern="^\S*\.sql$" title="Doit se terminer par .log et ne pas contenir d'espaces" required><br><br>
+            
+            <label for="suffixe_fichier_constantes_sauvegarde">Suffixe Fichier Constantes Sauvegarde:</label>
+            <input type="text" id="suffixe_fichier_constantes_sauvegarde" name="suffixe_fichier_constantes_sauvegarde" value="<?php echo SUFFIXE_FICHIER_CONSTANTES_SAUVEGARDE; ?>" pattern="^\S*\.php$" title="Doit se terminer par .log et ne pas contenir d'espaces" required><br><br>
+
+            <h3>Pages</h3>
+            <label for="nb_videos_par_swiper">Nombre de vidéos par Swiper:</label>
+            <input type="number" id="nb_videos_par_swiper" min=0 name="nb_videos_par_swiper" value="<?php echo NB_VIDEOS_PAR_SWIPER; ?>"><br><br>
+            
+            <h3>Historique du transfert</h3>
+            <label for="nb_videos_historique_transfert">Nombre de vidéos dans l'historique:</label>
+            <input type="number" id="nb_videos_historique_transfert" min=0  name="nb_videos_historique_transfert" value="<?php echo NB_VIDEOS_HISTORIQUE_TRANSFERT; ?>"><br><br>
+            
+            <h3>Logs</h3>
+            <label for="nb_lignes_logs">Nombre de lignes de logs:</label>
+            <input type="number" id="nb_lignes_logs" name="nb_lignes_logs" min=0 value="<?php echo NB_LIGNES_LOGS; ?>"><br><br>
+
+            <h3>Multithreading</h3>
+            <label for="nb_max_processus_transfert">Nombre maximum de processus de transfert:</label>
+            <input type="number" id="nb_max_processus_transfert" min=1 max=20 name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>"><br><br>
+            
+            <label for="nb_max_sous_processus_transfert">Nombre maximum de sous-processus de transfert:</label>
+            <input type="number" id="nb_max_sous_processus_transfert" min=1 max=10 name="nb_max_sous_processus_transfert" value="<?php echo NB_MAX_SOUS_PROCESSUS_TRANSFERT; ?>"><br><br>
+
+            <h3>Affichage des logs</h3>
+            <label for="affichage_logs_plus_recents_premiers">Afficher les logs les plus récents en premier:</label>
+            <input type="checkbox" id="affichage_logs_plus_recents_premiers" name="affichage_logs_plus_recents_premiers" <?php echo AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on' ? 'checked' : ''; ?>><br><br>
+            
+            <input type="submit" value="Mettre à jour">
+        </form>
     </div>
 
     <div class="tab-content" id="logs">

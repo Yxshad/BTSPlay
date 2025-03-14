@@ -81,10 +81,13 @@ function checkHeader(){
             }
             exit;
         }
-        if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
-            echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
-            exit(0);
+        if($_POST["action"] == "mettreAJourParametres"){
+            controleurMettreAJourParametres();
         }
+        // if ($_POST["action"] == "popup" && isset($_POST['titre']) && isset($_POST['description']) && isset($_POST['btn1']) && isset($_POST['btn2'])) {
+        //     echo controleurPopUp($_POST['titre'], $_POST['description'], $_POST['btn1'], $_POST['btn2']);
+        //     exit(0);
+        // }
     }
 }
 checkHeader();
@@ -140,26 +143,17 @@ function controleurRecupererInfosVideo() {
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
     $promotion = $video["promotion"];
+    $description = $video["description"];
 
-    //Ajout des URIS des 2 NAS avec gestion d'erreur
-    $URIS = [];
-    if (!empty($video["URI_NAS_PAD"])) {
-        $URIS["URI_NAS_PAD"] = URI_RACINE_NAS_PAD . $video["URI_NAS_PAD"];
-    }
-    else{
-        $URIS["URI_NAS_PAD"] = "";
-    }
-    if (!empty($video["URI_NAS_ARCH"])) {
-        $URIS["URI_NAS_ARCH"] = URI_RACINE_NAS_ARCH . $video["URI_NAS_ARCH"];
-    }
-    else{
-        $URIS["URI_NAS_ARCH"] = "";
-    }
+    // Ajout des URIS des 2 NAS avec gestion d'erreur
+    $URIS = [
+        "URI_NAS_PAD" => !empty($video["URI_NAS_PAD"]) ? URI_RACINE_NAS_PAD . $video["URI_NAS_PAD"] : "",
+        "URI_NAS_ARCH" => !empty($video["URI_NAS_ARCH"]) ? URI_RACINE_NAS_ARCH . $video["URI_NAS_ARCH"] : ""
+    ];
 
-    $URIEspaceLocal = '/stockage/' .$video['URI_STOCKAGE_LOCAL'];
+    $URIEspaceLocal = '/stockage/' . $video['URI_STOCKAGE_LOCAL'];
     $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
     $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
-
     $cheminVideoComplet = $URIEspaceLocal . $nomFichier;
     return [
         "idVideo" => $idVideo,
@@ -168,6 +162,7 @@ function controleurRecupererInfosVideo() {
         "cheminMiniatureComplet" => $cheminMiniatureComplet,
         "cheminVideoComplet" => $cheminVideoComplet,
         "titreVideo" => $titreVideo,
+        "description" => $description,
         "mtdEdito" => $mtdEdito,
         "promotion" => $promotion,
         "URIS" => $URIS,
@@ -185,6 +180,7 @@ function controleurPreparerMetadonnees($idVideo){
         isset($_POST["realisateur"]) || 
         isset($_POST["promotion"]) || 
         isset($_POST["projet"]) || 
+        isset($_POST["description"]) || 
         isset($_POST["cadreur"]) || 
         isset($_POST["responsableSon"])
     ) {
@@ -193,6 +189,7 @@ function controleurPreparerMetadonnees($idVideo){
         $realisateur = $_POST["realisateur"];
         $promotion = $_POST["promotion"];
         $projet = $_POST["projet"];
+        $description = $_POST["description"];
         $cadreur = $_POST["cadreur"];
         $responsableSon = $_POST["responsableSon"];
         miseAJourMetadonneesVideo(
@@ -201,6 +198,7 @@ function controleurPreparerMetadonnees($idVideo){
             $realisateur, 
             $promotion, 
             $projet, 
+            $description,
             $cadreur, 
             $responsableSon
         );
@@ -308,7 +306,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         ftp_close($conn_id);
     }
     else{
-        return;
+        exit();
     }
 
     //Inversion des URIs, la source devient la destination
@@ -328,12 +326,14 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
     unlink($cheminFichierSource);
 
     if($isExportSucces){
-        // #RISQUE : Message de validation à l'utilisateur
-        return;
+        ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
+        //controleurPopUp("Diffusion", "La vidéo <strong>$nomFichier</strong> a été diffusée avec succès.");
+        //exit();
     }
     else{
-        // #RISQUE : Message d'erreur
-        return;
+        /*controleurPopUp("Erreur", "Erreur lors de la diffusion de la vidéo <strong>$nomFichier</strong>. <br>
+        Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
+        //exit();
     }
 }
 
@@ -453,6 +453,7 @@ function controleurSupprimerVideo($idVideo){
     }
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
+    //controleurPopUp("Suppression", "La vidéo <strong>".$video['mtd_tech_titre']."</strong> a été supprimée avec succès.");
     header('Location: home.php');
     exit();
 }
@@ -481,7 +482,7 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
  * \fn controleurArborescence($directory, $ftp_server)
  * \brief Lance la fonction qui scan le répertoire local
  * \param directory - Racine de l'endroit qu'on veut scanner
- * \param ftp_server - Serveur dans lequelle la fonction va chercher les fichier
+ * \param ftp_server - Serveur dans lequel la fonction va chercher les fichiers
  */
 function controleurArborescence($directory, $ftp_server){
     if($ftp_server == NAS_PAD || $ftp_server == NAS_ARCH){
@@ -542,24 +543,42 @@ function controleurLancerFonctionTransfert(){
  */
 function controleurcreateDBDumpLauncher(){
     createDatabaseSave();
+    //controleurPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
 }
 
+function controleurMettreAJourParametres(){
+    mettreAJourParametres();
+    
+    // Forcer un refresh de la page après la mise à jour
+    header("Refresh:0");
+    exit();
+
+    // Afficher un message de succès
+    $successMessage = "Les paramètres ont été mis à jour avec succès!";
+}
  /**
  * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
- * \brief Appelle la fonction qui créé la sauvegarde de la base de données
- * \param titre - Racine de l'endroit qu'on veut scanner
- * \param explication - Racine de l'endroit qu'on veut scanner
- * \param btn1 - Racine de l'endroit qu'on veut scanner
- * \param btn2 - Racine de l'endroit qu'on veut scanner
+ * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
+ * \param titre - Titre affiché dans la popup
+ * \param explication - Bloc de texte affiché dans la popup
+ * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
+ * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
  */
-function controleurPopUp($titre, $explication, $btn1, $btn2){
-    if (is_string($btn1)) {
-        $btn1 = json_decode($btn1, true);
+/*function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
+    // Définir les boutons par défaut si aucun n'est fourni
+    if ($btn1 === null && $btn2 === null) {
+        $btn1 = [
+            "libelle" => "Confirmer",
+            "arguments" => []
+        ];
     }
-    if (is_string($btn2)) {
-        $btn2 = json_decode($btn2, true);
-    }
-    require '../ressources/Templates/popup.php';
-}
 
+    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
+    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
+    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
+
+    // Inclure le template de la popup
+    require_once '../ressources/Templates/popup.php';
+}
+*/
 ?>

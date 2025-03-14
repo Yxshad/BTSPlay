@@ -2,3 +2,4 @@ stockage/
 docs/
 racine/ressources/datas/*.log
 racine/ressources/datas/dumpBD/*.sql
+racine/ressources/datas/sauvegardeConstantes/*.php

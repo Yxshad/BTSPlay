@@ -173,6 +173,30 @@ function insertionEtudiant($etudiant)
     }
 }
 
+/**
+ * \fn assignerDescription($idVideo, $description)
+ * \brief Permet d'assigner une description au média
+ * \param idVideo - l'id de la vidéo à laquelle on assigne la description
+ * \param description - description de la vidéo
+ */
+function assignerDescription($idVid, $description)
+{
+   $connexion = connexionBD();  
+   try{
+       $requete = $connexion->prepare('UPDATE Media SET description = ?, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
+       $requete->execute([$description, $idVid]);
+       $connexion->commit();  
+       $connexion = null;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation de la description " . $description . " à la vidéo " . $idVideo .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
  /**
  * \fn assignerProfReferent($idVideo, $prof)
  * \brief Permet d'assigner un professeur référent au projet
@@ -231,9 +255,15 @@ function insertionEtudiant($etudiant)
  * \param listeCadreurs - supposément une chaîne de caractères contenant tous les cadreurs
  */
  function assignerCadreur($idVideo, $listeCadreurs){
-
-    if ($listeCadreurs != "") {
-        $connexion = connexionBD();
+    $connexion = connexionBD();    
+    if($listeCadreurs == ""){
+        $cadreur = $connexion->prepare('DELETE FROM Participer 
+                            WHERE (idMedia = ? AND idRole = ?)');
+                        $cadreur->execute([$idVideo, 1]);
+                        
+        $connexion->commit();   
+    }
+    else if ($listeCadreurs != "") {
         // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
         // Normaliser et séparer les cadreurs
         $listeCadreurs = trim(preg_replace('/\s*,\s*/', ', ', $listeCadreurs));
@@ -275,8 +305,15 @@ function insertionEtudiant($etudiant)
  * \param listeResponsable - supposément une chaîne de caractères contenant tous les responsables son
  */
  function assignerResponsable($idVideo, $listeResponsable){
-
-    if ($listeResponsable != "") {
+    $connexion = connexionBD(); 
+    if($listeResponsable == ""){
+        $responsable = $connexion->prepare('DELETE FROM Participer 
+                            WHERE (idMedia = ? AND idRole = ?)');
+                        $responsable->execute([$idVideo, 3]);
+                        
+        $connexion->commit();   
+    }
+    else if ($listeResponsable != "") {
         $connexion = connexionBD();
         // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
         // Normaliser et séparer les responsables son
@@ -284,9 +321,9 @@ function insertionEtudiant($etudiant)
         $tabResponsable = explode(', ', $listeResponsable);
         try{
             //On efface toutes les données responsables son pour éviter d'avance les doublons, réinsertions et modifier plus facilement
-            $cadreur = $connexion->prepare('DELETE FROM Participer 
+            $responsable = $connexion->prepare('DELETE FROM Participer 
                         WHERE (idMedia = ? AND idRole = ?)');
-                    $cadreur->execute([$idVideo, 3]);
+                    $responsable->execute([$idVideo, 3]);
             for ($i=0; $i < count($tabResponsable); $i++) { 
                 if(!etudiantInBD($tabResponsable[$i]))
                 {
@@ -295,9 +332,9 @@ function insertionEtudiant($etudiant)
                 // Récupérer l'ID de l'élève
                 $idEtudiant = getIdEtudiant($tabResponsable[$i]);
                 // Insertion si non existant
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
+                $responsable = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
                     VALUES (?, ?, ?)');
-                $cadreur->execute([$idVideo, $idEtudiant, 3]);
+                $responsable->execute([$idVideo, $idEtudiant, 3]);
             }
             $connexion->commit();  
             $connexion = null;
@@ -319,17 +356,25 @@ function insertionEtudiant($etudiant)
  * \param listeRealisateur - supposément une chaîne de caractères contenant tous les réalisateurs
  */
  function assignerRealisateur($idVideo, $listeRealisateurs){
+    $connexion = connexionBD(); 
+    if($listeRealisateurs == ""){
+        $realisateur = $connexion->prepare('DELETE FROM Participer 
+                            WHERE (idMedia = ? AND idRole = ?)');
+                        $realisateur->execute([$idVideo, 2]);
+                        
+        $connexion->commit();   
+    }
     if ($listeRealisateurs != "") {
         $connexion = connexionBD();
         // #RISQUE : Si ce n'est pas une chaîne c'est mort le preg_split car ça explose la chaîne en tableau en fonction des chars donnés
-        // Normaliser et séparer les cadreurs
+        // Normaliser et séparer les realisateurs
         $listeRealisateurs = trim(preg_replace('/\s*,\s*/', ', ', $listeRealisateurs));
         $tabRealisateur = explode(', ', $listeRealisateurs);
         try{
-            //On efface toutes les données cadreurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
-            $cadreur = $connexion->prepare('DELETE FROM Participer 
+            //On efface toutes les données realisateurs pour éviter d'avance les doublons, réinsertions et modifier plus facilement
+            $realisateur = $connexion->prepare('DELETE FROM Participer 
                         WHERE (idMedia = ? AND idRole = ?)');
-                    $cadreur->execute([$idVideo, 2]);
+                    $realisateur->execute([$idVideo, 2]);
             for ($i=0; $i < count($tabRealisateur); $i++) { 
                 if(!etudiantInBD($tabRealisateur[$i]))
                 {
@@ -338,9 +383,9 @@ function insertionEtudiant($etudiant)
                 // Récupérer l'ID de l'élève
                 $idEtudiant = getIdEtudiant($tabRealisateur[$i]);
                 // Insertion si non existant
-                $cadreur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
+                $realisateur = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) 
                     VALUES (?, ?, ?)');
-                $cadreur->execute([$idVideo, $idEtudiant, 2]);
+                $realisateur->execute([$idVideo, $idEtudiant, 2]);
             }
             $connexion->commit();  
             $connexion = null;
@@ -756,30 +801,26 @@ function getAllProfesseurs(){
 function getParticipants($idVid) {
     $connexion = connexionBD();
     
-    // Requête pour le réalisateur
-    $requeteRealisateur = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
-    $requeteRealisateur->execute([$idVid, 2]);
-    $realisateur = $requeteRealisateur->fetchAll(PDO::FETCH_ASSOC);
-
-    // Requête pour le cadreur
-    $requeteCadreur = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
-    $requeteCadreur->execute([$idVid, 1]);
-    $cadreur = $requeteCadreur->fetchAll(PDO::FETCH_ASSOC);
-
-    // Requête pour le son
-    $requeteSon = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
-    $requeteSon->execute([$idVid, 3]);
-    $son = $requeteSon->fetchAll(PDO::FETCH_ASSOC);
-
+    // Fonction pour récupérer et formater les noms des participants selon leur rôle
+    function fetchParticipants($connexion, $idVid, $idRole) {
+        $requete = $connexion->prepare('SELECT Etudiant.nomComplet FROM Etudiant JOIN Participer ON Etudiant.id = Participer.idEtudiant WHERE Participer.idMedia = ? AND Participer.idRole = ?');
+        $requete->execute([$idVid, $idRole]);
+        $result = $requete->fetchAll(PDO::FETCH_COLUMN);
+        return $result ? implode(", ", $result) : "";
+    }
+    
+    // Récupération des participants selon les rôles
+    $realisateur = fetchParticipants($connexion, $idVid, 2);
+    $cadreur = fetchParticipants($connexion, $idVid, 1);
+    $son = fetchParticipants($connexion, $idVid, 3);
+    
     // Fermeture de la connexion
     $connexion = null;
-
-    // #RISQUE traitement des variables si plusieurs personnes ont le même rôle
-    // #RISQUE Pas de try catch
+    
     return [
-        $realisateur ? $realisateur[0]["nomComplet"] : "",
-        $cadreur ? $cadreur[0]["nomComplet"] : "",
-        $son ? $son[0]["nomComplet"] : ""
+        'Realisateur' => $realisateur,
+        'Cadreur' => $cadreur,
+        'Son' => $son
     ];
 }
 

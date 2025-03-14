@@ -109,8 +109,8 @@ function affichageFiltres(){
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {
         speed: 400,
-        spaceBetween: 100,
-        slidesPerView: 3,
+        spaceBetween: 20,
+        slidesPerView: 4,
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
@@ -406,7 +406,7 @@ function gestionOngletsArborescence() {
         });
     });
 }
-
+/*
 function afficherPopUp(titre, description, btn1, btn2){
     btn1PHP = JSON.stringify(btn1);
     btn2PHP = JSON.stringify(btn2);
@@ -465,37 +465,124 @@ function retirerPopUp(){
 }
 
 function boutonsPopUp(btn1, btn2){
-    console.log(btn1);
-    document.querySelector('#btn1').addEventListener('click', function(){
+    if(document.querySelector('#btn1')){
+        document.querySelector('#btn1').addEventListener('click', function(){
+            if (btn1) {
+                if ("arguments" in btn1) {
+                    let stringBody = btn1["arguments"].map((argument, index) => {
+                        return argument.join('=');
+                    }).join('&');
 
-        let stringBody = btn1["arguments"].map((argument, index) => {
-            return argument.join('=');
-        }).join('&');
-
-        fetch('../../fonctions/controleur.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: stringBody
+                    fetch('../../fonctions/controleur.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: stringBody
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.querySelector('body').innerHTML += data;
+                        boutonsPopUp(btn1, btn2);
+                    });
+                    retirerPopUp();
+                    btn1 = null;
+                    btn2 = null;
+                } else {
+                    retirerPopUp();
+                }
+            } else{
+                retirerPopUp();
+            }
         })
-        retirerPopUp();
-    })
+    }
 
-    document.querySelector('#btn2').addEventListener('click', function(){
+    if (document.querySelector('#btn2')) {
+        document.querySelector('#btn2').addEventListener('click', function(){
+            if (btn2) {
+                if ("arguments" in btn2) {
+                    let stringBody = btn2["arguments"].map((argument, index) => {
+                        return argument.join('=');
+                    }).join('&');
 
-        let stringBody = btn2["arguments"].map((argument, index) => {
-            return argument.join('=');
-        }).join('&');
-
-        fetch('../../fonctions/controleur.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: stringBody
+                    fetch('../../fonctions/controleur.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded'
+                        },
+                        body: stringBody
+                    })
+                    .then(response => response.text())
+                    .then(data => {
+                        document.querySelector('body').innerHTML += data;
+                        boutonsPopUp(btn1, btn2);
+                    });
+                    retirerPopUp();
+                    btn1 = null;
+                    btn2 = null;
+                } else {
+                    retirerPopUp();
+                }
+            } else{
+                retirerPopUp();
+            }
         })
-        retirerPopUp()
-    })
+    }
+}
+*/
+// Gère l'affichage des mots de passe de la page d'administration
+function afficherMotDePasse(inputId, eyeId) {
+    var input = document.getElementById(inputId);
+    var eyeIcon = document.getElementById(eyeId);
+
+    if (input.type === "password") {
+        input.type = "text";
+        eyeIcon.src = "../ressources/Images/eye-opened.png";
+    } else {
+        input.type = "password";
+        eyeIcon.src = "../ressources/Images/eye-closed.png";
+    }
 }
 
+// Vérifie le format de l'URI dans la page d'administration et alerte si champ incorrect
+function validerURI(inputId) {
+    var input = document.getElementById(inputId);
+    var value = input.value.trim();
+
+    if (value !== "/" && (value.startsWith("/") || !value.endsWith("/"))) {
+        input.setCustomValidity("Si l'URI est différente de '/', elle doit commencer par un caractère autre que '/' et finir par '/' (par exemple: uri/).");
+    } else {
+        input.setCustomValidity("");
+    }
+}
+
+// Met en première lettre capitale les chaines de caractères
+function capitalizeWords(str) {
+    return str.replace(/\b\w/g, char => char.toUpperCase());
+}
+
+// Gère les paramètres plugin de tags Tagify
+function initTagify(selector) {
+    let input = document.querySelector(selector);
+    let tagify = new Tagify(input, {
+        enforceWhitelist: false,
+        delimiters: ",",
+        maxTags: 10,
+        trim: true
+    });
+
+    // Avant d'ajouter un tag, on corrige la capitalisation
+    tagify.on('add', function(e) {
+        let formattedValue = capitalizeWords(e.detail.data.value);
+        e.detail.data.value = formattedValue;
+
+        // Mise à jour manuelle du tag pour afficher la version corrigée
+        tagify.replaceTag(e.detail.tag, { value: formattedValue });
+    });
+
+    // Avant l’envoi du formulaire, convertir les tags en une chaîne propre
+    input.closest("form").addEventListener("submit", function () {
+        let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
+        input.value = tags;
+    });
+}

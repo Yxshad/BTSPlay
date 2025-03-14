@@ -112,6 +112,8 @@ html {
     border-radius: 20px;
     margin: auto;
     overflow: hidden;
+    width: 60%;
+    height: 60%;
 }
 
 
@@ -146,11 +148,9 @@ html {
 }
 
 .player{
-    width: 100%;
-    height: 100%;
     max-width: 100%;
+    max-height: 100% !important
 } 
-
 
 .metadata {
     display: flex;
