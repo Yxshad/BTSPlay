@@ -96,7 +96,6 @@
                     <?php echo $description; ?>
                 </p>
             </div>
-            
         </div>
 
         <div class="metadata_detaillee">
