@@ -1,3 +1,22 @@
+@font-face {
+    font-family: 'Roboto Variable';
+    src: url('../fonts/Roboto/Roboto-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;  /* Gère tous les poids */
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Roboto Variable';
+    src: url('../fonts/Roboto/Roboto-Italic-VariableFont_wdth,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+
+
 
 :root{
     font-weight: bold;

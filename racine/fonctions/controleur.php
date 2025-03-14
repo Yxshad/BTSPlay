@@ -158,7 +158,7 @@ function controleurRecupererInfosVideo() {
     return [
         "idVideo" => $idVideo,
         "mtdTech" => $video,
-        "nomFichier" => $nomFichier,
+        "nomFichier" => recupererNomFichierSansExtension($nomFichier),
         "cheminMiniatureComplet" => $cheminMiniatureComplet,
         "cheminVideoComplet" => $cheminVideoComplet,
         "titreVideo" => $titreVideo,

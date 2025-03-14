@@ -146,9 +146,8 @@ function initLectureVideo(){
           'captions', // Toggle captions
           'settings', // Settings menu
           'pip', // Picture-in-picture (currently Safari only)
-          'airplay', // Airplay (currently Safari only)
-          'download', // Custom download button
-          'fullscreen' // Toggle fullscreen
+          'fullscreen', // Toggle fullscreen
+          'buffered' // Buffer
         ],
         settings: ['captions', 'quality', 'speed', 'loop'],
         captions: {
@@ -426,6 +425,38 @@ function afficherPopUp(titre, description, btn1, btn2){
     });
 
     
+}
+
+
+function pageLectureVideo(){
+    const descriptionElement = document.querySelector(".description");
+    const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+
+    if (fullText.length > 100) {
+        const truncatedText = fullText.substring(0, 100);
+        const remainingText = fullText.substring(100);
+
+        // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+        descriptionElement.innerHTML = `
+            ${truncatedText}<span class="dots">...</span>
+            <span class="more-text" style="display: none;">${remainingText}</span>
+            <a href="#" class="toggleDescription"> voir plus</a>
+        `;
+
+        const toggleButton = descriptionElement.querySelector(".toggleDescription");
+        const moreTextElement = descriptionElement.querySelector(".more-text");
+        const dots = descriptionElement.querySelector(".dots");
+
+        toggleButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const isHidden = moreTextElement.style.display === "none";
+
+            // Basculer entre l'affichage du texte complet et tronqué
+            moreTextElement.style.display = isHidden ? "inline" : "none";
+            dots.style.display = isHidden ? "none" : "inline";
+            toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+        });
+    }
 }
 
 function retirerPopUp(){
