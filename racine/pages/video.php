@@ -93,7 +93,7 @@
             </div>
             <div class="containerDescription">
                 <p class="description">
-                    <?php echo htmlspecialchars($mtdTech["Description"]); ?>
+                    <?php echo $description; ?>
                 </p>
             </div>
             
