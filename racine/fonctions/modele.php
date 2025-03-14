@@ -173,6 +173,30 @@ function insertionEtudiant($etudiant)
     }
 }
 
+/**
+ * \fn assignerDescription($idVideo, $description)
+ * \brief Permet d'assigner une description au média
+ * \param idVideo - l'id de la vidéo à laquelle on assigne la description
+ * \param description - description de la vidéo
+ */
+function assignerDescription($idVid, $description)
+{
+   $connexion = connexionBD();  
+   try{
+       $requete = $connexion->prepare('UPDATE Media SET description = ?, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
+       $requete->execute([$description, $idVid]);
+       $connexion->commit();  
+       $connexion = null;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation de la description " . $description . " à la vidéo " . $idVideo .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
  /**
  * \fn assignerProfReferent($idVideo, $prof)
  * \brief Permet d'assigner un professeur référent au projet

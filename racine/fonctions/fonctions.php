@@ -413,21 +413,23 @@ function miseAJourMetadonneesVideo(
 	$realisateur, 
 	$promotion, 
 	$projet, 
+    $description,
 	$cadreur, 
 	$responsableSon){
 
 	if (!$profReferent == "") {
 		assignerProfReferent($idVid, $profReferent);
-	}	
+	}
 	if (!$promotion == "") {
 		assignerPromotion($idVid, $promotion);
 	}
 	if (!$projet == "") {
 		assignerProjet($idVid, $projet);
 	}
-    	assignerRealisateur($idVid, $realisateur);
-	assignerCadreur($idVid, $cadreur);
-	assignerResponsable($idVid, $responsableSon);
+    assignerDescription($idVid, $description);
+    assignerRealisateur($idVid, $realisateur);
+    assignerCadreur($idVid, $cadreur);
+    assignerResponsable($idVid, $responsableSon);
 	
 	ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
 }

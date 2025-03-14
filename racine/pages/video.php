@@ -8,6 +8,7 @@
     $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
     $cheminVideoComplet = $infosVideo["cheminVideoComplet"];
     $titreVideo = $infosVideo["titreVideo"];
+    $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
@@ -48,12 +49,12 @@
     <h2 ><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
         <div class="colonne-1">
-            <p class="description"><?php echo $mtdTech["Description"]; ?></p>
+            <p class="description"><?php echo $mtdTech["description"]; ?></p>
             <p class="mtd">
-                <strong>URI du NAS PAD : </strong><?php echo $URIS['URI_NAS_PAD']; ?>
+                <strong>URI du NAS PAD : </strong><?php echo !empty($URIS['URI_NAS_PAD']) ? $URIS['URI_NAS_PAD'] : "Non présente"; ?>
             </p>
             <p class="mtd">
-                <strong>URI du NAS ARCH : </strong><?php echo $URIS['URI_NAS_ARCH']; ?>
+                <strong>URI du NAS ARCH : </strong><?php echo !empty($URIS['URI_NAS_ARCH']) ? $URIS['URI_NAS_ARCH'] : "Non présente"; ?>
             </p>
             <p class="mtd">
                 <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
