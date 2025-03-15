@@ -1,6 +1,8 @@
 // #RISQUE : Dégager ce truc DOMContentLoaded
 document.addEventListener("DOMContentLoaded", function(event) {
     
+    
+
     if(document.querySelector('.transferts')){
         // Fonction pour déplacer une ligne vers le haut
         function moveUp(button) {

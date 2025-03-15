@@ -202,6 +202,7 @@ function controleurPreparerMetadonnees($idVideo){
             $cadreur, 
             $responsableSon
         );
+        
     }
 }
 

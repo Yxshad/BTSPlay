@@ -487,6 +487,59 @@ function assignerDescription($idVid, $description)
  }
 
  /**
+ * \fn getAllRoles()
+ * \brief Renvoie un rôle
+ * \param role - Nom du rôle
+ */
+function getAllRoles()
+{
+   $connexion = connexionBD();
+   $requeteRole = $connexion->prepare('SELECT * 
+   FROM Role');                                                 
+   try{
+       $requeteRole->execute();
+       $roleCherche = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $roleCherche;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du role " . $role .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
+/**
+ * \fn getAllParticipants($etudiant)
+ * \brief Renvoie un rôle
+ * \param role - Nom du rôle
+ */
+function getRolesEtParticipantsDeVideo()
+{
+   $connexion = connexionBD();
+   $requeteRole = $connexion->prepare('SELECT * 
+   FROM Role 
+   JOIN Participer ON role.id = participer.idRole
+   JOIN Etudiant ON Etudiant.id = participer.idEtudiant
+   WHERE Participer.idMedia = ?');                                                 
+   try{
+       $requeteRole->execute();
+       $roleCherche = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $roleCherche;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du role " . $role .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
+ /**
  * \fn getVideo($URIStockageLocal, titreVideo)
  * \brief Renvoie 1 si la vidéo existe dans la base de données
  * \param URIStockageLocal - chemin de l'espace local de la vidéo
@@ -1113,5 +1166,7 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
         $connexion = null;
     }
 }
+
+
 
 ?>

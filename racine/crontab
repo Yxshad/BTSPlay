@@ -1,0 +1,1 @@
+21 21 * * * root php /var/www/html/fonctions/backup.php -e
