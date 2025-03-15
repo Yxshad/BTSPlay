@@ -37,7 +37,7 @@ function checkHeader(){
             $passwordUser = $_POST['passwordUser'];
             controleurIdentifierUtilisateur($loginUser, $passwordUser);
         }
-        if ($_POST["action"] == "diffuserVideo") {
+        if ($_POST["action"] == "diffuserVideo" && isset($_POST["URI_COMPLET_NAS_PAD"])) {
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
             controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
@@ -300,6 +300,8 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
         telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
         ftp_close($conn_id);
+
+        echo "1";
     }
     else{
         exit();

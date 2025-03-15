@@ -100,16 +100,21 @@
             <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
                 <?php if(!empty($cheminCompletNAS_PAD)){ ?>
                 <div class="btnVideo">
-                    <form action="#" method="POST">
-                        <input type="hidden" name="action" value="diffuserVideo">
-                        <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
-                        <button type="submit" class="boutonSubmit">
-                            <div class="logo-btnvideo">
-                                <img src="../ressources/Images/antenne.png" alt="">
-                            </div>
-                            <p>Diffuser</p>
-                        </button onclick="changerTitrePopup('Diffusion'); changerTextePopup('Voulez-vous vraiment diffuser la vidéo <?php echo $nomFichier; ?>');">
-                    </form>
+                    <button onclick="  changerTitrePopup('Diffusion'); 
+                                    changerTextePopup('Voulez-vous vraiment diffuser la vidéo <?php echo $nomFichier; ?>');
+                                    changerTexteBtn('Confirmer', 'btn1');
+                                    changerTexteBtn('Annuler', 'btn2');
+                                    attribuerFonctionBtn('lancerDiffusion','<?php echo $cheminCompletNAS_PAD; ?>', 'btn1');
+                                    attribuerFonctionBtn('','', 'btn2');
+                                    afficherBtn('btn2');
+                                    cacherBtn('btn3');
+                                    cacherBtn('btn4');
+                                    afficherPopup();">
+                        <div class="logo-btnvideo">
+                            <img src="../ressources/Images/antenne.png" alt="">
+                        </div>
+                        <p>Diffuser</p>
+                    </button>
                 </div>
                 <?php }
             }
