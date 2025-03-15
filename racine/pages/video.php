@@ -66,9 +66,28 @@
                     <!-- Bouton Télécharger -->
                     <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
                         <div class="logo-btnvideo">
-                            <img src="../ressources/Images/télécharger_image_blanc.png" alt="">
+                            <img src="../ressources/Images/télécharger_image.png" alt="">
                         </div>
+                        <p>Télécharger</p>
                     </button>
+
+                    <?php if (controleurVerifierAcces(ACCES_MODIFICATION)) { ?>
+                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/modifier_video.png" alt="">
+                            </div>
+                            <p>Modifier</p>
+                        </button>
+                    <?php } ?>
+
+                    <?php if (controleurVerifierAcces(ACCES_SUPPRESSION)) { ?>
+                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/poubelle-de-recyclage.png" alt="">
+                            </div>
+                            <p>Supprimer</p>
+                        </button>
+                    <?php } ?>
 
                     <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
                             if (!empty($cheminCompletNAS_PAD)){ ?>
@@ -82,30 +101,21 @@
                                 echo("Fonctionnalité indisponible");
                             }
                         }?>
-
-                    <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
-                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
-                            <div class="logo-btnvideo">
-                                <img src="../ressources/Images/modifier_video_blanc.png" alt="">
-                            </div>
-                        </button>
-                    <?php } 
-
-                    if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
-                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment Supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
-                            <p>
-                                Supprimer
-                            </p>
-                        </button>
-                    <?php } ?>
                 </div>
+
+
 
             </div>
             <div class="containerDescription">
                 <p class="description">
-                    <?php echo $description; ?>
+                    <?php 
+                    if ($description != ""){
+                        echo htmlspecialchars($description); 
+                    }
+                    ?>
                 </p>
             </div>
+            
         </div>
 
         <div class="metadata_detaillee">
