@@ -531,6 +531,7 @@ function createDatabaseSave(){
  * \fn mettreAJourParametres()
  * \brief Récupère les données du formulaire de la page de paramètres et met à jour les constantes
  */
+<<<<<<< Updated upstream
 function mettreAJourParametres(){
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(empty($_POST['affichage_logs_plus_recents_premiers'])){
@@ -612,4 +613,59 @@ function mettreAJourConstantes($data) {
     file_put_contents('../ressources/constantes.php', implode('', $lines));
     ajouterLog(LOG_SUCCESS, "Mise à jour des paramétrages du site le ". date("j-m-Y_H-i-s").".");
 }
+=======
+function changeWhenToSaveDB($minute, $heure, $jour, $mois, $annee) {
+    $crontabFile = "/etc/crontab";
+    $backupScript = "/var/www/html/fonctions/backup.php";
+    $logFile = "/var/log/backup.log";
+
+    // // 🔥 1️⃣ Supprimer l'ancienne tâche backup.php SANS casser le fichier
+    // exec("sudo grep -v 'php $backupScript' $crontabFile > /tmp/crontab_tmp && sudo mv /tmp/crontab_tmp $crontabFile", $output, $return_var);
+    
+    // // Vérification de l'exécution de la suppression
+    // if ($return_var !== 0) {
+    //     echo "Erreur lors du nettoyage de la crontab. Code d'erreur : $return_var\n";
+    //     return;
+    // }
+
+    // 🔥 2️⃣ Ajouter la nouvelle tâche backup.php
+    $newLine = "$minute $heure $jour $mois * www-data /usr/local/bin/php $backupScript >> $logFile 2>&1";
+    exec("echo '$newLine' | sudo tee -a $crontabFile > /dev/null", $output, $return_var);
+
+    // Vérification de l'ajout de la nouvelle tâche
+    if ($return_var !== 0) {
+        echo "Erreur lors de l'ajout de la nouvelle tâche. Code d'erreur : $return_var\n";
+        return;
+    }
+
+    // 🔥 3️⃣ Vérifier et corriger les permissions du fichier crontab
+    exec("sudo chown root:root $crontabFile && sudo chmod 644 $crontabFile", $output, $return_var);
+
+    if ($return_var !== 0) {
+        echo "Erreur lors de la correction des permissions. Code d'erreur : $return_var\n";
+        return;
+    }
+
+    // 🔥 5️⃣ Redémarrer cron proprement
+    exec("sudo service cron restart", $output, $return_var);
+
+    if ($return_var === 0) {
+        echo "Crontab mise à jour et cron redémarré avec succès !\n";
+    } else {
+        echo "Erreur lors du redémarrage de cron. Code d'erreur : $return_var\n";
+        return;
+    }
+
+    // 🔥 6️⃣ Vérifier si cron tourne
+    exec("sudo service cron status", $cronStatus, $return_var);
+
+    if ($return_var === 0) {
+        echo "État de cron :\n" . implode("\n", $cronStatus) . "\n";
+    } else {
+        echo "Erreur lors de la vérification de l'état de cron. Code d'erreur : $return_var\n";
+    }
+}
+
+
+>>>>>>> Stashed changes
 ?>

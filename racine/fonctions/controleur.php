@@ -58,6 +58,22 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
+<<<<<<< Updated upstream
+=======
+        if($_POST["action"] == "changeWhenToSaveDB"){
+            //DATA
+            if($_POST['minute'] == 'NaN' || $_POST['heure'] == 'NaN')
+            {
+                $_POST['minute'] = '*';
+                $_POST['heure'] = '*';
+            }
+            $minute = $_POST['minute'] ?? '*';
+            $heure = $_POST['heure'] ?? '*';
+            $jour = $_POST['day'] ?? '*';
+            $month = $_POST['month'] ?? '*';
+            controleurChangeDBDumpLauncher($minute, $heure, '*', $month, $jour);
+        }
+>>>>>>> Stashed changes
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }
