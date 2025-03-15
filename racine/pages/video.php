@@ -18,6 +18,11 @@
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
+
+    $cheminCompletNAS_ARCH = null;
+    if(!empty($URIS['URI_NAS_ARCH'])){
+        $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -65,13 +70,18 @@
                         </div>
                     </button>
 
-                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION) && !empty($cheminCompletNAS_PAD)){ ?>
-                        <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Non!', arguments : []})">
-                            <div class="logo-btnvideo">
-                                <img src="../ressources/Images/diffuser.png" alt="">
-                            </div>
-                        </button>
-                    <?php } ?>
+                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
+                            if (!empty($cheminCompletNAS_PAD)){ ?>
+                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo">
+                                    <div class="logo-btnvideo">
+                                        <img src="../ressources/Images/diffuser.png" alt="">
+                                    </div>
+                                </button> <?php
+                            }
+                            else{
+                                echo("Fonctionnalité indisponible");
+                            }
+                        }?>
 
                     <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
                         <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
