@@ -98,7 +98,10 @@
                                 </button> <?php
                             }
                             else{ ?>
-                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo">
+                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo boutonGrise">
+                                    <div class="logo-btnvideo">
+                                        <img src="../ressources/Images/diffuser.png" alt="">
+                                    </div>
                                     <p>Diffusion indisponible</p>
                                 </button> <?php
                             }
