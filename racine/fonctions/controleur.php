@@ -300,8 +300,6 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
         telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
         ftp_close($conn_id);
-
-        echo "1";
     }
     else{
         exit();
@@ -325,10 +323,11 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if($isExportSucces){
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
+        echo "1";
         exit();
     }
     else{
-        /* Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
+        echo "La vidéo n'a pas pu être diffusée";
         exit();
     }
 }
@@ -440,18 +439,25 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
  * \param idVideo - Id de la vidéo à supprimer
  */
 function controleurSupprimerVideo($idVideo, $NAS){
-    
-    $video = getInfosVideo($idVideo);
-    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
-    foreach($allFiles as $file){
-        if(! is_dir($file)){
-        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+    if ($NAS == "local") {
+        $video = getInfosVideo($idVideo);
+        $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+        foreach($allFiles as $file){
+            if(! is_dir($file)){
+            unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+            }
         }
-    }
-    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
-    supprimerVideoDeBD($idVideo);
-    echo "1"; //on renvoit 1 quand tout se passe bien
-    exit(0);  
+        rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+        supprimerVideoDeBD($idVideo);
+        echo "1"; //on renvoit 1 quand tout se passe bien
+        exit(0);  
+    } elseif($NAS == "ARCH"){
+        echo $NAS; 
+        exit(0); 
+    }elseif($NAS == "PAD"){
+        echo "$NAS"; 
+        exit(0); 
+    }   
 }
 
 /**

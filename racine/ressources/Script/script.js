@@ -507,11 +507,10 @@ function attribuerFonctionBtn(fonction, args="", classe){
 }
 
 function btn(classe){
-    console.log(classe);
     let fonction = document.querySelector('.' + classe ).dataset["fonctions"];
-    let args = document.querySelector('.' + classe ).dataset["args"]
-    if (args.includes(',')) {
-        args = args.split(',').map(Number)
+    let args = document.querySelector('.' + classe ).dataset["args"];
+    if (args.includes(', ')) {
+        args = args.split(', ').map(String)
         if (fonction != "") {
             window[fonction](...args);
             attribuerFonctionBtn("", "",classe); //détache la fonction pour évité des boucles
@@ -554,7 +553,6 @@ function supprimerVideo(id, NAS){
     xhttp.open("POST", "../fonctions/controleur.php");
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
     xhttp.send("action=supprimerVideo&idVideo=" + id + "&NAS=" + NAS);
 }
 
@@ -578,8 +576,8 @@ function lancerDiffusion(uri_nas_pad){
             cacherBtn("btn4");
             afficherPopup();
         } else{
-            changerTitrePopup("Suppression raté");
-            changerTextePopup("La suppression a échoué !<br/>Erreur: " + reponse);
+            changerTitrePopup("Diffusion raté");
+            changerTextePopup("La diffusion a échoué !<br/>Erreur: " + reponse);
             changerTexteBtn("Confirmer", "btn1");
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");
