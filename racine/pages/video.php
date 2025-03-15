@@ -73,7 +73,7 @@
                             </button> <?php
                         }
                         else{ ?>
-                            <button title="Télécharger vidéo" class="btnVideo boutonGrise" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
+                            <button title="Télécharger vidéo" class="btnVideo boutonGrise">
                                 <div class="logo-btnvideo">
                                     <img src="../ressources/Images/télécharger_image.png" alt="">
                                 </div>
