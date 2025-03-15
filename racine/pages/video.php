@@ -63,12 +63,24 @@
                 </div>
 
                 <div class="container-button">
-                    <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
-                        <div class="logo-btnvideo">
-                            <img src="../ressources/Images/télécharger_image.png" alt="">
-                        </div>
-                        <p>Télécharger</p>
-                    </button>
+                    <?php
+                    if (!empty($cheminCompletNAS_ARCH)){ ?>
+                            <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
+                                <div class="logo-btnvideo">
+                                    <img src="../ressources/Images/télécharger_image.png" alt="">
+                                </div>
+                                <p>Télécharger</p>
+                            </button> <?php
+                        }
+                        else{ ?>
+                            <button title="Télécharger vidéo" class="btnVideo boutonGrise" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
+                                <div class="logo-btnvideo">
+                                    <img src="../ressources/Images/télécharger_image.png" alt="">
+                                </div>
+                                <p>Indisponible</p>
+                            </button> <?php
+                        }
+                    ?>
 
                     <?php if (controleurVerifierAcces(ACCES_MODIFICATION)) { ?>
                         <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
@@ -102,7 +114,7 @@
                                     <div class="logo-btnvideo">
                                         <img src="../ressources/Images/diffuser.png" alt="">
                                     </div>
-                                    <p>Diffusion indisponible</p>
+                                    <p>Indisponible</p>
                                 </button> <?php
                             }
                         }?>
