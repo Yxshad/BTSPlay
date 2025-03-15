@@ -19,6 +19,7 @@
 
 .menuArbo{
     margin-top: 90px;
+    height: 100%;
     overflow:auto;
 }
 
@@ -41,7 +42,7 @@
 .main-menuArbo button{
     position: absolute;
     right: -45px;
-    top: 50%;
+    top: calc(50% + 45px);
     transform: translateY(-50%);
     font-size: 50px;
     background: var(--mainSombre);
@@ -50,6 +51,7 @@
     border-radius: 0 15px 15px 0;
     display: flex;
     padding: 10px 5px;
+    cursor: pointer;
 }
 
 .main-menuArbo button svg{

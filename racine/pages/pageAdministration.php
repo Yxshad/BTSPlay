@@ -270,11 +270,14 @@ chargerPopup();
             <h3>Logs</h3>
             <label for="nb_lignes_logs">Nombre de lignes de logs:</label>
             <input type="number" id="nb_lignes_logs" name="nb_lignes_logs" min=0 value="<?php echo NB_LIGNES_LOGS; ?>"><br><br>
-            
+
             <h3>Multithreading</h3>
             <label for="nb_max_processus_transfert">Nombre maximum de processus de transfert:</label>
             <input type="number" id="nb_max_processus_transfert" min=1 max=20 name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>"><br><br>
             
+            <label for="nb_max_sous_processus_transfert">Nombre maximum de sous-processus de transfert:</label>
+            <input type="number" id="nb_max_sous_processus_transfert" min=1 max=10 name="nb_max_sous_processus_transfert" value="<?php echo NB_MAX_SOUS_PROCESSUS_TRANSFERT; ?>"><br><br>
+
             <h3>Affichage des logs</h3>
             <label for="affichage_logs_plus_recents_premiers">Afficher les logs les plus récents en premier:</label>
             <input type="checkbox" id="affichage_logs_plus_recents_premiers" name="affichage_logs_plus_recents_premiers" <?php echo AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on' ? 'checked' : ''; ?>><br><br>

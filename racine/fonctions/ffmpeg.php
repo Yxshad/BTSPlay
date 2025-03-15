@@ -193,14 +193,14 @@ function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $ti
                 "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 "-movflags +faststart " .                   // Optimisation pour le streaming
+                "-vf format=yuv420p " .
                 "\"$chemin_fichier_destination\"";
     //exec($command, $output, $return_var);
     exec($command . " 2>&1", $output, $return_var);
     if ($return_var == 1) {
         ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
         $chemin_fichier_origine . " : " . implode("\n", $output));
-
-        exit();
+        //exit();
     }
 }
 

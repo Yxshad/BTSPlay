@@ -1,76 +1,3 @@
-// #RISQUE : Dégager ce truc DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function(event) {
-    
-    if(document.querySelector('.transferts')){
-        // Fonction pour déplacer une ligne vers le haut
-        function moveUp(button) {
-            const ligne = button.parentElement.parentElement; // Trouver la ligne actuelle
-            const previousLigne = ligne.previousElementSibling; // Trouver la ligne précédente
-    
-            if (previousLigne.classList.contains('ligne')) {
-                let infoLigne = ligne.innerHTML
-                let infoPreviousLigne = previousLigne.innerHTML
-    
-                ligne.innerHTML = infoPreviousLigne;
-                previousLigne.innerHTML = infoLigne;
-            }
-    
-            document.querySelectorAll('.fleche-haut').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveUp(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-    
-            document.querySelectorAll('.fleche-bas').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveDown(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-        }
-    
-        // Fonction pour déplacer une ligne vers le bas
-        function moveDown(button) {
-            const ligne = button.parentElement.parentElement; // Trouver la ligne actuelle
-            const nextLigne = ligne.nextElementSibling; // Trouver la ligne suivante
-    
-            if (nextLigne.classList.contains('ligne')) {
-                let infoLigne = ligne.innerHTML
-                let infoNextLigne = nextLigne.innerHTML
-    
-                ligne.innerHTML = infoNextLigne;
-                nextLigne.innerHTML = infoLigne;
-            }
-    
-            document.querySelectorAll('.fleche-haut').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveUp(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-    
-            document.querySelectorAll('.fleche-bas').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveDown(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-        }
-    
-        // Ajouter des gestionnaires d'événements à toutes les flèches
-        document.querySelectorAll('.fleche-haut').forEach(button => {
-            button.addEventListener('click', function () {
-                moveUp(this); // Passer le bouton cliqué à la fonction
-            });
-        });
-    
-        document.querySelectorAll('.fleche-bas').forEach(button => {
-            button.addEventListener('click', function () {
-                moveDown(this); // Passer le bouton cliqué à la fonction
-            });
-        });
-    }
-
-
-});
-
 //Fonction qui affiche les logs en couleurs
 function affichageLogsCouleurs() {
     document.querySelectorAll(".log-line").forEach(line => {
@@ -109,8 +36,8 @@ function affichageFiltres(){
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {
         speed: 400,
-        spaceBetween: 100,
-        slidesPerView: 3,
+        spaceBetween: 20,
+        slidesPerView: 4,
         navigation: {
             nextEl: '.swiper-button-next',
             prevEl: '.swiper-button-prev',
@@ -146,9 +73,8 @@ function initLectureVideo(){
           'captions', // Toggle captions
           'settings', // Settings menu
           'pip', // Picture-in-picture (currently Safari only)
-          'airplay', // Airplay (currently Safari only)
-          'download', // Custom download button
-          'fullscreen' // Toggle fullscreen
+          'fullscreen', // Toggle fullscreen
+          'buffered' // Buffer
         ],
         settings: ['captions', 'quality', 'speed', 'loop'],
         captions: {
@@ -411,6 +337,38 @@ function gestionOngletsArborescence() {
             window.history.pushState({ path: newUrl }, '', newUrl);
         });
     });
+}
+
+
+function pageLectureVideo(){
+    const descriptionElement = document.querySelector(".description");
+    const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+
+    if (fullText.length > 100) {
+        const truncatedText = fullText.substring(0, 100);
+        const remainingText = fullText.substring(100);
+
+        // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+        descriptionElement.innerHTML = `
+            ${truncatedText}<span class="dots">...</span>
+            <span class="more-text" style="display: none;">${remainingText}</span>
+            <a href="#" class="toggleDescription"> voir plus</a>
+        `;
+
+        const toggleButton = descriptionElement.querySelector(".toggleDescription");
+        const moreTextElement = descriptionElement.querySelector(".more-text");
+        const dots = descriptionElement.querySelector(".dots");
+
+        toggleButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const isHidden = moreTextElement.style.display === "none";
+
+            // Basculer entre l'affichage du texte complet et tronqué
+            moreTextElement.style.display = isHidden ? "inline" : "none";
+            dots.style.display = isHidden ? "none" : "inline";
+            toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+        });
+    }
 }
 
 // Gère l'affichage des mots de passe de la page d'administration
