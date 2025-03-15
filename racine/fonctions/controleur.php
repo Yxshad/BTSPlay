@@ -58,8 +58,7 @@ function checkHeader(){
         if ($_POST["action"] == "mettreAJourAutorisation") {
             controleurMettreAJourAutorisations($_POST["prof"], $_POST["colonne"], $_POST["etat"]);
         }
-<<<<<<< Updated upstream
-=======
+
         if($_POST["action"] == "changeWhenToSaveDB"){
             //DATA
             if($_POST['minute'] == 'NaN' || $_POST['heure'] == 'NaN')
@@ -73,7 +72,6 @@ function checkHeader(){
             $month = $_POST['month'] ?? '*';
             controleurChangeDBDumpLauncher($minute, $heure, '*', $month, $jour);
         }
->>>>>>> Stashed changes
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }

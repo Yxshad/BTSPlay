@@ -531,7 +531,6 @@ function createDatabaseSave(){
  * \fn mettreAJourParametres()
  * \brief Récupère les données du formulaire de la page de paramètres et met à jour les constantes
  */
-<<<<<<< Updated upstream
 function mettreAJourParametres(){
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if(empty($_POST['affichage_logs_plus_recents_premiers'])){
@@ -613,7 +612,7 @@ function mettreAJourConstantes($data) {
     file_put_contents('../ressources/constantes.php', implode('', $lines));
     ajouterLog(LOG_SUCCESS, "Mise à jour des paramétrages du site le ". date("j-m-Y_H-i-s").".");
 }
-=======
+
 function changeWhenToSaveDB($minute, $heure, $jour, $mois, $annee) {
     $crontabFile = "/etc/crontab";
     $backupScript = "/var/www/html/fonctions/backup.php";
@@ -666,6 +665,4 @@ function changeWhenToSaveDB($minute, $heure, $jour, $mois, $annee) {
     }
 }
 
-
->>>>>>> Stashed changes
 ?>
