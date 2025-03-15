@@ -128,12 +128,16 @@ th {
 }
 
 button{
-    background: none;
+    height: 60px;
     border: none;
     text-decoration: none;
     cursor: pointer;
     font: inherit;
     padding: 0;
+    width: 180px;
+    color: white;
+    background: #c72027;
+    border-radius: 15px;
 }
 
 button:hover{
