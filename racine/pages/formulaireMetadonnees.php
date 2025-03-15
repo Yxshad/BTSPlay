@@ -7,6 +7,7 @@
     $nomFichier = $infosVideo["nomFichier"];
     $cheminMiniatureComplet = $infosVideo["cheminMiniatureComplet"];
     $titreVideo = $infosVideo["titreVideo"];
+    $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
     $promotion = $infosVideo["promotion"];
@@ -50,7 +51,7 @@
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
 
                 <div class="champ">
-                    <label for="profReferent" class="form-label">Professeur référant</label>
+                    <label for="profReferent" class="form-label">Professeur référent</label>
                     <select id="profReferent" name="profReferent">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">
                             Professeur actuel : <?php echo $mtdEdito["professeur"]; ?>
@@ -62,18 +63,30 @@
                 </div>
 
                 <div class="champ">
+                    <label for="realisateur" class="form-label">Réalisateur(s)</label>
+                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $mtdEdito["realisateur"]; ?>">
+                </div>
+
+                <div class="champ">
+                    <label for="description">Description</label>
+                    <input type="text" id="description" name="description" value="<?php echo $description; ?>">
+                </div>
+
+                <div class="champ">
                     <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" placeholder="<?php echo $promotion; ?>">
+                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>">
                 </div>
 
                 <div class="champ">
                     <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet" placeholder="<?php echo $mtdEdito["projet"]; ?>">
+                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
 
                 <div class="champ">
-                    <label for="realisateur">Réalisateur</label>
-                    <input type="text" id="realisateur" name="realisateur" value="<?php echo $mtdEdito["realisateur"]; ?>">
+                    <label for="cadreurNom">Cadreur(s)</label>
+                    <div class="inputs">
+                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $mtdEdito["cadreur"]; ?>">
+                    </div>
                 </div>
 
                 <div class="champ">
@@ -82,8 +95,10 @@
                 </div>
 
                 <div class="champ">
-                    <label for="responsableSon">Responsable son</label>
-                    <input type="text" id="responsableSon" name="responsableSon" value="<?php echo $mtdEdito["responsableSon"]; ?>">
+                    <label for="responsableSon">Responsable(s) son</label>
+                    <div class="inputs">
+                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $mtdEdito["responsableSon"]; ?>">
+                    </div>
                 </div>
 
                 <button type="submit" class="btn">Confirmer</button>
@@ -92,7 +107,7 @@
     </div>
 
     <div class="btns">
-        <a href="video.php?v=<?php echo $idVideo; ?>" class="btn">Terminer</a>
+        <a href="video.php?v=<?php echo $idVideo; ?>" class="btn">Retour</a>
     </div>
 </div>
 

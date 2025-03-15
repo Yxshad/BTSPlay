@@ -143,6 +143,7 @@ function controleurRecupererInfosVideo() {
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
     $promotion = $video["promotion"];
+    $description = $video["description"];
 
     // Ajout des URIS des 2 NAS avec gestion d'erreur
     $URIS = [
@@ -154,14 +155,14 @@ function controleurRecupererInfosVideo() {
     $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
     $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
     $cheminVideoComplet = $URIEspaceLocal . $nomFichier;
-    
     return [
         "idVideo" => $idVideo,
         "mtdTech" => $video,
-        "nomFichier" => $nomFichier,
+        "nomFichier" => recupererNomFichierSansExtension($nomFichier),
         "cheminMiniatureComplet" => $cheminMiniatureComplet,
         "cheminVideoComplet" => $cheminVideoComplet,
         "titreVideo" => $titreVideo,
+        "description" => $description,
         "mtdEdito" => $mtdEdito,
         "promotion" => $promotion,
         "URIS" => $URIS,
@@ -179,6 +180,7 @@ function controleurPreparerMetadonnees($idVideo){
         isset($_POST["realisateur"]) || 
         isset($_POST["promotion"]) || 
         isset($_POST["projet"]) || 
+        isset($_POST["description"]) || 
         isset($_POST["cadreur"]) || 
         isset($_POST["responsableSon"])
     ) {
@@ -187,6 +189,7 @@ function controleurPreparerMetadonnees($idVideo){
         $realisateur = $_POST["realisateur"];
         $promotion = $_POST["promotion"];
         $projet = $_POST["projet"];
+        $description = $_POST["description"];
         $cadreur = $_POST["cadreur"];
         $responsableSon = $_POST["responsableSon"];
         miseAJourMetadonneesVideo(
@@ -195,6 +198,7 @@ function controleurPreparerMetadonnees($idVideo){
             $realisateur, 
             $promotion, 
             $projet, 
+            $description,
             $cadreur, 
             $responsableSon
         );

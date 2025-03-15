@@ -10,7 +10,7 @@
             </a>
 
             <form class="recherche">
-                <input type="search" placeholder="Barre de recherche">
+                <input type="search" placeholder="Rechercher une vidéo...">
                 <button>
                     <div class="logo-search">
                         <img src="../ressources/Images/loupe.png" alt="Rechercher">
