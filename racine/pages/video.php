@@ -63,7 +63,6 @@
                 </div>
 
                 <div class="container-button">
-                    <!-- Bouton Télécharger -->
                     <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
                         <div class="logo-btnvideo">
                             <img src="../ressources/Images/télécharger_image.png" alt="">
@@ -81,7 +80,7 @@
                     <?php } ?>
 
                     <?php if (controleurVerifierAcces(ACCES_SUPPRESSION)) { ?>
-                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
+                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/poubelle-de-recyclage.png" alt="">
                             </div>
@@ -95,10 +94,13 @@
                                     <div class="logo-btnvideo">
                                         <img src="../ressources/Images/diffuser.png" alt="">
                                     </div>
+                                    <p>Diffuser</p>
                                 </button> <?php
                             }
-                            else{
-                                echo("Fonctionnalité indisponible");
+                            else{ ?>
+                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo">
+                                    <p>Diffusion indisponible</p>
+                                </button> <?php
                             }
                         }?>
                 </div>
@@ -153,7 +155,6 @@
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         initLectureVideo();
-        // appel
         pageLectureVideo();
     });
 
