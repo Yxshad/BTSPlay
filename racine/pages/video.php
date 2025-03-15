@@ -125,11 +125,17 @@
                 <div class="btnVideo">
                     <button class="boutonSubmit" onclick="  changerTitrePopup('Suppression'); 
                                                             changerTextePopup('Voulez-vous vraiment supprimer la vidéo <?php echo $nomFichier; ?>');
-                                                            changerTexteBtn1('Confirmer');
-                                                            attribuerFonctionBtn1('supprimerVideo','<?php echo $idVideo; ?>, <?php echo $cheminVideoComplet; ?>');
-                                                            changerTexteBtn2('Annuler');
-                                                            attribuerFonctionBtn2('');
-                                                            afficherBtn2();
+                                                            changerTexteBtn('Base de données', 'btn1');
+                                                            changerTexteBtn('NAS PAD', 'btn2');
+                                                            changerTexteBtn('NAS Archive', 'btn3');
+                                                            changerTexteBtn('Annuler', 'btn4');
+                                                            attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, local', 'btn1');
+                                                            attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, PAD', 'btn2');
+                                                            attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, ARCH', 'btn3');
+                                                            attribuerFonctionBtn('', '', 'btn4');
+                                                            afficherBtn('btn2');
+                                                            afficherBtn('btn3');
+                                                            afficherBtn('btn4');
                                                             afficherPopup();">
                         <div class="logo-btnvideo">
                             <img src="../ressources/Images/trash.png" alt="">

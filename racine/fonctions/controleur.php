@@ -41,10 +41,10 @@ function checkHeader(){
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
             controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
-        if ($_POST["action"] == "supprimerVideo") {
+        if ($_POST["action"] == "supprimerVideo" && isset($_POST["NAS"])) {
             $idVideo = $_POST['idVideo'];
-            $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
-            controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+            $NAS = $_POST["NAS"];
+            controleurSupprimerVideo($idVideo, $NAS);
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
             ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
@@ -437,7 +437,8 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
  * \brief "Supprime" la vidéo du MAM
  * \param idVideo - Id de la vidéo à supprimer
  */
-function controleurSupprimerVideo($idVideo){
+function controleurSupprimerVideo($idVideo, $NAS){
+    
     $video = getInfosVideo($idVideo);
     $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     foreach($allFiles as $file){
@@ -448,7 +449,7 @@ function controleurSupprimerVideo($idVideo){
     rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
     supprimerVideoDeBD($idVideo);
     echo "1"; //on renvoit 1 quand tout se passe bien
-    exit(0);
+    exit(0);  
 }
 
 /**
@@ -550,7 +551,7 @@ function controleurMettreAJourParametres(){
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
 
-function chargerPopup($nouveauTitre = null, $nouveauTexte = null, $libelleBtn1 = "Confirmer", $libelleBtn2 = null){
+function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
 ?>

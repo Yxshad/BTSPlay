@@ -488,59 +488,43 @@ function changerTextePopup(nouveauTexte){
     document.querySelector('.popup p').innerHTML = nouveauTexte;
 }
 
-function changerTexteBtn1(nouveauTexte){
-    document.querySelector('.popup .btn1').innerText = nouveauTexte;
+function changerTexteBtn(nouveauTexte, classe){
+    document.querySelector('.popup .' + classe ).innerText = nouveauTexte;
 }
 
-function changerTexteBtn2(nouveauTexte){
-    document.querySelector('.popup .btn2').innerText = nouveauTexte;
+function afficherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "block";
 }
 
-function afficherBtn2(){
-    document.querySelector('.popup .btn2').style.display = "block";
+function cacherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "none";
 }
 
-function cacherBtn2(){
-    document.querySelector('.popup .btn2').style.display = "none";
+
+function attribuerFonctionBtn(fonction, args="", classe){
+    document.querySelector('.popup .' + classe ).setAttribute('data-fonctions', fonction);
+    document.querySelector('.popup .' + classe ).setAttribute('data-args', args);
 }
 
-function attribuerFonctionBtn1(fonction, args=""){
-    document.querySelector('.popup .btn1').setAttribute('data-fonctions', fonction);
-    document.querySelector('.popup .btn1').setAttribute('data-args', args);
-}
-
-function btn1(){
-    let fonction = document.querySelector('.popup .btn1').dataset["fonctions"];
-    let args = document.querySelector('.popup .btn1').dataset["args"]
+function btn(classe){
+    console.log(classe);
+    let fonction = document.querySelector('.' + classe ).dataset["fonctions"];
+    let args = document.querySelector('.' + classe ).dataset["args"]
     if (args.includes(',')) {
         args = args.split(',').map(Number)
         if (fonction != "") {
             window[fonction](...args);
-            attribuerFonctionBtn1(""); //détache la fonction pour évité des boucles
+            attribuerFonctionBtn("", "",classe); //détache la fonction pour évité des boucles
         }
-    } else{
+    } else{ // le else sert quand il n'y a qu'un argument
         if (fonction != "") {
             window[fonction](args);
-            attribuerFonctionBtn1(""); //détache la fonction pour évité des boucles
+            attribuerFonctionBtn("", "", classe); //détache la fonction pour évité des boucles
         }
     }
-
-    
 }
 
-function attribuerFonctionBtn2(fonction){
-    document.querySelector('.popup .btn2').setAttribute('data-fonctions', fonction);
-}
-
-function btn2(){
-    let fonction = document.querySelector('.popup .btn2').dataset["fonctions"];
-    if (fonction != "") {
-        window[fonction]();
-        attribuerFonctionBtn2(""); //détache la fonction pour évité des boucles
-    }
-}
-
-function supprimerVideo(id, chemin){
+function supprimerVideo(id, NAS){
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         
@@ -548,15 +532,20 @@ function supprimerVideo(id, chemin){
         if (reponse == "1") {
             changerTitrePopup("Suppression Réussite");
             changerTextePopup("La suppression a bien été effectué !");
-            changerTexteBtn1("Confirmer");
-            attribuerFonctionBtn1("redirection","home.php")
-            cacherBtn2();
+            changerTexte("Confirmer", "btn1");
+            attribuerFonctionBtn("redirection","home.php", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
             afficherPopup();
         } else{
             changerTitrePopup("Suppression raté");
             changerTextePopup("La suppression a échoué !<br/>Erreur: " + reponse);
-            changerTexteBtn1("Confirmer");
-            cacherBtn2();
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
             afficherPopup();
         }
         
@@ -566,7 +555,7 @@ function supprimerVideo(id, chemin){
     
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
-    xhttp.send("action=supprimerVideo&idVideo=" + id + "&URI_STOCKAGE_LOCAL=" + chemin);
+    xhttp.send("action=supprimerVideo&idVideo=" + id + "&NAS=" + NAS);
 }
 
 function redirection(page){

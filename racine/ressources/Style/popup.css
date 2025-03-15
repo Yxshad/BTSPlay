@@ -34,7 +34,9 @@
     display: flex;
 }
 
-.popup .btn2{
+.popup .btn2,
+.popup .btn3,
+.popup .btn4{
     display: None;
 }
 
@@ -43,11 +45,12 @@
     font-weight: 700;
     width: 100px;
     padding: 10px;
-    margin: auto;
     display: block;
     border: none;
     border-radius: 10px;
     transition: all 0.2s ease;
+    height: auto;
+    margin: 0 auto;
 }
 
 .popup button:hover,
