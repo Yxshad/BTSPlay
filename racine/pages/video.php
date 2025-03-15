@@ -61,39 +61,49 @@
                     <!-- Bouton Télécharger -->
                     <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
                         <div class="logo-btnvideo">
-                            <img src="../ressources/Images/télécharger_image_blanc.png" alt="">
+                            <img src="../ressources/Images/télécharger_image.png" alt="">
                         </div>
+                        <p>Télécharger</p>
                     </button>
 
-                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION) && !empty($cheminCompletNAS_PAD)){ ?>
+                    <?php if (controleurVerifierAcces(ACCES_MODIFICATION)) { ?>
+                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/modifier_video.png" alt="">
+                            </div>
+                            <p>Modifier</p>
+                        </button>
+                    <?php } ?>
+
+                    <?php if (controleurVerifierAcces(ACCES_SUPPRESSION)) { ?>
+                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
+                            <div class="logo-btnvideo">
+                                <img src="../ressources/Images/poubelle-de-recyclage.png" alt="">
+                            </div>
+                            <p>Supprimer</p>
+                        </button>
+                    <?php } ?>
+
+                    <?php if (controleurVerifierAcces(ACCES_DIFFUSION) && !empty($cheminCompletNAS_PAD)) { ?>
                         <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="afficherPopUp('Diffusion', 'Voulez-vous vraiment diffuser la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','diffuserVideo'], ['URI_COMPLET_NAS_PAD', '<?php echo htmlspecialchars($cheminCompletNAS_PAD); ?>']]}, {libelle : 'Non!', arguments : []})">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/diffuser.png" alt="">
                             </div>
-                        </button>
-                    <?php } ?>
-
-                    <?php if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
-                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
-                            <div class="logo-btnvideo">
-                                <img src="../ressources/Images/modifier_video_blanc.png" alt="">
-                            </div>
-                        </button>
-                    <?php } 
-
-                    if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
-                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="afficherPopUp('Suppression', 'Voulez-vous vraiment Supprimer la vidéo <?php echo htmlspecialchars($nomFichier); ?> ?', {libelle : 'Oui!', arguments : [['action','supprimerVideo'], ['idVideo', '<?php echo htmlspecialchars($idVideo); ?>'], ['URI_STOCKAGE_LOCAL', '<?php echo $cheminVideoComplet; ?>']]}, {libelle : 'Non!', arguments : []})">
-                            <p>
-                                Supprimer
-                            </p>
+                            <p>Diffuser</p>
                         </button>
                     <?php } ?>
                 </div>
 
+
+
             </div>
             <div class="containerDescription">
                 <p class="description">
-                    <?php echo htmlspecialchars($mtdTech["Description"]); ?>
+                    <?php 
+                    if ($description != ""){
+                        echo htmlspecialchars($description); 
+                    }
+                    ?>
                 </p>
             </div>
             
