@@ -123,15 +123,13 @@
 
 
             </div>
-            <div class="containerDescription">
-                <p class="description">
-                    <?php 
-                    if ($description != ""){
-                        echo htmlspecialchars($description); 
-                    }
-                    ?>
-                </p>
-            </div>
+            <?php if ($description != ""): ?>
+                <div class="containerDescription">
+                    <p class="description">
+                        <?php echo htmlspecialchars($description); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
             
         </div>
 
