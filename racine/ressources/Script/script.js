@@ -125,10 +125,14 @@ function createDatabaseSave() {
     xhttp.onload = function() {
         
         const reponse = xhttp.responseText.trim();
-        changerTitrePopup("Sauvegarde Réussite");
-        changerTextePopup("La sauvegarde a bien été effectué !");
+        changerTitrePopup("Sauvegarde");
+        if(reponse==1){
+            changerTextePopup("Erreur lors du lancement de la sauvegarde manuelle. <br> Contactez votre administrateur.");
+        }
+        else{
+            changerTextePopup("Sauvegarde effectuée avec succès.");
+        }
         afficherPopup();
-        
     }
     xhttp.open("POST", "../fonctions/controleur.php");
     
@@ -342,32 +346,33 @@ function gestionOngletsArborescence() {
 
 function pageLectureVideo(){
     const descriptionElement = document.querySelector(".description");
-    const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+    if (descriptionElement) {
+        const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+        if (fullText.length > 100) {
+            const truncatedText = fullText.substring(0, 100);
+            const remainingText = fullText.substring(100);
 
-    if (fullText.length > 100) {
-        const truncatedText = fullText.substring(0, 100);
-        const remainingText = fullText.substring(100);
+            // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+            descriptionElement.innerHTML = `
+                ${truncatedText}<span class="dots">...</span>
+                <span class="more-text" style="display: none;">${remainingText}</span>
+                <a href="#" class="toggleDescription"> voir plus</a>
+            `;
 
-        // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
-        descriptionElement.innerHTML = `
-            ${truncatedText}<span class="dots">...</span>
-            <span class="more-text" style="display: none;">${remainingText}</span>
-            <a href="#" class="toggleDescription"> voir plus</a>
-        `;
+            const toggleButton = descriptionElement.querySelector(".toggleDescription");
+            const moreTextElement = descriptionElement.querySelector(".more-text");
+            const dots = descriptionElement.querySelector(".dots");
 
-        const toggleButton = descriptionElement.querySelector(".toggleDescription");
-        const moreTextElement = descriptionElement.querySelector(".more-text");
-        const dots = descriptionElement.querySelector(".dots");
+            toggleButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                const isHidden = moreTextElement.style.display === "none";
 
-        toggleButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            const isHidden = moreTextElement.style.display === "none";
-
-            // Basculer entre l'affichage du texte complet et tronqué
-            moreTextElement.style.display = isHidden ? "inline" : "none";
-            dots.style.display = isHidden ? "none" : "inline";
-            toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
-        });
+                // Basculer entre l'affichage du texte complet et tronqué
+                moreTextElement.style.display = isHidden ? "inline" : "none";
+                dots.style.display = isHidden ? "none" : "inline";
+                toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+            });
+        }
     }
 }
 
@@ -487,17 +492,17 @@ function supprimerVideo(id, NAS){
         
         const reponse = xhttp.responseText.trim();
         if (reponse == "1") {
-            changerTitrePopup("Suppression Réussite");
-            changerTextePopup("La suppression a bien été effectué !");
-            changerTexte("Confirmer", "btn1");
+            changerTitrePopup("Suppression");
+            changerTextePopup("Suppression de la vidéo effectuée.");
+            changerTexteBtn("Confirmer", "btn1");
             attribuerFonctionBtn("redirection","home.php", "btn1")
             cacherBtn("btn2");
             cacherBtn("btn3");
             cacherBtn("btn4");
             afficherPopup();
         } else{
-            changerTitrePopup("Suppression raté");
-            changerTextePopup("La suppression a échoué !<br/>Erreur: " + reponse);
+            changerTitrePopup("Suppression");
+            changerTextePopup("Echec lors de la suppression de la vidéo. <br/> Erreur : " + reponse);
             changerTexteBtn("Confirmer", "btn1");
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");
@@ -525,8 +530,8 @@ function lancerDiffusion(uri_nas_pad){
         
         const reponse = xhttp.responseText.trim();
         if (reponse == "1") {
-            changerTitrePopup("Diffusion Réussite");
-            changerTextePopup("La diffusion a bien été effectué !");
+            changerTitrePopup("Diffusion");
+            changerTextePopup("Diffusion effectuée avec succès.");
             changerTexteBtn("Confirmer", "btn1");
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");
@@ -534,8 +539,8 @@ function lancerDiffusion(uri_nas_pad){
             cacherBtn("btn4");
             afficherPopup();
         } else{
-            changerTitrePopup("Diffusion raté");
-            changerTextePopup("La diffusion a échoué !<br/>Erreur: " + reponse);
+            changerTitrePopup("Diffusion");
+            changerTextePopup("Echec lors de la diffusion. <br/>Erreur : " + reponse);
             changerTexteBtn("Confirmer", "btn1");
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");

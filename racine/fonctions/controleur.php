@@ -331,7 +331,7 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         exit();
     }
     else{
-        echo "La vidéo n'a pas pu être diffusée";
+        echo "La vidéo a déjà été diffusée.";
         exit();
     }
 }
@@ -548,8 +548,8 @@ function controleurLancerFonctionTransfert(){
  * \brief Appelle la fonction qui créé la sauvegarde de la base de données
  */
 function controleurcreateDBDumpLauncher(){
-    createDatabaseSave();
-    //controleurPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
+    $exitCode = createDatabaseSave();
+    echo $exitCode;
 }
 
 function controleurMettreAJourParametres(){
