@@ -37,14 +37,14 @@ function checkHeader(){
             $passwordUser = $_POST['passwordUser'];
             controleurIdentifierUtilisateur($loginUser, $passwordUser);
         }
-        if ($_POST["action"] == "diffuserVideo") {
+        if ($_POST["action"] == "diffuserVideo" && isset($_POST["URI_COMPLET_NAS_PAD"])) {
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
             controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
-        if ($_POST["action"] == "supprimerVideo") {
+        if ($_POST["action"] == "supprimerVideo" && isset($_POST["NAS"])) {
             $idVideo = $_POST['idVideo'];
-            $URI_STOCKAGE_LOCAL = $_POST['URI_STOCKAGE_LOCAL'];
-            controleurSupprimerVideo($idVideo, $URI_STOCKAGE_LOCAL);
+            $NAS = $_POST["NAS"];
+            controleurSupprimerVideo($idVideo, $NAS);
         }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === "declencherReconciliation") {
             ob_start(); // Démarrer la capture de sortie pour éviter les erreurs de header
@@ -326,13 +326,12 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
     if($isExportSucces){
         ajouterLog(LOG_SUCCESS, "Diffusion de la vidéo " . $URI_COMPLET_NAS_PAD . " effectuée avec succès.");
-        //controleurPopUp("Diffusion", "La vidéo <strong>$nomFichier</strong> a été diffusée avec succès.");
-        //exit();
+        echo "1";
+        exit();
     }
     else{
-        /*controleurPopUp("Erreur", "Erreur lors de la diffusion de la vidéo <strong>$nomFichier</strong>. <br>
-        Vérifiez que la vidéo n'est pas déjà présente dans le NAS de diffusion.");*/
-        //exit();
+        echo "La vidéo a déjà été diffusée.";
+        exit();
     }
 }
 
@@ -442,19 +441,26 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
  * \brief "Supprime" la vidéo du MAM
  * \param idVideo - Id de la vidéo à supprimer
  */
-function controleurSupprimerVideo($idVideo){
-    $video = getInfosVideo($idVideo);
-    $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
-    foreach($allFiles as $file){
-        if(! is_dir($file)){
-        unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+function controleurSupprimerVideo($idVideo, $NAS){
+    if ($NAS == "local") {
+        $video = getInfosVideo($idVideo);
+        $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+        foreach($allFiles as $file){
+            if(! is_dir($file)){
+            unlink(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL'] . $file);
+            }
         }
-    }
-    rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
-    supprimerVideoDeBD($idVideo);
-    //controleurPopUp("Suppression", "La vidéo <strong>".$video['mtd_tech_titre']."</strong> a été supprimée avec succès.");
-    header('Location: home.php');
-    exit();
+        rmdir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
+        supprimerVideoDeBD($idVideo);
+        echo "1"; //on renvoit 1 quand tout se passe bien
+        exit(0);  
+    } elseif($NAS == "ARCH"){
+        echo $NAS; 
+        exit(0); 
+    }elseif($NAS == "PAD"){
+        echo "$NAS"; 
+        exit(0); 
+    }   
 }
 
 /**
@@ -541,8 +547,8 @@ function controleurLancerFonctionTransfert(){
  * \brief Appelle la fonction qui créé la sauvegarde de la base de données
  */
 function controleurcreateDBDumpLauncher(){
-    createDatabaseSave();
-    //controleurPopUp("Sauvegarde manuelle", "La base de données a été sauvegardée avec succès.");
+    $exitCode = createDatabaseSave();
+    echo $exitCode;
 }
 
 function controleurMettreAJourParametres(){
@@ -555,29 +561,9 @@ function controleurMettreAJourParametres(){
     // Afficher un message de succès
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
- /**
- * \fn controleurPopUp($titre, $explication, $btn1, $btn2)
- * \brief Appelle le template de la popup pour faire apparaitre une fenetre personnalisable
- * \param titre - Titre affiché dans la popup
- * \param explication - Bloc de texte affiché dans la popup
- * \param btn1 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
- * \param btn2 - Array qui contient le texte du bouton dans libellé et les variables a envoyer en post au controleur dans arguments
- */
-/*function controleurPopUp($titre, $explication, $btn1 = null, $btn2 = null) {
-    // Définir les boutons par défaut si aucun n'est fourni
-    if ($btn1 === null && $btn2 === null) {
-        $btn1 = [
-            "libelle" => "Confirmer",
-            "arguments" => []
-        ];
-    }
 
-    // Vérifier et décoder les boutons si ils sont passés sous forme de chaîne JSON
-    $btn1 = is_string($btn1) ? json_decode($btn1, true) : $btn1;
-    $btn2 = is_string($btn2) ? json_decode($btn2, true) : $btn2;
-
-    // Inclure le template de la popup
+function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
-*/
+
 ?>
