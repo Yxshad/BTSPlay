@@ -53,7 +53,9 @@
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
 
                 <div class="champ">
-                    <label for="profReferent">Professeur référent</label>
+
+                    <label for="profReferent" class="form-label">Professeur référent</label>
+
                     <select id="profReferent" name="profReferent">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">
                             Professeur actuel : <?php echo $mtdEdito["professeur"]; ?>
@@ -79,18 +81,20 @@
                     <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
 
+
                 <div id="roles-container">
                 <?php 
                     if($mtdRoles!=null){
                         foreach ($mtdRoles as $role => $values) { 
                             $formattedId = strtolower(str_replace(' ', '_', $role));
-                            echo '<div class="champ role">';
-                            echo '<label for="' . htmlspecialchars($formattedId) . '">' . htmlspecialchars($role) . '</label>';
+                            echo '<div class="champ role"> ';
+                            echo '<label for="' . htmlspecialchars($formattedId) . '">' . htmlspecialchars($role) . '</label> <div class="inputs">';
                             echo '<input class="role-input" type="text" id="'. htmlspecialchars($formattedId) .'" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '">';
-                            echo '</div>';
+                            echo '</div></div>';
                         }
                     }
                 ?>
+
                 </div>
 
                 <button type="button" id="add-role" class="btn">Ajouter un rôle</button>

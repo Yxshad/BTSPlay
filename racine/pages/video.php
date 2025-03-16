@@ -19,6 +19,11 @@
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
+
+    $cheminCompletNAS_ARCH = null;
+    if(!empty($URIS['URI_NAS_ARCH'])){
+        $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
+    }
 ?>
 
 <!DOCTYPE html>
@@ -29,6 +34,7 @@
     <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/video.css" rel="stylesheet">
+    <link href="../ressources/Style/menuArbo.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
     
     <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
@@ -39,113 +45,154 @@
     <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
 
 <?php require_once '../ressources/Templates/header.php';?>
+<?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
-<div class="container">
-    <div class="lecteurVideo">
-    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniatureComplet; ?>>
-        <source src="<?php echo $cheminVideoComplet; ?>" type="video/mp4"/>
-    </video>
-</div>
-    <h1 class="titre"><?php echo $nomFichier; ?></h1>
-    <h2 ><?php echo $titreVideo; ?></h2>
+<div class="contenu">
+        <div class="container_principal">
+            <div class="container_video">
+                <div class="lecteurVideo">
+                    <video class="player" id="player" playsinline controls data-poster=<?php echo $cheminMiniatureComplet; ?>>
+                        <source src="<?php echo $cheminVideoComplet; ?>" type="video/mp4"/>
+                    </video>
+                </div>
+            </div>
+                <div class="info_video">
+
+                <div class ="titre_nom">
+                    <h1 class="titre"><?php echo $nomFichier; ?></h1>
+                    <h2 ><?php echo $titreVideo; ?></h2>
     <div class="colonnes">
-        <div class="colonne-1">
-            <p class="description"><?php echo $mtdTech["description"]; ?></p>
-            <p class="mtd">
-                <strong>URI du NAS PAD : </strong><?php echo !empty($URIS['URI_NAS_PAD']) ? $URIS['URI_NAS_PAD'] : "Non présente"; ?>
-            </p>
-            <p class="mtd">
-                <strong>URI du NAS ARCH : </strong><?php echo !empty($URIS['URI_NAS_ARCH']) ? $URIS['URI_NAS_ARCH'] : "Non présente"; ?>
-            </p>
-            <p class="mtd">
-                <strong>Durée : </strong><?php echo $mtdTech["mtd_tech_duree"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Image par secondes : </strong><?php echo $mtdTech["mtd_tech_fps"]; ?> fps
-            </p>
-            <p class="mtd">
-                <strong>Résolution : </strong><?php echo $mtdTech["mtd_tech_resolution"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Format : </strong><?php echo $mtdTech["mtd_tech_format"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Projet : </strong><?php echo $mtdEdito["projet"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Promotion : </strong><?php echo $promotion; ?>
-            </p>
-            <p class="mtd">
-                <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
-            </p>
-            <?php
-            foreach ($mtdRoles as $role => $values) { 
-                echo '<p class="mtd">';
-                echo '<strong>' . htmlspecialchars($role) . ' : </strong>';
-            
-                // Si plusieurs participants pour un rôle
-                    echo htmlspecialchars($values);
-                echo '</p>';
-            }
-            
-            ?>
-            
+        <div class="colonne-1">    
         </div>
         <div class="colonne-2">
             <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH, il faudra créer un dossier local 'videosATelecharger' -->
             <a href="<?php echo $cheminVideoComplet; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
                 <div class="logo-btnvideo">
                     <img src="../ressources/Images/download.webp" alt="">
+
                 </div>
-                <p>Télécharger</p>
-            </a>
-            <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){ ?>
-                <?php if(!empty($cheminCompletNAS_PAD)){ ?>
-                <div class="btnVideo">
-                    <form action="#" method="POST">
-                        <input type="hidden" name="action" value="diffuserVideo">
-                        <input type="hidden" name="URI_COMPLET_NAS_PAD" value="<?php echo $cheminCompletNAS_PAD; ?>">
-                        <button type="submit" class="boutonSubmit">
+
+                <div class="container-button">
+                    <?php
+                    if (!empty($cheminCompletNAS_ARCH)){ ?>
+                            <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
+                                <div class="logo-btnvideo">
+                                    <img src="../ressources/Images/télécharger_image.png" alt="">
+                                </div>
+                                <p>Télécharger</p>
+                            </button> <?php
+                        }
+                        else{ ?>
+                            <button title="Télécharger vidéo" class="btnVideo boutonGrise">
+                                <div class="logo-btnvideo">
+                                    <img src="../ressources/Images/télécharger_image.png" alt="">
+                                </div>
+                                <p>Indisponible</p>
+                            </button> <?php
+                        }
+                    ?>
+
+                    <?php if (controleurVerifierAcces(ACCES_MODIFICATION)) { ?>
+                        <button id="boutonModif" title="Modifier vidéo" class="btnVideo" onclick="window.location.href='formulaireMetadonnees.php?v=<?php echo $idVideo; ?>';">
                             <div class="logo-btnvideo">
-                                <img src="../ressources/Images/antenne.png" alt="">
+                                <img src="../ressources/Images/modifier_video.png" alt="">
                             </div>
-                            <p>Diffuser</p>
+                            <p>Modifier</p>
                         </button>
-                    </form>
-                </div>
-                <?php }
-            }
-            if(controleurVerifierAcces(ACCES_MODIFICATION)){ ?>
-                <a href="formulaireMetadonnees.php?v=<?php echo $idVideo; ?>" class="btnVideo">
-                    <div class="logo-btnvideo">
-                        <img src="../ressources/Images/modif.png" alt="">
-                    </div>
-                    <p>Modifier</p>
-                </a>
-            <?php }
-            if(controleurVerifierAcces(ACCES_SUPPRESSION)){ ?>             
-                <div class="btnVideo">
-                    <form action="#" method="POST">
-                        <input type="hidden" name="action" value="supprimerVideo">
-                        <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
-                        <input type="hidden" name="URI_STOCKAGE_LOCAL" value="<?php echo $cheminVideoComplet; ?>">
-                        <button type="submit" class="boutonSubmit">
+                    <?php } ?>
+
+                    <?php if (controleurVerifierAcces(ACCES_SUPPRESSION)) { ?>
+                        <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr">
                             <div class="logo-btnvideo">
-                                <img src="../ressources/Images/trash.png" alt="">
+                                <img src="../ressources/Images/poubelle-de-recyclage.png" alt="">
                             </div>
                             <p>Supprimer</p>
                         </button>
-                    </form>
+                    <?php } ?>
+
+                    <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
+                            if (!empty($cheminCompletNAS_PAD)){ ?>
+                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo">
+                                    <div class="logo-btnvideo">
+                                        <img src="../ressources/Images/diffuser.png" alt="">
+                                    </div>
+                                    <p>Diffuser</p>
+                                </button> <?php
+                            }
+                            else{ ?>
+                                <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo boutonGrise">
+                                    <div class="logo-btnvideo">
+                                        <img src="../ressources/Images/diffuser.png" alt="">
+                                    </div>
+                                    <p>Indisponible</p>
+                                </button> <?php
+                            }
+                        }?>
                 </div>
-            <?php } ?>
+
+
+
+            </div>
+            <?php if ($description != ""): ?>
+                <div class="containerDescription">
+                    <p class="description">
+                        <?php echo htmlspecialchars($description); ?>
+                    </p>
+                </div>
+            <?php endif; ?>
+            
+        </div>
+
+        <div class="metadata_detaillee">
+            <table>
+                <?php
+                $metadata = [
+                    "URI du NAS PAD" => $URIS['URI_NAS_PAD'],
+                    "URI du NAS ARCH" => $URIS['URI_NAS_ARCH'],
+                    "Durée" => $mtdTech["mtd_tech_duree"],
+                    "Image par seconde" => $mtdTech["mtd_tech_fps"] . " fps",
+                    "Résolution" => $mtdTech["mtd_tech_resolution"],
+                    "Format" => $mtdTech["mtd_tech_format"],
+                    "Projet" => $mtdEdito["projet"],
+                    "Promotion" => $promotion,
+                    "Professeur référent" => $mtdEdito["professeur"]
+                ];
+
+                foreach ($metadata as $key => $value) {
+                    echo "<tr>";
+                    echo "<td><strong>$key</strong></td>";
+                    echo "<td>$value</td>";
+                    echo "</tr>";
+                }
+                foreach ($mtdRoles as $role => $values) { 
+                echo "<tr>";
+                echo "<td><strong>htmlspecialchars($role)</strong></td>";
+                echo "<td>htmlspecialchars($values)</td>";
+                echo "</tr>";
+            }
+            
+                ?>
+            </table>
         </div>
     </div>
-</div>
+
 
 <?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         initLectureVideo();
+        pageLectureVideo();
     });
+
 </script>
+
+
+
+
+
+
+
+
+
+

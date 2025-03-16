@@ -1,76 +1,3 @@
-// #RISQUE : Dégager ce truc DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function(event) {
-    
-    if(document.querySelector('.transferts')){
-        // Fonction pour déplacer une ligne vers le haut
-        function moveUp(button) {
-            const ligne = button.parentElement.parentElement; // Trouver la ligne actuelle
-            const previousLigne = ligne.previousElementSibling; // Trouver la ligne précédente
-    
-            if (previousLigne.classList.contains('ligne')) {
-                let infoLigne = ligne.innerHTML
-                let infoPreviousLigne = previousLigne.innerHTML
-    
-                ligne.innerHTML = infoPreviousLigne;
-                previousLigne.innerHTML = infoLigne;
-            }
-    
-            document.querySelectorAll('.fleche-haut').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveUp(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-    
-            document.querySelectorAll('.fleche-bas').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveDown(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-        }
-    
-        // Fonction pour déplacer une ligne vers le bas
-        function moveDown(button) {
-            const ligne = button.parentElement.parentElement; // Trouver la ligne actuelle
-            const nextLigne = ligne.nextElementSibling; // Trouver la ligne suivante
-    
-            if (nextLigne.classList.contains('ligne')) {
-                let infoLigne = ligne.innerHTML
-                let infoNextLigne = nextLigne.innerHTML
-    
-                ligne.innerHTML = infoNextLigne;
-                nextLigne.innerHTML = infoLigne;
-            }
-    
-            document.querySelectorAll('.fleche-haut').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveUp(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-    
-            document.querySelectorAll('.fleche-bas').forEach(button => {
-                button.addEventListener('click', function () {
-                    moveDown(this); // Passer le bouton cliqué à la fonction
-                });
-            });
-        }
-    
-        // Ajouter des gestionnaires d'événements à toutes les flèches
-        document.querySelectorAll('.fleche-haut').forEach(button => {
-            button.addEventListener('click', function () {
-                moveUp(this); // Passer le bouton cliqué à la fonction
-            });
-        });
-    
-        document.querySelectorAll('.fleche-bas').forEach(button => {
-            button.addEventListener('click', function () {
-                moveDown(this); // Passer le bouton cliqué à la fonction
-            });
-        });
-    }
-
-
-});
-
 //Fonction qui affiche les logs en couleurs
 function affichageLogsCouleurs() {
     document.querySelectorAll(".log-line").forEach(line => {
@@ -146,9 +73,8 @@ function initLectureVideo(){
           'captions', // Toggle captions
           'settings', // Settings menu
           'pip', // Picture-in-picture (currently Safari only)
-          'airplay', // Airplay (currently Safari only)
-          'download', // Custom download button
-          'fullscreen' // Toggle fullscreen
+          'fullscreen', // Toggle fullscreen
+          'buffered' // Buffer
         ],
         settings: ['captions', 'quality', 'speed', 'loop'],
         captions: {
@@ -210,7 +136,7 @@ function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         const videos = JSON.parse(this.responseText);
-        const lignesContainer = document.querySelector('.transferts .lignes');
+        const lignesContainer = document.querySelector('.transfers-header .lignes');
         lignesContainer.innerHTML = '';
         videos.forEach(video => {
             const ligne = document.createElement('div');
@@ -407,98 +333,39 @@ function gestionOngletsArborescence() {
         });
     });
 }
-/*
-function afficherPopUp(titre, description, btn1, btn2){
-    btn1PHP = JSON.stringify(btn1);
-    btn2PHP = JSON.stringify(btn2);
 
-    fetch('../../fonctions/controleur.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: `action=popup&titre=${encodeURIComponent(titre)}&description=${description}&btn1=${btn1PHP}&btn2=${btn2PHP}`
-    })
-    .then(response => response.text())
-    .then(data => {
-        document.querySelector('body').innerHTML += data;
-        boutonsPopUp(btn1, btn2);
-    });
 
-    
-}
+function pageLectureVideo(){
+    const descriptionElement = document.querySelector(".description");
+    const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
 
-function retirerPopUp(){
-    document.querySelector(".popup").remove()
-    document.querySelector(".voile-popup").remove()
-}
+    if (fullText.length > 100) {
+        const truncatedText = fullText.substring(0, 100);
+        const remainingText = fullText.substring(100);
 
-function boutonsPopUp(btn1, btn2){
-    if(document.querySelector('#btn1')){
-        document.querySelector('#btn1').addEventListener('click', function(){
-            if (btn1) {
-                if ("arguments" in btn1) {
-                    let stringBody = btn1["arguments"].map((argument, index) => {
-                        return argument.join('=');
-                    }).join('&');
+        // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+        descriptionElement.innerHTML = `
+            ${truncatedText}<span class="dots">...</span>
+            <span class="more-text" style="display: none;">${remainingText}</span>
+            <a href="#" class="toggleDescription"> voir plus</a>
+        `;
 
-                    fetch('../../fonctions/controleur.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: stringBody
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        document.querySelector('body').innerHTML += data;
-                        boutonsPopUp(btn1, btn2);
-                    });
-                    retirerPopUp();
-                    btn1 = null;
-                    btn2 = null;
-                } else {
-                    retirerPopUp();
-                }
-            } else{
-                retirerPopUp();
-            }
-        })
-    }
+        const toggleButton = descriptionElement.querySelector(".toggleDescription");
+        const moreTextElement = descriptionElement.querySelector(".more-text");
+        const dots = descriptionElement.querySelector(".dots");
 
-    if (document.querySelector('#btn2')) {
-        document.querySelector('#btn2').addEventListener('click', function(){
-            if (btn2) {
-                if ("arguments" in btn2) {
-                    let stringBody = btn2["arguments"].map((argument, index) => {
-                        return argument.join('=');
-                    }).join('&');
+        toggleButton.addEventListener("click", function (event) {
+            event.preventDefault();
+            const isHidden = moreTextElement.style.display === "none";
 
-                    fetch('../../fonctions/controleur.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: stringBody
-                    })
-                    .then(response => response.text())
-                    .then(data => {
-                        document.querySelector('body').innerHTML += data;
-                        boutonsPopUp(btn1, btn2);
-                    });
-                    retirerPopUp();
-                    btn1 = null;
-                    btn2 = null;
-                } else {
-                    retirerPopUp();
-                }
-            } else{
-                retirerPopUp();
-            }
-        })
+            // Basculer entre l'affichage du texte complet et tronqué
+            moreTextElement.style.display = isHidden ? "inline" : "none";
+            dots.style.display = isHidden ? "none" : "inline";
+            toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+        });
     }
 }
-*/
+
 // Gère l'affichage des mots de passe de la page d'administration
 function afficherMotDePasse(inputId, eyeId) {
     var input = document.getElementById(inputId);
@@ -581,3 +448,4 @@ function initFormMetadonnees(){
         initTagify(`#${roleId}`);
     });
 }
+
