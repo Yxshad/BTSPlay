@@ -97,7 +97,7 @@
 
                     <?php if (controleurVerifierAcces(ACCES_SUPPRESSION)) { ?>
                         <button title="Supprimer vidéo" class="btnVideo" id="btnSuppr" onclick="  changerTitrePopup('Suppression'); 
-                                                                                                changerTextePopup('Voulez-vous supprimer la vidéo <?php echo $nomFichier; ?>');
+                                                                                                changerTextePopup('De quel espace voulez-vous supprimer la vidéo <?php echo $nomFichier; ?> ?');
                                                                                                 changerTexteBtn('Base de données', 'btn1');
                                                                                                 changerTexteBtn('NAS PAD', 'btn2');
                                                                                                 changerTexteBtn('NAS Archive', 'btn3');

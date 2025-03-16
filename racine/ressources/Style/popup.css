@@ -8,6 +8,8 @@
     padding: 20px;
     background: #FFF;
     border-radius: 25px;
+    min-width: 500px;
+    min-height: 180px;
 
     display: none; /* Pour cacher la popup au chargement de la page */
 }
@@ -68,6 +70,7 @@
     height: 100vh;
     background: #000;
     opacity: 0.7;
+    z-index: 15;
 
     display: none; /* Pour cacher la popup au chargement de la page */
 }
