@@ -118,7 +118,7 @@
                     <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
                             if (!empty($cheminCompletNAS_PAD)){ ?>
                                 <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="  changerTitrePopup('Diffusion'); 
-                                                                                                                changerTextePopup('Voulez-vous vraiment diffuser la vidéo <?php echo $nomFichier; ?>');
+                                                                                                                changerTextePopup('Voulez-vous diffuser la vidéo <?php echo $nomFichier; ?>');
                                                                                                                 changerTexteBtn('Confirmer', 'btn1');
                                                                                                                 changerTexteBtn('Annuler', 'btn2');
                                                                                                                 attribuerFonctionBtn('lancerDiffusion','<?php echo $cheminCompletNAS_PAD; ?>', 'btn1');
