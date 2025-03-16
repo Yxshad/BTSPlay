@@ -405,33 +405,62 @@ function forcerExtensionMXF($nomFichier){
  * \param cadreur - le nom du cadreur
  * \param responsableSon - le nom du responsable son
  */
-
-
 function miseAJourMetadonneesVideo(
-    $idVid, 
-	$profReferent, 
-	$realisateur, 
-	$promotion, 
-	$projet, 
+    $idVid,
+    $profReferent,
+    $promotion,
+    $projet,
     $description,
-	$cadreur, 
-	$responsableSon){
-
-	if (!$profReferent == "") {
-		assignerProfReferent($idVid, $profReferent);
-	}
-	if (!$promotion == "") {
-		assignerPromotion($idVid, $promotion);
-	}
-	if (!$projet == "") {
-		assignerProjet($idVid, $projet);
-	}
+    $roles
+) {
+    assignerProfReferent($idVid, $profReferent);
+    assignerPromotion($idVid, $promotion);
+    assignerProjet($idVid, $projet);
     assignerDescription($idVid, $description);
-    assignerRealisateur($idVid, $realisateur);
-    assignerCadreur($idVid, $cadreur);
-    assignerResponsable($idVid, $responsableSon);
-	
-	ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
+    // Mise à jour des rôles dynamiques
+    foreach ($roles as $role => $listePersonnesCsv) {
+        // Séparation des noms en tableau, suppression des espaces et des entrées vides
+        $tabPersonnes = array_filter(array_map('trim', explode(',', $listePersonnesCsv)));
+
+        $idRoleActuel = getRole($role);
+        if($idRoleActuel){
+            deleteFromRoles($idVid, $idRoleActuel['id']);
+        }
+
+        foreach ($tabPersonnes as $personne) {
+            assignerRole($idVid, $role, $personne);
+        }
+    }
+
+    ajouterLog(LOG_SUCCESS, "Modification des métadonnées éditoriales de la vidéo n° $idVid.");
+}
+
+/**
+ * \fn getMetadonneesEditorialesVideo($video)
+ * \brief Récupère toutes les metadonneesEditoriales de la vidéo à partir de son id
+ * \param video - id de la vidéo
+ * \return mtdEdito - Tableau de métadonnées éditoriales qui doivent être insérées
+ */
+function assemblerRolesEtParticipantsDeVideo($video) {
+    $req = getRolesEtParticipantsDeVideo($video);
+    if($req){
+        foreach ($req as $item) {
+            $role = $item['libelle'];
+            $nom = $item['nomComplet'];
+            
+            if (!isset($result[$role])) {
+                $result[$role] = [];
+            }
+            
+            $result[$role][] = $nom;
+        }
+        
+        // Convertit les tableaux de noms en chaînes séparées par des virgules
+        foreach ($result as $role => &$names) {
+            $names = implode(', ', $names);
+        }
+        return $result;
+    }
 }
 
 /**
@@ -445,13 +474,15 @@ function getMetadonneesEditorialesVideo($video) {
     $nomPrenom = getProfNomPrenom($video["professeurReferent"]);
     $nomPrenom = implode(" ", $nomPrenom);
     $etudiants = getParticipants($video["id"]);
-    
+    $roles = getAllRoles();
+
     $mtdEdito = [
         "projet" => $projet,
         "professeur" => $nomPrenom,
         "realisateur" => $etudiants['Realisateur'],
         "cadreur" => $etudiants['Cadreur'],
-        "responsableSon" => $etudiants['Son']
+        "responsableSon" => $etudiants['Son'],
+        "roles" => $roles
     ];
     
     return $mtdEdito;

@@ -10,6 +10,7 @@
     $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
+    $mtdRoles = $infosVideo["mtdRoles"];
     $promotion = $infosVideo["promotion"];
     $listeProfesseurs = controleurRecupererListeProfesseurs();
 ?>
@@ -25,8 +26,9 @@
     <link rel="stylesheet" href="../ressources/lib/Tagify/tagify.css">
     <script src="../ressources/lib/Tagify/tagify.js"></script>
     <script src="../ressources/Script/script.js"></script>
-
     <?php require_once '../ressources/Templates/header.php'; ?>
+</head>
+<body>
 
 <div class="container">
     <h1>Formulaire des métadonnées</h1>
@@ -39,7 +41,7 @@
             <h2 class="titre"><?php echo $nomFichier; ?></h2>
             <h2 class="titre"><?php echo $titreVideo; ?></h2>
             <p><strong>Durée :</strong> <?php echo $mtdTech['mtd_tech_duree']; ?></p>
-            <p><strong>Images par secondes :</strong> <?php echo $mtdTech['mtd_tech_fps']; ?></p>
+            <p><strong>Images par seconde :</strong> <?php echo $mtdTech['mtd_tech_fps']; ?></p>
             <p><strong>Résolution :</strong> <?php echo $mtdTech['mtd_tech_resolution']; ?></p>
             <p><strong>Format :</strong> <?php echo $mtdTech['mtd_tech_format']; ?></p>
         </div>
@@ -51,7 +53,9 @@
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
 
                 <div class="champ">
+
                     <label for="profReferent" class="form-label">Professeur référent</label>
+
                     <select id="profReferent" name="profReferent">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">
                             Professeur actuel : <?php echo $mtdEdito["professeur"]; ?>
@@ -60,11 +64,6 @@
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
                         <?php } ?>
                     </select>
-                </div>
-
-                <div class="champ">
-                    <label for="realisateur" class="form-label">Réalisateur(s)</label>
-                    <input type="text" id="realisateur" name="realisateur" placeholder="<?php echo $mtdEdito["realisateur"]; ?>">
                 </div>
 
                 <div class="champ">
@@ -82,25 +81,23 @@
                     <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
                 </div>
 
-                <div class="champ">
-                    <label for="cadreurNom">Cadreur(s)</label>
-                    <div class="inputs">
-                        <input type="text" id="cadreur" name="cadreur" placeholder="<?php echo $mtdEdito["cadreur"]; ?>">
-                    </div>
+
+                <div id="roles-container">
+                <?php 
+                    if($mtdRoles!=null){
+                        foreach ($mtdRoles as $role => $values) { 
+                            $formattedId = strtolower(str_replace(' ', '_', $role));
+                            echo '<div class="champ role"> ';
+                            echo '<label for="' . htmlspecialchars($formattedId) . '">' . htmlspecialchars($role) . '</label> <div class="inputs">';
+                            echo '<input class="role-input" type="text" id="'. htmlspecialchars($formattedId) .'" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '">';
+                            echo '</div></div>';
+                        }
+                    }
+                ?>
+
                 </div>
 
-                <div class="champ">
-                    <label for="cadreur">Cadreur</label>
-                    <input type="text" id="cadreur" name="cadreur" value="<?php echo $mtdEdito["cadreur"]; ?>">
-                </div>
-
-                <div class="champ">
-                    <label for="responsableSon">Responsable(s) son</label>
-                    <div class="inputs">
-                        <input type="text" id="responsableSon" name="responsableSon" placeholder="<?php echo $mtdEdito["responsableSon"]; ?>">
-                    </div>
-                </div>
-
+                <button type="button" id="add-role" class="btn">Ajouter un rôle</button>
                 <button type="submit" class="btn">Confirmer</button>
             </form>
         </div>
@@ -111,10 +108,38 @@
     </div>
 </div>
 
-<?php require_once '../ressources/Templates/footer.php';?>
+<?php require_once '../ressources/Templates/footer.php'; ?>
 
 <script>
-    initTagify("#realisateur");
-    initTagify("#cadreur");
-    initTagify("#responsableSon");
+    initFormMetadonnees();
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Quand le document est prêt
+        const form = document.getElementById("roleForm");
+        
+        // Écouter la soumission du formulaire
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Empêcher le rechargement de la page
+
+            // Créer un objet FormData pour récupérer toutes les données du formulaire
+            const formData = new FormData(form);
+            
+            // Envoyer les données en POST avec fetch()
+            fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
+                method: "POST",
+                body: "action=ModifierMetadonnees&roles=" + formData
+            })
+            .then(response => response.json())  // On suppose que la réponse est en JSON
+            .then(data => {
+                console.log("Réponse du serveur : ", data);
+                // Traitement de la réponse si nécessaire
+            })
+            .catch(error => {
+                console.error("Erreur : ", error);
+            });
+        });
+    });
+
 </script>
+</body>
+</html>

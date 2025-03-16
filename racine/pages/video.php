@@ -11,6 +11,7 @@
     $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
+    $mtdRoles = $infosVideo["mtdRoles"];
     $promotion = $infosVideo["promotion"];
     $URIS = $infosVideo["URIS"];
 
@@ -169,17 +170,21 @@
                     "Format" => $mtdTech["mtd_tech_format"],
                     "Projet" => $mtdEdito["projet"],
                     "Promotion" => $promotion,
-                    "Professeur référent" => $mtdEdito["professeur"],
-                    "Réalisateur(s)" => $mtdEdito["realisateur"],
-                    "Cadreur(s)" => $mtdEdito["cadreur"],
-                    "Responsable(s) Son" => $mtdEdito["responsableSon"]
+                    "Professeur référent" => $mtdEdito["professeur"]
                 ];
-
                 foreach ($metadata as $key => $value) {
                     echo "<tr>";
                     echo "<td><strong>$key</strong></td>";
                     echo "<td>$value</td>";
                     echo "</tr>";
+                }
+                if($mtdRoles!=null){
+                    foreach ($mtdRoles as $role => $values) { 
+                        echo "<tr>";
+                        echo "<td><strong>". htmlspecialchars($role) . "</strong></td>";
+                        echo "<td>" . htmlspecialchars($values) . "</td>";
+                        echo "</tr>";
+                    }
                 }
                 ?>
             </table>
@@ -196,13 +201,3 @@
     });
 
 </script>
-
-
-
-
-
-
-
-
-
-
