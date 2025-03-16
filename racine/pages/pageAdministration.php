@@ -88,19 +88,28 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </div>
     </div>
 
-    <div class="tab-content" id="reconciliation">
-        <h2>Fonction de réconciliation</h2>
-        <form method="post">
-            <input type="hidden" name="action" value="declencherReconciliation">
-            <button type="submit">Réconciliation</button>
-        </form>
-        <?php
-        // Affichage du résultat de la réconciliation après redirection
-        if (isset($_SESSION['reconciliation_result'])) {
-            echo $_SESSION['reconciliation_result'];
-            unset($_SESSION['reconciliation_result']); // Nettoyer après affichage
-        }
-        ?>
+    <div class="tab-content reconciliation-container" id="reconciliation">
+        <!-- Section : Fonction de réconciliation -->
+        <div class="reconciliation-section">
+            <h2 class="section-title">Fonction de réconciliation</h2>
+            <form method="post" class="reconciliation-form">
+                <input type="hidden" name="action" value="declencherReconciliation">
+                <button type="submit" class="reconciliation-button">Lancer la réconciliation</button>
+            </form>
+        </div>
+
+        <!-- Section : Résultat de la réconciliation -->
+        <?php if (isset($_SESSION['reconciliation_result'])) : ?>
+            <div class="result-section">
+                <h2 class="section-title">Résultat de la réconciliation</h2>
+                <div class="reconciliation-result">
+                    <?php
+                    echo $_SESSION['reconciliation_result'];
+                    unset($_SESSION['reconciliation_result']); // Nettoyer après affichage
+                    ?>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
 
     <div class="tab-content" id="transfer">

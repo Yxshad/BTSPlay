@@ -163,6 +163,7 @@ button:hover{
 /* Style général du formulaire */
 .form-container {
     font-family: Arial, sans-serif;
+    /* max-width: 800px; */
     margin-left: 19%;
     padding: 20px;
     padding-top: 0;
@@ -392,4 +393,56 @@ input[type="number"]::-webkit-outer-spin-button {
 .logRecent{
     display: flex;
     align-items: start;
+}
+
+
+
+/* Conteneur principal de la réconciliation */
+.reconciliation-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Titre de la réconciliation */
+.reconciliation-title {
+    color: #007bff;
+    margin-top: 0;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+/* Formulaire de réconciliation */
+.reconciliation-form {
+    margin-bottom: 20px;
+}
+
+/* Bouton de réconciliation */
+.reconciliation-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.reconciliation-button:hover {
+    background-color: #0056b3;
+}
+
+/* Résultat de la réconciliation */
+.reconciliation-result {
+    background-color: #f4f4f4;
+    padding: 15px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin-top: 20px;
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+    white-space: pre-wrap; /* Permet de conserver la mise en forme du texte */
 }
