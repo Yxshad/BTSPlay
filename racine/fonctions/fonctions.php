@@ -457,7 +457,7 @@ function assemblerRolesEtParticipantsDeVideo($video) {
         
         // Convertit les tableaux de noms en chaînes séparées par des virgules
         foreach ($result as $role => &$names) {
-            $names = implode(',', $names);
+            $names = implode(', ', $names);
         }
         return $result;
     }

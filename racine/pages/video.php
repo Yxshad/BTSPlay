@@ -46,10 +46,10 @@
     <script src="../ressources/lib/Plyr/plyr.js"></script>
     <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
 
-<?php require_once '../ressources/Templates/header.php';?>
-<?php require_once '../ressources/Templates/menuArbo.php'; ?>
+    <?php require_once '../ressources/Templates/header.php';?>
+    <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
-<div class="contenu">
+    <div class="contenu">
         <div class="container_principal">
             <div class="container_video">
                 <div class="lecteurVideo">
@@ -63,15 +63,6 @@
                 <div class ="titre_nom">
                     <h1 class="titre"><?php echo $nomFichier; ?></h1>
                     <h2 ><?php echo $titreVideo; ?></h2>
-    <div class="colonnes">
-        <div class="colonne-1">    
-        </div>
-        <div class="colonne-2">
-            <!-- #RISQUE : Télécharger le fichier distant du NAS ARCH, il faudra créer un dossier local 'videosATelecharger' -->
-            <a href="<?php echo $cheminVideoComplet; ?>" download="<?php echo $mtdTech["mtd_tech_titre"]; ?>" class="btnVideo">
-                <div class="logo-btnvideo">
-                    <img src="../ressources/Images/download.webp" alt="">
-
                 </div>
 
                 <div class="container-button">
@@ -181,20 +172,20 @@
                     "Promotion" => $promotion,
                     "Professeur référent" => $mtdEdito["professeur"]
                 ];
-
                 foreach ($metadata as $key => $value) {
                     echo "<tr>";
                     echo "<td><strong>$key</strong></td>";
                     echo "<td>$value</td>";
                     echo "</tr>";
                 }
-                foreach ($mtdRoles as $role => $values) { 
-                echo "<tr>";
-                echo "<td><strong>htmlspecialchars($role)</strong></td>";
-                echo "<td>htmlspecialchars($values)</td>";
-                echo "</tr>";
-            }
-            
+                if($mtdRoles!=null){
+                    foreach ($mtdRoles as $role => $values) { 
+                        echo "<tr>";
+                        echo "<td><strong>". htmlspecialchars($role) . "</strong></td>";
+                        echo "<td>" . htmlspecialchars($values) . "</td>";
+                        echo "</tr>";
+                    }
+                }
                 ?>
             </table>
         </div>
@@ -210,13 +201,3 @@
     });
 
 </script>
-
-
-
-
-
-
-
-
-
-
