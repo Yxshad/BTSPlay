@@ -11,6 +11,7 @@
     $description = $infosVideo["description"];
     $mtdTech = $infosVideo["mtdTech"];
     $mtdEdito = $infosVideo["mtdEdito"];
+    $mtdRoles = $infosVideo["mtdRoles"];
     $promotion = $infosVideo["promotion"];
     $URIS = $infosVideo["URIS"];
 
@@ -77,15 +78,17 @@
             <p class="mtd">
                 <strong>Professeur : </strong><?php echo $mtdEdito["professeur"]; ?>
             </p>
-            <p class="mtd">
-                <strong>Réalisateur : </strong><?php echo $mtdEdito["realisateur"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Cadreur : </strong><?php echo $mtdEdito["cadreur"]; ?>
-            </p>
-            <p class="mtd">
-                <strong>Responsable Son : </strong><?php echo $mtdEdito["responsableSon"]; ?>
-            </p>
+            <?php
+            foreach ($mtdRoles as $role => $values) { 
+                echo '<p class="mtd">';
+                echo '<strong>' . htmlspecialchars($role) . ' : </strong>';
+            
+                // Si plusieurs participants pour un rôle
+                    echo htmlspecialchars($values);
+                echo '</p>';
+            }
+            
+            ?>
             
         </div>
         <div class="colonne-2">

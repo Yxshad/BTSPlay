@@ -109,7 +109,7 @@ function affichageFiltres(){
 function initCarrousel(){
     const swiperVideo = new Swiper('.swiperVideo', {
         speed: 400,
-        spaceBetween: 20,
+        spaceBetween: 0,
         slidesPerView: 4,
         navigation: {
             nextEl: '.swiper-button-next',
@@ -553,5 +553,31 @@ function initTagify(selector) {
     input.closest("form").addEventListener("submit", function () {
         let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
         input.value = tags;
+    });
+}
+
+function initFormMetadonnees(){
+    document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".role-input").forEach(function (input) {
+            initTagify("#" + input.id);
+        });
+    });
+
+    document.getElementById("add-role").addEventListener("click", function() {
+        let container = document.getElementById("roles-container");
+        let newRoleDiv = document.createElement("div");
+        newRoleDiv.classList.add("champ", "role");
+
+        let roleLabel = prompt("Nom du rôle :");
+        if (!roleLabel) return;
+
+        let roleId = roleLabel.replace(/\s+/g, '').toLowerCase();
+        newRoleDiv.innerHTML = `
+            <label for="${roleId}">${roleLabel}</label>
+            <input type="text" id="${roleId}" name="roles[${roleLabel}]">
+        `;
+        
+        container.appendChild(newRoleDiv);
+        initTagify(`#${roleId}`);
     });
 }
