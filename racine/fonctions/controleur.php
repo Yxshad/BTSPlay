@@ -179,7 +179,6 @@ function controleurRecupererInfosVideo() {
 function controleurPreparerMetadonnees($idVideo){
     if (
         isset($_POST["profReferent"]) ||
-        isset($_POST["realisateur"]) || 
         isset($_POST["promotion"]) || 
         isset($_POST["projet"]) || 
         isset($_POST["description"]) || 
