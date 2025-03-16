@@ -19,6 +19,8 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     $logsGeneraux = array_reverse($logsGeneraux);
     $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 }
+
+chargerPopup();
 ?>
 
 <!DOCTYPE html>
@@ -37,6 +39,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
 
 <?php require_once '../ressources/Templates/header.php'; ?>
+
 
 <body>
     <div><h1>Administration du Site</h1></div>
@@ -77,7 +80,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
 
                 <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+                <a onclick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
             </div>
 
             <div class="log-container colonne-2">

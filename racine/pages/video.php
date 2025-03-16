@@ -19,6 +19,8 @@
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
 
+    chargerPopup();
+
     $cheminCompletNAS_ARCH = null;
     if(!empty($URIS['URI_NAS_ARCH'])){
         $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;

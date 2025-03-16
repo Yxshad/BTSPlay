@@ -123,7 +123,12 @@ function lancerConversion() {
 function createDatabaseSave() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        console.log(this.responseText);
+        
+        const reponse = xhttp.responseText.trim();
+        changerTitrePopup("Sauvegarde Réussite");
+        changerTextePopup("La sauvegarde a bien été effectué !");
+        afficherPopup();
+        
     }
     xhttp.open("POST", "../fonctions/controleur.php");
     
@@ -421,4 +426,129 @@ function initTagify(selector) {
         let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
         input.value = tags;
     });
+}
+
+function afficherPopup(){
+    document.querySelector('.popup').style.display = 'block';
+    document.querySelector('.voile-popup').style.display = 'block';
+}
+
+function cacherPopup(){
+    document.querySelector('.popup').style.display = 'none';
+    document.querySelector('.voile-popup').style.display = 'none';
+}
+
+function changerTitrePopup(nouveauTitre){
+    document.querySelector('.popup h1').innerHTML = nouveauTitre;
+}
+
+function changerTextePopup(nouveauTexte){
+    document.querySelector('.popup p').innerHTML = nouveauTexte;
+}
+
+function changerTexteBtn(nouveauTexte, classe){
+    document.querySelector('.popup .' + classe ).innerText = nouveauTexte;
+}
+
+function afficherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "block";
+}
+
+function cacherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "none";
+}
+
+
+function attribuerFonctionBtn(fonction, args="", classe){
+    document.querySelector('.popup .' + classe ).setAttribute('data-fonctions', fonction);
+    document.querySelector('.popup .' + classe ).setAttribute('data-args', args);
+}
+
+function btn(classe){
+    let fonction = document.querySelector('.' + classe ).dataset["fonctions"];
+    let args = document.querySelector('.' + classe ).dataset["args"];
+    if (args.includes(', ')) {
+        args = args.split(', ').map(String)
+        if (fonction != "") {
+            window[fonction](...args);
+            attribuerFonctionBtn("", "",classe); //détache la fonction pour évité des boucles
+        }
+    } else{ // le else sert quand il n'y a qu'un argument
+        if (fonction != "") {
+            window[fonction](args);
+            attribuerFonctionBtn("", "", classe); //détache la fonction pour évité des boucles
+        }
+    }
+}
+
+function supprimerVideo(id, NAS){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Suppression Réussite");
+            changerTextePopup("La suppression a bien été effectué !");
+            changerTexte("Confirmer", "btn1");
+            attribuerFonctionBtn("redirection","home.php", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        } else{
+            changerTitrePopup("Suppression raté");
+            changerTextePopup("La suppression a échoué !<br/>Erreur: " + reponse);
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        }
+        
+        
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=supprimerVideo&idVideo=" + id + "&NAS=" + NAS);
+}
+
+function redirection(page){
+    window.location.href = "./" + page;
+}
+
+function lancerDiffusion(uri_nas_pad){
+    console.log(uri_nas_pad)
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Diffusion Réussite");
+            changerTextePopup("La diffusion a bien été effectué !");
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        } else{
+            changerTitrePopup("Diffusion raté");
+            changerTextePopup("La diffusion a échoué !<br/>Erreur: " + reponse);
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        }
+        
+        
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
 }
