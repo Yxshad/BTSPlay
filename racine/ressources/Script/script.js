@@ -123,7 +123,16 @@ function lancerConversion() {
 function createDatabaseSave() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        console.log(this.responseText);
+        
+        const reponse = xhttp.responseText.trim();
+        changerTitrePopup("Sauvegarde");
+        if(reponse==1){
+            changerTextePopup("Erreur lors du lancement de la sauvegarde manuelle. <br> Contactez votre administrateur.");
+        }
+        else{
+            changerTextePopup("Sauvegarde effectuée avec succès.");
+        }
+        afficherPopup();
     }
     xhttp.open("POST", "../fonctions/controleur.php");
     
@@ -337,32 +346,33 @@ function gestionOngletsArborescence() {
 
 function pageLectureVideo(){
     const descriptionElement = document.querySelector(".description");
-    const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+    if (descriptionElement) {
+        const fullText = descriptionElement.textContent.trim(); // On récupère le texte initial sans balises HTML
+        if (fullText.length > 100) {
+            const truncatedText = fullText.substring(0, 100);
+            const remainingText = fullText.substring(100);
 
-    if (fullText.length > 100) {
-        const truncatedText = fullText.substring(0, 100);
-        const remainingText = fullText.substring(100);
+            // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
+            descriptionElement.innerHTML = `
+                ${truncatedText}<span class="dots">...</span>
+                <span class="more-text" style="display: none;">${remainingText}</span>
+                <a href="#" class="toggleDescription"> voir plus</a>
+            `;
 
-        // On remplace le contenu de `.description` avec le texte tronqué et les éléments interactifs
-        descriptionElement.innerHTML = `
-            ${truncatedText}<span class="dots">...</span>
-            <span class="more-text" style="display: none;">${remainingText}</span>
-            <a href="#" class="toggleDescription"> voir plus</a>
-        `;
+            const toggleButton = descriptionElement.querySelector(".toggleDescription");
+            const moreTextElement = descriptionElement.querySelector(".more-text");
+            const dots = descriptionElement.querySelector(".dots");
 
-        const toggleButton = descriptionElement.querySelector(".toggleDescription");
-        const moreTextElement = descriptionElement.querySelector(".more-text");
-        const dots = descriptionElement.querySelector(".dots");
+            toggleButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                const isHidden = moreTextElement.style.display === "none";
 
-        toggleButton.addEventListener("click", function (event) {
-            event.preventDefault();
-            const isHidden = moreTextElement.style.display === "none";
-
-            // Basculer entre l'affichage du texte complet et tronqué
-            moreTextElement.style.display = isHidden ? "inline" : "none";
-            dots.style.display = isHidden ? "none" : "inline";
-            toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
-        });
+                // Basculer entre l'affichage du texte complet et tronqué
+                moreTextElement.style.display = isHidden ? "inline" : "none";
+                dots.style.display = isHidden ? "none" : "inline";
+                toggleButton.textContent = isHidden ? " voir moins" : " voir plus";
+            });
+        }
     }
 }
 
@@ -421,4 +431,129 @@ function initTagify(selector) {
         let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
         input.value = tags;
     });
+}
+
+function afficherPopup(){
+    document.querySelector('.popup').style.display = 'block';
+    document.querySelector('.voile-popup').style.display = 'block';
+}
+
+function cacherPopup(){
+    document.querySelector('.popup').style.display = 'none';
+    document.querySelector('.voile-popup').style.display = 'none';
+}
+
+function changerTitrePopup(nouveauTitre){
+    document.querySelector('.popup h1').innerHTML = nouveauTitre;
+}
+
+function changerTextePopup(nouveauTexte){
+    document.querySelector('.popup p').innerHTML = nouveauTexte;
+}
+
+function changerTexteBtn(nouveauTexte, classe){
+    document.querySelector('.popup .' + classe ).innerText = nouveauTexte;
+}
+
+function afficherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "block";
+}
+
+function cacherBtn(classe){
+    document.querySelector('.popup .' + classe ).style.display = "none";
+}
+
+
+function attribuerFonctionBtn(fonction, args="", classe){
+    document.querySelector('.popup .' + classe ).setAttribute('data-fonctions', fonction);
+    document.querySelector('.popup .' + classe ).setAttribute('data-args', args);
+}
+
+function btn(classe){
+    let fonction = document.querySelector('.' + classe ).dataset["fonctions"];
+    let args = document.querySelector('.' + classe ).dataset["args"];
+    if (args.includes(', ')) {
+        args = args.split(', ').map(String)
+        if (fonction != "") {
+            window[fonction](...args);
+            attribuerFonctionBtn("", "",classe); //détache la fonction pour évité des boucles
+        }
+    } else{ // le else sert quand il n'y a qu'un argument
+        if (fonction != "") {
+            window[fonction](args);
+            attribuerFonctionBtn("", "", classe); //détache la fonction pour évité des boucles
+        }
+    }
+}
+
+function supprimerVideo(id, NAS){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Suppression");
+            changerTextePopup("Suppression de la vidéo effectuée.");
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("redirection","home.php", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        } else{
+            changerTitrePopup("Suppression");
+            changerTextePopup("Echec lors de la suppression de la vidéo. <br/> Erreur : " + reponse);
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        }
+        
+        
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=supprimerVideo&idVideo=" + id + "&NAS=" + NAS);
+}
+
+function redirection(page){
+    window.location.href = "./" + page;
+}
+
+function lancerDiffusion(uri_nas_pad){
+    console.log(uri_nas_pad)
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Diffusion");
+            changerTextePopup("Diffusion effectuée avec succès.");
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        } else{
+            changerTitrePopup("Diffusion");
+            changerTextePopup("Echec lors de la diffusion. <br/>Erreur : " + reponse);
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        }
+        
+        
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+
+    xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
 }
