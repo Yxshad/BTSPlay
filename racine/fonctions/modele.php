@@ -248,6 +248,73 @@ function assignerDescription($idVid, $description)
     }
 }
 
+
+/**
+ * \fn assignerRole($idVideo, $listeCadreurs)
+ * \brief Permet d'assigner un ou des cadreurs au projet
+ * \param idVideo - l'id de la vidéo à laquelle on assigne le professeur
+ * \param listeCadreurs - supposément une chaîne de caractères contenant tous les cadreurs
+ */
+function assignerRole($idVideo, $nomRole, $personne) {
+    $connexion = connexionBD();
+
+    try {
+        // Vérifier si le rôle existe, sinon l'ajouter
+        $stmt = $connexion->prepare('SELECT id FROM Role WHERE libelle = ?');
+        $stmt->execute([$nomRole]);
+        $role = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$role) {
+            // Le rôle n'existe pas, on l'ajoute
+            $requeteInsertRole = $connexion->prepare('INSERT INTO Role (libelle) VALUES (?)');
+            $requeteInsertRole->execute([$nomRole]);
+            // Récupérer l'ID du rôle inséré
+            $idRole = $connexion->lastInsertId();
+        } else {
+            // Le rôle existe déjà
+            $idRole = $role['id'];
+        }
+        
+
+        // Vérifier si l'étudiant existe, sinon l'ajouter
+        $stmt = $connexion->prepare('SELECT id FROM Etudiant WHERE nomComplet = ?');
+        $stmt->execute([$personne]);
+        
+        $etudiant = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$etudiant) {
+            // L'étudiant n'existe pas, on l'ajoute
+            $requeteInsertEtud = $connexion->prepare('INSERT INTO Etudiant (nomComplet) VALUES (?)');
+            $requeteInsertEtud->execute([$personne]);
+            $idEtudiant = $connexion->lastInsertId();
+            
+        } else {
+            // L'étudiant existe déjà
+            $idEtudiant = $etudiant['id'];
+            
+        }
+
+        // Insérer l'assignation du rôle dans Participer
+        $requeteInsertPart = $connexion->prepare('INSERT INTO Participer (idMedia, idEtudiant, idRole) VALUES (?, ?, ?)');
+        $requeteInsertPart->execute([$idVideo, $idEtudiant, $idRole]);
+        
+
+        // Valider la transaction
+        $connexion->commit();
+
+    } catch (Exception $e) {
+        // En cas d'erreur, annuler la transaction
+        $connexion->rollBack();
+        // Loguer l'erreur
+        ajouterLog(LOG_CRITICAL, "Erreur lors de l'assignation du rôle '$nomRole' pour la vidéo $idVideo : " . $e->getMessage());
+    } finally {
+        // Fermer la connexion
+        $connexion = null;
+    }
+}
+
+
+
+
 /**
  * \fn assignerCadreur($idVideo, $listeCadreurs)
  * \brief Permet d'assigner un ou des cadreurs au projet
@@ -459,6 +526,57 @@ function assignerDescription($idVid, $description)
         $connexion = null;
     }
  }
+
+  /**
+ * \fn getRole($etudiant)
+ * \brief Renvoie un rôle
+ * \param role - Nom du rôle
+ */
+function getAllRoles()
+{
+   $connexion = connexionBD();
+   $requeteRole = $connexion->prepare('SELECT * 
+   FROM Role');                                                 
+   try{
+       $requeteRole->execute();
+       $roleCherche = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $roleCherche;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du role " . $role .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
+  /**
+ * \fn getRole($role)
+ * \brief Renvoie un rôle
+ * \param role - Nom du rôle
+ */
+function getRole($role)
+{
+   $connexion = connexionBD($role);
+   $requeteRole = $connexion->prepare('SELECT * 
+   FROM Role
+   WHERE libelle = ?');                                                 
+   try{
+       $requeteRole->execute([$role]);
+       $roleCherche = $requeteRole->fetch(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $roleCherche;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du role " . $role .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
 
 /**
  * \fn getIdEtudiant($etudiant)
@@ -824,6 +942,34 @@ function getParticipants($idVid) {
     ];
 }
 
+/**
+ * \fn getAllParticipants($etudiant)
+ * \brief Renvoie un rôle
+ * \param role - Nom du rôle
+ */
+function getRolesEtParticipantsDeVideo($idMedia)
+{
+   $connexion = connexionBD();
+   $requeteRole = $connexion->prepare('SELECT * 
+   FROM Role 
+   JOIN Participer ON role.id = participer.idRole
+   JOIN Etudiant ON Etudiant.id = participer.idEtudiant
+   WHERE Participer.idMedia = ?');                                                 
+   try{
+       $requeteRole->execute([$idMedia]);
+       $rolesEtParticipants = $requeteRole->fetchAll(PDO::FETCH_ASSOC);
+       $connexion = null;
+       return $rolesEtParticipants;
+   }
+   catch(Exception $e)
+   {
+       ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération du role " . $role .
+       " : " . $e->getMessage());
+       $connexion->rollback();
+       $connexion = null;
+   }
+}
+
 ###########################
 #     TRUE / FALSE
 ############################
@@ -1102,6 +1248,23 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
     try{
         $requete = $connexion->prepare('UPDATE Autorisation SET ' . $colonne . ' = ? WHERE professeur = ?');
         $requete->execute([$valeur, $prof]);
+        $connexion->commit();
+        $connexion = null;
+    }
+    catch(Exception $e)
+    {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la mise à jour des autorisations du professeur " . $prof .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+    }
+}
+
+function deleteFromRoles($idVid, $idRole){
+    $connexion = connexionBD();
+    try{
+        $reqDelete = $connexion->prepare('DELETE FROM Participer WHERE idMedia = ? AND idRole = ?');
+        $reqDelete->execute([$idVid, $idRole]);
         $connexion->commit();
         $connexion = null;
     }

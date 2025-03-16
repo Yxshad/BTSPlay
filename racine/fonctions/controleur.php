@@ -142,6 +142,7 @@ function controleurRecupererInfosVideo() {
     $nomFichier = $video["mtd_tech_titre"];
     $titreVideo = recupererTitreVideo($video["mtd_tech_titre"]);
     $mtdEdito = getMetadonneesEditorialesVideo($video);
+    $mtdRoles = assemblerRolesEtParticipantsDeVideo($idVideo);
     $promotion = $video["promotion"];
     $description = $video["description"];
 
@@ -164,6 +165,7 @@ function controleurRecupererInfosVideo() {
         "titreVideo" => $titreVideo,
         "description" => $description,
         "mtdEdito" => $mtdEdito,
+        "mtdRoles" => $mtdRoles,
         "promotion" => $promotion,
         "URIS" => $URIS,
     ];
@@ -177,30 +179,27 @@ function controleurRecupererInfosVideo() {
 function controleurPreparerMetadonnees($idVideo){
     if (
         isset($_POST["profReferent"]) ||
-        isset($_POST["realisateur"]) || 
         isset($_POST["promotion"]) || 
         isset($_POST["projet"]) || 
         isset($_POST["description"]) || 
-        isset($_POST["cadreur"]) || 
-        isset($_POST["responsableSon"])
+        isset($_POST["roles"]) 
     ) {
-        // Récupération des champs entrés dans le formulaire
+        
+        // Récupération des champs obligatoires
         $profReferent = $_POST["profReferent"];
-        $realisateur = $_POST["realisateur"];
         $promotion = $_POST["promotion"];
         $projet = $_POST["projet"];
         $description = $_POST["description"];
-        $cadreur = $_POST["cadreur"];
-        $responsableSon = $_POST["responsableSon"];
+
+        // Récupération des rôles dynamiques
+        $roles = isset($_POST["roles"]) ? $_POST["roles"] : [];
         miseAJourMetadonneesVideo(
             $idVideo, 
             $profReferent, 
-            $realisateur, 
             $promotion, 
             $projet, 
             $description,
-            $cadreur, 
-            $responsableSon
+            $roles
         );
     }
 }
@@ -566,4 +565,5 @@ function controleurMettreAJourParametres(){
 function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
+
 ?>
