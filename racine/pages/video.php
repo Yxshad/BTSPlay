@@ -20,8 +20,6 @@
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
 
-    chargerPopup();
-
     $cheminCompletNAS_ARCH = null;
     if(!empty($URIS['URI_NAS_ARCH'])){
         $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
@@ -46,8 +44,11 @@
     <script src="../ressources/lib/Plyr/plyr.js"></script>
     <link rel="stylesheet" href="../ressources/lib/Plyr/plyr.css" />
 
-    <?php require_once '../ressources/Templates/header.php';?>
-    <?php require_once '../ressources/Templates/menuArbo.php'; ?>
+    <?php
+        require_once '../ressources/Templates/header.php';
+        require_once '../ressources/Templates/menuArbo.php';
+        chargerPopup();
+    ?>
 
     <div class="contenu">
         <div class="container_principal">

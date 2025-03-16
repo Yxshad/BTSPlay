@@ -19,8 +19,6 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     $logsGeneraux = array_reverse($logsGeneraux);
     $logsSauvegardesBDD = array_reverse($logsSauvegardesBDD);
 }
-
-chargerPopup();
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +36,10 @@ chargerPopup();
     <link href="../ressources/lib/Swiper/swiper-bundle.min.css" rel="stylesheet">
     <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
 
-<?php require_once '../ressources/Templates/header.php'; ?>
+<?php
+    require_once '../ressources/Templates/header.php';
+    chargerPopup();
+?>
 
 
 <body>
