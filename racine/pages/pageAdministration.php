@@ -104,46 +104,51 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     </div>
 
     <div class="tab-content" id="transfer">
-        <h2>Fonction de transfert</h2>
+        <h1>Fonction de transfert</h1>
         <div class="container">
-            <div class="colonnes">
-                <div class="colonne-1">
-                    <h1>Transferts</h1>
-                    <div class="transferts">
+            <div class="content-wrapper">
+                <!-- Première ligne : Titres -->
+                <div class="header-row">
+                    <div class="transfers-header">
+                        <h2>Transferts</h2>
                         <div class="lignes">
                             <!-- Résultat ajax -->
                         </div>
-                        <div class="commande">
-                            <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
-                        </div>
+                    </div>
+                    <div class="pending-videos-header">
+                        <h2>Vidéos en attente de métadonnées</h2>
                     </div>
                 </div>
-                <div class="symbole">
-                    >
-                </div>
-                <div class="colonne-2">
-                    <h2>Vidéos en attente de métadonnées</h2>
-                    <div class="dates">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Fichier</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($tabDernieresVideos as $video) {
-                                $id = $video['id'];
-                                $date_creation = $video['date_creation'];
-                                $mtd_tech_titre = $video['mtd_tech_titre'];
-                                ?>
+
+                <!-- Deuxième ligne : Contenu (bouton, symbole, tableau) -->
+                <div class="content-row">
+                    <div class="button-container">
+                        <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
+                    </div>
+                    <div class="symbol-container">
+                        <img src='../ressources/Images/avance-rapide.png' alt="Symbole de transfert">
+                    </div>
+                    <div class="table-container">
+                        <table>
+                            <thead>
                                 <tr>
-                                    <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $date_creation; ?></a></td>
-                                    <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $mtd_tech_titre; ?></a></td>
+                                    <th>Date</th>
+                                    <th>Fichier</th>
                                 </tr>
-                            <?php } ?>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($tabDernieresVideos as $video) {
+                                    $id = $video['id'];
+                                    $date_creation = $video['date_creation'];
+                                    $mtd_tech_titre = $video['mtd_tech_titre'];
+                                    ?>
+                                    <tr>
+                                        <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $date_creation; ?></a></td>
+                                        <td><a href="video.php?v=<?php echo $id; ?>"><?php echo $mtd_tech_titre; ?></a></td>
+                                    </tr>
+                                <?php } ?>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
