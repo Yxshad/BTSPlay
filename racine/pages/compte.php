@@ -15,26 +15,16 @@
 
 <?php require_once '../ressources/Templates/header.php';?>
 
-<div class="container">
-    <div>
-        <form method="POST" action="#">
+<div class="login-container">
+    <form method="POST" action="#">
+        <img class="userIcon" src="../ressources/Images/user.png">
         <input type="hidden" name="action" value="connexionUtilisateur">
-            <div class="profile_picture">
-                <img src="../ressources/Images/account.png" alt="profile-picture">
-            </div>
-            <div class="username">
-                <p>Nom d'utilisateur : </p>
-                <input type="text" name="loginUser">
-            </div>
-            <div class="password">
-                <p>Mot de passe : </p>
-                <input type="password" name="passwordUser">
-            </div>
-            <div class="confirmer">
-                <button type="submit" class="btn">Confirmer</button>
-            </div>
-        </form>
-    </div>
+        <p>Nom d'utilisateur :</p>
+        <input type="text" name="loginUser">
+        <p>Mot de passe :</p>
+        <input type="password" name="passwordUser">
+        <button type="submit" class="btn">Confirmer</button>
+    </form>
 </div>
 
 <?php require_once '../ressources/Templates/footer.php';?>
