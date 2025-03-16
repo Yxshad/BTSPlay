@@ -127,7 +127,7 @@ th {
     background-color: lightgray;
 }
 
-button{
+.button-container button{
     height: 60px;
     border: none;
     text-decoration: none;
@@ -157,4 +157,239 @@ button:hover{
     height: 20px;
     cursor: pointer;
     vertical-align: middle;
+}
+
+
+/* Style général du formulaire */
+.form-container {
+    font-family: Arial, sans-serif;
+    margin-left: 19%;
+    padding: 20px;
+    padding-top: 0;
+}
+
+/* Style des titres de section */
+.section-title {
+    color: #333;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 10px;
+    margin-top: 20px;
+    margin-bottom: 15px;
+    font-size: 1.5em;
+}
+
+/* Style des labels */
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+    font-size: 0.95em;
+}
+
+/* Style des inputs */
+.form-input {
+    width: 100%;
+    padding: 10px;
+
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    box-sizing: border-box; /* Pour inclure le padding dans la largeur */
+}
+
+.form-input:focus {
+    border-color: #007bff;
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Style des boutons pour afficher/masquer les mots de passe */
+.password-toggle-button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    margin-left: 10px;
+    vertical-align: middle;
+}
+
+.password-toggle-button img {
+    width: 20px;
+    height: 20px;
+}
+
+/* Style du bouton de soumission */
+.submit-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #0056b3;
+}
+
+/* Style des cases à cocher */
+.checkbox-input {
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+/* Style pour les champs invalides */
+.form-input:invalid {
+    border-color: #ff4444;
+}
+
+.form-input:invalid:focus {
+    box-shadow: 0 0 5px rgba(255, 68, 68, 0.5);
+}
+
+/* Style pour les champs obligatoires */
+.form-input:required {
+    border-left: 3px solid #007bff;
+}
+
+/* Style pour les champs non obligatoires */
+.form-input:optional {
+    border-left: 3px solid #ccc;
+}
+
+/* Style pour les messages d'aide (attribut title) */
+.form-input[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 4px;
+    font-size: 12px;
+    margin-top: 5px;
+    white-space: nowrap;
+    z-index: 1;
+}
+
+/* Style pour les icônes d'œil */
+.eye-icon {
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.eye-icon:hover {
+    opacity: 0.7;
+}
+
+/* Style pour les champs de type number */
+input[type="number"] {
+    -moz-appearance: textfield; /* Firefox */
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none; /* Chrome, Safari */
+    margin: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-container {
+        padding: 15px;
+    }
+
+    .section-title {
+        font-size: 1.3em;
+    }
+
+    .form-label {
+        font-size: 0.9em;
+    }
+
+    .form-input {
+        font-size: 13px;
+    }
+
+    .submit-button {
+        width: 100%;
+        padding: 12px;
+    }
+}
+
+
+/* Style de la table des matières */
+.table-of-contents {
+    background-color: #f1f1f1;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    width: 12%;
+    position: fixed;
+    /* top: 270px; */
+}
+
+.table-of-contents h3 {
+    color: #007bff;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+.table-of-contents ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.table-of-contents ul li {
+    margin-bottom: 8px;
+}
+
+.table-of-contents ul li a {
+    text-decoration: none;
+    color: #333;
+    font-size: 0.95em;
+    transition: color 0.3s ease;
+}
+
+.table-of-contents ul li a:hover {
+    color: #007bff;
+}
+
+/* Style pour les inputs avec bouton d'œil */
+.input-with-icon {
+    display: flex;
+    align-items: center;
+    align-items: center;
+    gap: 10px; /* Espace entre l'input et le bouton */
+}
+
+.input-with-icon .form-input {
+    flex: 1; /* L'input prend tout l'espace disponible */
+}
+
+.input-with-icon .password-toggle-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.input-with-icon .eye-icon {
+    width: 20px;
+    height: 20px;
+    transition: opacity 0.3s ease;
+}
+
+.input-with-icon .eye-icon:hover {
+    opacity: 0.7;
+}
+
+.logRecent{
+    display: flex;
+    align-items: start;
 }

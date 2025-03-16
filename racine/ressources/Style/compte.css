@@ -1,26 +1,59 @@
-body{
+/* Style de base pour le body */
+body {
     background: #EEE;
 }
 
-body > div.container > div{
-    width: 70%;
-    border: 2px solid black;
-    border-radius: 20px;
-    margin: auto;
-    padding: 30px;
+/* Style pour le conteneur spécifique */
+.login-container {
     display: flex;
-    flex-direction: column;
-    gap: 20px;
-    background: #FFF;
+    justify-content: center;
+    align-items: center;
 }
 
-.profile_picture{
-    width: 60px;
-    margin: auto;
+/* Style pour le formulaire */
+.login-container form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    width: 500px; /* Largeur fixe pour le formulaire */
 }
 
-.username,
-.password,
-.confirmer{
-    text-align: center;
+/* Style pour les labels */
+.login-container form p {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+.userIcon{
+    width: 100px;
+    margin-left: 39%;
+    margin-bottom: 15px;
+        
+}
+/* Style pour les champs de saisie */
+.login-container form input[type="text"],
+.login-container form input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box; /* Inclut le padding dans la largeur */
+}
+
+/* Style pour le bouton de confirmation */
+.login-container form .btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff; /* Couleur bleue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Effet au survol du bouton */
+.login-container form .btn:hover {
+    background-color: #0056b3; /* Couleur bleue plus foncée */
 }
