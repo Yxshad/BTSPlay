@@ -200,8 +200,7 @@ function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $ti
     if ($return_var == 1) {
         ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
         $chemin_fichier_origine . " : " . implode("\n", $output));
-
-        exit();
+        //exit();
     }
 }
 

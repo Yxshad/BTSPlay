@@ -48,7 +48,9 @@
 }
 
 #transfert .ligne > div{
+    display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 .content-row {
