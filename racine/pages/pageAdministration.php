@@ -190,7 +190,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <li><a href="#section-bd">Base de données</a></li>
                 <li><a href="#sauvegarde">Sauvegarde</a></li>
                 <li><a href="#section-logs">Logs</a></li>
-                <li><a href="#section-multithreading">Multithreading</a></li>
+                <li><a href="#section-multiprocessing">Multiprocessing</a></li>
                 <li><a href="#personnalisation">Personnalisation</a></li>
             </ul>
         </div>
@@ -316,10 +316,13 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <input type="checkbox" id="affichage_logs_plus_recents_premiers" name="affichage_logs_plus_recents_premiers" <?php echo AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on' ? 'checked' : ''; ?> class="checkbox-input" required><br><br>
             </div>
 
-            <!-- Section Multithreading -->
-            <h3 id="section-multithreading" class="section-title">Multithreading</h3>
+            <!-- Section Multiprocessing -->
+            <h3 id="section-multiprocessing" class="section-title">Multiprocessing</h3>
             <label for="nb_max_processus_transfert" class="form-label">Nombre maximum de processus de transfert:</label>
             <input type="number" id="nb_max_processus_transfert" min=1 max=20 name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>" class="form-input" required><br><br>
+            
+            <label for="nb_max_sous_processus_transfert" class="form-label">Nombre maximum de sous-processus de transfert:</label>
+            <input type="number" id="nb_max_sous_processus_transfert" min=1 max=10 name="nb_max_sous_processus_transfert" value="<?php echo NB_MAX_SOUS_PROCESSUS_TRANSFERT; ?>" class="form-input" required><br><br>
            
             <!-- Section Personnalisation -->
             <h3 id="personnalisation" class="section-title">Personnalisation</h3>
