@@ -83,9 +83,6 @@
                         pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace">
                 </div>
 
-
-
-
                 <div id="roles-container">
                 <?php 
                     if($mtdRoles!=null){
@@ -98,7 +95,6 @@
                         }
                     }
                 ?>
-
                 </div>
 
                 <button type="button" id="add-role" class="btn">Ajouter un rôle</button>
@@ -116,34 +112,7 @@
 
 <script>
     initFormMetadonnees();
-
-    document.addEventListener("DOMContentLoaded", function() {
-        // Quand le document est prêt
-        const form = document.getElementById("roleForm");
-        
-        // Écouter la soumission du formulaire
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Empêcher le rechargement de la page
-
-            // Créer un objet FormData pour récupérer toutes les données du formulaire
-            const formData = new FormData(form);
-            
-            // Envoyer les données en POST avec fetch()
-            fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
-                method: "POST",
-                body: "action=ModifierMetadonnees&roles=" + formData
-            })
-            .then(response => response.json())  // On suppose que la réponse est en JSON
-            .then(data => {
-                console.log("Réponse du serveur : ", data);
-                // Traitement de la réponse si nécessaire
-            })
-            .catch(error => {
-                console.error("Erreur : ", error);
-            });
-        });
-    });
-
+    envoiMetadonnees();
 </script>
 </body>
 </html>
