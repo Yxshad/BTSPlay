@@ -47,7 +47,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     <div class="tabs">
         <div class="tab" data-tab="database">Base de données</div>
         <div class="tab" data-tab="reconciliation">Réconciliation</div>
-        <div class="tab" data-tab="transfer">Fonction de transfert</div>
+        <div class="tab" data-tab="transfert">Fonction de transfert</div>
         <div class="tab" data-tab="settings">Paramétrage du site</div>
         <div class="tab" data-tab="logs">Consulter les logs</div>
         <?php //On cache la page des autorisation si on est pas admin
@@ -116,7 +116,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <?php endif; ?>
     </div>
 
-    <div class="tab-content" id="transfer">
+    <div class="tab-content" id="transfert">
         <h1>Fonction de transfert</h1>
         <div class="container">
             <div class="content-wrapper">
@@ -135,8 +135,11 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
 
                 <!-- Deuxième ligne : Contenu (bouton, symbole, tableau) -->
                 <div class="content-row">
-                    <div class="button-container">
-                        <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
+                    <div class="lignes-container">
+                        <div class="lignes"><!-- Résultat ajax --></div>
+                        <div class="button-container">
+                            <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
+                        </div>
                     </div>
                     <div class="symbol-container">
                         <img src='../ressources/Images/avance-rapide.png' alt="Symbole de transfert">

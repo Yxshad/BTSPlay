@@ -22,6 +22,35 @@
 .header-row div {
     width: 50%;
 }
+
+#transfert .lignes-container{
+    place-items: center;
+}
+
+#transfert .lignes{
+    min-width: 350px;
+}
+
+#transfert .ligne{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 20px;
+}
+
+#transfert .ligne img{
+    width: 50px;
+}
+
+#transfert .progress{
+    min-width: 120px;
+}
+
+#transfert .ligne > div{
+    gap: 20px;
+}
+
 .content-row {
     display: flex;
     justify-content: end;
