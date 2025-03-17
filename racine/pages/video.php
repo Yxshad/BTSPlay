@@ -19,10 +19,16 @@
     if(!empty($URIS['URI_NAS_PAD'])){
         $cheminCompletNAS_PAD = $URIS['URI_NAS_PAD'].$nomFichier;
     }
+    else{
+        $URIS['URI_NAS_PAD'] = "Non présente";
+    }
 
     $cheminCompletNAS_ARCH = null;
     if(!empty($URIS['URI_NAS_ARCH'])){
         $cheminCompletNAS_ARCH = $URIS['URI_NAS_ARCH'].$nomFichier;
+    }
+    else{
+        $URIS['URI_NAS_ARCH'] = "Non présente";
     }
 ?>
 

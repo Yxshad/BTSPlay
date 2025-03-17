@@ -150,7 +150,7 @@ function insertionEtudiant($etudiant)
     $connexion = connexionBD();
     try {
         $idProjet = getProjet($projet);
-        if (!$idProjet) {
+        if (!$idProjet && $projet!="") {
             insertionProjet($projet);
             $idProjet = getProjet($projet);
         }
