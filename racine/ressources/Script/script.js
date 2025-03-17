@@ -524,7 +524,6 @@ function supprimerVideo(id, NAS){
             attribuerFonctionBtn("redirection","home.php", "btn1")
             cacherBtn("btn2");
             cacherBtn("btn3");
-            cacherBtn("btn4");
             afficherPopup();
         } else{
             changerTitrePopup("Suppression");
@@ -533,7 +532,6 @@ function supprimerVideo(id, NAS){
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");
             cacherBtn("btn3");
-            cacherBtn("btn4");
             afficherPopup();
         }
         
