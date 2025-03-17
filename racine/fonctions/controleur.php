@@ -75,6 +75,9 @@ function checkHeader(){
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }
+        if($_POST["action"] == "mettreAJourParametres"){
+            controleurMettreAJourParametres();
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
             $menuType = $_POST['menuType'];
