@@ -209,33 +209,21 @@ function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         const videos = JSON.parse(this.responseText);
-        const lignesContainer = document.querySelector('.transferts .lignes');
+        const lignesContainer = document.querySelector('#transfert .lignes');
         lignesContainer.innerHTML = '';
         videos.forEach(video => {
             const ligne = document.createElement('div');
             ligne.classList.add('ligne');
             ligne.innerHTML = `
-                <div class="fleches">
-                    <a class="fleche-haut">
-                        <img src="../ressources/Images/arrow.png" alt="flèche">
-                    </a>
-                    <a class="fleche-bas">
-                        <img src="../ressources/Images/arrow.png" alt="flèche">
-                    </a>
-                </div>
-                <div class="imgVideo">
-                    <img src="../ressources/Images/imgVideo.png" alt="">
-                </div>
                 <div class="info">
-                    <p class="nomVideo">${video.nomVideo}</p>
-                    <p class="poidsVideo">${video.poidsVideo}</p>
+                    <div class="imgVideo">
+                        <img src="../ressources/Images/imgVideo.png" alt="">
+                    </div>
+                    <div class="nom">
+                        <p class="nomVideo">${video.nomVideo}</p>
+                    </div>
                 </div>
                 <div class="progress">${video.status}</div>
-                <div class="bouton">
-                    <a class="pause">
-                        <img src="../ressources/Images/pause.png" alt="pause">
-                    </a>
-                </div>
             `;
             lignesContainer.appendChild(ligne);
         });
@@ -304,7 +292,7 @@ function gestionOngletsAdministration() {
 
 function appelScanVideo () {
     scanDossierDecoupeVideo();
-    setInterval( scanDossierDecoupeVideo , 5000);
+    setInterval( scanDossierDecoupeVideo , 50000);
 }
 
 function gestion_click_dossier() {

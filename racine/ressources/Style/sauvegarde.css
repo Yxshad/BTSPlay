@@ -67,7 +67,7 @@ div.ligne > div{
     justify-content: space-evenly;
 }
 
-div.ligne::after{
+#database div.ligne::after{
     display: block;
     content: "";
     width: 80%;
