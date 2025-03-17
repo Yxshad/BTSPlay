@@ -521,7 +521,12 @@ function supprimerVideo(id, NAS){
             changerTitrePopup("Suppression");
             changerTextePopup("Suppression de la vidéo effectuée.");
             changerTexteBtn("Confirmer", "btn1");
-            attribuerFonctionBtn("redirection","home.php", "btn1")
+            if(NAS == 'local'){
+                attribuerFonctionBtn("redirection","home.php", "btn1")
+            }
+            else{
+                attribuerFonctionBtn("reloading","", "btn1")
+            }
             cacherBtn("btn2");
             cacherBtn("btn3");
             afficherPopup();
@@ -580,4 +585,9 @@ function lancerDiffusion(uri_nas_pad){
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
     xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
+    
+}
+
+function reloading(){
+    window.location.reload();
 }
