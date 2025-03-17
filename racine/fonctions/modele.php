@@ -691,8 +691,7 @@ function getInfosVideo($idVideo)
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT * 
    FROM Media
-   WHERE id = ?
-   AND archive = FALSE');                                                 
+   WHERE id = ?');                                                 
    try{
        $requeteVid->execute([$idVideo]);
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
@@ -717,7 +716,7 @@ function getInfosVideo($idVideo)
 function getURISVideo($idVideo)
 {
    $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH
+   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH, mtd_tech_titre, URI_STOCKAGE_LOCAL
                                         FROM Media
                                         WHERE id = ?');                                                 
    try{

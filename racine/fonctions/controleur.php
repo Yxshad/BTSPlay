@@ -443,8 +443,8 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
  * \param idVideo - Id de la vidéo à supprimer
  */
 function controleurSupprimerVideo($idVideo, $NAS){
+    $video = getURISVideo($idVideo);
     if ($NAS == "local") {
-        $video = getInfosVideo($idVideo);
         $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
         foreach($allFiles as $file){
             if(! is_dir($file)){
@@ -457,7 +457,6 @@ function controleurSupprimerVideo($idVideo, $NAS){
         exit(0);  
     } elseif($NAS == "ARCH"){
         $conn_id = connexionFTP_NAS(NAS_ARCH_SUP, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
-        $video = getInfosVideo($idVideo);
         $lienVideo = $video['URI_NAS_ARCH'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_ARCH']!=null){
             ftp_delete($conn_id, $lienVideo);
@@ -472,7 +471,6 @@ function controleurSupprimerVideo($idVideo, $NAS){
         exit(0); 
     }elseif($NAS == "PAD"){
         $conn_id = connexionFTP_NAS(NAS_PAD_SUP, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
-        $video = getInfosVideo($idVideo);
         $lienVideo = $video['URI_NAS_PAD'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_PAD'] != null){
             ftp_delete($conn_id, $lienVideo);
