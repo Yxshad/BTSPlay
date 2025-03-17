@@ -753,7 +753,6 @@ function getTitreURIEtId($nbMaxVideo) {
         $requeteVid = $connexion->prepare('SELECT id,
         URI_STOCKAGE_LOCAL, mtd_tech_titre
         FROM Media
-        WHERE archive = FALSE
         ORDER BY date_modification DESC
         LIMIT :nbVideo');
         $requeteVid->bindParam(":nbVideo", $nbMaxVideo,PDO::PARAM_INT);
@@ -1165,7 +1164,6 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
          $requeteConnexion = $connexion->prepare('SELECT id, URI_STOCKAGE_LOCAL, mtd_tech_titre, projet
             FROM Media
             WHERE projet = ?
-            AND archive = FALSE
             ORDER BY date_modification DESC');   
          $requeteConnexion->execute([$idProjet]);
          $resultatRequeteConnexion = $requeteConnexion->fetchAll(PDO::FETCH_ASSOC);
