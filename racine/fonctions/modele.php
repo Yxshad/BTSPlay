@@ -691,8 +691,7 @@ function getInfosVideo($idVideo)
    $connexion = connexionBD();
    $requeteVid = $connexion->prepare('SELECT * 
    FROM Media
-   WHERE id = ?
-   AND archive = FALSE');                                                 
+   WHERE id = ?');                                                 
    try{
        $requeteVid->execute([$idVideo]);
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
@@ -717,7 +716,7 @@ function getInfosVideo($idVideo)
 function getURISVideo($idVideo)
 {
    $connexion = connexionBD();
-   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH
+   $requeteVid = $connexion->prepare('SELECT URI_NAS_PAD, URI_NAS_ARCH, mtd_tech_titre, URI_STOCKAGE_LOCAL
                                         FROM Media
                                         WHERE id = ?');                                                 
    try{
@@ -1188,12 +1187,36 @@ function recupererDernieresVideosTransfereesSansMetadonnees($nb_videos_historiqu
  
  /**
  * \fn supprimerVideoDeBD($idVideo)
- * \brief Indique dans la base de données que la vidéo est supprimée
+ * \brief Supprime les données d'une vidéo
  * \param idVideo - L'ID de la vidéo qu'on veut supprimer
  */
 function supprimerVideoDeBD($idVideo){ //#RISQUE : Ajouter un try catch
     $connexion = connexionBD();
-    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET archive = TRUE, date_modification = CURRENT_TIMESTAMP WHERE id = ?');
+    $requeteConnexion=$connexion->prepare('DELETE FROM MEDIA WHERE id = ?');
+    $requeteConnexion->execute([$idVideo]);
+    $connexion->commit();
+}
+
+ /**
+ * \fn supprimerVideoNADPAD($idVideo)
+ * \brief Supprime le lien d'une vidéo vers son NAS PAD
+ * \param idVideo - L'ID de la vidéo qu'on veut supprimer
+ */
+function supprimerVideoNASPAD($idVideo){ //#RISQUE : Ajouter un try catch
+    $connexion = connexionBD();
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET URI_NAS_PAD = null WHERE id = ?');
+    $requeteConnexion->execute([$idVideo]);
+    $connexion->commit();
+}
+
+ /**
+ * \fn supprimerVideoNADARCH($idVideo)
+ * \brief Supprime le lien d'une vidéo vers son NAS ARCH
+ * \param idVideo - L'ID de la vidéo qu'on veut supprimer
+ */
+function supprimerVideoNASARCH($idVideo){ //#RISQUE : Ajouter un try catch
+    $connexion = connexionBD();
+    $requeteConnexion=$connexion->prepare('UPDATE MEDIA SET URI_NAS_ARCH = null WHERE id = ?');
     $requeteConnexion->execute([$idVideo]);
     $connexion->commit();
 }

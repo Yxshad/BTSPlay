@@ -107,14 +107,11 @@
                                                                                                 changerTexteBtn('Base de données', 'btn1');
                                                                                                 changerTexteBtn('NAS PAD', 'btn2');
                                                                                                 changerTexteBtn('NAS Archive', 'btn3');
-                                                                                                changerTexteBtn('Annuler', 'btn4');
                                                                                                 attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, local', 'btn1');
                                                                                                 attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, PAD', 'btn2');
                                                                                                 attribuerFonctionBtn('supprimerVideo','<?php echo $idVideo; ?>, ARCH', 'btn3');
-                                                                                                attribuerFonctionBtn('', '', 'btn4');
                                                                                                 afficherBtn('btn2');
                                                                                                 afficherBtn('btn3');
-                                                                                                afficherBtn('btn4');
                                                                                                 afficherPopup();">
                             <div class="logo-btnvideo">
                                 <img src="../ressources/Images/poubelle-de-recyclage.png" alt="">
@@ -130,10 +127,8 @@
                                                                                                                 changerTexteBtn('Confirmer', 'btn1');
                                                                                                                 changerTexteBtn('Annuler', 'btn2');
                                                                                                                 attribuerFonctionBtn('lancerDiffusion','<?php echo $cheminCompletNAS_PAD; ?>', 'btn1');
-                                                                                                                attribuerFonctionBtn('','', 'btn2');
                                                                                                                 afficherBtn('btn2');
                                                                                                                 cacherBtn('btn3');
-                                                                                                                cacherBtn('btn4');
                                                                                                                 afficherPopup();">
                                     <div class="logo-btnvideo">
                                         <img src="../ressources/Images/diffuser.png" alt="">
