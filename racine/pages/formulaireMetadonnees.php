@@ -65,22 +65,23 @@
                         <?php } ?>
                     </select>
                 </div>
-
                 <div class="champ">
                     <label for="description">Description</label>
-                    <input type="text" id="description" name="description" value="<?php echo $description; ?>">
+                    <input type="text" id="description" name="description" value="<?php echo $description; ?>" 
+                        pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace">
                 </div>
 
                 <div class="champ">
                     <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>">
+                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>" 
+                        pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace">
                 </div>
 
                 <div class="champ">
                     <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
+                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>" 
+                        pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace">
                 </div>
-
 
                 <div id="roles-container">
                 <?php 
@@ -94,7 +95,6 @@
                         }
                     }
                 ?>
-
                 </div>
 
                 <button type="button" id="add-role" class="btn">Ajouter un rôle</button>
@@ -112,34 +112,7 @@
 
 <script>
     initFormMetadonnees();
-
-    document.addEventListener("DOMContentLoaded", function() {
-        // Quand le document est prêt
-        const form = document.getElementById("roleForm");
-        
-        // Écouter la soumission du formulaire
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Empêcher le rechargement de la page
-
-            // Créer un objet FormData pour récupérer toutes les données du formulaire
-            const formData = new FormData(form);
-            
-            // Envoyer les données en POST avec fetch()
-            fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
-                method: "POST",
-                body: "action=ModifierMetadonnees&roles=" + formData
-            })
-            .then(response => response.json())  // On suppose que la réponse est en JSON
-            .then(data => {
-                console.log("Réponse du serveur : ", data);
-                // Traitement de la réponse si nécessaire
-            })
-            .catch(error => {
-                console.error("Erreur : ", error);
-            });
-        });
-    });
-
+    envoiMetadonnees();
 </script>
 </body>
 </html>
