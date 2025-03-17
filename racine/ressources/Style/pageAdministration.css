@@ -164,7 +164,7 @@ button:hover{
 /* Style des titres de section */
 .section-title {
     color: #333;
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #203242;
     padding-bottom: 10px;
     margin-top: 20px;
     margin-bottom: 15px;
@@ -214,7 +214,7 @@ button:hover{
 
 /* Style du bouton de soumission */
 .submit-button {
-    background-color: #007bff;
+    background-color: #203242;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -246,7 +246,7 @@ button:hover{
 
 /* Style pour les champs obligatoires */
 .form-input:required {
-    border-left: 3px solid #007bff;
+    border-left: 3px solid orange;
 }
 
 /* Style pour les champs non obligatoires */
@@ -327,7 +327,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .table-of-contents h3 {
-    color: #007bff;
+    color: #203242;
     margin-bottom: 10px;
     font-size: 1.2em;
 }
@@ -346,11 +346,12 @@ input[type="number"]::-webkit-outer-spin-button {
     text-decoration: none;
     color: #333;
     font-size: 0.95em;
+    font-weight: 200;
     transition: color 0.3s ease;
 }
 
 .table-of-contents ul li a:hover {
-    color: #007bff;
+    color: orange;
 }
 
 /* Style pour les inputs avec bouton d'œil */
@@ -401,7 +402,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Titre de la réconciliation */
 .reconciliation-title {
-    color: #007bff;
+    color: orange;
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 24px;

@@ -13,7 +13,7 @@
                 <input type="search" placeholder="Rechercher une vidéo...">
                 <button>
                     <div class="logo-search">
-                        <img src="../ressources/Images/loupe.png" alt="Rechercher">
+                        <img src="../ressources/Images/recherche.png" alt="Rechercher">
                     </div>
                 </button>
             </form>
@@ -38,14 +38,16 @@
 
                         <?php
                         if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
-                            <a id="lienAdmin" href="pageAdministration.php">Page d'administration</a>
+                            
+                        <a href="pageAdministration.php">
+                            <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
+                            Paramétrer
+                        </a>
                         <?php } ?>
 
-                        <a href="logout.php">
-                            <div class="logo-compte">
-                                <img src="../ressources/Images/logout.png" alt="Compte">
-                            </div>
-                            Déconnecter
+                        <a href="logout.php" >
+                            <img class='iconeSousMenu'src='../ressources/Images/logout.png'>
+                            Se déconnecter
                         </a>
 
                     </div>
