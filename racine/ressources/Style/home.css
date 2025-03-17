@@ -28,6 +28,7 @@ a:hover{
 
 .swiper-slide a{
     display: block;
+    padding: 0 10px;
 }
 
 .swiper-slide a:hover .miniature{
