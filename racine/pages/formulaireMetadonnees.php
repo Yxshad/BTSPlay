@@ -30,35 +30,52 @@
 </head>
 <body>
 
-<div class="container">
-    <h1>Formulaire des métadonnées</h1>
+<div class="form-container">
+    <!-- Formulaire englobant les colonnes et les boutons -->
+    <form method="post" action="#" class="metadata-form" id="metadataForm">
+        <!-- Conteneur pour les deux colonnes -->
+        <div class="form-columns">
+            <!-- Colonne de gauche -->
+            <div class="form-column-left">
+                <div class="thumbnail-container">
+                    <img src="<?php echo $cheminMiniatureComplet; ?>" alt="Miniature de la vidéo" class="thumbnail-image">
+                </div>
+                <h2 class="video-filename"><?php echo $nomFichier; ?></h2>
+                <h2 class="video-title"><?php echo $titreVideo; ?></h2>
 
-    <div class="colonnes">
-        <div class="colonne-1">
-            <div class="img">
-                <img src="<?php echo $cheminMiniatureComplet; ?>" alt="Miniature de la vidéo" class="imageMiniature">
+                <div class="low-column-left">
+                    <table class="video-info-table">
+                        <tr>
+                            <th>Durée</th>
+                            <td><?php echo $mtdTech['mtd_tech_duree']; ?></td>
+                        </tr>
+                        <tr>
+                            <th>Images par seconde</th>
+                            <td><?php echo $mtdTech['mtd_tech_fps']; ?></td>
+                        </tr>
+                        <tr>
+                            <th>Résolution</th>
+                            <td><?php echo $mtdTech['mtd_tech_resolution']; ?></td>
+                        </tr>
+                        <tr>
+                            <th>Format</th>
+                            <td><?php echo $mtdTech['mtd_tech_format']; ?></td>
+                        </tr>
+                    </table>
+                </div>
             </div>
-            <h2 class="titre"><?php echo $nomFichier; ?></h2>
-            <h2 class="titre"><?php echo $titreVideo; ?></h2>
-            <p><strong>Durée :</strong> <?php echo $mtdTech['mtd_tech_duree']; ?></p>
-            <p><strong>Images par seconde :</strong> <?php echo $mtdTech['mtd_tech_fps']; ?></p>
-            <p><strong>Résolution :</strong> <?php echo $mtdTech['mtd_tech_resolution']; ?></p>
-            <p><strong>Format :</strong> <?php echo $mtdTech['mtd_tech_format']; ?></p>
-        </div>
 
-        <div class="colonne-2">
-            <h2>Équipe</h2>
-            <form method="post" action="#">
+            <!-- Colonne de droite -->
+            <div class="form-column-right">
+                <h2 class="team-title">Équipe</h2>
                 <input type="hidden" name="action" value="ModifierMetadonnees">
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
 
-                <div class="champ">
-
+                <div class="form-field">
                     <label for="profReferent" class="form-label">Professeur référent</label>
-
-                    <select id="profReferent" name="profReferent">
+                    <select id="profReferent" name="profReferent" class="form-select">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">
-                            Professeur actuel : <?php echo $mtdEdito["professeur"]; ?>
+                             <?php echo $mtdEdito["professeur"]; ?>
                         </option>
                         <?php foreach ($listeProfesseurs as $prof) { ?>
                             <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
@@ -66,47 +83,49 @@
                     </select>
                 </div>
 
-                <div class="champ">
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description" value="<?php echo $description; ?>">
+                <div class="form-field">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea id="description" name="description" class="form-input"><?php echo $description; ?></textarea>
                 </div>
 
-                <div class="champ">
-                    <label for="promotion">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>">
+                <div class="form-field">
+                    <label for="promotion" class="form-label">Promotion</label>
+                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>" class="form-input">
                 </div>
 
-                <div class="champ">
-                    <label for="projet">Projet</label>
-                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>">
+                <div class="form-field">
+                    <label for="projet" class="form-label">Projet</label>
+                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>" class="form-input">
                 </div>
-
 
                 <div id="roles-container">
                 <?php 
                     if($mtdRoles!=null){
                         foreach ($mtdRoles as $role => $values) { 
                             $formattedId = strtolower(str_replace(' ', '_', $role));
-                            echo '<div class="champ role"> ';
-                            echo '<label for="' . htmlspecialchars($formattedId) . '">' . htmlspecialchars($role) . '</label> <div class="inputs">';
-                            echo '<input class="role-input" type="text" id="'. htmlspecialchars($formattedId) .'" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '">';
+                            echo '<div class="form-field role-field"> ';
+                            echo '<label for="' . htmlspecialchars($formattedId) . '" class="form-label">' . htmlspecialchars($role) . '</label> <div class="role-inputs">';
+                            echo '<input type="text" id="'. htmlspecialchars($formattedId) .'" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '" class="role-input">';
                             echo '</div></div>';
                         }
                     }
                 ?>
-
                 </div>
-
-                <button type="button" id="add-role" class="btn">Ajouter un rôle</button>
-                <button type="submit" class="btn">Confirmer</button>
-            </form>
+            </div>
         </div>
-    </div>
 
-    <div class="btns">
-        <a href="video.php?v=<?php echo $idVideo; ?>" class="btn">Retour</a>
-    </div>
+        <!-- Conteneur pour les boutons -->
+        <div class="form-buttons-container">
+            <a href="video.php?v=<?php echo $idVideo; ?>" class="form-button">Retour</a>
+
+            <div class="bouton-droit">
+                <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
+                <button type="submit" class="form-button">Confirmer</button>
+            </div>
+        </div>
+    </form>
 </div>
+
 
 <?php require_once '../ressources/Templates/footer.php'; ?>
 
@@ -114,32 +133,25 @@
     initFormMetadonnees();
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Quand le document est prêt
         const form = document.getElementById("roleForm");
         
-        // Écouter la soumission du formulaire
         form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Empêcher le rechargement de la page
-
-            // Créer un objet FormData pour récupérer toutes les données du formulaire
+            event.preventDefault();
             const formData = new FormData(form);
             
-            // Envoyer les données en POST avec fetch()
-            fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
+            fetch("controleur.php", {
                 method: "POST",
                 body: "action=ModifierMetadonnees&roles=" + formData
             })
-            .then(response => response.json())  // On suppose que la réponse est en JSON
+            .then(response => response.json())
             .then(data => {
                 console.log("Réponse du serveur : ", data);
-                // Traitement de la réponse si nécessaire
             })
             .catch(error => {
                 console.error("Erreur : ", error);
             });
         });
     });
-
 </script>
 </body>
 </html>
