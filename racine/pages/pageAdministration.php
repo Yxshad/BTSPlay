@@ -60,7 +60,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <h2>Sauvegarde de la base de données</h2>
         <div class="colonnes">
             <div class="colonne-1">
-                <h1>Paramètre des sauvegardes</h1>
+                <h2>Paramètre des sauvegardes</h2>
                 <div class="intervalSauvegarde">
                     <p>Sauvegarder toutes les </p>
                     <input type="number" name="" id="">
@@ -92,7 +92,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </div>
     </div>
 
-    <div class="tab-content reconciliation-container" id="reconciliation">
+    <div class="tab-content" id="reconciliation">
         <!-- Section : Fonction de réconciliation -->
         <div class="reconciliation-section">
             <h2 class="section-title">Fonction de réconciliation</h2>
@@ -105,7 +105,6 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <!-- Section : Résultat de la réconciliation -->
         <?php if (isset($_SESSION['reconciliation_result'])) : ?>
             <div class="result-section">
-                <h2 class="section-title">Résultat de la réconciliation</h2>
                 <div class="reconciliation-result">
                     <?php
                     echo $_SESSION['reconciliation_result'];
@@ -117,7 +116,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     </div>
 
     <div class="tab-content" id="transfer">
-        <h1>Fonction de transfert</h1>
+        <h2>Fonction de transfert</h2>
         <div class="container">
             <div class="content-wrapper">
                 <!-- Première ligne : Titres -->
