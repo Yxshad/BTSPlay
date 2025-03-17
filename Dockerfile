@@ -35,12 +35,14 @@ COPY ./racine /var/www/html
 # Donner les bons droits et recharger crontab
 RUN chmod 0644 /etc/crontab
 
-# 🔥 S'assurer que cron tourne bien
+# S'assurer que cron tourne bien
 RUN touch /var/log/cron.log
 
 # Donner les droits nécessaires
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
+
+RUN docker-php-ext-install pcntl
 
 # Exposer le port 80    
 EXPOSE 80
