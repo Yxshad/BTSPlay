@@ -374,11 +374,19 @@ function controleurReconciliation() {
 
     ob_start(); // Capture la sortie pour éviter les erreurs de header
     echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+    echo "<ul>";
+    foreach ($listeVideos_NAS_1 as $video) {
+        echo "<li>" . htmlspecialchars($video) . "</li>";
+    }
+    echo "</ul>";
 
     echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
-
+    echo "<ul>";
+    foreach ($listeVideos_NAS_2 as $video) {
+        echo "<li>" . htmlspecialchars($video) . "</li>";
+    }
+    echo "</ul>";
+    
     $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
     afficherVideosManquantes($listeVideosManquantes);
 

@@ -96,10 +96,6 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <!-- Section : Fonction de réconciliation -->
         <div class="reconciliation-section">
             <h2 class="section-title">Fonction de réconciliation</h2>
-            <form method="post" class="reconciliation-form">
-                <input type="hidden" name="action" value="declencherReconciliation">
-                <button type="submit" class="reconciliation-button">Lancer la réconciliation</button>
-            </form>
         </div>
 
         <!-- Section : Résultat de la réconciliation -->
@@ -113,6 +109,10 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
             </div>
         <?php endif; ?>
+        <form method="post" class="reconciliation-form">
+            <input type="hidden" name="action" value="declencherReconciliation">
+            <button type="submit" class="reconciliation-button">Lancer la réconciliation</button>
+        </form>
     </div>
 
     <div class="tab-content" id="transfer">
