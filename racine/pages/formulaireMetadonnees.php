@@ -85,17 +85,20 @@
 
                 <div class="form-field">
                     <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" class="form-input"><?php echo $description; ?></textarea>
+                    <textarea id="description" name="description" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                      class="form-input"><?php echo $description; ?></textarea>
                 </div>
 
                 <div class="form-field">
                     <label for="promotion" class="form-label">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" value="<?php echo $promotion; ?>" class="form-input">
+                    <input type="text" id="promotion" name="promotion" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                  value="<?php echo $promotion; ?>" class="form-input">
                 </div>
 
                 <div class="form-field">
                     <label for="projet" class="form-label">Projet</label>
-                    <input type="text" id="projet" name="projet" value="<?php echo $mtdEdito["projet"]; ?>" class="form-input">
+                    <input type="text" id="projet" name="projet" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                  value="<?php echo $mtdEdito["projet"]; ?>" class="form-input">
                 </div>
 
                 <div id="roles-container">
@@ -131,27 +134,7 @@
 
 <script>
     initFormMetadonnees();
-
-    document.addEventListener("DOMContentLoaded", function() {
-        const form = document.getElementById("roleForm");
-        
-        form.addEventListener("submit", function(event) {
-            event.preventDefault();
-            const formData = new FormData(form);
-            
-            fetch("controleur.php", {
-                method: "POST",
-                body: "action=ModifierMetadonnees&roles=" + formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Réponse du serveur : ", data);
-            })
-            .catch(error => {
-                console.error("Erreur : ", error);
-            });
-        });
-    });
+    envoiMetadonnees();
 </script>
 </body>
 </html>

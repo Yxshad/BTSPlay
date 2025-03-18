@@ -374,11 +374,19 @@ function controleurReconciliation() {
 
     ob_start(); // Capture la sortie pour éviter les erreurs de header
     echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_1, true) . "</pre>";
+    echo "<ul>";
+    foreach ($listeVideos_NAS_1 as $video) {
+        echo "<li>" . htmlspecialchars($video) . "</li>";
+    }
+    echo "</ul>";
 
     echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
-    echo "<pre>" . print_r($listeVideos_NAS_2, true) . "</pre>";
-
+    echo "<ul>";
+    foreach ($listeVideos_NAS_2 as $video) {
+        echo "<li>" . htmlspecialchars($video) . "</li>";
+    }
+    echo "</ul>";
+    
     $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
     afficherVideosManquantes($listeVideosManquantes);
 
@@ -392,11 +400,10 @@ function controleurRecupererDernierProjet(){
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
         $listeVideos = recupererUriTitreVideosMemeProjet($id);
-
         $projetIntitule = getProjetIntitule($listeVideos[0]["projet"]);
         $listeVideosFormatees = [];
         // Vérifier si $listeVideos est un tableau valide
-        if (is_array($listeVideos) && ($projetIntitule != NULL)) {
+       if (is_array($listeVideos) && ($projetIntitule != NULL)) {
             foreach ($listeVideos as $key => $video) {
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
@@ -443,8 +450,8 @@ function controleurRecupererDernieresVideosTransfereesSansMetadonnees(){
  * \param idVideo - Id de la vidéo à supprimer
  */
 function controleurSupprimerVideo($idVideo, $NAS){
+    $video = getURISVideo($idVideo);
     if ($NAS == "local") {
-        $video = getInfosVideo($idVideo);
         $allFiles = scandir(URI_RACINE_STOCKAGE_LOCAL . $video['URI_STOCKAGE_LOCAL']);
         foreach($allFiles as $file){
             if(! is_dir($file)){
@@ -456,10 +463,32 @@ function controleurSupprimerVideo($idVideo, $NAS){
         echo "1"; //on renvoit 1 quand tout se passe bien
         exit(0);  
     } elseif($NAS == "ARCH"){
-        echo $NAS; 
+        $conn_id = connexionFTP_NAS(NAS_ARCH_SUP, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
+        $lienVideo = $video['URI_NAS_ARCH'] . $video['mtd_tech_titre'];
+        if($video['URI_NAS_ARCH']!=null){
+            ftp_delete($conn_id, $lienVideo);
+            supprimerVideoNASARCH($idVideo);
+            ajouterLog(LOG_SUCCESS, "La vidéo ". $video['mtd_tech_titre'] . " dans le NAS $NAS a été supprimée avec succès");
+            echo "1"; //on renvoit 1 quand tout se passe bien
+        }
+        else{
+            ajouterLog(LOG_FAIL, "La vidéo". $video['mtd_tech_titre'] . " n'existe pas dans le NAS $NAS");
+            echo "La vidéo n'est pas dans le NAS $NAS";
+        }
         exit(0); 
     }elseif($NAS == "PAD"){
-        echo "$NAS"; 
+        $conn_id = connexionFTP_NAS(NAS_PAD_SUP, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
+        $lienVideo = $video['URI_NAS_PAD'] . $video['mtd_tech_titre'];
+        if($video['URI_NAS_PAD'] != null){
+            ftp_delete($conn_id, $lienVideo);
+            supprimerVideoNASPAD($idVideo);
+            ajouterLog(LOG_SUCCESS, "La vidéo ". $video['mtd_tech_titre'] . " dans le NAS $NAS a été supprimée avec succès");
+            echo "1"; //on renvoit 1 quand tout se passe bien
+        }
+        else{
+            echo "La vidéo n'est pas dans le NAS $NAS";
+            ajouterLog(LOG_FAIL, "La vidéo ". $video['mtd_tech_titre'] . " n'existe pas dans le NAS $NAS");
+        }
         exit(0); 
     }   
 }

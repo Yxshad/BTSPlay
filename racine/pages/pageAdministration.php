@@ -60,7 +60,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <h2>Sauvegarde de la base de données</h2>
         <div class="colonnes">
             <div class="colonne-1">
-                <h1>Paramètre des sauvegardes</h1>
+                <h2>Paramètre des sauvegardes</h2>
                 <div class="intervalSauvegarde">
                     <p>Sauvegarder toutes les </p>
                     <input type="number" name="" id="">
@@ -92,20 +92,15 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </div>
     </div>
 
-    <div class="tab-content reconciliation-container" id="reconciliation">
+    <div class="tab-content" id="reconciliation">
         <!-- Section : Fonction de réconciliation -->
         <div class="reconciliation-section">
             <h2 class="section-title">Fonction de réconciliation</h2>
-            <form method="post" class="reconciliation-form">
-                <input type="hidden" name="action" value="declencherReconciliation">
-                <button type="submit" class="reconciliation-button">Lancer la réconciliation</button>
-            </form>
         </div>
 
         <!-- Section : Résultat de la réconciliation -->
         <?php if (isset($_SESSION['reconciliation_result'])) : ?>
             <div class="result-section">
-                <h2 class="section-title">Résultat de la réconciliation</h2>
                 <div class="reconciliation-result">
                     <?php
                     echo $_SESSION['reconciliation_result'];
@@ -114,10 +109,14 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
             </div>
         <?php endif; ?>
+        <form method="post" class="reconciliation-form">
+            <input type="hidden" name="action" value="declencherReconciliation">
+            <button type="submit" class="reconciliation-button">Lancer la réconciliation</button>
+        </form>
     </div>
 
-    <div class="tab-content" id="transfert">
-        <h1>Fonction de transfert</h1>
+    <div class="tab-content" id="transfer">
+        <h2>Fonction de transfert</h2>
         <div class="container">
             <div class="content-wrapper">
                 <!-- Première ligne : Titres -->
@@ -190,7 +189,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <li><a href="#section-bd">Base de données</a></li>
                 <li><a href="#sauvegarde">Sauvegarde</a></li>
                 <li><a href="#section-logs">Logs</a></li>
-                <li><a href="#section-multithreading">Multithreading</a></li>
+                <li><a href="#section-multiprocessing">Multiprocessing</a></li>
                 <li><a href="#personnalisation">Personnalisation</a></li>
             </ul>
         </div>
@@ -316,10 +315,13 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <input type="checkbox" id="affichage_logs_plus_recents_premiers" name="affichage_logs_plus_recents_premiers" <?php echo AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on' ? 'checked' : ''; ?> class="checkbox-input" required><br><br>
             </div>
 
-            <!-- Section Multithreading -->
-            <h3 id="section-multithreading" class="section-title">Multithreading</h3>
+            <!-- Section Multiprocessing -->
+            <h3 id="section-multiprocessing" class="section-title">Multiprocessing</h3>
             <label for="nb_max_processus_transfert" class="form-label">Nombre maximum de processus de transfert:</label>
             <input type="number" id="nb_max_processus_transfert" min=1 max=20 name="nb_max_processus_transfert" value="<?php echo NB_MAX_PROCESSUS_TRANSFERT; ?>" class="form-input" required><br><br>
+            
+            <label for="nb_max_sous_processus_transfert" class="form-label">Nombre maximum de sous-processus de transfert:</label>
+            <input type="number" id="nb_max_sous_processus_transfert" min=1 max=10 name="nb_max_sous_processus_transfert" value="<?php echo NB_MAX_SOUS_PROCESSUS_TRANSFERT; ?>" class="form-input" required><br><br>
            
             <!-- Section Personnalisation -->
             <h3 id="personnalisation" class="section-title">Personnalisation</h3>
