@@ -115,7 +115,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </form>
     </div>
 
-    <div class="tab-content" id="transfer">
+    <div class="tab-content" id="transfert">
         <h2>Fonction de transfert</h2>
         <div class="container">
             <div class="content-wrapper">
