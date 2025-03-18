@@ -96,12 +96,10 @@ const NAS_PAD = 'NAS_PAD';
 const LOGIN_NAS_PAD = 'user1';
 const PASSWORD_NAS_PAD = 'pass1';
 
-const NAS_PAD_SUP = 'NAS_PAD';
 const LOGIN_NAS_PAD_SUP = 'user1';
 const PASSWORD_NAS_PAD_SUP = 'pass1';
 
     //ARCH
-const NAS_ARCH_SUP = 'NAS_ARCH';
 const LOGIN_NAS_ARCH_SUP = 'user2';
 const PASSWORD_NAS_ARCH_SUP = 'pass2';
 

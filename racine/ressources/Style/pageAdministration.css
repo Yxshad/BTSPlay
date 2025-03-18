@@ -152,6 +152,10 @@ button:hover{
     vertical-align: middle;
 }
 
+h4{
+    font-size: larger;
+    margin-bottom: 13px;
+}
 
 /* Style général du formulaire */
 .form-container {
@@ -167,7 +171,7 @@ button:hover{
     color: #333;
     border-bottom: 2px solid #c72027;
     padding-bottom: 10px;
-    margin-top: 20px;
+    margin-top: 30px;
     margin-bottom: 15px;
     font-size: 1.5em;
 }
@@ -222,7 +226,7 @@ button:hover{
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     transition: background-color 0.3s ease;
 }
 
