@@ -26,7 +26,7 @@ header .container {
 
 /* --- Logo --- */
 .logo-bts img {
-    height: 50px;
+    height: 42px;
 }
 
 /* --- Barre de recherche --- */
@@ -36,6 +36,9 @@ header .container {
     background: white;
     border-radius: 25px;
     width: 50%;
+}
+.iconeSousMenu {
+    width: 25px;
 }
 
 .recherche input {
@@ -55,7 +58,7 @@ header .container {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 12%;
+    width: 10%;
     height: 100%;
     background-color: #f09520 ;
     border-radius: inherit;
@@ -83,8 +86,8 @@ header .container {
     color: white;
     text-decoration: none;
     font-weight: bold;
-    border-radius: 50px;
-    padding: 10px;
+    border-radius: 25px;
+    padding: 5px;
     cursor: pointer;
 }
 
@@ -102,20 +105,29 @@ header .container {
     position: absolute;
     right: 0;
     width: max-content;
-    background: #2C3E50;
+    background: white;
     border-radius: 10px;
-    border: 3px solid #f09520;
-    overflow: hidden !important ;
-    display: none;
+    border: #203242 solid 1px;
+    overflow: hidden !important;
+    display: none; 
+    top: 100%;
+    right: -15%;
 }
 
 .compte .sousMenu a {
     border-radius: 0px;
     padding: 10px;
+    font-weight: 200 !important ;
+    color: #203242;
+    scale: 1 !important ;
+    transition: none;
 }
 
-#lienAdmin{
-    border-bottom: 1px solid #f09520;
+.compte .sousMenu a:hover {
+    background: #f0f0f0;
+    scale: 1 !important ;
+    font-weight: 200 !important ;
+    transition: none;
 }
 
 

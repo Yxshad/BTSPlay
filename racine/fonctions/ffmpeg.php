@@ -191,7 +191,7 @@ function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $ti
     }
     $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
                 "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                "-c:a aac -b:a 64k -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                "-c:a aac -b:a 64k -ac 2 -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 "-movflags +faststart " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
                 "\"$chemin_fichier_destination\"";
