@@ -400,10 +400,10 @@ function controleurRecupererDernierProjet(){
     // Vérifier si $id est valide avant de continuer
     if ($id !== false && $id !== null) {
         $listeVideos = recupererUriTitreVideosMemeProjet($id);
-
+        $projetIntitule = getProjetIntitule($listeVideos[0]["projet"]);
         $listeVideosFormatees = [];
         // Vérifier si $listeVideos est un tableau valide
-        if (is_array($listeVideos) && getProjetIntitule($listeVideos[0]["projet"] != NULL)) {
+       if (is_array($listeVideos) && ($projetIntitule != NULL)) {
             foreach ($listeVideos as $key => $video) {
                 $titreSansExtension = recupererNomFichierSansExtension($video['mtd_tech_titre']);
                 $listeVideosFormatees[$key]["projet"] = getProjetIntitule($video["projet"]);
