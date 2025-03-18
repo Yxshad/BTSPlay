@@ -1,60 +1,148 @@
-h1, h2{
-    text-align: center;
-}
-
-.colonnes{
+.form-container {
     display: flex;
-    gap: 10px;
-}
-
-.colonne-1,
-.colonne-2{
-    width: 50%;
-}
-
-.colonne-1 p{
-    text-align: center;
-}
-
-.img{
+    padding: 3%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    max-width: 1200px;
+    margin: 0 auto;
+    margin-bottom: 1%;
+    background-color: #f9f9f9; /* Fond gris appliqué ici */
     border-radius: 10px;
-    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.colonne-2 h2{
-    margin-top: 0;
-}
-
-.colonne-2 .champ{
+/* Formulaire englobant les colonnes et les boutons */
+.metadata-form {
+    width: 100%;
     display: flex;
     flex-direction: column;
-    margin: 10px 0;
-}
- 
-.colonne-2 .champ label{
-    margin-bottom: 5px;
+    gap: 20px; /* Espace entre les sections */
 }
 
-.colonne-2 .champ input{
-    height: 25px;
-    border-radius: 5px;
+.form-columns {
     width: 100%;
+    display: flex;
+    flex-direction: row;
+    gap: 20px; /* Espace entre les colonnes */
 }
 
-.colonne-2 .champ .inputs{
+.form-column-left,
+.form-column-right {
+    width: 50%;
+    padding: 20px;
+    padding-top: 0;
+    padding-bottom: 10px;
+    background-color: transparent; /* Supprimer le fond gris des colonnes */
+}
+
+.thumbnail-container {
+    border-radius: 20px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.video-filename,
+.video-title {
+    margin: 10px 0;
+    color: #333;
+}
+
+.video-title {
+    font-size: medium;
+}
+
+.video-info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.video-info-table th,
+.video-info-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.video-info-table th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+.form-field {
     display: flex;
+    flex-direction: column;
     gap: 5px;
 }
 
-.btns{
-    display: flex;
-    justify-content: center;
-    gap: 30px;
+.form-label {
+    font-weight: bold;
+    color: #333;
 }
 
-.btns a{
-    background: grey;
-    color: white;
-    border-radius: 10px;
+.form-input,
+.form-select,
+.role-input {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.form-input:focus,
+.form-select:focus,
+.role-input:focus {
+    border-color: orange;
+    outline: none;
+}
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Conteneur pour les boutons */
+.form-buttons-container {
+    display: flex;
+    justify-content: space-between; /* Aligner les boutons à gauche et à droite */
+    align-items: center; /* Centrer verticalement */
+    margin-top: 20px; /* Espacement par rapport aux colonnes */
+    width: 100%;
+    padding: 0 20px; /* Padding pour aligner avec les colonnes */
+}
+
+/* Boutons à droite */
+.bouton-droit {
+    display: flex;
+    gap: 10px; /* Espacement entre les boutons */
+}
+
+.form-button {
     padding: 10px 20px;
+    background-color: orange;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.form-button:hover {
+    background-color: darkorange; /* Changement de couleur au survol */
+}
+
+.low-column-left {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
