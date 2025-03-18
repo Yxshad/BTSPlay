@@ -86,21 +86,20 @@ CREATE TABLE `Etudiant` (
 CREATE TABLE `Media` (
   `id` int(11) NOT NULL,
   `projet` int(11) DEFAULT NULL,
-  `professeurReferent` varchar(100) DEFAULT NULL,
-  `promotion` varchar(100) DEFAULT NULL,
-  `Description` varchar(100) DEFAULT NULL,
-  `theme` varchar(100) DEFAULT NULL,
-  `URI_NAS_PAD` varchar(100) DEFAULT NULL,
-  `URI_NAS_ARCH` varchar(100) DEFAULT NULL,
-  `URI_STOCKAGE_LOCAL` varchar(100) DEFAULT NULL,
-  `mtd_tech_titre` varchar(100) NOT NULL,
-  `mtd_tech_duree` varchar(100) NOT NULL,
-  `mtd_tech_resolution` varchar(100) NOT NULL,
-  `mtd_tech_fps` varchar(100) NOT NULL,
-  `mtd_tech_format` varchar(100) NOT NULL,
+  `professeurReferent` varchar(300) DEFAULT NULL,
+  `promotion` varchar(300) DEFAULT NULL,
+  `description` varchar(800) DEFAULT NULL,
+  `theme` varchar(300) DEFAULT NULL,
+  `URI_NAS_PAD` varchar(200) DEFAULT NULL,
+  `URI_NAS_ARCH` varchar(200) DEFAULT NULL,
+  `URI_STOCKAGE_LOCAL` varchar(200) DEFAULT NULL,
+  `mtd_tech_titre` varchar(200) NOT NULL,
+  `mtd_tech_duree` varchar(200) NOT NULL,
+  `mtd_tech_resolution` varchar(200) NOT NULL,
+  `mtd_tech_fps` varchar(200) NOT NULL,
+  `mtd_tech_format` varchar(200) NOT NULL,
   `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `archive` tinyint(1) NOT NULL DEFAULT '0'
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
@@ -164,12 +163,6 @@ CREATE TABLE `Projet` (
   `intitule` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Déchargement des données de la table `Projet`
---
-
-INSERT INTO `Projet` (`id`, `intitule`) VALUES
-(1, '6h');
 
 -- --------------------------------------------------------
 

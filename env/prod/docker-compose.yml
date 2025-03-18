@@ -1,0 +1,44 @@
+services:
+    php:
+      build:
+        context: ./PHP
+        dockerfile: Dockerfile
+      image: custom-php:8.3
+      container_name: php_BTSPlay
+      volumes:
+        - ./PHP/racine:/var/www/html
+        - ./PHP/apachedefaultconf:/etc/apache2/sites-available
+        - ./PHP/php.ini:/usr/local/etc/php/php.ini
+        - ./PHP/stockage/:/var/www/html/stockage
+      environment:
+        - PUBLICHOST=localhost
+      ports:
+        - "8000:80"
+        - "25000:21"
+      depends_on:
+        - mysql
+  
+    mysql:
+      image: mysql:5.7
+      container_name: mysql_BTSPlay
+      environment:
+        MYSQL_ROOT_PASSWORD: rootpassword
+        MYSQL_DATABASE: mydatabase
+        MYSQL_USER: myuser
+        MYSQL_PASSWORD: mypassword
+      volumes:
+        - ./mysql_data:/var/lib/mysql
+      ports:
+        - "3306:3306"
+  
+    phpmyadmin:
+      image: phpmyadmin:latest
+      container_name: phpmyadmin_BTSPlay
+      environment:
+        PMA_HOST: mysql
+      ports:
+        - "8082:80"
+      depends_on:
+        - mysql
+volumes:
+  mysql_data:
