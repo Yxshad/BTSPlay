@@ -138,7 +138,7 @@ function traiterVideo($titre, $duree) {
                       " -reset_timestamps 1" .
                       " -segment_format mp4" .
                       " -movflags +faststart" .
-                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset fast" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset ultrafast" .
                       " -c:a aac -b:a 64k -ac 2 " .
                       " -movflags +faststart" .
                       " -map 0:v:0 -map 0:a:0" .
