@@ -7,7 +7,7 @@
 - Offrir un accès rapide et ergonomique pour les utilisateurs (étudiants, professeurs, administrateurs).  
 - Assurer la cohérence et la qualité des données à travers un mécanisme de réconciliation automatisée.
 
-### Consignes
+### Guide d'installation
 - Dans le dossier /env
 
 ### Liste des étudiants contributeurs du projet :
