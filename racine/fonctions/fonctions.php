@@ -93,33 +93,7 @@ function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichier
 
 
 /**
- * \fn fonctionReconciliation()
- * \brief Fonction qui permet de comparer le contenu des deux NAS pour trouver les vidéos qui ne sont présentes que dans un seul emplacement
- */
-function fonctionReconciliation() {
-	// Algorithme qui vérifie la présence des vidéos dans les 2 NAS.
-	// Si une vidéo n'est pas présente dans les 2 NAS, une alerte est lancée
-
-	// #RISQUE : Incomprehension sur les spec de la fonction de réconciliation
-	// Il faudra pouvoir comparer un fichier et ses infos dans la base de données
-
-	$listeVideosNAS_1 = [];
-	$listeVideosNAS_2 = [];
-	$listeVideosNAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, $listeVideosNAS_1);
-	$listeVideosNAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, $listeVideosNAS_2);
-
-	$listeVideosManquantes = [];
-	$listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideosNAS_1, $listeVideosNAS_2, $listeVideosManquantes);
-
-	// #RIQUE : Affichage pas encore implémenté
-	//Pour chaque vidéo manquante, afficher un message d'information
-
-    ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
-}
-
-
-/**
- * \fn trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes)
+ * \fn EtablirDiagnosticVideos($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes)
  * \brief Fonction qui permet de rechercher les vidéos présentes dans un NAS mais pas dans l'autre
  * Prend en paramètre les noms des deux NAS, les listes des noms des vidéos des deux NAS et une liste vide de vidéos manquantes.
  * Retourne $listeVideosManquantes valorisée
@@ -130,7 +104,7 @@ function fonctionReconciliation() {
  * \param listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  * \return listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  */
-function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosManquantes) {
+function EtablirDiagnosticVideos($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosBD, $listeVideosManquantes) {
     foreach ($nomsVideosNAS_1 as $key1 => $nomVideoNAS1) {
         $videoManquanteDansNAS2 = true;
         foreach ($nomsVideosNAS_2 as $key2 => $nomVideoNAS2) {
@@ -161,11 +135,39 @@ function trouverVideosManquantes($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVi
 }
 
 /**
- * \fn afficherVideosManquantes($listeVideosManquantes)
+ * \fn afficherVideosPresentesDansBD($listeVideos)
  * \brief Fonction qui permet d'afficher la liste des vidéos manquantes dans un des deux NAS.
  * \param listeVideosManquantes - la liste des vidéos manquantes dans un NAS
  */
-function afficherVideosManquantes($listeVideosManquantes) {
+function afficherVideosPresentesDansBD($listeVideos) {
+    echo "<h2>Vidéos présentes dans la base de données :</h2>";
+    echo "<table border='1' cellpadding='5' cellspacing='0'>";
+	echo "<tr>";
+		echo "<th>".MTD_TITRE."</th>";
+		echo "<th>".MTD_URI_NAS_PAD."</th>";
+        echo "<th>".MTD_URI_NAS_ARCH."</th>";
+    echo "</tr>";
+    // Parcours de la liste des vidéos manquantes
+    foreach ($listeVideos as $video) {
+		$nomVideo = $video['mtd_tech_titre'];
+        $cheminNAS_ARCH = $video['URI_NAS_ARCH'];
+        $cheminNAS_PAD = $video['URI_NAS_PAD'];
+		//Lignes pour chaque élément
+		echo "<tr>";
+		echo "<td>$nomVideo</td>";
+        echo "<td>$cheminNAS_ARCH</td>";
+		echo "<td>$cheminNAS_PAD</td>";
+		echo "</tr>";
+    }
+    echo "</table>";
+}
+
+/**
+ * \fn afficherDiagnostiqueVideos($listeDiagnosticVideos)
+ * \brief Fonction qui permet d'afficher la liste des vidéos manquantes dans un des deux NAS.
+ * \param listeVideosManquantes - la liste des vidéos manquantes dans un NAS
+ */
+function afficherDiagnostiqueVideos($listeDiagnosticVideos) {
     echo "<h2>Tableau des vidéos manquantes :</h2>";
     echo "<table border='1' cellpadding='5' cellspacing='0'>";
 	echo "<tr>";
@@ -173,7 +175,7 @@ function afficherVideosManquantes($listeVideosManquantes) {
 		echo "<th>".EMPLACEMENT_MANQUANT."</th>";
     echo "</tr>";
     // Parcours de la liste des vidéos manquantes
-    foreach ($listeVideosManquantes as $video) {
+    foreach ($listeDiagnosticVideos as $video) {
 		$nomVideo = $video[MTD_TITRE];
         $emplacementManquant = $video[EMPLACEMENT_MANQUANT];
 		//Lignes pour chaque élément

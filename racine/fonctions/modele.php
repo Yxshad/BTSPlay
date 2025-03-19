@@ -712,6 +712,31 @@ function getInfosVideo($idVideo)
    }
 }
 
+ /**
+ * \fn getInfosToutesVideos()
+ * \brief Renvoie toutes les informations de toutes les vidéos
+ * \return Retourne un tableau de toutes les vidéos
+ */
+function getInfosToutesVideos()
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT * 
+   FROM Media');                                                 
+   try{
+        $requeteVid->execute();
+        $infosVideo = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return $infosVideo;
+   }
+   catch(Exception $e)
+   {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations de toutes les vidéos" .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+   }
+}
+
 
 function getURISVideo($idVideo)
 {

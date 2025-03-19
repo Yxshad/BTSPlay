@@ -373,22 +373,25 @@ function controleurReconciliation() {
     $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
 
     ob_start(); // Capture la sortie pour éviter les erreurs de header
-    echo "<h2>Vidéos présentes sur " . NAS_PAD . ":</h2>";
+    echo "<h2>Vidéos présentes sur " . NAS_PAD . " :</h2>";
     echo "<ul>";
     foreach ($listeVideos_NAS_1 as $video) {
         echo "<li>" . htmlspecialchars($video) . "</li>";
     }
     echo "</ul>";
 
-    echo "<h2>Vidéos présentes sur " . NAS_ARCH . ":</h2>";
+    echo "<h2>Vidéos présentes sur " . NAS_ARCH . " :</h2>";
     echo "<ul>";
     foreach ($listeVideos_NAS_2 as $video) {
         echo "<li>" . htmlspecialchars($video) . "</li>";
     }
     echo "</ul>";
+
+    $listeVideosBD = getInfosToutesVideos();
+    afficherVideosPresentesDansBD($listeVideosBD);
     
-    $listeVideosManquantes = trouverVideosManquantes(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, []);
-    afficherVideosManquantes($listeVideosManquantes);
+    $listeDiagnosticVideos = EtablirDiagnosticVideos(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosBD, []);
+    afficherDiagnostiqueVideos($listeDiagnosticVideos);
 
     ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
     $_SESSION['reconciliation_result'] = ob_get_clean(); // Stocker la sortie pour l'afficher après redirection
