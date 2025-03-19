@@ -104,31 +104,33 @@ function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichier
  * \param listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  * \return listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  */
-function EtablirDiagnosticVideos($nomNAS_1, $nomNAS_2, $nomsVideosNAS_1, $nomsVideosNAS_2, $listeVideosBD, $listeVideosManquantes) {
-    foreach ($nomsVideosNAS_1 as $key1 => $nomVideoNAS1) {
-        $videoManquanteDansNAS2 = true;
-        foreach ($nomsVideosNAS_2 as $key2 => $nomVideoNAS2) {
+function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsVideosNAS_PAD, $nomsVideosNAS_ARCH, $listeVideosBD, $listeVideosManquantes) {
 
-            if (verifierCorrespondanceNomsVideos($nomVideoNAS1, $nomVideoNAS2)) {
-				unset($nomsVideosNAS_1[$key1]);
-                unset($nomsVideosNAS_2[$key2]);
+    //PARTIE 1 : Parcours des vidéos du NAS PAD
+    foreach ($nomsVideosNAS_PAD as $key1 => $nomsVideosNASPAD) {
+        $videoManquanteDansNAS2 = true;
+        foreach ($nomsVideosNAS_ARCH as $key2 => $nomsVideosNASARCH) {
+
+            if (verifierCorrespondanceNomsVideos($nomsVideosNASPAD, $nomsVideosNASARCH)) {
+				unset($nomsVideosNAS_PAD[$key1]);
+                unset($nomsVideosNAS_ARCH[$key2]);
                 $videoManquanteDansNAS2 = false;
                 break;
             }
         }
 		if ($videoManquanteDansNAS2) {
             $listeVideosManquantes[] = [
-                MTD_TITRE => $nomVideoNAS1,
-                EMPLACEMENT_MANQUANT => $nomNAS_2
+                MTD_TITRE => $nomsVideosNASPAD,
+                EMPLACEMENT_MANQUANT => $NAS_ARCH
             ];
-			unset($nomsVideosNAS_1[$key1]);
+			unset($nomsVideosNAS_PAD[$key1]);
         }
     }
     // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
-    foreach ($nomsVideosNAS_2 as $nomVideoNAS2Restant) {
+    foreach ($nomsVideosNAS_ARCH as $nomVideoNAS_ARCH_Restant) {
         $listeVideosManquantes[] = [
-            MTD_TITRE => $nomVideoNAS2Restant,
-            EMPLACEMENT_MANQUANT => $nomNAS_1
+            MTD_TITRE => $nomVideoNAS_ARCH_Restant,
+            EMPLACEMENT_MANQUANT => $NAS_PAD
         ];
     }
     return $listeVideosManquantes;

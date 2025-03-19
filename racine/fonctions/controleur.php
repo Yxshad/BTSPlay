@@ -369,20 +369,20 @@ function controleurAfficherLogs($filename, $lines) {
 
 
 function controleurReconciliation() {
-    $listeVideos_NAS_1 = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
-    $listeVideos_NAS_2 = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
+    $listeVideos_NAS_PAD = recupererNomsVideosNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_RACINE_NAS_PAD, []);
+    $listeVideos_NAS_ARCH = recupererNomsVideosNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_RACINE_NAS_ARCH, []);
 
     ob_start(); // Capture la sortie pour éviter les erreurs de header
     echo "<h2>Vidéos présentes sur " . NAS_PAD . " :</h2>";
     echo "<ul>";
-    foreach ($listeVideos_NAS_1 as $video) {
+    foreach ($listeVideos_NAS_PAD as $video) {
         echo "<li>" . htmlspecialchars($video) . "</li>";
     }
     echo "</ul>";
 
     echo "<h2>Vidéos présentes sur " . NAS_ARCH . " :</h2>";
     echo "<ul>";
-    foreach ($listeVideos_NAS_2 as $video) {
+    foreach ($listeVideos_NAS_ARCH as $video) {
         echo "<li>" . htmlspecialchars($video) . "</li>";
     }
     echo "</ul>";
@@ -390,7 +390,7 @@ function controleurReconciliation() {
     $listeVideosBD = getInfosToutesVideos();
     afficherVideosPresentesDansBD($listeVideosBD);
     
-    $listeDiagnosticVideos = EtablirDiagnosticVideos(NAS_PAD, NAS_ARCH, $listeVideos_NAS_1, $listeVideos_NAS_2, $listeVideosBD, []);
+    $listeDiagnosticVideos = EtablirDiagnosticVideos(NAS_PAD, NAS_ARCH, $listeVideos_NAS_PAD, $listeVideos_NAS_ARCH, $listeVideosBD, []);
     afficherDiagnostiqueVideos($listeDiagnosticVideos);
 
     ajouterLog(LOG_SUCCESS, "Fonction de réconciliation effectuée avec succès.");
