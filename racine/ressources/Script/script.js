@@ -228,7 +228,7 @@ function gestionOngletsAdministration() {
 
 function appelScanVideo () {
     scanDossierDecoupeVideo();
-    setInterval( scanDossierDecoupeVideo , 500000);
+    setInterval( scanDossierDecoupeVideo , 1000);
 }
 
 function gestion_click_dossier() {
