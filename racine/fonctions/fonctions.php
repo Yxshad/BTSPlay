@@ -133,7 +133,7 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
                 if (!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
                     $listeVideosManquantes[] = [
                         MTD_TITRE => $cheminCompletVideoNASPAD,
-                        DIAGNOSTIC => 'La vidéo a été changée et est différente entre les 2 NAS. Veuillez Supprimer la vidéo puis la re-transférer.'
+                        DIAGNOSTIC => "La vidéo est différente d''un NAS à l''autre. Veuillez unifier les vidéos."
                     ];
                 }
                 unset($cheminCompletVideosNAS_ARCH[$key2]);
