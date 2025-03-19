@@ -104,32 +104,33 @@ function verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichier
  * \param listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  * \return listeVideosManquantes - Liste des vidéos manquantes dans les NAS
  */
-function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsVideosNAS_PAD, $nomsVideosNAS_ARCH, $listeVideosBD, $listeVideosManquantes) {
+function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PAD, $cheminCompletVideosNAS_ARCH, $listeVideosBD, $listeVideosManquantes) {
 
     //PARTIE 1 : Parcours des vidéos du NAS PAD
-    foreach ($nomsVideosNAS_PAD as $key1 => $nomsVideosNASPAD) {
-        $videoManquanteDansNAS2 = true;
-        foreach ($nomsVideosNAS_ARCH as $key2 => $nomsVideosNASARCH) {
+    foreach ($cheminCompletVideosNAS_PAD as $key1 => $cheminCompletVideoNASPAD) {
+        $videoManquanteDansNAS_ARCH = true;
+        foreach ($cheminCompletVideosNAS_ARCH as $key2 => $cheminCompletVideoNASARCH) {
 
-            if (verifierCorrespondanceNomsVideos($nomsVideosNASPAD, $nomsVideosNASARCH)) {
-				unset($nomsVideosNAS_PAD[$key1]);
-                unset($nomsVideosNAS_ARCH[$key2]);
-                $videoManquanteDansNAS2 = false;
+            if (verifierCorrespondanceNomsVideos($cheminCompletVideoNASPAD, $cheminCompletVideoNASARCH)) {
+				unset($cheminCompletVideosNAS_PAD[$key1]);
+                unset($cheminCompletVideosNAS_ARCH[$key2]);
+                $videoManquanteDansNAS_ARCH = false;
                 break;
             }
         }
-		if ($videoManquanteDansNAS2) {
+		if ($videoManquanteDansNAS_ARCH) {
             $listeVideosManquantes[] = [
-                MTD_TITRE => $nomsVideosNASPAD,
+                MTD_TITRE => $cheminCompletVideoNASPAD,
                 EMPLACEMENT_MANQUANT => $NAS_ARCH
             ];
-			unset($nomsVideosNAS_PAD[$key1]);
+			unset($cheminCompletVideosNAS_PAD[$key1]);
         }
     }
-    // Ajouter les vidéos restantes dans NAS2 qui ne sont pas dans NAS1
-    foreach ($nomsVideosNAS_ARCH as $nomVideoNAS_ARCH_Restant) {
+
+    //PARTIE 2 : Parcours des vidéos du NAS ARCH. On sait d'office qu'elles ne sont pas présentes dans le NAS PAD
+    foreach ($cheminCompletVideosNAS_ARCH as $cheminCompletVideosNAS_ARCH_Restantes) {
         $listeVideosManquantes[] = [
-            MTD_TITRE => $nomVideoNAS_ARCH_Restant,
+            MTD_TITRE => $cheminCompletVideosNAS_ARCH_Restantes,
             EMPLACEMENT_MANQUANT => $NAS_PAD
         ];
     }
