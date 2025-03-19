@@ -123,9 +123,6 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <div class="header-row">
                     <div class="transfers-header">
                         <h2>Transferts</h2>
-                        <div class="lignes">
-                            <!-- Résultat ajax -->
-                        </div>
                     </div>
                     <div class="pending-videos-header">
                         <h2>Vidéos en attente de métadonnées</h2>

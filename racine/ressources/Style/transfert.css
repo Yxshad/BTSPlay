@@ -25,6 +25,8 @@
 
 #transfert .lignes-container{
     place-items: center;
+    display: flex;
+    flex-direction: column;
 }
 
 #transfert .lignes{
@@ -48,7 +50,9 @@
 }
 
 #transfert .ligne > div{
+    display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 .content-row {
