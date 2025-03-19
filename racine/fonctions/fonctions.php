@@ -129,20 +129,19 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
 
                 //Si une vidéo identique est présente dans le NAS ARCH
                 if (verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
-                    unset($cheminCompletVideosNAS_PAD[$key1]);
                     unset($cheminCompletVideosNAS_ARCH[$key2]);
                     $videoManquanteDansNAS_ARCH = false;
                     break;
                 }
         }
-        //Traitement des vidéos manquantes dans le NAS ARCH
+        //Si la vidéo est manquante dans le NAS ARCH
         if ($videoManquanteDansNAS_ARCH) {
             $listeVideosManquantes[] = [
                 MTD_TITRE => $cheminCompletVideoNASPAD,
                 DIAGNOSTIC => 'Manquante du ' . $NAS_ARCH
             ];
-            unset($cheminCompletVideosNAS_PAD[$key1]);
         }
+        unset($cheminCompletVideosNAS_PAD[$key1]);
     }
 
     //PARTIE 2 : Parcours des vidéos du NAS ARCH. On sait d'office qu'elles ne sont pas présentes dans le NAS PAD
