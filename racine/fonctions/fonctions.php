@@ -109,21 +109,39 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
     //PARTIE 1 : Parcours des vidéos du NAS PAD
     foreach ($cheminCompletVideosNAS_PAD as $key1 => $cheminCompletVideoNASPAD) {
         $videoManquanteDansNAS_ARCH = true;
-        foreach ($cheminCompletVideosNAS_ARCH as $key2 => $cheminCompletVideoNASARCH) {
 
-            if (verifierCorrespondanceNomsVideos($cheminCompletVideoNASPAD, $cheminCompletVideoNASARCH)) {
-				unset($cheminCompletVideosNAS_PAD[$key1]);
-                unset($cheminCompletVideosNAS_ARCH[$key2]);
-                $videoManquanteDansNAS_ARCH = false;
-                break;
-            }
+        //Récupérer les métadonnées techniques de la vidéo du NAS PAD
+        $nomFichier = basename($cheminCompletVideoNASPAD);
+		$cheminFichier = dirname($cheminCompletVideoNASPAD) . '/';
+
+        //Si la vidéo n'est pas à la racine
+        $listeMetadonneesVideosNAS_PAD = recupererMetadonneesVideoViaFTP(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, $cheminFichier, $nomFichier);
+        $listeMetadonneesVideosNAS_PAD = array_merge($listeMetadonneesVideosNAS_PAD, [MTD_URI => $cheminFichier]);
+
+        //Itérer sur les vidéos du NAS ARCH pour trouver une correspondance
+        foreach ($cheminCompletVideosNAS_ARCH as $key2 => $cheminCompletVideoNASARCH) {
+            //Récupérer les métadonnées techniques de la vidéo du NAS ARCH
+            $nomFichier = basename($cheminCompletVideoNASARCH);
+            $cheminFichier = dirname($cheminCompletVideoNASARCH) . '/';
+            
+                $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
+                $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
+
+                //Si une vidéo identique est présente dans le NAS ARCH
+                if (verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
+                    unset($cheminCompletVideosNAS_PAD[$key1]);
+                    unset($cheminCompletVideosNAS_ARCH[$key2]);
+                    $videoManquanteDansNAS_ARCH = false;
+                    break;
+                }
         }
-		if ($videoManquanteDansNAS_ARCH) {
+        //Traitement des vidéos manquantes dans le NAS ARCH
+        if ($videoManquanteDansNAS_ARCH) {
             $listeVideosManquantes[] = [
                 MTD_TITRE => $cheminCompletVideoNASPAD,
-                EMPLACEMENT_MANQUANT => $NAS_ARCH
+                DIAGNOSTIC => 'Manquante du ' . $NAS_ARCH
             ];
-			unset($cheminCompletVideosNAS_PAD[$key1]);
+            unset($cheminCompletVideosNAS_PAD[$key1]);
         }
     }
 
@@ -131,7 +149,7 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
     foreach ($cheminCompletVideosNAS_ARCH as $cheminCompletVideosNAS_ARCH_Restantes) {
         $listeVideosManquantes[] = [
             MTD_TITRE => $cheminCompletVideosNAS_ARCH_Restantes,
-            EMPLACEMENT_MANQUANT => $NAS_PAD
+            DIAGNOSTIC => 'Manquante du ' . $NAS_PAD
         ];
     }
     return $listeVideosManquantes;
@@ -175,12 +193,12 @@ function afficherDiagnostiqueVideos($listeDiagnosticVideos) {
     echo "<table border='1' cellpadding='5' cellspacing='0'>";
 	echo "<tr>";
 		echo "<th>".MTD_TITRE."</th>";
-		echo "<th>".EMPLACEMENT_MANQUANT."</th>";
+		echo "<th>".DIAGNOSTIC."</th>";
     echo "</tr>";
     // Parcours de la liste des vidéos manquantes
     foreach ($listeDiagnosticVideos as $video) {
 		$nomVideo = $video[MTD_TITRE];
-        $emplacementManquant = $video[EMPLACEMENT_MANQUANT];
+        $emplacementManquant = $video[DIAGNOSTIC];
 		//Lignes pour chaque élément
 		echo "<tr>";
 		echo "<td>$nomVideo</td>";
