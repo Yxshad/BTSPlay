@@ -61,28 +61,50 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <div class="colonnes">
             <div class="colonne-1">
                 <h1>Paramètre des sauvegardes</h1>
+                <div>
+                    <label for="tempsLancement">Choisir l'heure d'exécution : </label>
+                    <input type="time" id="tempsLancement"/>
+                </div>
                 <div class="intervalSauvegarde">
-                    <p>Sauvegarder toutes les </p>
-                    <input type="number" name="" id="">
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Jours
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Mois
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Années
-                </div>
+                <!--SELECT DES JOURS-->
+                    <div>
+                        <label for="select_Day">Choisir le jour d'exécution:</label>
+                        <select name="day" id="select_Day">
+                            <option value="*" selected>Tous les jours</option>
+                            <option value="0">Lundi</option>
+                            <option value="1">Mardi</option>
+                            <option value="2">Mercredi</option>
+                            <option value="3">Jeudi</option>
+                            <option value="4">Vendredi</option>
+                            <option value="5">Samedi</option>
+                            <option value="6">Dimanche</option>
+                        </select>
+                    </div>
 
-                <div class="dateSauvegarde">
-                    <p>à partir du : </p>
-                    <input type="date" name="" id="">
-                </div>
-
-                <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-                <a onclick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
-            </div>
+                    <!--SELECT DU MOIS-->
+                    <div>
+                        <label for="select_Month">Choisir le mois d'exécution:</label>
+                        <select name="month" id="select_Month">
+                            <option value="*" selected>Tous les mois</option>
+                            <option value="1">Janvier</option>
+                            <option value="2">Février</option>
+                            <option value="3">Mars</option>
+                            <option value="4">Avril</option>
+                            <option value="5">Mai</option>
+                            <option value="6">Juin</option>
+                            <option value="7">Juillet</option>
+                            <option value="8">Aout</option>
+                            <option value="9">Septembre</option>
+                            <option value="10">Octobre</option>
+                            <option value="11">Novembre</option>
+                            <option value="12">Décembre</option>
+                        </select>
+                    </div>
+            </div>  
+                <a onClick="changeDatabaseSaveTime()" class="btn parametre">Enregistrer les paramètres</a>
+                <a onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+             
+        </div>
 
             <div class="log-container colonne-2">
                 <?php foreach ($logsSauvegardesBDD as $line): ?>
