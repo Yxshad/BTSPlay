@@ -120,19 +120,25 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
 
         //Itérer sur les vidéos du NAS ARCH pour trouver une correspondance
         foreach ($cheminCompletVideosNAS_ARCH as $key2 => $cheminCompletVideoNASARCH) {
-            //Récupérer les métadonnées techniques de la vidéo du NAS ARCH
-            $nomFichier = basename($cheminCompletVideoNASARCH);
-            $cheminFichier = dirname($cheminCompletVideoNASARCH) . '/';
-            
+
+            //Si une vidéo est similaire dans le NAS ARCH (nomComplet est le même)
+            if (verifierCorrespondanceNomsVideos($cheminCompletVideoNASPAD, $cheminCompletVideoNASARCH)) {
+                $videoManquanteDansNAS_ARCH = false;
+
+                //Récupérer les métadonnées techniques de la vidéo du NAS ARCH
+                $nomFichier = basename($cheminCompletVideoNASARCH);
+                $cheminFichier = dirname($cheminCompletVideoNASARCH) . '/';
                 $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
                 $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
-
-                //Si une vidéo identique est présente dans le NAS ARCH
-                if (verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
-                    unset($cheminCompletVideosNAS_ARCH[$key2]);
-                    $videoManquanteDansNAS_ARCH = false;
-                    break;
+                if (!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
+                    $listeVideosManquantes[] = [
+                        MTD_TITRE => $cheminCompletVideoNASPAD,
+                        DIAGNOSTIC => 'La vidéo a été changée et est différente entre les 2 NAS. Veuillez Supprimer la vidéo puis la re-transférer.'
+                    ];
                 }
+                unset($cheminCompletVideosNAS_ARCH[$key2]);
+                break;
+            }
         }
         //Si la vidéo est manquante dans le NAS ARCH
         if ($videoManquanteDansNAS_ARCH) {
@@ -141,6 +147,10 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
                 DIAGNOSTIC => 'Manquante du ' . $NAS_ARCH
             ];
         }
+
+        //Vérifier les informations en base de données
+
+
         unset($cheminCompletVideosNAS_PAD[$key1]);
     }
 
