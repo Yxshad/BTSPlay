@@ -67,6 +67,21 @@ function verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2){
     }
 }
 
+function verifierCorrespondanceMdtTechVideosAvecBD($donneesVideo1, $donneesVideoBD){
+    
+    if (pathinfo($donneesVideo1[MTD_TITRE], PATHINFO_FILENAME) == pathinfo($donneesVideoBD['mtd_tech_titre'], PATHINFO_FILENAME)
+        && $donneesVideo1[MTD_FORMAT] == $donneesVideoBD['mtd_tech_format']
+        && $donneesVideo1[MTD_FPS] == $donneesVideoBD['mtd_tech_fps']
+        && $donneesVideo1[MTD_RESOLUTION] == $donneesVideoBD['mtd_tech_resolution']
+        && $donneesVideo1[MTD_DUREE] == $donneesVideoBD['mtd_tech_duree']
+        && $donneesVideo1[MTD_URI] == $donneesVideoBD[MTD_URI]) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
 /**
  * \fn verifierCorrespondanceNomsVideos($cheminFichierComplet1, $cheminFichierComplet2)
  * Fonction qui vérifie la correspondance des noms des 2 vidéos passées en paramètre
@@ -114,7 +129,6 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
         $nomFichier = basename($cheminCompletVideoNASPAD);
 		$cheminFichier = dirname($cheminCompletVideoNASPAD) . '/';
 
-        //Si la vidéo n'est pas à la racine
         $listeMetadonneesVideosNAS_PAD = recupererMetadonneesVideoViaFTP(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, $cheminFichier, $nomFichier);
         $listeMetadonneesVideosNAS_PAD = array_merge($listeMetadonneesVideosNAS_PAD, [MTD_URI => $cheminFichier]);
 
@@ -131,10 +145,8 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
                 $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
                 $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
                 if (!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
-                    $listeVideosManquantes[] = [
-                        MTD_TITRE => $cheminCompletVideoNASPAD,
-                        DIAGNOSTIC => "La vidéo est différente d'un NAS à l'autre. Veuillez unifier les vidéos."
-                    ];
+                    ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNASPAD,
+                    "La vidéo est différente d'un NAS à l'autre. Veuillez unifier les vidéos.");
                     break;
                 }
                 unset($cheminCompletVideosNAS_ARCH[$key2]);
@@ -142,29 +154,24 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
         }
         //Si la vidéo est manquante dans le NAS ARCH
         if ($videoManquanteDansNAS_ARCH) {
-            $listeVideosManquantes[] = [
-                MTD_TITRE => $cheminCompletVideoNASPAD,
-                DIAGNOSTIC => 'Manquante du ' . $NAS_ARCH
-            ];
+            ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNASPAD,
+                'Manquante du ' . $NAS_ARCH);
         }
 
         //Comparer les informations en base de données
         $infosVideosBD = TrouverVideoAvecURI_NASComplet($listeVideosBD, $cheminCompletVideoNASPAD, $NAS_PAD);
         if($infosVideosBD == NULL){
-            $listeVideosManquantes[] = [
-                MTD_TITRE => $cheminCompletVideoNASPAD,
-                DIAGNOSTIC => "La vidéo n'a pas encore été transférée."
-            ];
+            ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNASPAD,
+                "La vidéo n'a pas encore été transférée.");
         }
         else{
             //Regarder si les mtd sont égales
-            if(!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $infosVideosBD)){
-                $listeVideosManquantes[] = [
-                    MTD_TITRE => $cheminCompletVideoNASPAD,
-                    DIAGNOSTIC => "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données."
-                ];
+            $infosVideosBD = array_merge($infosVideosBD, [MTD_URI => $cheminFichier]);
+            if(!verifierCorrespondanceMdtTechVideosAvecBD($listeMetadonneesVideosNAS_PAD, $infosVideosBD)){
+                ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNASPAD,
+                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données.");
                 //Insertion des nouvelles métadonnées dans la base de données
-                mettreAJourMtdTech($listeMtdTechVideos);
+                mettreAJourMtdTech($infosVideosBD);
                 break;
             }
         }
@@ -172,13 +179,46 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
     }
 
     //PARTIE 2 : Parcours des vidéos du NAS ARCH. On sait d'office qu'elles ne sont pas présentes dans le NAS PAD
-    foreach ($cheminCompletVideosNAS_ARCH as $cheminCompletVideosNAS_ARCH_Restantes) {
-        $listeVideosManquantes[] = [
-            MTD_TITRE => $cheminCompletVideosNAS_ARCH_Restantes,
-            DIAGNOSTIC => 'Manquante du ' . $NAS_PAD
-        ];
+    foreach ($cheminCompletVideosNAS_ARCH as $cheminCompletVideoNAS_ARCH_Restante) {
+        ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNAS_ARCH_Restante,
+            'Manquante du ' . $NAS_PAD);
+        //Comparer les informations en base de données
+        $infosVideosBD = TrouverVideoAvecURI_NASComplet($listeVideosBD, $cheminCompletVideoNAS_ARCH_Restante, $NAS_ARCH);
+        if($infosVideosBD == NULL){
+            ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNAS_ARCH_Restante,
+            "La vidéo n'a pas encore été transférée.");
+        }
+        else{
+            //Regarder si les mtd sont égales
+            $nomFichier = basename($cheminCompletVideoNAS_ARCH_Restante);
+            $cheminFichier = dirname($cheminCompletVideoNAS_ARCH_Restante) . '/';
+            $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
+            $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
+            $infosVideosBD = array_merge($infosVideosBD, [MTD_URI => $cheminFichier]);
+            if(!verifierCorrespondanceMdtTechVideosAvecBD($listeMetadonneesVideosNAS_ARCH, $infosVideosBD)){
+                ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNAS_ARCH_Restante,
+                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données.");
+                //Insertion des nouvelles métadonnées dans la base de données
+                mettreAJourMtdTech($infosVideosBD);
+                break;
+            }
+        }
     }
+    unset($cheminCompletVideosNAS_ARCH[$cheminCompletVideoNAS_ARCH_Restante]);
     return $listeVideosManquantes;
+}
+
+function ajouterOuMettreAJourDiagnostic(&$listeVideosManquantes, $cheminCompletVideoNASPAD, $diagnostic) {
+    foreach ($listeVideosManquantes as &$video) {
+        if ($video[MTD_TITRE] === $cheminCompletVideoNASPAD) {
+            $video[DIAGNOSTIC] .= " | " . $diagnostic;
+            return;
+        }
+    }
+    $listeVideosManquantes[] = [
+        MTD_TITRE => $cheminCompletVideoNASPAD,
+        DIAGNOSTIC => $diagnostic
+    ];
 }
 
 function TrouverVideoAvecURI_NASComplet($videos, $cheminCompletVideo, $nom_NAS) {
