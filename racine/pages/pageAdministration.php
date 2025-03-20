@@ -56,38 +56,65 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         <?php } ?>
     </div>
     
-    <div class="tab-content" id="database">
+    <div class="tab-content database" id="database">
+        <div id="container-sauvegarde">
         <h2>Sauvegarde de la base de données</h2>
-        <div class="colonnes">
-            <div class="colonne-1">
-                <h2>Paramètre des sauvegardes</h2>
-                <div class="intervalSauvegarde">
-                    <p>Sauvegarder toutes les </p>
-                    <input type="number" name="" id="">
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Jours
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Mois
-                </div>
-                <div class="options">
-                    <input type="radio" name="drone" id=""> Années
-                </div>
-
-                <div class="dateSauvegarde">
-                    <p>à partir du : </p>
-                    <input type="date" name="" id="">
-                </div>
-
-                <a href="#" class="btn parametre">Enregistrer les paramètres</a>
-                <a onclick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</a>
+        
+        <div class="content">
+            <h3>Paramètre des sauvegardes</h3>
+            
+            <div class="form-group">
+                <label for="tempsLancement">Choisir l'heure d'exécution :</label>
+                <input type="time" id="tempsLancement" class="sauvegardeInputs" value="00:00"/>
             </div>
+            
+      
+                <div class="form-group">
+                    <label for="select_Day">Choisir le jour d'exécution :</label>
+                    <select name="day" id="select_Day" class="sauvegardeInputs">
+                        <option value="*" selected>Tous les jours</option>
+                        <option value="0">Lundi</option>
+                        <option value="1">Mardi</option>
+                        <option value="2">Mercredi</option>
+                        <option value="3">Jeudi</option>
+                        <option value="4">Vendredi</option>
+                        <option value="5">Samedi</option>
+                        <option value="6">Dimanche</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="select_Month">Choisir le mois d'exécution :</label>
+                    <select name="month" id="select_Month" class="sauvegardeInputs">
+                        <option value="*" selected>Tous les mois</option>
+                        <option value="1">Janvier</option>
+                        <option value="2">Février</option>
+                        <option value="3">Mars</option>
+                        <option value="4">Avril</option>
+                        <option value="5">Mai</option>
+                        <option value="6">Juin</option>
+                        <option value="7">Juillet</option>
+                        <option value="8">Août</option>
+                        <option value="9">Septembre</option>
+                        <option value="10">Octobre</option>
+                        <option value="11">Novembre</option>
+                        <option value="12">Décembre</option>
+                    </select>
+                </div>
+            
+            <div class="btn-sauvegarde-container">
+                <button onClick="changeDatabaseSaveTime()" class="btn parametre">Enregistrer les paramètres</button>
+                <button onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</button>
+            </div>
+        </div>
+        </div>
 
-            <div class="log-container colonne-2">
-                <?php foreach ($logsSauvegardesBDD as $line): ?>
-                    <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
-                <?php endforeach; ?>
+            <div class="right-panel">
+                <div class="log-container colonne-2">
+                    <?php foreach ($logsSauvegardesBDD as $line): ?>
+                        <div class="log-line"><?php echo htmlspecialchars($line); ?></div>
+                    <?php endforeach; ?>
+                </div>
             </div>
         </div>
     </div>
