@@ -192,9 +192,12 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
             //Regarder si les mtd sont égales
             $nomFichier = basename($cheminCompletVideoNAS_ARCH_Restante);
             $cheminFichier = dirname($cheminCompletVideoNAS_ARCH_Restante) . '/';
-            $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
-            $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
+            
             $infosVideosBD = array_merge($infosVideosBD, [MTD_URI => $cheminFichier]);
+
+            $listeMetadonneesVideosNAS_ARCH = recupererMetadonneesVideoViaFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $cheminFichier, $nomFichier);
+            $listeMetadonneesVideosNAS_ARCH = array_merge($listeMetadonneesVideosNAS_ARCH, [MTD_URI => $cheminFichier]);
+            
             if(!verifierCorrespondanceMdtTechVideosAvecBD($listeMetadonneesVideosNAS_ARCH, $infosVideosBD)){
                 ajouterOuMettreAJourDiagnostic($listeVideosManquantes, $cheminCompletVideoNAS_ARCH_Restante,
                 "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données.");
