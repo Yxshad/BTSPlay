@@ -1,8 +1,8 @@
-
 .tab-content.database.active{
     display: flex;
     align-items: center;
 }
+
 
 #container-sauvegarde {
     max-width: 800px;
@@ -15,6 +15,10 @@
 
 .form-group {
     margin-bottom: 20px;
+}
+
+h1, h2{
+    text-align: center;
 }
 
 .sauvegardeInputs {
