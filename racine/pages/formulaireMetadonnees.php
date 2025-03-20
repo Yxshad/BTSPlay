@@ -134,7 +134,6 @@
 
 <script>
     initFormMetadonnees();
-    envoiMetadonnees();
 </script>
 </body>
 </html>
