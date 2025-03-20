@@ -210,6 +210,8 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsCompletVideosNAS_PAD,
         }
     }
     unset($nomsCompletsVideosNAS_ARCH_Restantes[$key1]);
+
+    return $listeVideosDiagnostiquees;
 }
 
 function recupererMetadonneesAvecFormatCheminComplet($cheminCompletVideoNAS, $nom_NAS){
