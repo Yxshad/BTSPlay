@@ -157,10 +157,18 @@ function insertionEtudiant($etudiant)
         $setIDProjet = $connexion->prepare('UPDATE media 
                                           SET projet = ?, date_modification = CURRENT_TIMESTAMP
                                           WHERE id = ?');
-        $setIDProjet->execute([
-            $idProjet,
-            $idVideo
-        ]);
+        if ($projet=="") {
+            $setIDProjet->execute([
+                null,
+                $idVideo
+            ]);
+        }
+        else {
+            $setIDProjet->execute([
+                $idProjet,
+                $idVideo
+            ]);
+        }
         $connexion->commit();
         $connexion = null;
     } catch (Exception $e) {

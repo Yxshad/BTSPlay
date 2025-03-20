@@ -448,33 +448,6 @@ function initFormMetadonnees(){
     });
 }
 
-// Permet l'envoi des données des rôles dynamiques
-function envoiMetadonnes(){
-    // Quand le document est prêt
-    const form = document.getElementById("roleForm");
-        
-    // Écouter la soumission du formulaire
-    form.addEventListener("submit", function(event) {
-        event.preventDefault(); // Empêcher le rechargement de la page
-
-        // Créer un objet FormData pour récupérer toutes les données du formulaire
-        const formData = new FormData(form);
-        
-        // Envoyer les données en POST avec fetch()
-        fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
-            method: "POST",
-            body: "action=ModifierMetadonnees&roles=" + formData
-        })
-        .then(response => response.json())  // On suppose que la réponse est en JSON
-        .then(data => {
-            console.log("Réponse du serveur : ", data);
-            // Traitement de la réponse si nécessaire
-        })
-        .catch(error => {
-            console.error("Erreur : ", error);
-        });
-    });
-}
 
 function afficherPopup(){
     document.querySelector('.popup').style.display = 'block';
