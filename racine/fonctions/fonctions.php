@@ -692,7 +692,7 @@ function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     echo "Dernière ligne modifiée avec succès !";
 }
 catch (Exception){
-    echo "NSM";
+    echo "Erreur dans la programmation de la sauvegarde";
 }
 }
 
