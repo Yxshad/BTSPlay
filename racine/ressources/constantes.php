@@ -95,7 +95,14 @@ const URI_RACINE_NAS_DIFF = '/';
 const NAS_PAD = 'NAS_PAD';
 const LOGIN_NAS_PAD = 'user1';
 const PASSWORD_NAS_PAD = 'pass1';
+
+const LOGIN_NAS_PAD_SUP = 'user1';
+const PASSWORD_NAS_PAD_SUP = 'pass1';
+
     //ARCH
+const LOGIN_NAS_ARCH_SUP = 'user2';
+const PASSWORD_NAS_ARCH_SUP = 'pass2';
+
 const NAS_ARCH = 'NAS_ARCH';
 const LOGIN_NAS_ARCH = 'user2';
 const PASSWORD_NAS_ARCH = 'pass2';

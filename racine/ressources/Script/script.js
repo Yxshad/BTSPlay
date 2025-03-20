@@ -145,33 +145,21 @@ function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         const videos = JSON.parse(this.responseText);
-        const lignesContainer = document.querySelector('.transfers-header .lignes');
+        const lignesContainer = document.querySelector('#transfert .lignes');
         lignesContainer.innerHTML = '';
         videos.forEach(video => {
             const ligne = document.createElement('div');
             ligne.classList.add('ligne');
             ligne.innerHTML = `
-                <div class="fleches">
-                    <a class="fleche-haut">
-                        <img src="../ressources/Images/arrow.png" alt="flèche">
-                    </a>
-                    <a class="fleche-bas">
-                        <img src="../ressources/Images/arrow.png" alt="flèche">
-                    </a>
-                </div>
-                <div class="imgVideo">
-                    <img src="../ressources/Images/imgVideo.png" alt="">
-                </div>
                 <div class="info">
-                    <p class="nomVideo">${video.nomVideo}</p>
-                    <p class="poidsVideo">${video.poidsVideo}</p>
+                    <div class="imgVideo">
+                        <img src="../ressources/Images/imgVideo.png" alt="">
+                    </div>
+                    <div class="nom">
+                        <p class="nomVideo">${video.nomVideo}</p>
+                    </div>
                 </div>
                 <div class="progress">${video.status}</div>
-                <div class="bouton">
-                    <a class="pause">
-                        <img src="../ressources/Images/pause.png" alt="pause">
-                    </a>
-                </div>
             `;
             lignesContainer.appendChild(ligne);
         });
@@ -263,7 +251,7 @@ function gestionOngletsAdministration() {
 
 function appelScanVideo () {
     scanDossierDecoupeVideo();
-    setInterval( scanDossierDecoupeVideo , 5000);
+    setInterval( scanDossierDecoupeVideo , 3000);
 }
 
 function gestion_click_dossier() {
@@ -456,6 +444,7 @@ function initTagify(selector) {
     });
 }
 
+// Permet l'ajout et l'initialisation des rôles dynamiques avec Tagify 
 function initFormMetadonnees(){
     document.addEventListener("DOMContentLoaded", function () {
         document.querySelectorAll(".role-input").forEach(function (input) {
@@ -479,6 +468,34 @@ function initFormMetadonnees(){
         
         container.appendChild(newRoleDiv);
         initTagify(`#${roleId}`);
+    });
+}
+
+// Permet l'envoi des données des rôles dynamiques
+function envoiMetadonnes(){
+    // Quand le document est prêt
+    const form = document.getElementById("roleForm");
+        
+    // Écouter la soumission du formulaire
+    form.addEventListener("submit", function(event) {
+        event.preventDefault(); // Empêcher le rechargement de la page
+
+        // Créer un objet FormData pour récupérer toutes les données du formulaire
+        const formData = new FormData(form);
+        
+        // Envoyer les données en POST avec fetch()
+        fetch("controleur.php", {  // Remplace par le script PHP qui recevra les données
+            method: "POST",
+            body: "action=ModifierMetadonnees&roles=" + formData
+        })
+        .then(response => response.json())  // On suppose que la réponse est en JSON
+        .then(data => {
+            console.log("Réponse du serveur : ", data);
+            // Traitement de la réponse si nécessaire
+        })
+        .catch(error => {
+            console.error("Erreur : ", error);
+        });
     });
 }
 
@@ -544,10 +561,14 @@ function supprimerVideo(id, NAS){
             changerTitrePopup("Suppression");
             changerTextePopup("Suppression de la vidéo effectuée.");
             changerTexteBtn("Confirmer", "btn1");
-            attribuerFonctionBtn("redirection","home.php", "btn1")
+            if(NAS == 'local'){
+                attribuerFonctionBtn("redirection","home.php", "btn1")
+            }
+            else{
+                attribuerFonctionBtn("reloading","", "btn1")
+            }
             cacherBtn("btn2");
             cacherBtn("btn3");
-            cacherBtn("btn4");
             afficherPopup();
         } else{
             changerTitrePopup("Suppression");
@@ -556,7 +577,6 @@ function supprimerVideo(id, NAS){
             attribuerFonctionBtn("","", "btn1")
             cacherBtn("btn2");
             cacherBtn("btn3");
-            cacherBtn("btn4");
             afficherPopup();
         }
         
@@ -605,4 +625,9 @@ function lancerDiffusion(uri_nas_pad){
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
 
     xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
+    
+}
+
+function reloading(){
+    window.location.reload();
 }

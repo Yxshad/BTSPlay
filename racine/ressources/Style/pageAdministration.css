@@ -15,8 +15,8 @@
 }
 
 /* Couleurs pour différents niveaux de logs */
-.log-line.fail { color: orange; }
-.log-line.critical { color: red; }
+.log-line.fail { color: #f09520; }
+.log-line.critical { color: #c72027; }
 .log-line.warning { color: yellow; }
 .log-line.info { color: lightblue; }
 .log-line.success { color: lightgreen; }
@@ -32,6 +32,7 @@ body {
     color: #333;
     font-weight: bold;
     font-family: Arial, sans-serif;
+    overflow-y: scroll;
 }
 
 
@@ -151,6 +152,10 @@ button:hover{
     vertical-align: middle;
 }
 
+h4{
+    font-size: larger;
+    margin-bottom: 13px;
+}
 
 /* Style général du formulaire */
 .form-container {
@@ -164,9 +169,9 @@ button:hover{
 /* Style des titres de section */
 .section-title {
     color: #333;
-    border-bottom: 2px solid #007bff;
+    border-bottom: 2px solid #c72027;
     padding-bottom: 10px;
-    margin-top: 20px;
+    margin-top: 30px;
     margin-bottom: 15px;
     font-size: 1.5em;
 }
@@ -214,19 +219,19 @@ button:hover{
 
 /* Style du bouton de soumission */
 .submit-button {
-    background-color: #007bff;
+    background-color: #203242;
     color: white;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 25px;
     transition: background-color 0.3s ease;
 }
 
 .submit-button:hover {
-    background-color: #0056b3;
+    background-color: #c72027;
 }
 
 /* Style des cases à cocher */
@@ -246,7 +251,7 @@ button:hover{
 
 /* Style pour les champs obligatoires */
 .form-input:required {
-    border-left: 3px solid #007bff;
+    border-left: 3px solid orange;
 }
 
 /* Style pour les champs non obligatoires */
@@ -327,7 +332,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .table-of-contents h3 {
-    color: #007bff;
+    color: #203242;
     margin-bottom: 10px;
     font-size: 1.2em;
 }
@@ -346,11 +351,12 @@ input[type="number"]::-webkit-outer-spin-button {
     text-decoration: none;
     color: #333;
     font-size: 0.95em;
+    font-weight: 200;
     transition: color 0.3s ease;
 }
 
 .table-of-contents ul li a:hover {
-    color: #007bff;
+    color: orange;
 }
 
 /* Style pour les inputs avec bouton d'œil */
@@ -401,7 +407,7 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Titre de la réconciliation */
 .reconciliation-title {
-    color: #007bff;
+    color: orange;
     margin-top: 0;
     margin-bottom: 20px;
     font-size: 24px;
@@ -409,32 +415,60 @@ input[type="number"]::-webkit-outer-spin-button {
 
 /* Formulaire de réconciliation */
 .reconciliation-form {
+    text-align: center;
     margin-bottom: 20px;
 }
 
 /* Bouton de réconciliation */
 .reconciliation-button {
-    background-color: #007bff;
+    background-color: #c72027;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    display: inline-block;
 }
 
 .reconciliation-button:hover {
-    background-color: #0056b3;
+    background-color: #c72027;
 }
 
 /* Résultat de la réconciliation */
 .reconciliation-result {
-    background-color: #f4f4f4;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
     margin-top: 20px;
-    font-family: "Courier New", monospace;
     font-size: 14px;
-    white-space: pre-wrap; /* Permet de conserver la mise en forme du texte */
+}
+
+.reconciliation-result h2{
+    text-align: left;
+}
+
+.reconciliation-result ul{
+    list-style-type: circle;
+    padding-left: 6%;
+}
+
+.reconciliation-result ul li{
+    padding: 6px;
+    margin: 3px 0;
+    border-radius: 4px;
+    color: #333;
+    font-weight: normal;
+}
+
+.reconciliation-result th{
+    text-align: center;
+    font-weight: bold;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.reconciliation-result td{
+    font-weight: normal;
+}
+
+.reconciliation-result table {
+    margin-bottom: 20px;
 }

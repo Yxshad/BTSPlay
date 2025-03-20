@@ -66,21 +66,18 @@ button {
 
 .container-button{
     display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        height: 50%;
-        width: 60%;
-        gap: 10px
+    flex-direction: row;
+    justify-content: end;
+    height: 50%;
+    width: 60%;
+    gap: 10px
 }
 
-.container-button button {
-    width: 30%;
-}
 
 
 
 .btnVideo {
-    height: 100%;
+    width: 100px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
