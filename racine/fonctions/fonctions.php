@@ -669,7 +669,7 @@ function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     $found = false;
     foreach ($lines as $index => $line) {
         if (strpos($line, "backup.php") !== false) {
-            $lines[$index] = "$minute $heure $jour $mois * root php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+            $lines[$index] = "$minute $heure * $mois $jour root php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
             $found = true;
             break;
         }

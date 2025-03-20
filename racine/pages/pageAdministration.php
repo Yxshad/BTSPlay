@@ -65,7 +65,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             
             <div class="form-group">
                 <label for="tempsLancement">Choisir l'heure d'exécution :</label>
-                <input type="time" id="tempsLancement" class="sauvegardeInputs" value="00:00"/>
+                <input type="time" id="tempsLancement" class="sauvegardeInputs"/>
             </div>
             
       
@@ -73,13 +73,13 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                     <label for="select_Day">Choisir le jour d'exécution :</label>
                     <select name="day" id="select_Day" class="sauvegardeInputs">
                         <option value="*" selected>Tous les jours</option>
-                        <option value="0">Lundi</option>
-                        <option value="1">Mardi</option>
-                        <option value="2">Mercredi</option>
-                        <option value="3">Jeudi</option>
-                        <option value="4">Vendredi</option>
-                        <option value="5">Samedi</option>
-                        <option value="6">Dimanche</option>
+                        <option value="1">Lundi</option>
+                        <option value="2">Mardi</option>
+                        <option value="3">Mercredi</option>
+                        <option value="4">Jeudi</option>
+                        <option value="5">Vendredi</option>
+                        <option value="6">Samedi</option>
+                        <option value="0">Dimanche</option>
                     </select>
                 </div>
                 

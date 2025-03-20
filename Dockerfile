@@ -50,5 +50,9 @@ RUN echo "* 22 * * * root php '/var/www/html/fonctions/backup.php' >> /var/log/b
 # Lancer cron en arrière-plan avec Apache
 CMD cron && tail -f /var/log/cron.log & apache2-foreground
 
+# Définir le fuseau horaire car sinon il est en retard d'une heure et pour les sauvegardes c'est moyen
+ENV TZ=Europe/Paris
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
 # Exposer le port 80    
 EXPOSE 80
