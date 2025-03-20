@@ -133,11 +133,11 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
                 if (!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $listeMetadonneesVideosNAS_ARCH)) {
                     $listeVideosManquantes[] = [
                         MTD_TITRE => $cheminCompletVideoNASPAD,
-                        DIAGNOSTIC => "La vidéo est différente d''un NAS à l''autre. Veuillez unifier les vidéos."
+                        DIAGNOSTIC => "La vidéo est différente d'un NAS à l'autre. Veuillez unifier les vidéos."
                     ];
+                    break;
                 }
                 unset($cheminCompletVideosNAS_ARCH[$key2]);
-                break;
             }
         }
         //Si la vidéo est manquante dans le NAS ARCH
@@ -148,9 +148,26 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
             ];
         }
 
-        //Vérifier les informations en base de données
-
-
+        //Comparer les informations en base de données
+        $infosVideosBD = TrouverVideoAvecURI_NASComplet($listeVideosBD, $cheminCompletVideoNASPAD, $NAS_PAD);
+        if($infosVideosBD == NULL){
+            $listeVideosManquantes[] = [
+                MTD_TITRE => $cheminCompletVideoNASPAD,
+                DIAGNOSTIC => "La vidéo n'a pas encore été transférée."
+            ];
+        }
+        else{
+            //Regarder si les mtd sont égales
+            if(!verifierCorrespondanceMdtTechVideos($listeMetadonneesVideosNAS_PAD, $infosVideosBD)){
+                $listeVideosManquantes[] = [
+                    MTD_TITRE => $cheminCompletVideoNASPAD,
+                    DIAGNOSTIC => "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données."
+                ];
+                //Insertion des nouvelles métadonnées dans la base de données
+                mettreAJourMtdTech($listeMtdTechVideos);
+                break;
+            }
+        }
         unset($cheminCompletVideosNAS_PAD[$key1]);
     }
 
@@ -162,6 +179,27 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $cheminCompletVideosNAS_PA
         ];
     }
     return $listeVideosManquantes;
+}
+
+function TrouverVideoAvecURI_NASComplet($videos, $cheminCompletVideo, $nom_NAS) {
+    if($nom_NAS == NAS_PAD){
+        $nomFichier = basename($cheminCompletVideo);
+        $nomFichier = forcerExtensionMp4($nomFichier);
+        $cheminFichier = dirname($cheminCompletVideo) . '/';
+        foreach ($videos as $video) {
+            if ($video['URI_NAS_PAD'].$video['mtd_tech_titre'] == $cheminFichier.$nomFichier) {
+                return $video;
+            }
+        }
+    }
+    else{
+        foreach ($videos as $video) {
+            if ($video['URI_NAS_ARCH'].$video['mtd_tech_titre'] == $cheminCompletVideo) {
+                return $video;
+            }
+        }
+    }
+    return null;
 }
 
 /**

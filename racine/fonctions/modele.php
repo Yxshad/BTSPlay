@@ -1306,6 +1306,33 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
     }
 }
 
+function mettreAJourMtdTech($listeMtdTechVideos){
+    $connexion = connexionBD();
+    try {
+        $requete = $connexion->prepare('UPDATE Media SET 
+            mtd_tech_duree = ?, 
+            mtd_tech_resolution = ?, 
+            mtd_tech_fps = ?, 
+            mtd_tech_format = ? 
+            WHERE id = ?');
+        $requete->execute([
+            $listeMtdTechVideos['mtd_tech_duree'], 
+            $listeMtdTechVideos['mtd_tech_resolution'], 
+            $listeMtdTechVideos['mtd_tech_fps'], 
+            $listeMtdTechVideos['mtd_tech_format'], 
+            $listeMtdTechVideos['id']
+        ]);
+        $connexion->commit();
+        $connexion = null;
+    } catch(Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la mise à jour des métadonnées pour l'ID " . $listeMtdTechVideos['id'] .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+    }
+}
+
+
 function deleteFromRoles($idVid, $idRole){
     $connexion = connexionBD();
     try{

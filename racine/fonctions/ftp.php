@@ -190,7 +190,6 @@ function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $no
 	foreach ($fichiers_NAS as $fichier) {
         $nom_fichier = basename($fichier);
         $cheminFichier = dirname($fichier);
-        ajouterLog(LOG_CRITICAL, $cheminFichier . "avec titre : " . $nom_fichier);
 		if ($nom_fichier !== '.' && $nom_fichier !== '..' && $cheminFichier !== '.') {
 			$nomsVideos_NAS[] = $fichier;
 		}
