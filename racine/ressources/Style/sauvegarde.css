@@ -1,17 +1,10 @@
 
-
-body {
-    background-color: #f8f9fa;
-    padding: 20px;
-    color: #333;
-}
-
-.tab-content.active{
+.tab-content.database.active{
     display: flex;
     align-items: center;
 }
 
-.container {
+#container-sauvegarde {
     max-width: 800px;
     margin: 0 auto;
     background-color: white;
@@ -20,33 +13,11 @@ body {
     overflow: hidden;
 }
 
-h2 {
-    color: #2c3e50;
-    margin-bottom: 30px;
-    text-align: center;
-    font-size: 26px;
-    border-bottom: 2px solid #f1f1f1;
-    padding-bottom: 15px;
-}
-
-h3 {
-    color: #444;
-    margin: 20px 0;
-    font-size: 22px;
-}
-
 .form-group {
     margin-bottom: 20px;
 }
 
-label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 600;
-    color: #555;
-}
-
-select, input[type="time"] {
+.sauvegardeInputs {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #ddd;
@@ -57,13 +28,13 @@ select, input[type="time"] {
     transition: border-color 0.3s;
 }
 
-select:focus, input[type="time"]:focus {
+.sauvegardeInputs:focus{
     border-color: #3498db;
     outline: none;
     box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
-.btn-container {
+.btn-sauvegarde-container {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -104,11 +75,7 @@ select:focus, input[type="time"]:focus {
     box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
 }
 
-.grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-}
+
 
 .log-container {
     color: white;
