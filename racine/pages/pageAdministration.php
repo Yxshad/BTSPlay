@@ -65,7 +65,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             
             <div class="form-group">
                 <label for="tempsLancement">Choisir l'heure d'exécution :</label>
-                <input type="time" id="tempsLancement" class="sauvegardeInputs"/>
+                <input type="time" id="tempsLancement" class="sauvegardeInputs" value="00:00"/>
             </div>
             
       
