@@ -57,9 +57,9 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     </div>
     
     <div class="tab-content database" id="database">
+    <h2>Sauvegarde de la base de données</h2>
+    <div id="container-saveLog">
         <div id="container-sauvegarde">
-        <h2>Sauvegarde de la base de données</h2>
-        
         <div class="content">
             <h3>Paramètre des sauvegardes</h3>
             
@@ -118,7 +118,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
             </div>
         </div>
     </div>
-
+    </div>
     <div class="tab-content" id="reconciliation">
         <!-- Section : Fonction de réconciliation -->
         <div class="reconciliation-section">

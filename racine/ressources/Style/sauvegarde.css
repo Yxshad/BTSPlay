@@ -1,11 +1,11 @@
-.tab-content.database.active{
+#container-saveLog{
     display: flex;
-    align-items: center;
+    flex-direction: row;
 }
 
-
-#container-sauvegarde {
+#container-sauvegarde{
     max-width: 800px;
+    align-items: center;
     margin: 0 auto;
     background-color: white;
     border-radius: 10px;
