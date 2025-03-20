@@ -463,7 +463,7 @@ function controleurSupprimerVideo($idVideo, $NAS){
         echo "1"; //on renvoit 1 quand tout se passe bien
         exit(0);  
     } elseif($NAS == "ARCH"){
-        $conn_id = connexionFTP_NAS(NAS_ARCH_SUP, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
+        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
         $lienVideo = $video['URI_NAS_ARCH'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_ARCH']!=null){
             ftp_delete($conn_id, $lienVideo);
@@ -477,7 +477,7 @@ function controleurSupprimerVideo($idVideo, $NAS){
         }
         exit(0); 
     }elseif($NAS == "PAD"){
-        $conn_id = connexionFTP_NAS(NAS_PAD_SUP, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
+        $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
         $lienVideo = $video['URI_NAS_PAD'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_PAD'] != null){
             ftp_delete($conn_id, $lienVideo);
