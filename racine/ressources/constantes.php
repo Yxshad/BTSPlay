@@ -16,6 +16,7 @@ const MTD_FPS = 'FPS';
 const MTD_DUREE = 'Durée';
 const MTD_RESOLUTION = 'Resolution';
 const MTD_FORMAT = 'Format';
+const MTD_DUREE_REEL = "Durée_réel";
 
 const MTD_URI = 'URI';
 const MTD_URI_NAS_PAD = 'URI NAS PAD';
@@ -85,7 +86,7 @@ const BD_PASSWORD = 'mypassword';
 /*******************CONSTANTES PARAMETRABLES************************/
 //CONSTANTES DES URIS
     // #RISQUE : Changement des répertoires des NAS
-const URI_RACINE_NAS_PAD = '/';
+const URI_RACINE_NAS_PAD = '2024-2025/';
 const URI_RACINE_NAS_ARCH = '/';
 const URI_RACINE_STOCKAGE_LOCAL = '/var/www/html/stockage/';
 const URI_RACINE_NAS_DIFF = '/';

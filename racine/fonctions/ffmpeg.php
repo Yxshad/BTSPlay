@@ -62,11 +62,12 @@ function recupererMetadonnees($meta, $fichier){
     preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
     preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
     // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
-    //$dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
+    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
     $liste = [MTD_TITRE => $fichier,
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
-                MTD_DUREE => $duree[1],
+                MTD_DUREE => $dureeFormatee[1],
+                MTD_DUREE_REEL => $duree[1],
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;
@@ -91,25 +92,42 @@ function recupererTailleFichier($video, $cheminFichier){
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-function traiterVideo($titre, $duree) {
+function traiterVideo($titre, $duree, $duree_reel) {
 
-    ajouterLog(LOG_CRITICAL, "Début du traitement de $titre.");
+    ajouterLog(LOG_INFORM, "Début du traitement de $titre.");
 
+    if (substr($titre, -4) === ".mxf") {
+        $duree = $duree_reel;
+    }
     $total = formaterDuree($duree);
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
+
+    ajouterLog(LOG_CRITICAL, "Création du dossier : $chemin_dossier_conversion.");
     creerDossier($chemin_dossier_conversion, false);
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        creerDossier($chemin_dossier_decoupe, false);
-        $output_path = $chemin_dossier_decoupe . '/' . $titre;
-        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $output_path);
-        convertirVideo($output_path, $chemin_dossier_conversion, $titre, 0, true);
-        unlink($chemin_dossier_decoupe . "/" . $titre);
-        rmdir($chemin_dossier_decoupe);
-        rmdir($chemin_dossier_conversion);
+        $output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
+        ajouterLog(LOG_CRITICAL, "Création de la version convertie : $output_path.");
+
+        $command = URI_FFMPEG." -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+                " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                " -movflags +faststart " .                   // Optimisation pour le streaming
+                "-vf format=yuv420p " .
+                $output_path;
+
+        //exec($command, $output, $return_var);
+        exec($command . " 2>&1", $output, $return_var);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            //exit();
+        }
+       
+        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     } else {
         ajouterLog(LOG_CRITICAL, "La vidéo est longue.");
 
@@ -150,7 +168,7 @@ function traiterVideo($titre, $duree) {
         $output = [];
         $return_var = 0;
         exec($decoupeCommand, $output, $return_var);
-
+        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     }
 }
 
@@ -167,10 +185,6 @@ function fusionnerVideo($video){
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
     ajouterLog(LOG_INFORM, "Il y a " . count($files) . "fichiers de conversion");
-    //Si la vidéo a eu des problèmes de conversion, alors on la fusionne pas
-    if(count($files) != 102){
-        return 0;
-    }
 
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
     natsort($files);
