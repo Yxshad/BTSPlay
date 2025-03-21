@@ -85,19 +85,19 @@
 
                 <div class="form-field">
                     <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                    <textarea id="description" name="description" maxlength="800" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
                       class="form-input"><?php echo $description; ?></textarea>
                 </div>
 
                 <div class="form-field">
                     <label for="promotion" class="form-label">Promotion</label>
-                    <input type="text" id="promotion" name="promotion" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                    <input type="text" id="promotion" maxlength="50" name="promotion" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
                   value="<?php echo $promotion; ?>" class="form-input">
                 </div>
 
                 <div class="form-field">
                     <label for="projet" class="form-label">Projet</label>
-                    <input type="text" id="projet" name="projet" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
+                    <input type="text" id="projet" maxlength="50" name="projet" pattern="^(?! ).*(?<! )$" title="Ne commencez ni ne terminez par un espace"
                   value="<?php echo $mtdEdito["projet"]; ?>" class="form-input">
                 </div>
 
@@ -108,7 +108,7 @@
                             $formattedId = strtolower(str_replace(' ', '_', $role));
                             echo '<div class="form-field role-field"> ';
                             echo '<label for="' . htmlspecialchars($formattedId) . '" class="form-label">' . htmlspecialchars($role) . '</label> <div class="role-inputs">';
-                            echo '<input type="text" id="'. htmlspecialchars($formattedId) .'" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '" class="role-input">';
+                            echo '<input type="text" id="'. htmlspecialchars($formattedId) .'" maxlength="50" name="roles['. htmlspecialchars($role) .']" value="' . htmlspecialchars($values) . '" class="role-input">';
                             echo '</div></div>';
                         }
                     }
