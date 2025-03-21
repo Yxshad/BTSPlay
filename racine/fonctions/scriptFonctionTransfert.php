@@ -100,7 +100,7 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 		foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
 			//Si les deux $ligneCollect correspondent exactement (hors URI) (pathinfo pour ne pas tenir compte de l'extension)
 			if (verifierCorrespondanceMdtTechVideos($ligneCollect_PAD, $ligneCollect_ARCH)){
-
+                
 				//Remplir $COLLECT_STOCK_LOCAL
 				$COLLECT_STOCK_LOCAL[] = [
 					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
@@ -110,8 +110,10 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
 					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
-                    MTD_DUREE_REEL => $ligneCollect_PAD[MTD_DUREE_REEL]
+                    MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 				];
+
+                ajouterLog(LOG_CRITICAL, implode(", ", $COLLECT_STOCK_LOCAL));
 
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
 				unset($COLLECT_PAD[$key_PAD]);
