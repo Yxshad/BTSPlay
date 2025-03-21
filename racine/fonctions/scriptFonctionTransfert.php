@@ -100,7 +100,7 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 		foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
 			//Si les deux $ligneCollect correspondent exactement (hors URI) (pathinfo pour ne pas tenir compte de l'extension)
 			if (verifierCorrespondanceMdtTechVideos($ligneCollect_PAD, $ligneCollect_ARCH)){
-
+                
 				//Remplir $COLLECT_STOCK_LOCAL
 				$COLLECT_STOCK_LOCAL[] = [
 					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
@@ -109,8 +109,11 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 					MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+                    MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 				];
+
+                ajouterLog(LOG_CRITICAL, implode(", ", $COLLECT_STOCK_LOCAL));
 
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
 				unset($COLLECT_PAD[$key_PAD]);
@@ -128,7 +131,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+            MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 		];
 		unset($COLLECT_PAD[$key_PAD]);
 	}
@@ -140,7 +144,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_ARCH[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_ARCH[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_ARCH[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE],
+            MTD_DUREE_REELLE => $ligneCollect_ARCH[MTD_DUREE_REELLE]
 		];
 		unset($COLLECT_ARCH[$key_ARCH]);
 	}
@@ -198,38 +203,41 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 ftp_close($conn_id);
 
                 // **Découpe / Conversion / Fusion**
-                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
-                fusionnerVideo($video[MTD_TITRE]);
+                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE_REELLE]);
+                if(fusionnerVideo($video[MTD_TITRE]) == 1){
 
-                $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
+                    $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 
-                // **Export dans stockage local**
-                $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-                $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
+                    // **Export dans stockage local**
+                    $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
+                    $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
 
-                $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-                creerDossier($cheminFichierDestination, false, false);
-                creerDossier($dossierVideo, false);
+                    $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
+                    creerDossier($cheminFichierDestination, false, false);
+                    creerDossier($dossierVideo, false);
 
-                copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
+                    copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
 
-                // **Miniature**
-                $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-                copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
+                    // **Miniature**
+                    $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
+                    copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
 
-                // **Nettoyage**
-                unlink($cheminCompletFichierSource);
-                unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
+                    // **Nettoyage**
+                    unlink($cheminCompletFichierSource);
+                    unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
 
-                // **Stockage de l'URI**
-                if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
-                    $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
+                    // **Stockage de l'URI**
+                    if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
+                        $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
+                    }
+                    $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+
+                    // Écrire les modifications dans un fichier temporaire (accessible par le père)
+                    $tempFile = sys_get_temp_dir() . '/video_' . getmypid() . '_' . $j . '.tmp';
+                    file_put_contents($tempFile, serialize($video));
+                }else {
+                    ajouterLog(LOG_INFORM, "La vidéo " . $video[MTD_TITRE] . " n'a pas été transféré correctement");
                 }
-                $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
-
-                // Écrire les modifications dans un fichier temporaire (accessible par le père)
-                $tempFile = sys_get_temp_dir() . '/video_' . getmypid() . '_' . $j . '.tmp';
-                file_put_contents($tempFile, serialize($video));
 
                 //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " a terminé la vidéo : " . $video[MTD_TITRE]);
             }
@@ -240,6 +248,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
     }
 
     //ajouterLog(LOG_CRITICAL, "Partie reservée au processus père : attente des fils");
+    $COLLECT_STOCK_LOCAL = [];
     while (count($PIDsEnfants) > 0) {
         //ajouterLog(LOG_CRITICAL, count($PIDsEnfants));
         $pidTermine = pcntl_waitpid(-1, $status);
@@ -269,7 +278,9 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
  */
 function insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL){
 	foreach($COLLECT_STOCK_LOCAL as $ligneMetadonneesTechniques){
-		insertionDonneesTechniques($ligneMetadonneesTechniques);
+        if ($ligneMetadonneesTechniques != null) {
+            insertionDonneesTechniques($ligneMetadonneesTechniques);
+        }
 	}
 }
 

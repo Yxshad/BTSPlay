@@ -14,6 +14,7 @@ const ESPACE_LOCAL = 'ESPACE_LOCAL';
 const MTD_TITRE = 'Titre';
 const MTD_FPS = 'FPS';
 const MTD_DUREE = 'Durée';
+const MTD_DUREE_REELLE = 'Durée réelle';
 const MTD_RESOLUTION = 'Resolution';
 const MTD_FORMAT = 'Format';
 

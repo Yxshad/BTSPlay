@@ -442,16 +442,14 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
  */
 function scanDossierDecoupeVideo() {
     $listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
-    $listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
     $listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
     $listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
 	
     $listeVideoDownload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoDownload);
-    $listeVideoDecoupage = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoDecoupage);
     $listeVideoConversion = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoConversion);
     $listeVideoUpload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoUpload);
 
-    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
+    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoConversion, $listeVideoUpload));
 
     $result = [];
     foreach ($listeVideo as $video) {
@@ -459,8 +457,6 @@ function scanDossierDecoupeVideo() {
             $status = "En cours d'upload";
         } elseif (in_array($video, $listeVideoConversion)) {
             $status = "En cours de conversion";
-        } elseif (in_array($video, $listeVideoDecoupage)) {
-            $status = "En cours de découpe";
         } else {
             $status = "En cours de téléchargement";
         }
