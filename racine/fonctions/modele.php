@@ -720,6 +720,31 @@ function getInfosVideo($idVideo)
    }
 }
 
+ /**
+ * \fn getInfosToutesVideos()
+ * \brief Renvoie toutes les informations de toutes les vidéos
+ * \return Retourne un tableau de toutes les vidéos
+ */
+function getInfosToutesVideos()
+{
+   $connexion = connexionBD();
+   $requeteVid = $connexion->prepare('SELECT * 
+   FROM Media');                                                 
+   try{
+        $requeteVid->execute();
+        $infosVideo = $requeteVid->fetchAll(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return $infosVideo;
+   }
+   catch(Exception $e)
+   {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations de toutes les vidéos" .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+   }
+}
+
 
 function getURISVideo($idVideo)
 {
@@ -1288,6 +1313,34 @@ function mettreAJourAutorisations($prof, $colonne, $etat){
         $connexion = null;
     }
 }
+
+function mettreAJourMtdTech($listeMtdTechVideos){
+    $connexion = connexionBD();
+    try {
+        $requete = $connexion->prepare('UPDATE Media SET 
+            mtd_tech_duree = ?, 
+            mtd_tech_resolution = ?, 
+            mtd_tech_fps = ?, 
+            mtd_tech_format = ?,
+            date_modification = CURRENT_TIMESTAMP
+            WHERE id = ?');
+        $requete->execute([
+            $listeMtdTechVideos['Durée'], 
+            $listeMtdTechVideos['Resolution'], 
+            $listeMtdTechVideos['FPS'], 
+            $listeMtdTechVideos['Format'], 
+            $listeMtdTechVideos['id']
+        ]);
+        $connexion->commit();
+        $connexion = null;
+    } catch(Exception $e) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la mise à jour des métadonnées pour l'ID " . $listeMtdTechVideos['id'] .
+        " : " . $e->getMessage());
+        $connexion->rollback();
+        $connexion = null;
+    }
+}
+
 
 function deleteFromRoles($idVid, $idRole){
     $connexion = connexionBD();
