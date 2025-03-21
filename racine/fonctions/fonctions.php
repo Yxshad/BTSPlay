@@ -148,11 +148,11 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsCompletVideosNAS_PAD,
                 unset($nomsCompletVideosNAS_ARCH[$key2]);
             }
 
-            //Si aucune vidéo n'est trouvée, on informe
-            if(!$uneVideoSimilaireTrouvee){
-                ajouterOuMettreAJourDiagnostic($listeVideosDiagnostiquees, $nomCompletVideoNAS_PAD,
-                'Vidéo manquante du ' . $NAS_ARCH . '.');
-            }
+        }
+        //Si aucune vidéo n'est trouvée, on informe
+        if(!$uneVideoSimilaireTrouvee){
+            ajouterOuMettreAJourDiagnostic($listeVideosDiagnostiquees, $nomCompletVideoNAS_PAD,
+            'Vidéo manquante du ' . $NAS_ARCH . '.');
         }
 
         // 2- Rechercher la vidéo dans listeVideosBD

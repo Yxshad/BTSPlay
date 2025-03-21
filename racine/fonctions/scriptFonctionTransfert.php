@@ -113,8 +113,6 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
                     MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 				];
 
-                ajouterLog(LOG_CRITICAL, implode(", ", $COLLECT_STOCK_LOCAL));
-
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
 				unset($COLLECT_PAD[$key_PAD]);
                 unset($COLLECT_ARCH[$key_ARCH]);
