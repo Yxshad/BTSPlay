@@ -62,11 +62,11 @@ function recupererMetadonnees($meta, $fichier){
     preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
     preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
     // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
-    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
+    //$dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
     $liste = [MTD_TITRE => $fichier,
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
-                MTD_DUREE => $dureeFormatee,
+                MTD_DUREE => $duree[1],
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;
@@ -92,10 +92,10 @@ function recupererTailleFichier($video, $cheminFichier){
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function traiterVideo($titre, $duree) {
-    $total = formaterDuree($duree);
 
-    $chemin_dossier_decoupe = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier_decoupe, false);
+    ajouterLog(LOG_CRITICAL, "Début du traitement de $titre.");
+
+    $total = formaterDuree($duree);
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
     creerDossier($chemin_dossier_conversion, false);
@@ -111,69 +111,45 @@ function traiterVideo($titre, $duree) {
         rmdir($chemin_dossier_decoupe);
         rmdir($chemin_dossier_conversion);
     } else {
-        $nombreParties = 100;
-        $dureePartie = $total / $nombreParties;
-        $PIDsEnfants = [];
-        $partiesParProcessus = ceil($nombreParties / NB_MAX_SOUS_PROCESSUS_TRANSFERT);
-        for ($i = 0; $i < NB_MAX_SOUS_PROCESSUS_TRANSFERT; $i++) {
-            $pid = pcntl_fork();
-            if ($pid == -1) {
-                ajouterLog(LOG_CRITICAL, "Erreur critique sur le multithreading.");
-                die('Duplication impossible');
-            } elseif ($pid) {
-                // Processus parent : on enregistre le PID du fils
-                $PIDsEnfants[] = $pid;
-            } else {
-                // **PROCESSUS ENFANT**
-                $debut = $i * $partiesParProcessus;
-                $fin = min(($i + 1) * $partiesParProcessus, $nombreParties);
+        ajouterLog(LOG_CRITICAL, "La vidéo est longue.");
 
-                for ($j = $debut; $j < $fin; $j++) {
-                    $start_time = $j * $dureePartie;
-                    $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
-                    $current_part_duration = ($j == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
+        $segmentDuration = $total / 100;
+        ajouterLog(LOG_CRITICAL, "Segment duration : $segmentDuration");
 
-                    if (substr($titre, -1) == "4" ) {
-                        $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $j + 1) . '.mp4';
-                    } else {
-                        $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $j + 1) . '.mxf';
-                    }
+        $extension = (substr($titre, -4) === ".mp4") ? ".mp4" : ".mxf";
+        ajouterLog(LOG_CRITICAL, "Extension : $extension");
 
-                    $command = URI_FFMPEG." -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
-                            " -ss " . $start_time_formatted .
-                            " -t " . $current_part_duration .
-                            " -c copy \"" . $output_path . "\" -y";
-                    exec($command, $output, $return_var);
-
-                    if ($return_var == 1) {
-                        ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($j + 1)."de la vidéo $titre.");
-                    }
-
-                    convertirVideo($output_path, $chemin_dossier_conversion, $titre, $j + 1, false);
-                }
-                exit(0);
-            }
+        // 3. Générer les points de coupure
+        $cutPoints = '';
+        for ($i = 0; $i < 100; $i++) {
+            $cutPoints .= ($i * $segmentDuration) . ',';
         }
-        // **PROCESSUS PARENT**
-        // Attendre que tous les processus fils se terminent
-        while (count($PIDsEnfants) > 0) {
-            $pidTermine = pcntl_waitpid(-1, $status);
-            if ($pidTermine > 0) {
-                $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
-            }
-        }
-        // **Nettoyage des fichiers temporaires**
-        $files = scandir($chemin_dossier_decoupe);
-        foreach ($files as $file) {
-            if ($file != "." && $file != "..") {
-                unlink($chemin_dossier_decoupe . "/" . $file);
-            }
-        }
-        // Supprimer le fichier original + dossier des morceaux de vidéos à convertir
-        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
-        rmdir($chemin_dossier_decoupe);
-    }
-}
+        $cutPoints = rtrim($cutPoints, ',');
+        ajouterLog(LOG_CRITICAL, "Cut Points : $cutPoints");
+
+        $outputPattern = $chemin_dossier_conversion . '/' . $titre . "_part_%03d.mp4";
+        ajouterLog(LOG_CRITICAL, "Output Pattern : $outputPattern");
+
+        // 4. Découper la vidéo en segments
+        $decoupeCommand = URI_FFMPEG . " -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+                      " -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .
+                      " -f segment" .
+                      " -segment_times $cutPoints" .
+                      " -reset_timestamps 1" .
+                      " -segment_format mp4" .
+                      " -movflags +faststart" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset fast" .
+                      " -c:a aac -b:a 64k -ac 2 " .
+                      " -movflags +faststart" .
+                      " -map 0:v:0 -map 0:a:0" .
+                      " $outputPattern";
+
+        ajouterLog(LOG_CRITICAL, "$decoupeCommand");
+    
+        // Exécuter la commande de découpage
+        $output = [];
+        $return_var = 0;
+        exec($decoupeCommand, $output, $return_var);
 
 /**
  * \fn convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i)
@@ -216,6 +192,12 @@ function fusionnerVideo($video){
 
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
+    ajouterLog(LOG_INFORM, "Il y a " . count($files) . "fichiers de conversion");
+    //Si la vidéo a eu des problèmes de conversion, alors on la fusionne pas
+    if(count($files) != 102){
+        return 0;
+    }
+
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
     natsort($files);
     // On met le nom de chaques vidéos dans un fichier txt pour ffmpeg
@@ -230,7 +212,8 @@ function fusionnerVideo($video){
     file_put_contents($fileListPath, $fileListContent);
     $outputFile = $chemin_dossier_destination . "/" . $video;
     $command = URI_FFMPEG." -v verbose -f concat -safe 0 -i " . $fileListPath .
-               " -c copy " . substr($outputFile, 0, -3) . "mp4";
+           " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
+           substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
 
 
@@ -242,6 +225,7 @@ function fusionnerVideo($video){
         }
     }
     rmdir($chemin_dossier_origine);
+    return 1;
 }
 
 /**
@@ -285,10 +269,10 @@ function formaterDuree($duree){
     $heures = (int)substr($duree, 0, 2);
     $minutes = (int)substr($duree, 3, 2);
     $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
+    $centisecondes = (int)substr($duree, 9, 2);
 
     // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    $total = $heures * 3600 + $minutes * 60 + $secondes + ($centisecondes / 10);
     return $total;
 }
 ?>
