@@ -118,8 +118,6 @@ function traiterVideo($titre, $duree) {
             $chemin_fichier_origine . " : " . implode("\n", $output));
             //exit();
         }
-       
-        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     } else {
 
         $segmentDuration = $total / 100;
@@ -159,6 +157,7 @@ function traiterVideo($titre, $duree) {
             //exit();
         }
     }
+    unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
 }
 
 /**
