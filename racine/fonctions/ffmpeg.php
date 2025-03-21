@@ -150,6 +150,8 @@ function traiterVideo($titre, $duree) {
         $output = [];
         $return_var = 0;
         exec($decoupeCommand, $output, $return_var);
+    }
+}
 
 /**
  * \fn convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i)
@@ -192,11 +194,7 @@ function fusionnerVideo($video){
 
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
-    ajouterLog(LOG_INFORM, "Il y a " . count($files) . "fichiers de conversion");
-    //Si la vidéo a eu des problèmes de conversion, alors on la fusionne pas
-    if(count($files) != 102){
-        return 0;
-    }
+    ajouterLog(LOG_INFORM, "Il y a " . count($files) . "fichiers de conversion à fusionner pour la vidéo $video");
 
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
     natsort($files);
