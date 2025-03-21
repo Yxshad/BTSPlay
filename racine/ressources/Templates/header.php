@@ -39,11 +39,16 @@
                         <?php
                         if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
                         
+                        <?php if(file_exists($_SERVER['DOCUMENT_ROOT'] . "/docs/html/index.html")){ ?>
+                        <a href="/docs/html/index.html">
+                            <img class='iconeSousMenu' src='../ressources/Images/documentation.png'>    
+                            Documentation
+                        </a>
+                        <?php } ?>
                         <a href="#">
                             <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
                             Documentation
                         </a>
-
                         <a href="pageAdministration.php">
                             <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
                             Paramétrer
