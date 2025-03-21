@@ -234,13 +234,13 @@ function recupererMetadonneesAvecFormatCheminComplet($cheminCompletVideoNAS, $no
 function ajouterOuMettreAJourDiagnostic(&$listeVideosManquantes, $cheminCompletVideoNASPAD, $diagnostic) {
     foreach ($listeVideosManquantes as &$video) {
         if ($video[MTD_TITRE] === $cheminCompletVideoNASPAD) {
-            $video[DIAGNOSTIC] .= " | " . $diagnostic;
+            $video[DIAGNOSTIC] .= " <br> - " . $diagnostic;
             return;
         }
     }
     $listeVideosManquantes[] = [
         MTD_TITRE => $cheminCompletVideoNASPAD,
-        DIAGNOSTIC => $diagnostic
+        DIAGNOSTIC => " - " . $diagnostic
     ];
 }
 
