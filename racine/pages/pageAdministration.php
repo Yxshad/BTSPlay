@@ -43,7 +43,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
 
 
 <body>
-    <div><h1>Administration du Site</h1></div>
+    <div><h1>Administration de BTSPlay</h1></div>
     <div class="tabs">
         <div class="tab" data-tab="database">Base de données</div>
         <div class="tab" data-tab="reconciliation">Réconciliation</div>
