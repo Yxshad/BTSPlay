@@ -187,6 +187,10 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsCompletVideosNAS_PAD,
         //Récupérer les MtdTech de la vidéo via FTP
         $listeMetadonneesVideoNAS_ARCH = recupererMetadonneesAvecFormatCheminComplet($nomCompletVideoNAS_ARCH_Restante, $NAS_ARCH);
 
+        //Il y a dans tous les cas une absence du NAS PAD
+        ajouterOuMettreAJourDiagnostic($listeVideosDiagnostiquees, $nomCompletVideoNAS_ARCH_Restante,
+        'Vidéo manquante du ' . $NAS_PAD . '.');
+
         //Rechercher la vidéo dans listeVideosBD
 
         //Trouver une vidéo
