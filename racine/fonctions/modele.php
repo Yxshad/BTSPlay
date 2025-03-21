@@ -1313,13 +1313,14 @@ function mettreAJourMtdTech($listeMtdTechVideos){
             mtd_tech_duree = ?, 
             mtd_tech_resolution = ?, 
             mtd_tech_fps = ?, 
-            mtd_tech_format = ? 
+            mtd_tech_format = ?,
+            date_modification = CURRENT_TIMESTAMP
             WHERE id = ?');
         $requete->execute([
-            $listeMtdTechVideos['mtd_tech_duree'], 
-            $listeMtdTechVideos['mtd_tech_resolution'], 
-            $listeMtdTechVideos['mtd_tech_fps'], 
-            $listeMtdTechVideos['mtd_tech_format'], 
+            $listeMtdTechVideos['Durée'], 
+            $listeMtdTechVideos['Resolution'], 
+            $listeMtdTechVideos['FPS'], 
+            $listeMtdTechVideos['Format'], 
             $listeMtdTechVideos['id']
         ]);
         $connexion->commit();

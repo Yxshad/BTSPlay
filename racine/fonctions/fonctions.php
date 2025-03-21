@@ -170,10 +170,11 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsCompletVideosNAS_PAD,
             if(!verifierCorrespondanceMdtTechVideosAvecBD($listeMetadonneesVideosNAS_PAD, $infosVideoBD)){
 
                 ajouterOuMettreAJourDiagnostic($listeVideosDiagnostiquees, $nomCompletVideoNAS_PAD,
-                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données.");
+                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour...");
 
                 //Insertion des nouvelles métadonnées dans la base de données
-                mettreAJourMtdTech($infosVideoBD);
+                $listeMetadonneesVideosNAS_PAD = array_merge($listeMetadonneesVideosNAS_PAD, ['id' => $infosVideoBD['id']]);
+                mettreAJourMtdTech($listeMetadonneesVideosNAS_PAD);
             }
         }
         unset($nomsCompletVideosNAS_PAD[$key1]);
@@ -206,10 +207,11 @@ function EtablirDiagnosticVideos($NAS_PAD, $NAS_ARCH, $nomsCompletVideosNAS_PAD,
             if(!verifierCorrespondanceMdtTechVideosAvecBD($listeMetadonneesVideoNAS_ARCH, $infosVideoBD)){
 
                 ajouterOuMettreAJourDiagnostic($listeVideosDiagnostiquees, $nomCompletVideoNAS_ARCH_Restante,
-                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour de la base de données.");
+                "La vidéo a été changée et la base de données n'est pas à jour. Mise à jour...");
 
                 //Insertion des nouvelles métadonnées dans la base de données
-                mettreAJourMtdTech($infosVideoBD);
+                $nomCompletVideoNAS_ARCH_Restante = array_merge($nomCompletVideoNAS_ARCH_Restante, ['id' => $infosVideoBD['id']]);
+                mettreAJourMtdTech($nomCompletVideoNAS_ARCH_Restante);
             }
         }
         unset($nomsCompletsVideosNAS_ARCH_Restantes[$key1]);
