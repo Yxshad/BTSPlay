@@ -94,8 +94,6 @@ function recupererTailleFichier($video, $cheminFichier){
  */
 function traiterVideo($titre, $duree) {
 
-    ajouterLog(LOG_CRITICAL, "Début du traitement de $titre.");
-
     $total = formaterDuree($duree);
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
@@ -105,7 +103,6 @@ function traiterVideo($titre, $duree) {
     if ($total < 100) {
         // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
         $output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
-        ajouterLog(LOG_CRITICAL, "Création de la version convertie : $output_path.");
 
         $command = URI_FFMPEG." -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
                 " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
@@ -124,13 +121,10 @@ function traiterVideo($titre, $duree) {
        
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     } else {
-        ajouterLog(LOG_CRITICAL, "La vidéo est longue.");
 
         $segmentDuration = $total / 100;
-        ajouterLog(LOG_CRITICAL, "Segment duration : $segmentDuration");
 
         $extension = (substr($titre, -4) === ".mp4") ? ".mp4" : ".mxf";
-        ajouterLog(LOG_CRITICAL, "Extension : $extension");
 
         // 3. Générer les points de coupure
         $cutPoints = '';
@@ -138,10 +132,8 @@ function traiterVideo($titre, $duree) {
             $cutPoints .= ($i * $segmentDuration) . ',';
         }
         $cutPoints = rtrim($cutPoints, ',');
-        ajouterLog(LOG_CRITICAL, "Cut Points : $cutPoints");
 
         $outputPattern = $chemin_dossier_conversion . '/' . $titre . "_part_%03d.mp4";
-        ajouterLog(LOG_CRITICAL, "Output Pattern : $outputPattern");
 
         // 4. Découper la vidéo en segments
         $decoupeCommand = URI_FFMPEG . " -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
@@ -156,13 +148,16 @@ function traiterVideo($titre, $duree) {
                       " -movflags +faststart" .
                       " -map 0:v:0 -map 0:a:0" .
                       " $outputPattern";
-
-        ajouterLog(LOG_CRITICAL, "$decoupeCommand");
     
         // Exécuter la commande de découpage
         $output = [];
         $return_var = 0;
         exec($decoupeCommand, $output, $return_var);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            //exit();
+        }
     }
 }
 
@@ -207,7 +202,6 @@ function fusionnerVideo($video){
 
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
-    ajouterLog(LOG_INFORM, "Il y a " . count($files) . "fichiers de conversion à fusionner pour la vidéo $video");
 
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
     natsort($files);
