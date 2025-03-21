@@ -92,13 +92,10 @@ function recupererTailleFichier($video, $cheminFichier){
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-function traiterVideo($titre, $duree, $duree_reel) {
+function traiterVideo($titre, $duree) {
 
     ajouterLog(LOG_INFORM, "Début du traitement de $titre.");
 
-    if (substr($titre, -4) === ".mxf") {
-        $duree = $duree_reel;
-    }
     $total = formaterDuree($duree);
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
@@ -129,7 +126,6 @@ function traiterVideo($titre, $duree, $duree_reel) {
        
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     } else {
-        ajouterLog(LOG_CRITICAL, "La vidéo est longue.");
 
         $segmentDuration = $total / 100;
         ajouterLog(LOG_CRITICAL, "Segment duration : $segmentDuration");
@@ -168,7 +164,16 @@ function traiterVideo($titre, $duree, $duree_reel) {
         $output = [];
         $return_var = 0;
         exec($decoupeCommand, $output, $return_var);
-        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            //exit();
+        }else{
+            // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
+            unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
+        }
+
+        
     }
 }
 
@@ -203,17 +208,19 @@ function fusionnerVideo($video){
            " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
            substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
-
-
-    // On supprime le dossier qui contient les morceaux convertis
-    $files = scandir($chemin_dossier_origine);
-    foreach ($files as $file) {
-        if ($file != "." && $file != "..") {
-            unlink($chemin_dossier_origine . "/" . $file);
+    if ($return_var != 1) {
+        // On supprime le dossier qui contient les morceaux convertis
+        $files = scandir($chemin_dossier_origine);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                unlink($chemin_dossier_origine . "/" . $file);
+            }
         }
+        rmdir($chemin_dossier_origine);
+        return 1;
+    }else{
+        return 0;
     }
-    rmdir($chemin_dossier_origine);
-    return 1;
 }
 
 /**
