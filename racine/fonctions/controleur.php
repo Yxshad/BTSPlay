@@ -61,6 +61,20 @@ function checkHeader(){
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }
+        if($_POST["action"] == "changeWhenToSaveDB"){
+            //DATA
+            if ($_POST['minute'] == 'NaN') {
+                $_POST['minute'] = '*';
+            }
+            if ($_POST['heure'] == 'NaN') {
+                $_POST['heure'] = '*';
+            }
+            $minute = $_POST['minute'] ?? '*';
+            $heure = $_POST['heure'] ?? '*';
+            $jour = $_POST['day'] ?? '*';
+            $month = $_POST['month'] ?? '*';
+            controleurChangeDBDumpLauncher($minute, $heure, '*', $month, $jour);
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
             $menuType = $_POST['menuType'];
@@ -459,7 +473,7 @@ function controleurSupprimerVideo($idVideo, $NAS){
         echo "1"; //on renvoit 1 quand tout se passe bien
         exit(0);  
     } elseif($NAS == "ARCH"){
-        $conn_id = connexionFTP_NAS(NAS_ARCH_SUP, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
+        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH_SUP, PASSWORD_NAS_ARCH_SUP);
         $lienVideo = $video['URI_NAS_ARCH'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_ARCH']!=null){
             ftp_delete($conn_id, $lienVideo);
@@ -473,7 +487,7 @@ function controleurSupprimerVideo($idVideo, $NAS){
         }
         exit(0); 
     }elseif($NAS == "PAD"){
-        $conn_id = connexionFTP_NAS(NAS_PAD_SUP, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
+        $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
         $lienVideo = $video['URI_NAS_PAD'] . $video['mtd_tech_titre'];
         if($video['URI_NAS_PAD'] != null){
             ftp_delete($conn_id, $lienVideo);
@@ -508,6 +522,15 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
     ajouterLog(LOG_INFORM, "Mise à jour des autorisations du professeur " . $prof);
 }
+
+/**
+ * \fn controleurChangeDBDumpLauncher
+ * \brief Controleur pour changer l'heure de sauvegarde
+ */
+function controleurChangeDBDumpLauncher($minute = '*', $heure = '*', $annee = '*', $mois = '*', $jour = '*'){
+    changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour);
+}
+
 
 /**
  * \fn controleurArborescence($directory, $ftp_server)

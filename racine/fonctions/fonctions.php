@@ -305,16 +305,14 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
  */
 function scanDossierDecoupeVideo() {
     $listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
-    $listeVideoDecoupage = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
     $listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
     $listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
 	
     $listeVideoDownload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoDownload);
-    $listeVideoDecoupage = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoDecoupage);
     $listeVideoConversion = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoConversion);
     $listeVideoUpload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoUpload);
 
-    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoDecoupage, $listeVideoConversion, $listeVideoUpload));
+    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoConversion, $listeVideoUpload));
 
     $result = [];
     foreach ($listeVideo as $video) {
@@ -322,8 +320,6 @@ function scanDossierDecoupeVideo() {
             $status = "En cours d'upload";
         } elseif (in_array($video, $listeVideoConversion)) {
             $status = "En cours de conversion";
-        } elseif (in_array($video, $listeVideoDecoupage)) {
-            $status = "En cours de découpe";
         } else {
             $status = "En cours de téléchargement";
         }
@@ -648,4 +644,56 @@ function mettreAJourConstantes($data) {
     file_put_contents('../ressources/constantes.php', implode('', $lines));
     ajouterLog(LOG_SUCCESS, "Mise à jour des paramétrages du site le ". date("j-m-Y_H-i-s").".");
 }
+
+function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
+    try{
+    $file = '/etc/crontab'; // Remplacez par le nom de votre fichier
+    exec("sudo chown www-data:www-data /etc/crontab");
+    
+    // Supprimer le zéro en tête si présent
+    $minute = ltrim($minute, '0');
+    if($minute==""){$minute = '0';}
+
+    // Supprimer le zéro en tête si présent
+    $heure = ltrim($heure, '0');
+    if($heure==""){$heure = '0';}
+    
+    // Lire tout le fichier dans un tableau
+    $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    
+    // Modifier ou ajouter la ligne correspondant à backup.php
+    $found = false;
+    foreach ($lines as $index => $line) {
+        if (strpos($line, "backup.php") !== false) {
+            $lines[$index] = "$minute $heure * $mois $jour root php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+            $found = true;
+            break;
+        }
+    }
+    
+    // Ajouter la ligne si elle n'existe pas
+    
+    if (!$found) {
+        $lines[] = "$minute $heure $jour $mois * root php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+    }
+
+    // Ajouter un saut de ligne final pour éviter les erreurs de format
+    $updatedContent = implode("\n", $lines) . "\n";
+
+    // Écrire le fichier mis à jour
+    file_put_contents($file, $updatedContent);
+
+    // Redémarrer le service cron et vérifier le statut
+    exec("service cron restart", $output, $return_var);
+    echo "Service cron restart status: " . $return_var . "\n";
+    
+    exec("sudo chown root:root /etc/crontab");
+    ajouterLog(LOG_INFORM, "Date de sauvegarde changée!");
+    echo "Dernière ligne modifiée avec succès !";
+}
+catch (Exception){
+    echo "Erreur dans la programmation de la sauvegarde";
+}
+}
+
 ?>

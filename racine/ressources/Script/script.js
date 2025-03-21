@@ -191,6 +191,29 @@ function mettreAJourAutorisation(prof, colonne, etat){
     xhttp.send("action=mettreAJourAutorisation&prof=" + prof + "&colonne=" + colonne + "&etat=" + etat);
 }
 
+function changeDatabaseSaveTime() {
+    let selectedMonth = document.getElementById("select_Month").value;
+    let selectedDay = document.getElementById("select_Day").value;
+    let tempsLancement = document.getElementById("tempsLancement").value;
+    let heure = tempsLancement[0]+tempsLancement[1];
+    let minute = tempsLancement[3]+tempsLancement[4];
+    console.log(tempsLancement);
+    fetch("../fonctions/controleur.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "action=changeWhenToSaveDB&month=" + selectedMonth + "&day=" + selectedDay + "&heure=" + heure + "&minute=" + minute
+    })
+    .then(response => response.text())
+    .then(data => {
+        console.log("Réponse du serveur:", data);
+        alert("Paramètres enregistrés !");
+    })
+    .catch(error => console.error("Erreur:", error));
+}
+
+
 function gestionOngletsAdministration() {
     const tabs = document.querySelectorAll('.tab');
     const contents = document.querySelectorAll('.tab-content');

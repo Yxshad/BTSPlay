@@ -9,9 +9,10 @@
                 </div>
             </a>
 
-            <form class="recherche">
-                <input type="search" placeholder="Rechercher une vidéo...">
-                <button>
+            <!-- Formulaire de recherche principale -->
+            <form class="recherche" action="../pages/recherche.php" method="GET">
+                <input type="search" name="motCle" placeholder="Rechercher une vidéo...">
+                <button type="submit">
                     <div class="logo-search">
                         <img src="../ressources/Images/recherche.png" alt="Rechercher">
                     </div>
@@ -38,7 +39,12 @@
 
                         <?php
                         if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
-                            
+                        
+                        <a href="#">
+                            <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
+                            Documentation
+                        </a>
+
                         <a href="pageAdministration.php">
                             <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
                             Paramétrer
