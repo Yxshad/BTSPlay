@@ -61,6 +61,20 @@ function checkHeader(){
         if($_POST["action"] == "createDatabaseSave"){
             controleurcreateDBDumpLauncher();
         }
+        if($_POST["action"] == "changeWhenToSaveDB"){
+            //DATA
+            if ($_POST['minute'] == 'NaN') {
+                $_POST['minute'] = '*';
+            }
+            if ($_POST['heure'] == 'NaN') {
+                $_POST['heure'] = '*';
+            }
+            $minute = $_POST['minute'] ?? '*';
+            $heure = $_POST['heure'] ?? '*';
+            $jour = $_POST['day'] ?? '*';
+            $month = $_POST['month'] ?? '*';
+            controleurChangeDBDumpLauncher($minute, $heure, '*', $month, $jour);
+        }
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['path']) && isset($_POST['menuType'])) {
             $path = $_POST['path'];
             $menuType = $_POST['menuType'];
@@ -514,6 +528,15 @@ function controleurMettreAJourAutorisations($prof, $colonne, $etat){
     mettreAJourAutorisations($prof, $colonne, $etat);
     ajouterLog(LOG_INFORM, "Mise à jour des autorisations du professeur " . $prof);
 }
+
+/**
+ * \fn controleurChangeDBDumpLauncher
+ * \brief Controleur pour changer l'heure de sauvegarde
+ */
+function controleurChangeDBDumpLauncher($minute = '*', $heure = '*', $annee = '*', $mois = '*', $jour = '*'){
+    changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour);
+}
+
 
 /**
  * \fn controleurArborescence($directory, $ftp_server)
