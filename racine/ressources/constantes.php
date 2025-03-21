@@ -29,6 +29,7 @@ const URI_FFMPEG = 'ffmpeg';
 
 //CONSTANTES DE LA FONCTION DE RECONCILIATION
 const EMPLACEMENT_MANQUANT = 'Emplacement manquant';
+const DIAGNOSTIC = 'Diagnostic de la vidéo';
 
 //CONSTANTES DES REPERTOIRES DES VIDEOS
 const URI_VIDEOS_A_DIFFUSER = '../videos/videosADiffuser/';

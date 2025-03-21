@@ -49,6 +49,14 @@
                             Documentation
                         </a>
                         <?php } ?>
+                        <a href="#">
+                            <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
+                            Documentation
+                        </a>
+                        <a href="pageAdministration.php">
+                            <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
+                            Paramétrer
+                        </a>
                         <?php } ?>
 
                         <a href="logout.php" >
