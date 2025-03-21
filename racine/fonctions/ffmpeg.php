@@ -103,13 +103,25 @@ function traiterVideo($titre, $duree) {
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        creerDossier($chemin_dossier_decoupe, false);
-        $output_path = $chemin_dossier_decoupe . '/' . $titre;
-        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $output_path);
-        convertirVideo($output_path, $chemin_dossier_conversion, $titre, 0, true);
-        unlink($chemin_dossier_decoupe . "/" . $titre);
-        rmdir($chemin_dossier_decoupe);
-        rmdir($chemin_dossier_conversion);
+        $output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
+        ajouterLog(LOG_CRITICAL, "Création de la version convertie : $output_path.");
+
+        $command = URI_FFMPEG." -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+                " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                " -movflags +faststart " .                   // Optimisation pour le streaming
+                "-vf format=yuv420p " .
+                $output_path;
+
+        //exec($command, $output, $return_var);
+        exec($command . " 2>&1", $output, $return_var);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            //exit();
+        }
+       
+        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
     } else {
         ajouterLog(LOG_CRITICAL, "La vidéo est longue.");
 
