@@ -279,13 +279,13 @@ function afficherVideosPresentesDansBD($listeVideos) {
     // Parcours de la liste des vidéos manquantes
     foreach ($listeVideos as $video) {
 		$nomVideo = $video['mtd_tech_titre'];
-        $cheminNAS_ARCH = $video['URI_NAS_ARCH'];
         $cheminNAS_PAD = $video['URI_NAS_PAD'];
+        $cheminNAS_ARCH = $video['URI_NAS_ARCH'];
 		//Lignes pour chaque élément
 		echo "<tr>";
 		echo "<td>$nomVideo</td>";
-        echo "<td>$cheminNAS_ARCH</td>";
-		echo "<td>$cheminNAS_PAD</td>";
+        echo "<td>$cheminNAS_PAD</td>";
+		echo "<td>$cheminNAS_ARCH</td>";
 		echo "</tr>";
     }
     echo "</table>";
