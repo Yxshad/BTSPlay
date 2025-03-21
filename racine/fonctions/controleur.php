@@ -477,7 +477,7 @@ function controleurSupprimerVideo($idVideo, $NAS){
         }
         exit(0); 
     }elseif($NAS == "PAD"){
-        //On force le nom du fichier à .mp4
+        //On force le nom du fichier à .mxf
         $video['mtd_tech_titre'] = forcerExtensionMXF($video['mtd_tech_titre']);
         $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD_SUP, PASSWORD_NAS_PAD_SUP);
         $lienVideo = $video['URI_NAS_PAD'] . $video['mtd_tech_titre'];
