@@ -67,7 +67,7 @@ function recupererMetadonnees($meta, $fichier){
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
                 MTD_DUREE => $dureeFormatee,
-                MTD_DUREE_REEL => $duree[1],
+                MTD_DUREE_REELLE => $duree[1],
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;
