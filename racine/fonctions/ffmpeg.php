@@ -62,11 +62,12 @@ function recupererMetadonnees($meta, $fichier){
     preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
     preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
     // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
-    //$dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
+    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
     $liste = [MTD_TITRE => $fichier,
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
-                MTD_DUREE => $duree[1],
+                MTD_DUREE => $dureeFormatee,
+                MTD_DUREE_REEL => $duree[1],
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;

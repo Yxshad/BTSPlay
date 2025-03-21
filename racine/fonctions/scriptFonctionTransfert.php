@@ -109,7 +109,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 					MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+                    MTD_DUREE_REEL => $ligneCollect_PAD[MTD_DUREE_REEL]
 				];
 
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
@@ -128,7 +129,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+            MTD_DUREE_REEL => $ligneCollect_PAD[MTD_DUREE_REEL]
 		];
 		unset($COLLECT_PAD[$key_PAD]);
 	}
@@ -140,7 +142,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_ARCH[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_ARCH[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_ARCH[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE],
+            MTD_DUREE_REEL => $ligneCollect_ARCH[MTD_DUREE_REEL]
 		];
 		unset($COLLECT_ARCH[$key_ARCH]);
 	}
@@ -198,7 +201,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 ftp_close($conn_id);
 
                 // **Découpe / Conversion / Fusion**
-                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
+                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE_REEL]);
                 if(fusionnerVideo($video[MTD_TITRE]) == 1){
 
                     $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
