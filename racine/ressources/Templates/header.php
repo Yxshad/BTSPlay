@@ -38,7 +38,12 @@
 
                         <?php
                         if(controleurVerifierAcces(ACCES_ADMINISTRATION)){ ?>
-                            
+                        
+                        <a href="#">
+                            <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
+                            Documentation
+                        </a>
+
                         <a href="pageAdministration.php">
                             <img class='iconeSousMenu' src='../ressources/Images/Parametre.png'>    
                             Paramétrer
