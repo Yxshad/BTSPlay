@@ -99,7 +99,7 @@ function traiterVideo($titre, $duree) {
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
 
     ajouterLog(LOG_CRITICAL, "Création du dossier : $chemin_dossier_conversion.");
-    creerDossier($chemin_dossier_conversion, false);
+    creerDossier($chemin_dossier_conversion, false, false);
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
@@ -118,7 +118,7 @@ function traiterVideo($titre, $duree) {
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
-            //exit();
+            exit();
         }
        
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
@@ -158,7 +158,7 @@ function traiterVideo($titre, $duree) {
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
-            //exit();
+            exit();
         }else{
             // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
             unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);

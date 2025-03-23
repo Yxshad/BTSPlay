@@ -195,7 +195,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     </div>
 
     <div class="tab-content" id="settings">
-        <h2>Paramétrage des constantes</h2>
+        <h2>Paramétrage</h2>
         
         <!-- Table des Matières -->
         <div class="table-of-contents">
@@ -212,7 +212,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </div>
 
         <!-- Formulaire -->
-        <form method="post" action="#" class="form-container" onsubmit="modifierConstantes();">
+        <form method="post" action="#" class="form-container" onsubmit="modifierParametres(event);">
             <input type="hidden" name="action" value="mettreAJourParametres">
 
             <!-- Section URIs -->
@@ -451,16 +451,4 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         appelScanVideo();
         detectionCheckboxes(); 
     });
-
-    function modifierConstantes(){
-        event.preventDefault();
-        changerTitrePopup("Les constantes ont bien été modifié");
-        changerTextePopup("");
-        changerTexteBtn("Compris", "btn1");
-        attribuerFonctionBtn("sendForm", ".form-container", "btn1");
-        cacherBtn("btn2");
-        cacherBtn("btn3");
-        cacherBtn("btn4");
-        afficherPopup();
-    }
 </script>

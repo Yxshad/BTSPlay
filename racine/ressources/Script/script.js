@@ -605,6 +605,18 @@ function lancerDiffusion(uri_nas_pad){
     
 }
 
+function modifierParametres(event){
+    event.preventDefault();
+    changerTitrePopup("Paramétrage");
+    changerTextePopup("Les paramètres ont été enregistrés.");
+    changerTexteBtn("Confirmer", "btn1");
+    attribuerFonctionBtn("sendForm", ".form-container", "btn1");
+    cacherBtn("btn2");
+    cacherBtn("btn3");
+    cacherBtn("btn4");
+    afficherPopup();
+}
+
 function reloading(){
     window.location.reload();
 }
