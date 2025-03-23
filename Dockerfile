@@ -35,7 +35,7 @@ RUN echo "www-data ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 # Donner les bons droits et recharger crontab
 RUN chmod 0644 /etc/crontab
 
-# 🔥 S'assurer que cron tourne bien
+# S'assurer que cron tourne bien
 RUN touch /var/log/cron.log
 
 # Donner les droits nécessaires au DocumentRoot

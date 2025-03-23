@@ -87,7 +87,7 @@ const BD_PASSWORD = 'mypassword';
 /*******************CONSTANTES PARAMETRABLES************************/
 //CONSTANTES DES URIS
     // #RISQUE : Changement des répertoires des NAS
-const URI_RACINE_NAS_PAD = '/';
+const URI_RACINE_NAS_PAD = '2023-2024/';
 const URI_RACINE_NAS_ARCH = '/';
 const URI_RACINE_STOCKAGE_LOCAL = '/var/www/html/stockage/';
 const URI_RACINE_NAS_DIFF = '/';
