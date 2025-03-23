@@ -98,8 +98,7 @@ function traiterVideo($titre, $duree) {
 
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
 
-    ajouterLog(LOG_CRITICAL, "Création du dossier : $chemin_dossier_conversion.");
-    creerDossier($chemin_dossier_conversion, false, false);
+    creerDossier($chemin_dossier_conversion, false);
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
