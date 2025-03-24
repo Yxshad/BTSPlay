@@ -1,8 +1,8 @@
 <?php
 
 /*******************CONSTANTES NON PARAMETRABLES************************/
-//CONSTANTES DES URIS
-    // #RISQUE : Changement des répertoires des NAS
+
+//CONSTANTES DES SUFFIXES ET PREFIXES
 const PREFIXE_DOSSIER_VIDEO = '_BTSPLAY_';
 const SUFFIXE_MINIATURE_VIDEO = '_miniature.png';
 const SUFFIXE_VIDEO = '.mp4';
@@ -23,8 +23,6 @@ const MTD_URI_NAS_ARCH = 'URI NAS ARCH';
 const MTD_URI_STOCKAGE_LOCAL = 'URI STOCKAGE LOCAL';
 
 //CONSTANTE POUR l'URI DE FFMPEG
-    #PROD : À DECOMMENTER LORS DU PASSAGE EN PROD
-//const URI_FFMPEG = '../ressources/lib/ffmepg/ffmpeg.exe';
 const URI_FFMPEG = 'ffmpeg';
 
 //CONSTANTES DE LA FONCTION DE RECONCILIATION
@@ -48,44 +46,14 @@ const LOG_FAIL = 'FAIL';
 const LOG_CRITICAL = 'CRITICAL';
 
 //NIVEAU D'AUTORISATION
-//const AUTORISATION_PROF = ["Professeur", "Administrateur"];
-//const AUTORISATION_ADMIN = ["Administrateur"];
-
-//NIVEAU D'AUTORISATION
 const ACCES_MODIFICATION = 'modifier';
 const ACCES_SUPPRESSION = 'supprimer';
 const ACCES_DIFFUSION = 'diffuser';
 const ACCES_ADMINISTRATION = 'administrer';
 const ROLE_ADMINISTRATEUR = 'Administrateur';
 
-/*******************CONSTANTES PRODUCTION************************/
-/*
-
-//CONSTANTES DES CONNEXIONS FTP
-const NAS_PAD = 'NAS_PAD';
-const LOGIN_NAS_PAD = 'user1';
-const PASSWORD_NAS_PAD = 'pass1';
-
-const NAS_ARCH = 'NAS_ARCH';
-const LOGIN_NAS_ARCH = 'user2';
-const PASSWORD_NAS_ARCH = 'pass2';
-
-const NAS_DIFF = 'NAS_DIFF';
-const LOGIN_NAS_DIFF = 'user4';
-const PASSWORD_NAS_DIFF = 'pass4';
-
-//CONSTANTES DE LA BASE DE DONNEES
-const BD_HOST = 'mysql_BTSPlay';
-const BD_PORT = '3306:3306';
-const BD_NAME = 'mydatabase';
-const BD_USER = 'myuser';
-const BD_PASSWORD = 'mypassword';
-
-*/
-
 /*******************CONSTANTES PARAMETRABLES************************/
 //CONSTANTES DES URIS
-    // #RISQUE : Changement des répertoires des NAS
 const URI_RACINE_NAS_PAD = '/';
 const URI_RACINE_NAS_ARCH = '/';
 const URI_RACINE_STOCKAGE_LOCAL = '/var/www/html/stockage/';
@@ -113,7 +81,6 @@ const LOGIN_NAS_DIFF = 'user4';
 const PASSWORD_NAS_DIFF = 'pass4';
 
 //CONNEXION BASE DE DONNEES
-    // #RISQUE : Changement des informations de la base de données
 const BD_HOST = 'mysql_BTSPlay';
 const BD_PORT = '3306:3306';
 const BD_NAME = 'mydatabase';

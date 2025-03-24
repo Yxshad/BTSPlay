@@ -18,7 +18,6 @@ require_once '../ressources/Templates/header.php';
 
 <?php
 $code = $_GET['code'];
-// #RISQUE : Plus tard, faire des constantes pour les codes et messages d'erreur
 switch ($code) {
     case 404:
         $message = "Erreur 404 : La ressource demandée est introuvable.";

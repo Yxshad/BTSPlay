@@ -12,7 +12,6 @@ $tabDernierProjet = controleurRecupererDernierProjet();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
-    <!--<link href="../ressources/Style/menuFiltres.css" rel="stylesheet">-->
     <link href="../ressources/Style/menuArbo.css" rel="stylesheet">
     <link href="../ressources/Style/home.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
@@ -21,8 +20,6 @@ $tabDernierProjet = controleurRecupererDernierProjet();
     <script src="../ressources/lib/Swiper/swiper-bundle.min.js"></script>
 
 <?php require_once '../ressources/Templates/header.php'; ?>
-
-<?php //require_once '../ressources/Templates/menuFiltres.php'; ?>
 <?php require_once '../ressources/Templates/menuArbo.php'; ?>
 
 <div class="container">
@@ -88,7 +85,6 @@ $tabDernierProjet = controleurRecupererDernierProjet();
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        //affichageFiltres();
         initCarrousel();
     });
 </script>

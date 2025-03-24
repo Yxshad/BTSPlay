@@ -42,9 +42,6 @@
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <link href="../ressources/Style/menuArbo.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
-    
-    <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" /> -->
 
     <!-- #RISQUE : Liens CDN utilisés dans la lib plyr.js -->
     <script src="../ressources/lib/Plyr/plyr.js"></script>

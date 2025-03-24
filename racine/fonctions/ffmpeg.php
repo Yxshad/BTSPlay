@@ -118,7 +118,7 @@ function traiterVideo($titre, $duree) {
         for ($i = 0; $i < NB_MAX_SOUS_PROCESSUS_TRANSFERT; $i++) {
             $pid = pcntl_fork();
             if ($pid == -1) {
-                ajouterLog(LOG_CRITICAL, "Erreur critique sur le multithreading.");
+                ajouterLog(LOG_CRITICAL, "Erreur critique sur le multiprocessing.");
                 die('Duplication impossible');
             } elseif ($pid) {
                 // Processus parent : on enregistre le PID du fils

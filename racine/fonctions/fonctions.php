@@ -7,41 +7,6 @@
  * \author Julien Loridant
  */
 
-/**
- * \fn afficherCollect($titre, $COLLECT_NAS)
- * \brief Fonction qui affiche à l'écran une collection passée en paramètre sous forme de tableau
- * \param titre - Le titre de la collection à afficher
- * \param COLLECT_NAS - Un tableau de métadonnées des vidéos présentes dans le NAS
- */
-function afficherCollect($titre, $COLLECT_NAS) {
-    echo "<h2>$titre</h2>";
-    if (empty($COLLECT_NAS)) {
-        echo "<p>Tableau vide</p>";
-        return;
-    }
-    $first_item = reset($COLLECT_NAS); //Récupère le 1er élément, merci le chat j'avais une erreur
-    // Vérification si le tableau est vide ou ne contient pas d'éléments valides
-    if (!$first_item) {
-        echo "<p>Aucun élément valide dans le tableau</p>";
-        return;
-    }
-    echo "<table border='1' cellspacing='0' cellpadding='5'>";
-    echo "<tr>";
-    // En-têtes des colonnes
-    foreach ($first_item as $key => $value) {
-        echo "<th>$key</th>";
-    }
-    echo "</tr>";
-    //Lignes pour chaque élément
-    foreach ($COLLECT_NAS as $item) {
-        echo "<tr>";
-        foreach ($item as $key => $value) {
-            echo "<td>$value</td>";
-        }
-        echo "</tr>";
-    }
-    echo "</table><br><br>";
-}
 
 /**
  * \fn verifierCorrespondanceMdtTechVideos($donneesVideo1, $donneesVideo2)
