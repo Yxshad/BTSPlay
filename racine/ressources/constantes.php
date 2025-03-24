@@ -16,6 +16,7 @@ const MTD_FPS = 'FPS';
 const MTD_DUREE = 'Durée';
 const MTD_RESOLUTION = 'Resolution';
 const MTD_FORMAT = 'Format';
+const MTD_DUREE_REELLE = "Durée_reelle";
 
 const MTD_URI = 'URI';
 const MTD_URI_NAS_PAD = 'URI NAS PAD';

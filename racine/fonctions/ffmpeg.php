@@ -67,6 +67,7 @@ function recupererMetadonnees($meta, $fichier){
                 MTD_FPS => $fps[0],
                 MTD_RESOLUTION => $resolution[0],
                 MTD_DUREE => $dureeFormatee,
+                MTD_DUREE_REELLE => $duree[1],
                 MTD_FORMAT => $format[1]
                 ];
     return $liste;
@@ -92,115 +93,77 @@ function recupererTailleFichier($video, $cheminFichier){
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
 function traiterVideo($titre, $duree) {
+
     $total = formaterDuree($duree);
 
-    $chemin_dossier_decoupe = URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION . $titre . '_parts';
-    creerDossier($chemin_dossier_decoupe, false);
-
     $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
+
     creerDossier($chemin_dossier_conversion, false);
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        creerDossier($chemin_dossier_decoupe, false);
-        $output_path = $chemin_dossier_decoupe . '/' . $titre;
-        rename(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre, $output_path);
-        convertirVideo($output_path, $chemin_dossier_conversion, $titre, 0, true);
-        unlink($chemin_dossier_decoupe . "/" . $titre);
-        rmdir($chemin_dossier_decoupe);
-        rmdir($chemin_dossier_conversion);
-    } else {
-        $nombreParties = 100;
-        $dureePartie = $total / $nombreParties;
-        $PIDsEnfants = [];
-        $partiesParProcessus = ceil($nombreParties / NB_MAX_SOUS_PROCESSUS_TRANSFERT);
-        for ($i = 0; $i < NB_MAX_SOUS_PROCESSUS_TRANSFERT; $i++) {
-            $pid = pcntl_fork();
-            if ($pid == -1) {
-                ajouterLog(LOG_CRITICAL, "Erreur critique sur le multiprocessing.");
-                die('Duplication impossible');
-            } elseif ($pid) {
-                // Processus parent : on enregistre le PID du fils
-                $PIDsEnfants[] = $pid;
-            } else {
-                // **PROCESSUS ENFANT**
-                $debut = $i * $partiesParProcessus;
-                $fin = min(($i + 1) * $partiesParProcessus, $nombreParties);
+        $output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
 
-                for ($j = $debut; $j < $fin; $j++) {
-                    $start_time = $j * $dureePartie;
-                    $start_time_formatted = gmdate("H:i:s", intval($start_time)) . sprintf(".%03d", ($start_time - floor($start_time)) * 1000);
-                    $current_part_duration = ($j == $nombreParties - 1) ? max(($total - $start_time), 0.01) : $dureePartie;
-
-                    if (substr($titre, -1) == "4" ) {
-                        $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $j + 1) . '.mp4';
-                    } else {
-                        $output_path = $chemin_dossier_decoupe . '/' . $titre . '_part_' . sprintf('%03d', $j + 1) . '.mxf';
-                    }
-
-                    $command = URI_FFMPEG." -i \"" . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre . "\"" .
-                            " -ss " . $start_time_formatted .
-                            " -t " . $current_part_duration .
-                            " -c copy \"" . $output_path . "\" -y";
-                    exec($command, $output, $return_var);
-
-                    if ($return_var == 1) {
-                        ajouterLog(LOG_CRITICAL, "Erreur lors du découpage de la partie".($j + 1)."de la vidéo $titre.");
-                    }
-
-                    convertirVideo($output_path, $chemin_dossier_conversion, $titre, $j + 1, false);
-                }
-                exit(0);
-            }
-        }
-        // **PROCESSUS PARENT**
-        // Attendre que tous les processus fils se terminent
-        while (count($PIDsEnfants) > 0) {
-            $pidTermine = pcntl_waitpid(-1, $status);
-            if ($pidTermine > 0) {
-                $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
-            }
-        }
-        // **Nettoyage des fichiers temporaires**
-        $files = scandir($chemin_dossier_decoupe);
-        foreach ($files as $file) {
-            if ($file != "." && $file != "..") {
-                unlink($chemin_dossier_decoupe . "/" . $file);
-            }
-        }
-        // Supprimer le fichier original + dossier des morceaux de vidéos à convertir
-        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . '/' . $titre);
-        rmdir($chemin_dossier_decoupe);
-    }
-}
-
-/**
- * \fn convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i)
- * \brief Fonction qui permet de convertir une vidéo passée en paramètre
- * \param titre - nom de la vidéo 
- * \param duree - Duree de la vidéo
- * \return liste - Liste des métadonnées techniques de la vidéo
- */
-function convertirVideo($chemin_fichier_origine, $chemin_dossier_conversion, $titre, $i, $partieUnique){
-    if($partieUnique){
-        $chemin_fichier_destination = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
-    }
-    else{
-        $chemin_fichier_destination = $chemin_dossier_conversion. '/' . $titre . '_part_' . sprintf('%03d', $i) . '.mp4';
-    }
-    $command = URI_FFMPEG." -i \"$chemin_fichier_origine\" " .
-                "-c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                "-c:a aac -b:a 64k -ac 2 -threads 1 " .             // Bitrate audio réduit à 64 kbps, limité à 2 threads
-                "-movflags +faststart " .                   // Optimisation pour le streaming
+        $command = URI_FFMPEG." -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+                " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
+                "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                " -movflags +faststart " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
-                "\"$chemin_fichier_destination\"";
-    //exec($command, $output, $return_var);
-    exec($command . " 2>&1", $output, $return_var);
-    if ($return_var == 1) {
-        ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
-        $chemin_fichier_origine . " : " . implode("\n", $output));
-        //exit();
+                $output_path;
+
+        //exec($command, $output, $return_var);
+        exec($command . " 2>&1", $output, $return_var);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            exit();
+        }
+       
+        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
+    } else {
+
+        $segmentDuration = $total / 100;
+
+        $extension = (substr($titre, -4) === ".mp4") ? ".mp4" : ".mxf";
+
+        // 3. Générer les points de coupure
+        $cutPoints = '';
+        for ($i = 0; $i < 100; $i++) {
+            $cutPoints .= ($i * $segmentDuration) . ',';
+        }
+        $cutPoints = rtrim($cutPoints, ',');
+
+        $outputPattern = $chemin_dossier_conversion . '/' . $titre . "_part_%03d.mp4";
+
+        // 4. Découper la vidéo en segments
+        $decoupeCommand = URI_FFMPEG . " -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+                      " -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .
+                      " -f segment" .
+                      " -segment_times $cutPoints" .
+                      " -reset_timestamps 1" .
+                      " -segment_format mp4" .
+                      " -movflags +faststart" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset ultrafast" .
+                      " -c:a aac -b:a 64k -ac 2 " .
+                      " -movflags +faststart" .
+                      " -map 0:v:0 -map 0:a:0" .
+                      " $outputPattern";
+    
+        // Exécuter la commande de découpage
+        $output = [];
+        $return_var = 0;
+        exec($decoupeCommand, $output, $return_var);
+        if ($return_var == 1) {
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
+            $chemin_fichier_origine . " : " . implode("\n", $output));
+            exit();
+        }else{
+            // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
+            unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
+        }
+
+        
     }
 }
 
@@ -216,6 +179,7 @@ function fusionnerVideo($video){
 
     // On récupère toutes les morceaux de vidéos à convertir
     $files = scandir($chemin_dossier_origine);
+
     // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
     natsort($files);
     // On met le nom de chaques vidéos dans un fichier txt pour ffmpeg
@@ -230,18 +194,22 @@ function fusionnerVideo($video){
     file_put_contents($fileListPath, $fileListContent);
     $outputFile = $chemin_dossier_destination . "/" . $video;
     $command = URI_FFMPEG." -v verbose -f concat -safe 0 -i " . $fileListPath .
-               " -c copy " . substr($outputFile, 0, -3) . "mp4";
+           " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
+           substr($outputFile, 0, -3) . "mp4";
     exec($command, $output, $returnVar);
-
-
-    // On supprime le dossier qui contient les morceaux convertis
-    $files = scandir($chemin_dossier_origine);
-    foreach ($files as $file) {
-        if ($file != "." && $file != "..") {
-            unlink($chemin_dossier_origine . "/" . $file);
+    if ($return_var != 1) {
+        // On supprime le dossier qui contient les morceaux convertis
+        $files = scandir($chemin_dossier_origine);
+        foreach ($files as $file) {
+            if ($file != "." && $file != "..") {
+                unlink($chemin_dossier_origine . "/" . $file);
+            }
         }
+        rmdir($chemin_dossier_origine);
+        return 1;
+    }else{
+        return 0;
     }
-    rmdir($chemin_dossier_origine);
 }
 
 /**
@@ -288,10 +256,10 @@ function formaterDuree($duree){
     $heures = (int)substr($duree, 0, 2);
     $minutes = (int)substr($duree, 3, 2);
     $secondes = (int)substr($duree, 6, 2);
-    $milisecondes = (int)substr($duree, 9, 2);
+    $centisecondes = (int)substr($duree, 9, 2);
 
     // Convertir la durée totale en secondes
-    $total = $heures * 3600 + $minutes * 60 + $secondes + $milisecondes / 1000;
+    $total = $heures * 3600 + $minutes * 60 + $secondes + ($centisecondes / 10);
     return $total;
 }
 ?>

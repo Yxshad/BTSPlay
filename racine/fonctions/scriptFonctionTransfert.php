@@ -14,6 +14,7 @@ fonctionTransfert();
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
  */
 function fonctionTransfert(){
+    
 	ajouterLog(LOG_INFORM, "Lancement de la fonction de transfert.");
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
@@ -100,7 +101,7 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 		foreach ($COLLECT_ARCH as $key_ARCH => $ligneCollect_ARCH) {
 			//Si les deux $ligneCollect correspondent exactement (hors URI) (pathinfo pour ne pas tenir compte de l'extension)
 			if (verifierCorrespondanceMdtTechVideos($ligneCollect_PAD, $ligneCollect_ARCH)){
-
+                
 				//Remplir $COLLECT_STOCK_LOCAL
 				$COLLECT_STOCK_LOCAL[] = [
 					MTD_TITRE => $ligneCollect_ARCH[MTD_TITRE],
@@ -109,7 +110,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 					MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 					MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 					MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+					MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+                    MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 				];
 
 				//Retirer $ligneCollect_ARCH et $ligneCollect_PAD de COLLECT_ARCH et $COLLECT_PAD
@@ -128,7 +130,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_PAD[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_PAD[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_PAD[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_PAD[MTD_DUREE],
+            MTD_DUREE_REELLE => $ligneCollect_PAD[MTD_DUREE_REELLE]
 		];
 		unset($COLLECT_PAD[$key_PAD]);
 	}
@@ -140,7 +143,8 @@ function remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOC
 			MTD_FORMAT => $ligneCollect_ARCH[MTD_FORMAT],
 			MTD_FPS => $ligneCollect_ARCH[MTD_FPS],
 			MTD_RESOLUTION => $ligneCollect_ARCH[MTD_RESOLUTION],
-			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE]
+			MTD_DUREE => $ligneCollect_ARCH[MTD_DUREE],
+            MTD_DUREE_REELLE => $ligneCollect_ARCH[MTD_DUREE_REELLE]
 		];
 		unset($COLLECT_ARCH[$key_ARCH]);
 	}
@@ -198,7 +202,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 ftp_close($conn_id);
 
                 // **Découpe / Conversion / Fusion**
-                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE]);
+                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE_REELLE]);
                 fusionnerVideo($video[MTD_TITRE]);
 
                 $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
