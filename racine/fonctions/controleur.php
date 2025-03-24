@@ -41,6 +41,10 @@ function checkHeader(){
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
             controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
+        if ($_POST["action"] == "telechargerVideo" && isset($_POST["URI_COMPLET_NAS_ARCH"])) {
+            $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
+            controleurTelechargerVideo($URI_COMPLET_NAS_ARCH);
+        }
         if ($_POST["action"] == "supprimerVideo" && isset($_POST["NAS"])) {
             $idVideo = $_POST['idVideo'];
             $NAS = $_POST["NAS"];
@@ -158,10 +162,10 @@ function controleurRecupererInfosVideo() {
 
     // Ajout des URIS des 2 NAS avec gestion d'erreur
     $URIS = [
-        "URI_NAS_PAD" => !empty($video["URI_NAS_PAD"]) ? URI_RACINE_NAS_PAD . $video["URI_NAS_PAD"] : "",
-        "URI_NAS_ARCH" => !empty($video["URI_NAS_ARCH"]) ? URI_RACINE_NAS_ARCH . $video["URI_NAS_ARCH"] : ""
+        "URI_NAS_PAD" => !empty($video["URI_NAS_PAD"]) ? $video["URI_NAS_PAD"] : "",
+        "URI_NAS_ARCH" => !empty($video["URI_NAS_ARCH"]) ? $video["URI_NAS_ARCH"] : ""
     ];
-
+    
     $URIEspaceLocal = '/stockage/' . $video['URI_STOCKAGE_LOCAL'];
     $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
     $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
@@ -301,7 +305,7 @@ function controleurVerifierAccesPage($accesAVerifier){
  */
 function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
-    if(!empty($URI_COMPLET_NAS_PAD)){
+    if($URI_COMPLET_NAS_PAD != "Non présente"){
         //On récupère met le nom à .mxf
         $nomFichier = forcerExtensionMXF($URI_COMPLET_NAS_PAD);
         $cheminFichier = dirname($URI_COMPLET_NAS_PAD) . '/';
@@ -343,6 +347,42 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
         echo "La vidéo a déjà été diffusée.";
         exit();
     }
+}
+
+
+/**
+ * \fn controleurDiffuserVideo($URI_COMPLET_NAS_ARCH)
+ * \brief Fonction qui permet de télécharger une vidéo sur le client.
+ * \param URI_COMPLET_NAS_ARCH - Le chemin d'accès à la vidéo du NAS ARCH
+ */
+function controleurTelechargerVideo($URI_COMPLET_NAS_ARCH){
+
+    if($URI_COMPLET_NAS_ARCH != "Non présente"){
+        $cheminFichier = dirname($URI_COMPLET_NAS_ARCH) . '/';
+        $nomFichier = forcerExtensionMp4($URI_COMPLET_NAS_ARCH);
+
+        $cheminFichierDesination = URI_VIDEOS_A_TELECHARGER . $nomFichier;
+        $cheminFichierSource = $cheminFichier.$nomFichier;
+
+        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+        ftp_close($conn_id);
+    }
+    else{
+        exit();
+    }
+
+    //Proposer la vidéo au téléchargement
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($cheminFichierDesination) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($cheminFichierDesination));
+    readfile($cheminFichierDesination);
+    unlink($cheminFichierDesination);
+    exit();
 }
 
 /**

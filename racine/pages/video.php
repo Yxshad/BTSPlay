@@ -42,9 +42,6 @@
     <link href="../ressources/Style/video.css" rel="stylesheet">
     <link href="../ressources/Style/menuArbo.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
-    
-    <!-- <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" /> -->
 
     <!-- #RISQUE : Liens CDN utilisés dans la lib plyr.js -->
     <script src="../ressources/lib/Plyr/plyr.js"></script>
@@ -65,7 +62,7 @@
                     </video>
                 </div>
             </div>
-                <div class="info_video">
+            <div class="info_video">
 
                 <div class ="titre_nom">
                     <h1 class="titre"><?php echo $nomFichier; ?></h1>
@@ -75,12 +72,24 @@
                 <div class="container-button">
                     <?php
                     if (!empty($cheminCompletNAS_ARCH)){ ?>
-                            <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
-                                <div class="logo-btnvideo">
-                                    <img src="../ressources/Images/télécharger_image.png" alt="">
-                                </div>
-                                <p>Télécharger</p>
-                            </button> <?php
+                            <button title="Télécharger vidéo" class="btnVideo" onclick="changerTitrePopup('Téléchargement'); 
+                                                                                        changerTextePopup('Voulez-vous télécharger la vidéo <?php echo $nomFichier; ?> ?');
+                                                                                        changerTexteBtn('Confirmer', 'btn1');
+                                                                                        changerTexteBtn('Annuler', 'btn2');
+                                                                                        attribuerFonctionBtn('lancerTelechargement','<?php echo $cheminCompletNAS_ARCH; ?>', 'btn1');
+                                                                                        afficherBtn('btn2');
+                                                                                        cacherBtn('btn3');
+                                                                                        afficherPopup();">
+                            <div class="logo-btnvideo">
+                            <img src="../ressources/Images/télécharger_image.png" alt="">
+                            </div>
+                            <p>Télécharger</p>
+                            </button>
+                            <div id="overlay" style="display : none">
+                                <div class="loader"></div>
+                                <p>Téléchargement en cours...</p>
+                            </div>
+                            <?php
                         }
                         else{ ?>
                             <button title="Télécharger vidéo" class="btnVideo boutonGrise">
@@ -123,7 +132,7 @@
                     <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
                             if (!empty($cheminCompletNAS_PAD)){ ?>
                                 <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="  changerTitrePopup('Diffusion'); 
-                                                                                                                changerTextePopup('Voulez-vous diffuser la vidéo <?php echo $nomFichier; ?>');
+                                                                                                                changerTextePopup('Voulez-vous diffuser la vidéo <?php echo $nomFichier; ?> ?');
                                                                                                                 changerTexteBtn('Confirmer', 'btn1');
                                                                                                                 changerTexteBtn('Annuler', 'btn2');
                                                                                                                 attribuerFonctionBtn('lancerDiffusion','<?php echo $cheminCompletNAS_PAD; ?>', 'btn1');

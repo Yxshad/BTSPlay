@@ -570,10 +570,8 @@ function sendForm(formulaire){
 }
 
 function lancerDiffusion(uri_nas_pad){
-    console.log(uri_nas_pad)
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
-        
         const reponse = xhttp.responseText.trim();
         if (reponse == "1") {
             changerTitrePopup("Diffusion");
@@ -594,16 +592,38 @@ function lancerDiffusion(uri_nas_pad){
             cacherBtn("btn4");
             afficherPopup();
         }
-        
-        
     }
     xhttp.open("POST", "../fonctions/controleur.php");
-    
     xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-
     xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
     
 }
+
+function lancerTelechargement(uri_nas_arch){
+
+    document.getElementById("overlay").style.display = "flex";
+
+    let form = document.createElement("form");
+    form.method = "POST";
+    form.action = "../fonctions/controleur.php";
+
+    let inputAction = document.createElement("input");
+    inputAction.type = "hidden";
+    inputAction.name = "action";
+    inputAction.value = "telechargerVideo";
+
+    let inputUri = document.createElement("input");
+    inputUri.type = "hidden";
+    inputUri.name = "URI_COMPLET_NAS_ARCH";
+    inputUri.value = uri_nas_arch;
+
+    form.appendChild(inputAction);
+    form.appendChild(inputUri);
+    document.body.appendChild(form);
+
+    setTimeout(() => {
+        form.submit();
+    }, 500);
 
 function modifierParametres(event){
     event.preventDefault();

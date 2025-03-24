@@ -225,8 +225,11 @@ function genererMiniature($video, $duree){
 
     $timecode = floor($total / 2);
 
-    $videoSansExtension = rtrim($video, ".mp4");
-
+    //Remplacer l'extension .mp4 par .png
+    $cheminFichier = dirname($video) . '/';
+    $nomFichier = basename($video);
+    $nomFichier = recupererNomFichierSansExtension($nomFichier);
+    $videoSansExtension = $cheminFichier.$nomFichier;
     $miniature = $videoSansExtension . SUFFIXE_MINIATURE_VIDEO;
 
     $command = URI_FFMPEG . " -i " . $video . 
