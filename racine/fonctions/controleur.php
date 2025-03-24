@@ -166,10 +166,10 @@ function controleurRecupererInfosVideo() {
 
     // Ajout des URIS des 2 NAS avec gestion d'erreur
     $URIS = [
-        "URI_NAS_PAD" => !empty($video["URI_NAS_PAD"]) ? URI_RACINE_NAS_PAD . $video["URI_NAS_PAD"] : "",
-        "URI_NAS_ARCH" => !empty($video["URI_NAS_ARCH"]) ? URI_RACINE_NAS_ARCH . $video["URI_NAS_ARCH"] : ""
+        "URI_NAS_PAD" => !empty($video["URI_NAS_PAD"]) ? $video["URI_NAS_PAD"] : "",
+        "URI_NAS_ARCH" => !empty($video["URI_NAS_ARCH"]) ? $video["URI_NAS_ARCH"] : ""
     ];
-
+    
     $URIEspaceLocal = '/stockage/' . $video['URI_STOCKAGE_LOCAL'];
     $nomFichierMiniature = trouverNomMiniature($video['mtd_tech_titre']);
     $cheminMiniatureComplet = $URIEspaceLocal . $nomFichierMiniature;
