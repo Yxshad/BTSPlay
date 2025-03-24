@@ -28,44 +28,55 @@ $listeProjet = getAllProjet();
 </head>
 <body>
     <?php require_once '../ressources/Templates/header.php'; ?>
-    <div class="resultsContainer">
-        <div class="filtrage">
-            <form action="#" method="get">
-                <select name="prof" id="">
-                    <option value="" disabled selected>Professeur référent</option>
-                    <?php
-                        foreach ($listeProf as $prof) {
-                            echo "<option value='" . $prof["professeurReferent"] . "'>" . $prof["nom"] . " " . $prof["prenom"] . "</option>";
-                        }
-                    ?>
-                </select>
 
-                <input placeholder="Rechercher dans la description" type="text" name="description">
-
-                <select placeholder="Projet" name="projet" id="">
-                    <option value="" disabled selected>Projet</option>
-                    <?php
-                        foreach ($listeProjet as $projet) {
-                            echo "<option value='" . $projet["intitule"] . "'>" . $projet["intitule"] . "</option>";
-                        }
-                    ?>
-                </select>
-
+    <div class="filtrage">
+        <form action="#" method="get">
+            <input placeholder="Rechercher dans la description" type="text" name="description">
+            <div>
+                <div class="selects">
+                    <select name="prof" id="">
+                        <option value="" disabled selected>Professeur référent</option>
+                        <?php
+                            foreach ($listeProf as $prof) {
+                                echo "<option value='" . $prof["professeurReferent"] . "'>" . $prof["nom"] . " " . $prof["prenom"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                    <select placeholder="Projet" name="projet" id="">
+                        <option value="" disabled selected>Projet</option>
+                        <?php
+                            foreach ($listeProjet as $projet) {
+                                echo "<option value='" . $projet["intitule"] . "'>" . $projet["intitule"] . "</option>";
+                            }
+                        ?>
+                    </select>
+                </div>
                 <input type="submit" value="Rechercher" id="Valider">
-            </form>
-        </div>
+            </div>
+        </form>
+    </div>
+
+
+    <div class="resultsContainer">
         <?php
             foreach($medias as $media){ ?>
                 <div class="result">
                     <a href="video.php?v=<?php echo $media["id"] ?>">
-                        <?php echo $media["mtd_tech_titre"]; ?>
+                        <div class="miniature">
+                            <img src="<?php echo '/stockage/' . $media['URI_STOCKAGE_LOCAL'] . trouverNomMiniature($media["mtd_tech_titre"]); ?>" alt="">
+                        </div>
+                        <div class="info-video">
+                            <p class="titre-video">
+                                <?php echo $media["mtd_tech_titre"]; ?>
+                            </p>
+                            <p class="description">
+                                <?php echo $media["description"]; ?>
+                            </p>
+                        </div>
                     </a>          
                 </div>
             <?php }
         ?>
-    </div>
-    <div class="container-home-button">
-        <a href="/" class="btn-home">Retour à l'accueil</a>
     </div>
 </body>
 </html>
