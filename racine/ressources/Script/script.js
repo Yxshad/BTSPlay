@@ -455,7 +455,7 @@ function initFormMetadonnees(){
     document.getElementById("add-role").addEventListener("click", function() {
         let container = document.getElementById("roles-container");
         let newRoleDiv = document.createElement("div");
-        newRoleDiv.classList.add("champ", "role");
+        newRoleDiv.classList.add("champ", "role", "form-field");
 
         let roleLabel = prompt("Nom du rôle :");
         if (!roleLabel) return;

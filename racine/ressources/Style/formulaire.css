@@ -82,6 +82,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 10px;
 }
 
 .form-label {
@@ -93,6 +94,7 @@
 .form-select,
 .role-input {
     padding: 10px;
+    width: 100%;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
@@ -145,4 +147,13 @@ textarea.form-input {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+#roles-container{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.role-inputs{
+    width: 100%;   
 }
