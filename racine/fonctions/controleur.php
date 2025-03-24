@@ -592,6 +592,10 @@ function controleurMettreAJourParametres(){
     $successMessage = "Les paramètres ont été mis à jour avec succès!";
 }
 
+function controleurGetAllProfesseursReferent(){
+    return getAllProfesseursReferent();
+}
+
 function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }

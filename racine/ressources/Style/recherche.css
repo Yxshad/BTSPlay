@@ -119,7 +119,7 @@
 }
 
 /* Conteneur de résultats */
-#resultsContainer {
+.resultsContainer {
     width: 90%;
     max-width: 1000px;
     margin: 0 auto;
