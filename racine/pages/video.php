@@ -73,7 +73,7 @@
                     <?php
                     if (!empty($cheminCompletNAS_ARCH)){ ?>
                             <button title="Télécharger vidéo" class="btnVideo" onclick="changerTitrePopup('Téléchargement'); 
-                                                                                        changerTextePopup('Voulez-vous Télécharger la vidéo <?php echo $nomFichier; ?> ?');
+                                                                                        changerTextePopup('Voulez-vous télécharger la vidéo <?php echo $nomFichier; ?> ?');
                                                                                         changerTexteBtn('Confirmer', 'btn1');
                                                                                         changerTexteBtn('Annuler', 'btn2');
                                                                                         attribuerFonctionBtn('lancerTelechargement','<?php echo $cheminCompletNAS_ARCH; ?>', 'btn1');

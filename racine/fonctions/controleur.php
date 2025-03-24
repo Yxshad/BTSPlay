@@ -309,7 +309,7 @@ function controleurVerifierAccesPage($accesAVerifier){
  */
 function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
 
-    if(!empty($URI_COMPLET_NAS_PAD)){
+    if($URI_COMPLET_NAS_PAD != "Non présente"){
         //On récupère met le nom à .mxf
         $nomFichier = forcerExtensionMXF($URI_COMPLET_NAS_PAD);
         $cheminFichier = dirname($URI_COMPLET_NAS_PAD) . '/';
@@ -361,15 +361,34 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
  */
 function controleurTelechargerVideo($URI_COMPLET_NAS_ARCH){
 
-    if(1){
-        ajouterLog(LOG_SUCCESS, "Téléchargement de la vidéo " . $URI_COMPLET_NAS_ARCH . " effectué avec succès.");
-        echo "1";
-        exit();
+    if($URI_COMPLET_NAS_ARCH != "Non présente"){
+        $cheminFichier = dirname($URI_COMPLET_NAS_ARCH) . '/';
+        $nomFichier = forcerExtensionMp4($URI_COMPLET_NAS_ARCH);
+
+        $cheminFichierDesination = URI_VIDEOS_A_TELECHARGER . $nomFichier;
+        $cheminFichierSource = $cheminFichier.$nomFichier;
+
+        $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        telechargerFichier($conn_id, $cheminFichierDesination, $cheminFichierSource);
+        ftp_close($conn_id);
     }
     else{
-        echo "La vidéo a déjà été téléchargée.";
         exit();
     }
+
+    //Proposer la vidéo au téléchargement
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename="' . basename($cheminFichierDesination) . '"');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($cheminFichierDesination));
+    flush();
+    readfile($cheminFichierDesination);
+
+    unlink($cheminFichierDesination);
+    exit();
 }
 
 /**
