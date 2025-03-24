@@ -84,7 +84,12 @@
                             <img src="../ressources/Images/télécharger_image.png" alt="">
                             </div>
                             <p>Télécharger</p>
-                            </button> <?php
+                            </button>
+                            <div id="overlay" style="display : none">
+                                <div class="loader"></div>
+                                <p>Téléchargement en cours...</p>
+                            </div>
+                            <?php
                         }
                         else{ ?>
                             <button title="Télécharger vidéo" class="btnVideo boutonGrise">

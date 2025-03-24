@@ -597,6 +597,8 @@ function lancerDiffusion(uri_nas_pad){
 
 function lancerTelechargement(uri_nas_arch){
 
+    document.getElementById("overlay").style.display = "flex";
+
     let form = document.createElement("form");
     form.method = "POST";
     form.action = "../fonctions/controleur.php";
@@ -605,7 +607,7 @@ function lancerTelechargement(uri_nas_arch){
     inputAction.type = "hidden";
     inputAction.name = "action";
     inputAction.value = "telechargerVideo";
-    
+
     let inputUri = document.createElement("input");
     inputUri.type = "hidden";
     inputUri.name = "URI_COMPLET_NAS_ARCH";
