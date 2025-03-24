@@ -624,6 +624,7 @@ function lancerTelechargement(uri_nas_arch){
     setTimeout(() => {
         form.submit();
     }, 500);
+}
 
 function modifierParametres(event){
     event.preventDefault();
