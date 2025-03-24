@@ -31,7 +31,7 @@ $listeProjet = getAllProjet();
         <div class="filtrage">
             <form action="#" method="get">
                 <select name="prof" id="">
-                    <option value=""></option>
+                    <option value="" disabled selected>Professeur référent</option>
                     <?php
                         foreach ($listeProf as $prof) {
                             echo "<option value='" . $prof["professeurReferent"] . "'>" . $prof["nom"] . " " . $prof["prenom"] . "</option>";
@@ -39,10 +39,10 @@ $listeProjet = getAllProjet();
                     ?>
                 </select>
 
-                <input type="text" name="description">
+                <input placeholder="Rechercher dans la description" type="text" name="description">
 
-                <select name="projet" id="">
-                    <option value=""></option>
+                <select placeholder="Projet" name="projet" id="">
+                    <option value="" disabled selected>Projet</option>
                     <?php
                         foreach ($listeProjet as $projet) {
                             echo "<option value='" . $projet["intitule"] . "'>" . $projet["intitule"] . "</option>";
@@ -50,7 +50,7 @@ $listeProjet = getAllProjet();
                     ?>
                 </select>
 
-                <input type="submit" value="Rechercher">
+                <input type="submit" value="Rechercher" id="Valider">
             </form>
         </div>
         <?php
@@ -63,6 +63,8 @@ $listeProjet = getAllProjet();
             <?php }
         ?>
     </div>
-    <a href="/" class="btn-home">Retour à l'accueil</a>
+    <div class="container-home-button">
+        <a href="/" class="btn-home">Retour à l'accueil</a>
+    </div>
 </body>
 </html>

@@ -11,7 +11,7 @@
 
             <!-- Formulaire de recherche principale -->
             <form class="recherche" action="../pages/recherche.php" method="GET">
-                <input type="search" name="motCle" placeholder="Rechercher une vidéo...">
+                <input type="search" name="motCle" placeholder="Rechercher une vidéo..." >
                 <button type="submit">
                     <div class="logo-search">
                         <img src="../ressources/Images/recherche.png" alt="Rechercher">

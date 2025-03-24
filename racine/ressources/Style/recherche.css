@@ -121,10 +121,14 @@
 /* Conteneur de résultats */
 .resultsContainer {
     width: 90%;
+    display: flex;
+    flex-direction: column;
     max-width: 1000px;
     margin: 0 auto;
     padding: 20px 0;
     transition: transform 0.5s ease;
+    gap: 30px;
+
 }
 
 .results-list {
@@ -133,6 +137,53 @@
     gap: 15px;
 }
 
+.filtrage {
+    height: 40px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid black;
+}
+
+.filtrage form {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+}
+
+
+.filtrage form * {
+    border: 1px solid ;
+    border-radius : 15px ;
+}
+
+
+.filtrage form input {
+    
+}
+.container-home-button{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.btn-home{
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 15px;
+    /* width: 20%; */
+    padding: 10px;
+}
+
+#Valider {
+    background-color: orange;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+
+    cursor: pointer;
+}
 /* Style pour les résultats */
 .result {
     margin-bottom: 20px;
