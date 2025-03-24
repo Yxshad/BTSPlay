@@ -40,7 +40,6 @@ function fonctionTransfert(){
 /**
  * \fn recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $URI_NAS_RACINE)
  * \brief Fonction qui récupère l'ensemble des métadonnées techniques des vidéos d'un NAS (collectPAD ou collectARCH)
- * On télécharge les vidéos dans un $URI_VIDEOS_A_ANALYSER si celles-ci ne sont pas présentes dans la BD
  * - On remplit CollectNAS pour chaque vidéo
  * \param ftp_server - Le nom du serveur ftp auquel on veut accéder
  * \param ftp_user - Nom de l'utilisateur qui se connecte sur le serveur ftp
