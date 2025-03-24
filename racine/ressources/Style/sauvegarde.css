@@ -59,27 +59,6 @@ h1, h2{
     border: none;
 }
 
-.btn.parametre {
-    background-color: #e74c3c;
-    color: white;
-}
-
-.btn.parametre:hover {
-    background-color: #c0392b;
-    box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
-}
-
-.btn.manuelle {
-    background-color: #f39c12;
-    color: white;
-}
-
-.btn.manuelle:hover {
-    background-color: #d35400;
-    box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
-}
-
-
 
 .log-container {
     color: white;
