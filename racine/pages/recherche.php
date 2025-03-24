@@ -23,6 +23,7 @@ $listeProjet = getAllProjet();
     <link href="../ressources/Style/main.css" rel="stylesheet">
     <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/recherche.css" rel="stylesheet">
+    <script src="../ressources/Script/script.js"></script>
     <title>Recherche</title>
 </head>
 <body>

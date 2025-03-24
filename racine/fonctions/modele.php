@@ -1325,7 +1325,7 @@ function faireRecherche($motsClefs){
     $listeChamps = ["mtd_tech_titre", "description", "Professeur.nom", "Professeur.prenom", "projet", "promotion"];
 
     $queryParts = [];
-    $query = "SELECT * FROM Media JOIN Professeur ON Media.professeurReferent = Professeur.identifiant WHERE ";
+    $query = "SELECT * FROM Media LEFT JOIN Professeur ON Media.professeurReferent = Professeur.identifiant WHERE ";
 
     foreach ($listeChamps as $champ) {
         $likeParts = array_map(function($mot) use ($champ) {
@@ -1336,7 +1336,6 @@ function faireRecherche($motsClefs){
     }
 
     $query .= implode(' OR ', $queryParts);    
-
     try{
         $sql = $connexion->prepare($query);
         $sql->execute();
@@ -1380,6 +1379,9 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null)
         return $recherche;
     }
     catch(Exception $e){
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la recherche avancée " .
+         " : " . $e->getMessage());
+         $connexion->rollback();
         $connexion = null;
     } 
 
