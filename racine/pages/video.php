@@ -62,7 +62,7 @@
                     </video>
                 </div>
             </div>
-                <div class="info_video">
+            <div class="info_video">
 
                 <div class ="titre_nom">
                     <h1 class="titre"><?php echo $nomFichier; ?></h1>
