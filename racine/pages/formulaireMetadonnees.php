@@ -67,7 +67,7 @@
 
             <!-- Colonne de droite -->
             <div class="form-column-right">
-                <h2 class="team-title">Équipe</h2>
+                <h2 class="team-title">Formulaire métadonnées</h2>
                 <input type="hidden" name="action" value="ModifierMetadonnees">
                 <input type="hidden" name="idVideo" value="<?php echo $idVideo; ?>">
 
@@ -75,13 +75,20 @@
                     <label for="profReferent" class="form-label">Professeur référent</label>
                     <select id="profReferent" name="profReferent" class="form-select">
                         <option value="<?php echo $mtdEdito["professeur"]; ?>">
-                             <?php echo $mtdEdito["professeur"]; ?>
+                            <?php echo $mtdEdito["professeur"]; ?>
                         </option>
-                        <?php foreach ($listeProfesseurs as $prof) { ?>
-                            <option value="<?php echo $prof; ?>"><?php echo $prof; ?></option>
+                        <?php
+                        // Tri alphabétique de la liste des professeurs
+                        sort($listeProfesseurs, SORT_LOCALE_STRING);
+
+                        foreach ($listeProfesseurs as $prof) { ?>
+                            <option value="<?php echo htmlspecialchars($prof, ENT_QUOTES, 'UTF-8'); ?>">
+                                <?php echo htmlspecialchars($prof, ENT_QUOTES, 'UTF-8'); ?>
+                            </option>
                         <?php } ?>
                     </select>
                 </div>
+
 
                 <div class="form-field">
                     <label for="description" class="form-label">Description</label>

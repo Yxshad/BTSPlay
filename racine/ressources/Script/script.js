@@ -251,7 +251,7 @@ function gestionOngletsAdministration() {
 
 function appelScanVideo () {
     scanDossierDecoupeVideo();
-    setInterval( scanDossierDecoupeVideo , 3000);
+    setInterval( scanDossierDecoupeVideo , 1000);
 }
 
 function gestion_click_dossier() {
@@ -565,6 +565,10 @@ function redirection(page){
     window.location.href = "./" + page;
 }
 
+function sendForm(formulaire){
+    document.querySelector(formulaire).submit();
+}
+
 function lancerDiffusion(uri_nas_pad){
     console.log(uri_nas_pad)
     const xhttp = new XMLHttpRequest();
@@ -599,6 +603,18 @@ function lancerDiffusion(uri_nas_pad){
 
     xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
     
+}
+
+function modifierParametres(event){
+    event.preventDefault();
+    changerTitrePopup("Paramétrage");
+    changerTextePopup("Les paramètres ont été enregistrés.");
+    changerTexteBtn("Confirmer", "btn1");
+    attribuerFonctionBtn("sendForm", ".form-container", "btn1");
+    cacherBtn("btn2");
+    cacherBtn("btn3");
+    cacherBtn("btn4");
+    afficherPopup();
 }
 
 function reloading(){

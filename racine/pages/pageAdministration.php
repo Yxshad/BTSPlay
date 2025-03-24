@@ -150,9 +150,6 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 <div class="header-row">
                     <div class="transfers-header">
                         <h2>Transferts</h2>
-                        <div class="lignes">
-                            <!-- Résultat ajax -->
-                        </div>
                     </div>
                     <div class="pending-videos-header">
                         <h2>Vidéos en attente de métadonnées</h2>
@@ -198,14 +195,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
     </div>
 
     <div class="tab-content" id="settings">
-        <h2>Paramétrage des constantes</h2>
-        
-        <?php
-        // Afficher un message de succès si les constantes ont été mises à jour
-        if (isset($successMessage)) {
-            echo "<p style='color:green;'>$successMessage</p>";
-        }
-        ?>
+        <h2>Paramétrage</h2>
         
         <!-- Table des Matières -->
         <div class="table-of-contents">
@@ -222,7 +212,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
         </div>
 
         <!-- Formulaire -->
-        <form method="post" action="#" class="form-container">
+        <form method="post" action="#" class="form-container" onsubmit="modifierParametres(event);">
             <input type="hidden" name="action" value="mettreAJourParametres">
 
             <!-- Section URIs -->
