@@ -384,9 +384,7 @@ function controleurTelechargerVideo($URI_COMPLET_NAS_ARCH){
     header('Cache-Control: must-revalidate');
     header('Pragma: public');
     header('Content-Length: ' . filesize($cheminFichierDesination));
-    flush();
     readfile($cheminFichierDesination);
-
     unlink($cheminFichierDesination);
     exit();
 }

@@ -616,7 +616,10 @@ function lancerTelechargement(uri_nas_arch){
     form.appendChild(inputAction);
     form.appendChild(inputUri);
     document.body.appendChild(form);
-    form.submit();
+
+    setTimeout(() => {
+        form.submit();
+    }, 500);
 }
 
 function reloading(){
