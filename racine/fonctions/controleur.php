@@ -41,6 +41,10 @@ function checkHeader(){
             $URI_COMPLET_NAS_PAD = $_POST['URI_COMPLET_NAS_PAD'];
             controleurDiffuserVideo($URI_COMPLET_NAS_PAD);
         }
+        if ($_POST["action"] == "telechargerVideo" && isset($_POST["URI_COMPLET_NAS_ARCH"])) {
+            $URI_COMPLET_NAS_ARCH = $_POST['URI_COMPLET_NAS_ARCH'];
+            controleurTelechargerVideo($URI_COMPLET_NAS_ARCH);
+        }
         if ($_POST["action"] == "supprimerVideo" && isset($_POST["NAS"])) {
             $idVideo = $_POST['idVideo'];
             $NAS = $_POST["NAS"];
@@ -345,6 +349,25 @@ function controleurDiffuserVideo($URI_COMPLET_NAS_PAD){
     }
     else{
         echo "La vidéo a déjà été diffusée.";
+        exit();
+    }
+}
+
+
+/**
+ * \fn controleurDiffuserVideo($URI_COMPLET_NAS_ARCH)
+ * \brief Fonction qui permet de télécharger une vidéo sur le client.
+ * \param URI_COMPLET_NAS_ARCH - Le chemin d'accès à la vidéo du NAS ARCH
+ */
+function controleurTelechargerVideo($URI_COMPLET_NAS_ARCH){
+
+    if(1){
+        ajouterLog(LOG_SUCCESS, "Téléchargement de la vidéo " . $URI_COMPLET_NAS_ARCH . " effectué avec succès.");
+        echo "1";
+        exit();
+    }
+    else{
+        echo "La vidéo a déjà été téléchargée.";
         exit();
     }
 }

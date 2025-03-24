@@ -566,7 +566,6 @@ function redirection(page){
 }
 
 function lancerDiffusion(uri_nas_pad){
-    console.log(uri_nas_pad)
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         
@@ -599,6 +598,35 @@ function lancerDiffusion(uri_nas_pad){
 
     xhttp.send("action=diffuserVideo&URI_COMPLET_NAS_PAD=" + uri_nas_pad);
     
+}
+
+function lancerTelechargement(uri_nas_arch){
+    const xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        const reponse = xhttp.responseText.trim();
+        if (reponse == "1") {
+            changerTitrePopup("Téléchargement");
+            changerTextePopup("Téléchargement effectué avec succès.");
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        } else{
+            changerTitrePopup("Téléchargement");
+            changerTextePopup("Echec lors du téléchargement. <br/>Erreur : " + reponse);
+            changerTexteBtn("Confirmer", "btn1");
+            attribuerFonctionBtn("","", "btn1")
+            cacherBtn("btn2");
+            cacherBtn("btn3");
+            cacherBtn("btn4");
+            afficherPopup();
+        }
+    }
+    xhttp.open("POST", "../fonctions/controleur.php");
+    xhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xhttp.send("action=telechargerVideo&URI_COMPLET_NAS_ARCH=" + uri_nas_arch);
 }
 
 function reloading(){

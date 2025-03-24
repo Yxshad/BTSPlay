@@ -72,11 +72,18 @@
                 <div class="container-button">
                     <?php
                     if (!empty($cheminCompletNAS_ARCH)){ ?>
-                            <button title="Télécharger vidéo" class="btnVideo" onclick="window.location.href='<?php echo $cheminVideoComplet; ?>';">
-                                <div class="logo-btnvideo">
-                                    <img src="../ressources/Images/télécharger_image.png" alt="">
-                                </div>
-                                <p>Télécharger</p>
+                            <button title="Télécharger vidéo" class="btnVideo" onclick="changerTitrePopup('Téléchargement'); 
+                                                                                        changerTextePopup('Voulez-vous Télécharger la vidéo <?php echo $nomFichier; ?> ?');
+                                                                                        changerTexteBtn('Confirmer', 'btn1');
+                                                                                        changerTexteBtn('Annuler', 'btn2');
+                                                                                        attribuerFonctionBtn('lancerTelechargement','<?php echo $cheminCompletNAS_ARCH; ?>', 'btn1');
+                                                                                        afficherBtn('btn2');
+                                                                                        cacherBtn('btn3');
+                                                                                        afficherPopup();">
+                            <div class="logo-btnvideo">
+                            <img src="../ressources/Images/télécharger_image.png" alt="">
+                            </div>
+                            <p>Télécharger</p>
                             </button> <?php
                         }
                         else{ ?>
@@ -120,7 +127,7 @@
                     <?php if(controleurVerifierAcces(ACCES_DIFFUSION)){
                             if (!empty($cheminCompletNAS_PAD)){ ?>
                                 <button id="boutonDiffusion" title="Diffuser vidéo" class="btnVideo" onclick="  changerTitrePopup('Diffusion'); 
-                                                                                                                changerTextePopup('Voulez-vous diffuser la vidéo <?php echo $nomFichier; ?>');
+                                                                                                                changerTextePopup('Voulez-vous diffuser la vidéo <?php echo $nomFichier; ?> ?');
                                                                                                                 changerTexteBtn('Confirmer', 'btn1');
                                                                                                                 changerTexteBtn('Annuler', 'btn2');
                                                                                                                 attribuerFonctionBtn('lancerDiffusion','<?php echo $cheminCompletNAS_PAD; ?>', 'btn1');
