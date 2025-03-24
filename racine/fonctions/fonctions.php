@@ -784,7 +784,7 @@ function mettreAJourConstantes($data) {
 
 function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     try{
-    $file = '/etc/crontab'; // Remplacez par le nom de votre fichier
+    $file = '/etc/crontab';
     exec("sudo chown www-data:www-data /etc/crontab");
     
     // Supprimer le zéro en tête si présent
@@ -798,11 +798,11 @@ function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     // Lire tout le fichier dans un tableau
     $lines = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     
-    // Modifier ou ajouter la ligne correspondant à backup.php
+    // Modifier ou ajouter la ligne correspondant à scriptBackup.php
     $found = false;
     foreach ($lines as $index => $line) {
-        if (strpos($line, "backup.php") !== false) {
-            $lines[$index] = "$minute $heure * $mois $jour root php /var/www/html/fonctions/backup.php >> /var/log/backup.log";
+        if (strpos($line, "scriptBackup.php") !== false) {
+            $lines[$index] = "$minute $heure * $mois $jour root php /var/www/html/fonctions/scriptBackup.php >> /var/log/backup.log";
             $found = true;
             break;
         }
@@ -825,7 +825,9 @@ function changeWhenToSaveDB($minute, $heure, $annee, $mois, $jour){
     echo "Service cron restart status: " . $return_var . "\n";
     
     exec("sudo chown root:root /etc/crontab");
-    ajouterLog(LOG_INFORM, "Date de sauvegarde changée!");
+
+    ajouterLog(LOG_SUCCESS, "Création d'une sauvegarde automatique de la base le ". date("j-m-Y_H-i-s").".", NOM_FICHIER_LOG_SAUVEGARDE);
+
     echo "Dernière ligne modifiée avec succès !";
 }
 catch (Exception){

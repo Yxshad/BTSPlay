@@ -45,7 +45,7 @@ RUN chown -R www-data:www-data /var/www/html \
 RUN docker-php-ext-install pcntl
 
 # Ajouter les tâches cron directement dans /etc/crontab
-RUN echo "* 22 * * * root php '/var/www/html/fonctions/backup.php' >> /var/log/backup.log 2>&1" >> /etc/crontab
+RUN echo "* 22 * * * root php '/var/www/html/fonctions/scriptBackup.php' >> /var/log/backup.log 2>&1" >> /etc/crontab
 
 # Lancer cron en arrière-plan avec Apache
 CMD cron && tail -f /var/log/cron.log & apache2-foreground
