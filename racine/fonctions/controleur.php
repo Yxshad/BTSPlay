@@ -651,6 +651,10 @@ function controleurMettreAJourParametres(){
     exit();
 }
 
+function controleurGetAllProfesseursReferent(){
+    return getAllProfesseursReferent();
+}
+
 function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
