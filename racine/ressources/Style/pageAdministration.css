@@ -219,7 +219,7 @@ h4{
 
 /* Style du bouton de soumission */
 .submit-button {
-    background-color: #203242;
+    background-color: #f09520;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -429,7 +429,7 @@ input[type="number"]::-webkit-outer-spin-button {
 }
 
 .reconciliation-button:hover {
-    background-color: #c72027;
+    transform: scale(1.05);
 }
 
 /* Résultat de la réconciliation */
@@ -468,4 +468,20 @@ input[type="number"]::-webkit-outer-spin-button {
 
 .reconciliation-result table {
     margin-bottom: 20px;
+}
+
+.btnRouge {
+    background-color: #c72027;;
+    color: white;
+}
+.btnRouge:hover {
+    transform: scale(1.05);
+}
+
+.btnJaune {
+    background-color: #f09520;
+    color: white;
+}
+.btnJaune:hover {
+    transform: scale(1.05);
 }

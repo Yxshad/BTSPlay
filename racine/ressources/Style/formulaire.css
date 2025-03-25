@@ -82,6 +82,7 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
+    margin-top: 10px;
 }
 
 .form-label {
@@ -93,6 +94,7 @@
 .form-select,
 .role-input {
     padding: 10px;
+    width: 100%;
     border: 1px solid #ddd;
     border-radius: 5px;
     font-size: 14px;
@@ -101,7 +103,7 @@
 .form-input:focus,
 .form-select:focus,
 .role-input:focus {
-    border-color: orange;
+    border-color: #f09520;
     outline: none;
 }
 
@@ -123,12 +125,12 @@ textarea.form-input {
 /* Boutons à droite */
 .bouton-droit {
     display: flex;
-    gap: 10px; /* Espacement entre les boutons */
+    gap: 10px;
 }
 
 .form-button {
     padding: 10px 20px;
-    background-color: orange;
+    background-color: #f09520;
     color: white;
     border: none;
     border-radius: 5px;
@@ -137,7 +139,7 @@ textarea.form-input {
 }
 
 .form-button:hover {
-    background-color: darkorange; /* Changement de couleur au survol */
+    background-color: #c72027;
 }
 
 .low-column-left {
@@ -145,4 +147,13 @@ textarea.form-input {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+#roles-container{
+    margin-top: 20px;
+    width: 100%;
+}
+
+.role-inputs{
+    width: 100%;   
 }

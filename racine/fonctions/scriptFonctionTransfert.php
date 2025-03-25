@@ -20,10 +20,10 @@ function fonctionTransfert(){
 	$COLLECT_ARCH = [];
 	$COLLECT_STOCK_LOCAL = [];
 	//-----------------------   répertoire NAS_PAD      ------------------------
-	$COLLECT_PAD = recupererCollectNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, URI_VIDEOS_A_ANALYSER, $COLLECT_PAD, URI_RACINE_NAS_PAD);
+	$COLLECT_PAD = recupererCollectNAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD, $COLLECT_PAD, URI_RACINE_NAS_PAD);
 	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS PAD. " . count($COLLECT_PAD) . " fichiers trouvés.");
 	//-----------------------   répertoire NAS_ARCH      ------------------------
-	$COLLECT_ARCH = recupererCollectNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, URI_VIDEOS_A_ANALYSER, $COLLECT_ARCH, URI_RACINE_NAS_ARCH);
+	$COLLECT_ARCH = recupererCollectNAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH, $COLLECT_ARCH, URI_RACINE_NAS_ARCH);
 	ajouterLog(LOG_INFORM, "Récupération des vidéos du NAS ARCH. " . count($COLLECT_ARCH) . " fichiers trouvés.");
 	//Remplir $COLLECT_STOCK_LOCAL
 	$COLLECT_STOCK_LOCAL = remplirCOLLECT_STOCK_LOCAL($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_STOCK_LOCAL);
@@ -38,25 +38,20 @@ function fonctionTransfert(){
 
 
 /**
- * \fn recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_ANALYSER, $COLLECT_NAS, $URI_NAS_RACINE)
+ * \fn recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $URI_NAS_RACINE)
  * \brief Fonction qui récupère l'ensemble des métadonnées techniques des vidéos d'un NAS (collectPAD ou collectARCH)
- * On télécharge les vidéos dans un $URI_VIDEOS_A_ANALYSER si celles-ci ne sont pas présentes dans la BD
  * - On remplit CollectNAS pour chaque vidéo
- * - On vide le répertoire local $URI_VIDEOS_A_ANALYSER
  * \param ftp_server - Le nom du serveur ftp auquel on veut accéder
  * \param ftp_user - Nom de l'utilisateur qui se connecte sur le serveur ftp
  * \param ftp_pass - Mot de passe de l'utilisateur se connectant sur le serveur ftp
- * \param URI_VIDEOS_A_ANALYSER - - URI de la vidéo qui doit être analysée
  * \param COLLECT_NAS - Toutes les vidéos collectées sur les NAS
  * \param URI_NAS_RACINE - URI de la vidéo sur le NAS racine
  */
-function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_ANALYSER, $COLLECT_NAS, $URI_NAS_RACINE){
-	
+function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $URI_NAS_RACINE){
 	$conn_id = connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass);
 
 	// Lister les fichiers sur le serveur FTP
 	$fichiersNAS = listerFichiersCompletFTP($conn_id, $URI_NAS_RACINE);
-
 	foreach ($fichiersNAS as $cheminFichierComplet) {
 
         $nomFichier = basename($cheminFichierComplet);
@@ -71,10 +66,8 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $URI_VIDEOS_A_AN
 
 				// Si le fichier n'est pas présent en base
 				if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
-
 					//RECUPERATION VIA LECTURE FTP
 					$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
-
 					$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
 				}
 			}

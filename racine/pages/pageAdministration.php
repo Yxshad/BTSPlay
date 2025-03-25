@@ -103,8 +103,8 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                 </div>
             
             <div class="btn-sauvegarde-container">
-                <button onClick="changeDatabaseSaveTime()" class="btn parametre">Enregistrer les paramètres</button>
-                <button onClick="createDatabaseSave()" class="btn manuelle">Réaliser une sauvegarde manuelle</button>
+                <button onClick="changeDatabaseSaveTime()" class="btn btnRouge">Enregistrer les paramètres</button>
+                <button onClick="createDatabaseSave()" class="btn btnJaune">Réaliser une sauvegarde manuelle</button>
             </div>
         </div>
         </div>
@@ -162,7 +162,7 @@ if(AFFICHAGE_LOGS_PLUS_RECENTS_PREMIERS=='on'){
                         <div class="lignes"><!-- Résultat ajax --></div>
                         <div class="button-container">
                             <button class="btn" id="btnConversion" onclick="lancerConversion()">Lancer conversion</button>
-                        </div>
+                        </div> 
                     </div>
                     <div class="symbol-container">
                         <img src='../ressources/Images/avance-rapide.png' alt="Symbole de transfert">
