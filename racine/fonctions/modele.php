@@ -1359,4 +1359,101 @@ function deleteFromRoles($idVid, $idRole){
     }
 }
 
+/**
+ * \fn getAllProfesseursReferent()
+ * \brief Récupère tout les professeur liés a une vidéo
+ */
+function getAllProfesseursReferent(){
+    $connexion = connexionBD();
+    try{
+        $requete = "SELECT DISTINCT professeurReferent, nom, prenom FROM media JOIN Professeur ON Professeur.identifiant = Media.professeurReferent WHERE professeurReferent IS NOT NULL ORDER BY professeurReferent ASC";
+        $sql = $connexion->prepare($requete);
+        $sql->execute();
+        $professeurs = $sql->fetchAll();
+        $connexion = null;
+        return $professeurs;
+    }
+    catch(Exception $e){
+        $connexion = null;
+    }   
+}
+
+function faireRecherche($motsClefs){
+    //préparation de la requête
+    $connexion = connexionBD();
+    $motsClefs = explode(' ', $motsClefs);
+    $listeChamps = ["mtd_tech_titre", "description", "Professeur.nom", "Professeur.prenom", "projet", "promotion"];
+    $queryParts = [];
+    $query = "SELECT * FROM Media LEFT JOIN Professeur ON Media.professeurReferent = Professeur.identifiant WHERE ";
+    foreach ($listeChamps as $champ) {
+        $likeParts = array_map(function($mot) use ($champ) {
+            return $champ . ' LIKE "%' . $mot . '%"';
+        }, $motsClefs);
+
+        $queryParts[] = implode(' OR ', $likeParts);
+    }
+    $query .= implode(' OR ', $queryParts);    
+    try{
+        $sql = $connexion->prepare($query);
+        $sql->execute();
+        $recherche = $sql->fetchAll();
+        $connexion = null;
+        return $recherche;
+    }
+    catch(Exception $e){
+        $connexion = null;
+    } 
+}
+
+function faireRechercheAvance($prof = null, $description = null, $projet = null){
+    $connexion = connexionBD();
+    $requete = "SELECT * FROM Media";
+    $conditions = [];
+    if ($prof) {
+        $conditions[] = "professeurReferent = '$prof'";
+    }
+    if ($description) {
+        $conditions[] = "description LIKE '%$description%'";
+    }
+    if ($projet) {
+        $conditions[] = "projet = '$projet'";
+    }
+    // Ajout des conditions si elles existent
+    if (!empty($conditions)) {
+        $requete .= " WHERE " . implode(" AND ", $conditions);
+    }
+    try{
+        $sql = $connexion->prepare($requete);
+        $sql->execute();
+        $recherche = $sql->fetchAll();
+        $connexion = null;
+        return $recherche;
+    }
+    catch(Exception $e){
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la recherche avancée " .
+         " : " . $e->getMessage());
+         $connexion->rollback();
+        $connexion = null;
+    } 
+}
+
+function getAllProjet(){
+    $connexion = connexionBD();
+    $requeteProf = $connexion->prepare('SELECT intitule 
+    FROM Projet');                                                 
+    try{
+        $requeteProf->execute();
+        $professeurs = $requeteProf->fetchAll(PDO::FETCH_ASSOC);
+        $connexion = null;
+        return $professeurs;
+    }
+    catch(Exception $e)
+    {
+         ajouterLog(LOG_CRITICAL, "Erreur lors de la récupération des informations des professeurs " .
+         " : " . $e->getMessage());
+         $connexion->rollback();
+         $connexion = null;
+    }
+}
+
 ?>
