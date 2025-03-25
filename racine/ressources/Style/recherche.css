@@ -1,0 +1,103 @@
+.result {
+    margin-bottom: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+.result h3 {
+    margin: 0;
+}
+.result p {
+    margin: 5px 0;
+}
+
+.resultsContainer {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px 0;
+    transition: transform 0.5s ease;
+    gap: 30px;
+}
+
+.filtrage {
+    width: 80%;
+    margin: auto;
+}
+
+.filtrage form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.filtrage input{
+    height: 50px;
+    background: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+}
+
+.filtrage select{
+    background: white;
+    border: 1px solid gray;
+    border-radius: 5px;
+    height: 36px;
+}
+
+.filtrage select,
+#Valider{
+    height: 36px;
+}
+
+#Valider {
+    background-color: #f09520;
+    color: white;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    width: 100px;
+}
+#Valider:hover {
+    background-color: #c72027;
+    transform: scale(1.05);
+}
+
+form > div{
+    display: flex;
+    justify-content: space-between;
+}
+
+.result a{
+    display: flex;
+    gap: 20px;
+}
+.result a:hover{
+    transform: none;
+}
+
+.result .miniature{
+    overflow: hidden;
+    display: flex;
+    border-radius: 5px;
+}
+
+.result .info-video .description{
+    font-weight: 300;
+}
+
+.result .miniature img{
+    transition: all 0.2s ease;
+}
+
+.result a:hover .miniature img{
+    transform: scale(1.05);
+}
+
+.result a:hover .info-video p{
+    color: #686868;
+}
