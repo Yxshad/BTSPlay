@@ -29,10 +29,7 @@ function fonctionTransfert(){
 	$COLLECT_STOCK_LOCAL = remplirCOLLECT_STOCK_LOCAL($COLLECT_PAD, $COLLECT_ARCH, $COLLECT_STOCK_LOCAL);
 	//Alimenter le Stockage local
 	ajouterLog(LOG_INFORM, "Alimentation du stockage local avec " . count($COLLECT_STOCK_LOCAL) . " fichiers." );
-	$COLLECT_STOCK_LOCAL = alimenterStockageLocal($COLLECT_STOCK_LOCAL);
-	//Mettre à jour la base avec $COLLECT_STOCK_LOCAL
-	ajouterLog(LOG_INFORM, "Insertion des informations dans la base de données.");
-	insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL);
+	alimenterStockageLocal($COLLECT_STOCK_LOCAL);
     ajouterLog(LOG_SUCCESS, "Fonction de transfert effectuée avec succès.");
 }
 
@@ -225,50 +222,23 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 }
                 $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
 
-                // Écrire les modifications dans un fichier temporaire (accessible par le père)
-                $tempFile = sys_get_temp_dir() . '/video_' . getmypid() . '_' . $j . '.tmp';
-                file_put_contents($tempFile, serialize($video));
+                //Insertion de la vidéo dans la base de données
+                insertionDonneesTechniques($video);
 
-                //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " a terminé la vidéo : " . $video[MTD_TITRE]);
+                ajouterLog(LOG_INFORM, "La vidéo" . $video[MTD_TITRE] . " a été transférée avec succès");
             }
-
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
         }
     }
-
-    //ajouterLog(LOG_CRITICAL, "Partie reservée au processus père : attente des fils");
     while (count($PIDsEnfants) > 0) {
-        //ajouterLog(LOG_CRITICAL, count($PIDsEnfants));
         $pidTermine = pcntl_waitpid(-1, $status);
         if ($pidTermine > 0) {
             // Supprime le PID terminé du tableau
             $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
-            //ajouterLog(LOG_INFORM, "Père : Processus fils PID $pidTermine terminé.");
-
-            // Lire les fichiers temporaires créés par le processus enfant
-            foreach (glob(sys_get_temp_dir() . '/video_' . $pidTermine . '_*.tmp') as $tempFile) {
-                $video = unserialize(file_get_contents($tempFile));
-                $index = intval(substr(basename($tempFile), strrpos(basename($tempFile), '_') + 1, -4));
-                $COLLECT_STOCK_LOCAL[$index] = $video;
-                unlink($tempFile);
-            }
         }
-        //ajouterLog(LOG_CRITICAL, print_r($PIDsEnfants, true));
     }
     ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé. Le processus de transfert des vidéos est terminé.");
     return $COLLECT_STOCK_LOCAL;
 }
-
-/**
- * \fn insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL)
- * \brief Lance l'insertion des métadonnées techniques en bd de toutes les vidéos ajoutées dans le serveur
- * \param COLLECT_STOCK_LOCAL - Collection des vidéos à ajouter sur le serveur
- */
-function insertionCOLLECT_STOCK_LOCAL($COLLECT_STOCK_LOCAL){
-	foreach($COLLECT_STOCK_LOCAL as $ligneMetadonneesTechniques){
-		insertionDonneesTechniques($ligneMetadonneesTechniques);
-	}
-}
-
 ?>
