@@ -58,14 +58,12 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $U
 		$cheminFichier = dirname($cheminFichierComplet) . '/';
 
 		if($cheminFichier != "./"){
-			$extensionFichier = recupererExtensionFichier($nomFichier);
-
-			//Si le fichier est une vidéo
+			//Si le fichier est une vidéo avec le format (ne contient pas certains caractères spéciaux)
 			if ($nomFichier !== '.' && $nomFichier !== '..'
-				&& ($extensionFichier == 'mxf' || $extensionFichier == 'mp4')) {
+			&& isVideo($nomFichier)) {
 
 				// Si le fichier n'est pas présent en base
-				if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier, $extensionFichier)) {
+				if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
 					//RECUPERATION VIA LECTURE FTP
 					$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
 					$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);

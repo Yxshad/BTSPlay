@@ -587,13 +587,13 @@ function getMetadonneesEditorialesVideo($video) {
 }
 
 /**
- * \fn controleurSupprimerVideo($idVideo)
+ * \fn isVideo($file)
  * \brief Renvoit vrai si le fichier donné est une vidéo 
- * \param directory - Racine de l'endroit qu'on veut scanner
+ * \param file - nom du fichier dont on regarde l'extension
  */
 function isVideo($file) {
     $videoExtensions = ['mp4', 'mxf'];
-    $extension = pathinfo($file, PATHINFO_EXTENSION);
+    $extension = recupererExtensionFichier($file);
     return in_array(strtolower($extension), $videoExtensions);
 }
 
