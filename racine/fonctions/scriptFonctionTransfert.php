@@ -57,18 +57,21 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $U
         $nomFichier = basename($cheminFichierComplet);
 		$cheminFichier = dirname($cheminFichierComplet) . '/';
 
-		if($cheminFichier != "./"){
-			//Si le fichier est une vidéo avec le format (ne contient pas certains caractères spéciaux)
-			if ($nomFichier !== '.' && $nomFichier !== '..'
-			&& isVideo($nomFichier)) {
-
-				// Si le fichier n'est pas présent en base
-				if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
-					//RECUPERATION VIA LECTURE FTP
-					$listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
-					$COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
-				}
-			}
+        //Si le fichier est une vidéo avec l'extension mxf ou mp4
+		if($cheminFichier != "./" && $nomFichier !== '.'
+        && $nomFichier !== '..' && isVideo($nomFichier)){
+            //Vérifier que la vidéo ne contient pas certains caractères spéciaux
+            if(verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)){
+                // Si le fichier n'est pas présent en base
+                if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
+                    //RECUPERATION VIA LECTURE FTP
+                    $listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
+                    $COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
+                }
+            }
+            else{
+                ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichierComplet . "contient des caractères spéciaux. Son transfert est ignoré.");
+            }
 		}
     }
 	ftp_close($conn_id);
