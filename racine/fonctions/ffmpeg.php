@@ -117,7 +117,7 @@ function traiterVideo($titre, $duree) {
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
-            exit();
+            //exit();
         }
        
         unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
@@ -144,9 +144,9 @@ function traiterVideo($titre, $duree) {
                       " -reset_timestamps 1" .
                       " -segment_format mp4" .
                       " -movflags +faststart" .
-                      " -c:v libx264 -pix_fmt yuv420p -crf 35 -preset ultrafast" .
-                      " -c:a aac -b:a 64k -ac 2 " .
-                      " -movflags +faststart" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 24 -preset ultrafast" .
+                      " -vf yadif" .
+                      " -c:a aac -b:a 128k -ac 2 " .
                       " -map 0:v:0 -map 0:a:0" .
                       " $outputPattern";
     
@@ -157,7 +157,7 @@ function traiterVideo($titre, $duree) {
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
-            exit();
+            //exit();
         }else{
             // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
             unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);

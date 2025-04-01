@@ -474,7 +474,6 @@ function recupererNomFichierSansExtension($nomFichier){
 	return pathinfo($nomFichier, PATHINFO_FILENAME);
 }
 
-
 /**
  * \fn forcerExtensionMp4($nomFichier)
  * \brief Fonction qui force le fichier donné à obtenir l'extension mp4
@@ -486,10 +485,25 @@ function forcerExtensionMp4($nomFichier){
 	return $nomFichierSansExtension . '.mp4';
 }
 
-
+/**
+ * \fn forcerExtensionMXF($nomFichier)
+ * \brief Fonction qui force le fichier donné à obtenir l'extension mxf
+ * \param nomFichier - Nom du fichier
+ * \return string - nom du fichier avec l'extension mxf
+ */
 function forcerExtensionMXF($nomFichier){
 	$nomFichierSansExtension = recupererNomFichierSansExtension($nomFichier);
 	return $nomFichierSansExtension . '.mxf';
+}
+
+/**
+ * \fn verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)
+ * \brief Fonction qui vérifier qu'un nom du fichier ne comporte pas de caractères spéciaux
+ * \param nomFichier - Nom du fichier
+ * \return booleen - vrai si le nom du fichier est valide
+ */
+function verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier){
+    return !preg_match('/[%\s()\'"]/', $nomFichier);
 }
 
 /**
@@ -587,13 +601,13 @@ function getMetadonneesEditorialesVideo($video) {
 }
 
 /**
- * \fn controleurSupprimerVideo($idVideo)
+ * \fn isVideo($file)
  * \brief Renvoit vrai si le fichier donné est une vidéo 
- * \param directory - Racine de l'endroit qu'on veut scanner
+ * \param file - nom du fichier dont on regarde l'extension
  */
 function isVideo($file) {
     $videoExtensions = ['mp4', 'mxf'];
-    $extension = pathinfo($file, PATHINFO_EXTENSION);
+    $extension = recupererExtensionFichier($file);
     return in_array(strtolower($extension), $videoExtensions);
 }
 
