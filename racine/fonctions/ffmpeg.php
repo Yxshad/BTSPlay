@@ -99,17 +99,12 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
-        // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        //$output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
-
         $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
                 " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 " -movflags +faststart " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
                 $cheminDossierCoursConversion . $nomFichierSortie;
-
-        //exec($command, $output, $return_var);
         exec($command . " 2>&1", $output, $return_var);
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie unique de la vidéo " .
@@ -124,8 +119,6 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
     else {
         //Pour une vidéo longue, supérieure à 100 secondes
         $segmentDuration = $total / 100;
-
-        $extension = (substr($titre, -4) === ".mp4") ? ".mp4" : ".mxf";
 
         // 3. Générer les points de coupure
         $cutPoints = '';
@@ -183,7 +176,7 @@ function fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUplo
     // On donne le fichier txt à ffmpeg pour qu'il fusionne toutes les vidéos suivant l'ordre naturel, LE TXT N'EST PAS OPIONNEL
     $fileListPath = $cheminDossierCoursConversion . '/file_list.txt';
     file_put_contents($fileListPath, $fileListContent);
-    $outputFile = $cheminDossierAttenteUpload . "/" . $nomFichierSortie;
+    $outputFile = $cheminDossierAttenteUpload . $nomFichierSortie;
     $command = URI_FFMPEG." -v verbose -f concat -safe 0 -i " . $fileListPath .
            " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
            $outputFile;
@@ -197,9 +190,6 @@ function fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUplo
             }
         }
         rmdir($cheminDossierCoursConversion);
-        return 1;
-    }else{
-        return 0;
     }
 }
 
