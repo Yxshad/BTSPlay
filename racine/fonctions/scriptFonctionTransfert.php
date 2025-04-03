@@ -191,23 +191,23 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
 
                 //Création de tous les dossiers
                 $cheminDossier = $video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD];
+
                 $cheminDossierAttenteConversion = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '/';
-                
-                $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
                 $cheminDossierCoursConversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '_parts/';
+                $cheminDossierAttenteUpload = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $cheminDossier . $nomFichierSansExtension . '/';
 
                 creerDossier($cheminDossierAttenteConversion, false);
                 creerDossier($cheminDossierCoursConversion, false);
+                creerDossier($cheminDossierAttenteUpload, false);
 
                 //Téléchargement du fichier distant
+                $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
                 telechargerFichier($conn_id, $cheminfichierAttenteConversion, $cheminFichierSourceDistant);
                 ftp_close($conn_id);
 
                 // Conversion et fusion
-                traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion,
-                $nomFichier, $video[MTD_DUREE_REELLE]);
-
-                fusionnerVideo($video[MTD_TITRE]);
+                traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $video[MTD_DUREE_REELLE]);
+                fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUpload, $nomFichier);
 /*
                 $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 

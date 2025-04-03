@@ -92,7 +92,6 @@ function recupererTailleFichier($video, $cheminFichier){
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-//traiterVideo($titre, $duree) {
 function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $duree){
 
     $total = formaterDuree($duree);
@@ -165,17 +164,14 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
 /**
  * \fn fusionnerVideo($video)
  * \brief Fonction qui permet de fusionner tous les morceaux d'une vidéo en un seul fichier
- * \param video - nom de la video 
+ * \param video - nom de la video
  */
-function fusionnerVideo($video){
-    // Chemin pour accéder aux dossiers des vidéos
-    $chemin_dossier_origine = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $video . '_parts';
-    $chemin_dossier_destination = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD;
+function fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUpload, $nomFichier){
+
+    $nomFichierSortie = forcerExtensionMp4($nomFichier);
 
     // On récupère toutes les morceaux de vidéos à convertir
-    $files = scandir($chemin_dossier_origine);
-
-    // On trie les fichier avec l'ordre naturel (ex:  vid_1, vid_10, vid_2 -> vid_1, vid_2, vid_10)
+    $files = scandir($cheminDossierCoursConversion);
     natsort($files);
     // On met le nom de chaques vidéos dans un fichier txt pour ffmpeg
     $fileListContent = "";
@@ -185,22 +181,22 @@ function fusionnerVideo($video){
         }
     }
     // On donne le fichier txt à ffmpeg pour qu'il fusionne toutes les vidéos suivant l'ordre naturel, LE TXT N'EST PAS OPIONNEL
-    $fileListPath = $chemin_dossier_origine . '/file_list.txt';
+    $fileListPath = $cheminDossierCoursConversion . '/file_list.txt';
     file_put_contents($fileListPath, $fileListContent);
-    $outputFile = $chemin_dossier_destination . "/" . $video;
+    $outputFile = $cheminDossierAttenteUpload . "/" . $nomFichierSortie;
     $command = URI_FFMPEG." -v verbose -f concat -safe 0 -i " . $fileListPath .
            " -c:v libx264 -preset ultrafast -crf 35 -c:a aac -b:a 64k -async 1 -fflags +genpts " .
-           substr($outputFile, 0, -3) . "mp4";
+           $outputFile;
     exec($command, $output, $returnVar);
     if ($return_var != 1) {
         // On supprime le dossier qui contient les morceaux convertis
-        $files = scandir($chemin_dossier_origine);
+        $files = scandir($cheminDossierCoursConversion);
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {
-                unlink($chemin_dossier_origine . "/" . $file);
+                unlink($cheminDossierCoursConversion . "/" . $file);
             }
         }
-        rmdir($chemin_dossier_origine);
+        rmdir($cheminDossierCoursConversion);
         return 1;
     }else{
         return 0;
