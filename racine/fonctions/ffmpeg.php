@@ -174,7 +174,7 @@ function fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUplo
         }
     }
     // On donne le fichier txt à ffmpeg pour qu'il fusionne toutes les vidéos suivant l'ordre naturel, LE TXT N'EST PAS OPIONNEL
-    $fileListPath = $cheminDossierCoursConversion . '/file_list.txt';
+    $fileListPath = $cheminDossierCoursConversion . 'file_list.txt';
     file_put_contents($fileListPath, $fileListContent);
     $outputFile = $cheminDossierAttenteUpload . $nomFichierSortie;
     $command = URI_FFMPEG." -v verbose -f concat -safe 0 -i " . $fileListPath .
@@ -186,7 +186,7 @@ function fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUplo
         $files = scandir($cheminDossierCoursConversion);
         foreach ($files as $file) {
             if ($file != "." && $file != "..") {
-                unlink($cheminDossierCoursConversion . "/" . $file);
+                unlink($cheminDossierCoursConversion . $file);
             }
         }
         rmdir($cheminDossierCoursConversion);
