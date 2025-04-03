@@ -226,7 +226,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
 
                 //Insertion de la vidéo dans la base de données
-                //insertionDonneesTechniques($video);
+                insertionDonneesTechniques($video);
 
                 //Nétoyage  des dossiers -- ICI supprimer tous les dossiers de l'arbo !
                 rmdir($cheminDossierAttenteConversion);
