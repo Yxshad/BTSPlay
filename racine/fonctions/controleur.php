@@ -628,7 +628,7 @@ function controleurArborescence($directory, $ftp_server){
 }
 
 /**
- * \fn controleucontroleurLancerFonctionTransfertrSupprimerVideo()
+ * \fn controleucontroleurLancerFonctionTransfert()
  * \brief Lance la fonction de transfert via une commande exec
  */
 function controleurLancerFonctionTransfert(){
