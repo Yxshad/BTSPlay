@@ -197,13 +197,16 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $cheminDossierAttenteUpload = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $cheminDossier . $nomFichierSansExtension . '/';
                 $cheminDossierStockageLocal = URI_RACINE_STOCKAGE_LOCAL . $cheminDossier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 
+                $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
+                $cheminfichierAttenteUpload = $cheminDossierAttenteUpload . $nomFichier;
+                $cheminfichierStockageLocal = $cheminDossierStockageLocal . $nomFichier;
+
                 creerDossier($cheminDossierAttenteConversion, false);
                 creerDossier($cheminDossierCoursConversion, false);
                 creerDossier($cheminDossierAttenteUpload, false);
                 creerDossier($cheminDossierStockageLocal, false);
 
                 //Téléchargement du fichier distant
-                $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
                 telechargerFichier($conn_id, $cheminfichierAttenteConversion, $cheminFichierSourceDistant);
                 ftp_close($conn_id);
 
@@ -215,21 +218,19 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $nomFichier = forcerExtensionMp4($nomFichier);
 
                 //On déplace la vidéo dans le stockage local
-                rename($cheminDossierAttenteUpload.$nomFichier, $cheminDossierStockageLocal.$nomFichier);
+                rename($cheminfichierAttenteUpload, $cheminfichierStockageLocal);
 
                 // On génère la miniature de la vidéo
-                $miniature = genererMiniature($cheminDossierStockageLocal.$nomFichier, $video[MTD_DUREE]);
+                $miniature = genererMiniature($cheminfichierStockageLocal, $video[MTD_DUREE]);
 
-                // **Stockage de l'URI**
-                /*if (strpos($cheminDossierStockageLocal, URI_RACINE_STOCKAGE_LOCAL) === 0) {
-                    $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
-                }*/
+                // On met l'URI du stockage local dans les métadonnées à insérer en base
+                $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
                 $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
 
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                ajouterLog(LOG_INFORM, "La vidéo" . $nomFichier . " a été transférée avec succès");
+                ajouterLog(LOG_INFORM, "La vidéo " . $nomFichier . " a été transférée avec succès");
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
