@@ -192,10 +192,9 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 //Création de tous les dossiers
                 $cheminDossier = $video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD];
                 $cheminDossierAttenteConversion = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '/';
+                
                 $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
-
                 $cheminDossierCoursConversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '_parts/';
-                //$cheminfichierCoursConversion = $cheminDossierConversion . '/' . $video[MTD_TITRE];
 
                 creerDossier($cheminDossierAttenteConversion, false);
                 creerDossier($cheminDossierCoursConversion, false);
@@ -208,7 +207,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion,
                 $nomFichier, $video[MTD_DUREE_REELLE]);
 
-                //fusionnerVideo($video[MTD_TITRE]);
+                fusionnerVideo($video[MTD_TITRE]);
 /*
                 $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 
