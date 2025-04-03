@@ -92,37 +92,38 @@ function recupererTailleFichier($video, $cheminFichier){
  * \param duree - Duree de la vidéo
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-function traiterVideo($titre, $duree) {
+//traiterVideo($titre, $duree) {
+function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $duree){
 
     $total = formaterDuree($duree);
-
-    $chemin_dossier_conversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $titre . '_parts';
-
-    creerDossier($chemin_dossier_conversion, false);
+    $nomFichierSortie = forcerExtensionMp4($nomFichier); //Vidéo de sortie (compressée) forcée à l'extension mp4
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
         // Si la vidéo fait moins de 100 secondes, on la place directement dans URI_VIDEOS_A_CONVERTIR_EN_COURS_DE_CONVERSION
-        $output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
+        //$output_path = $chemin_dossier_conversion . '/' . forcerExtensionMp4($titre);
 
-        $command = URI_FFMPEG." -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+        $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
                 " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 " -movflags +faststart " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
-                $output_path;
+                $cheminDossierCoursConversion . $nomFichierSortie;
 
         //exec($command, $output, $return_var);
         exec($command . " 2>&1", $output, $return_var);
         if ($return_var == 1) {
-            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
-            $chemin_fichier_origine . " : " . implode("\n", $output));
+            ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie unique de la vidéo " .
+            $cheminDossierAttenteConversion . $nomFichier . " : " . implode("\n", $output));
             //exit();
         }
-       
-        unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
-    } else {
-
+        else{
+            // on ne supprime la vidéo de base que quand la vidéo a bien été compressée
+            unlink($cheminDossierAttenteConversion . $nomFichier);
+        }
+    }
+    else {
+        //Pour une vidéo longue, supérieure à 100 secondes
         $segmentDuration = $total / 100;
 
         $extension = (substr($titre, -4) === ".mp4") ? ".mp4" : ".mxf";
@@ -134,10 +135,8 @@ function traiterVideo($titre, $duree) {
         }
         $cutPoints = rtrim($cutPoints, ',');
 
-        $outputPattern = $chemin_dossier_conversion . '/' . $titre . "_part_%03d.mp4";
-
         // 4. Découper la vidéo en segments
-        $decoupeCommand = URI_FFMPEG . " -i " . URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre .
+        $decoupeCommand = URI_FFMPEG . " -i " . $cheminDossierAttenteConversion . $nomFichier .
                       " -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .
                       " -f segment" .
                       " -segment_times $cutPoints" .
@@ -148,22 +147,18 @@ function traiterVideo($titre, $duree) {
                       " -vf yadif" .
                       " -c:a aac -b:a 128k -ac 2 " .
                       " -map 0:v:0 -map 0:a:0" .
-                      " $outputPattern";
+                      $cheminDossierCoursConversion . $nomFichierSortie;
     
         // Exécuter la commande de découpage
-        $output = [];
-        $return_var = 0;
         exec($decoupeCommand, $output, $return_var);
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
             $chemin_fichier_origine . " : " . implode("\n", $output));
             //exit();
         }else{
-            // on ne supprime la vidéo de base que quand la vidéo a bien été compresser 
-            unlink(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $titre);
-        }
-
-        
+            // on ne supprime la vidéo de base que quand la vidéo a bien été compressée
+            unlink($cheminDossierAttenteConversion . $nomFichier);
+        }  
     }
 }
 
