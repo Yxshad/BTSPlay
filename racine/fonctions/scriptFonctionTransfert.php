@@ -174,9 +174,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             for ($j = $debut; $j < $fin; $j++) {
                 $video = $COLLECT_STOCK_LOCAL[$j];
                 //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
-
-                // **Téléchargement**
-                $cheminFichierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
+                $nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
 
                 if (!empty($video[MTD_URI_NAS_ARCH])) {
                     $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
@@ -189,9 +187,15 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                     exit(0);
                 }
 
-                telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
-                ftp_close($conn_id);
+                // **Téléchargement**
+                $cheminDossier = $video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD];
+                $cheminDossierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension;
+                $cheminfichierDestination = $cheminDossierDestination . $video[MTD_TITRE];
 
+                creerDossier($cheminDossierDestination, false);
+                telechargerFichier($conn_id, $cheminfichierDestination, $cheminFichierSource);
+                ftp_close($conn_id);
+/*
                 // **Découpe / Conversion / Fusion**
                 traiterVideo($video[MTD_TITRE], $video[MTD_DUREE_REELLE]);
                 fusionnerVideo($video[MTD_TITRE]);
@@ -225,7 +229,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                ajouterLog(LOG_INFORM, "La vidéo" . $video[MTD_TITRE] . " a été transférée avec succès");
+                ajouterLog(LOG_INFORM, "La vidéo" . $video[MTD_TITRE] . " a été transférée avec succès");*/
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
@@ -239,6 +243,5 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
         }
     }
     ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé. Le processus de transfert des vidéos est terminé.");
-    return $COLLECT_STOCK_LOCAL;
 }
 ?>
