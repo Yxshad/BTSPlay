@@ -195,10 +195,12 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $cheminDossierAttenteConversion = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '/';
                 $cheminDossierCoursConversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '_parts/';
                 $cheminDossierAttenteUpload = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $cheminDossier . $nomFichierSansExtension . '/';
+                $cheminDossierStockageLocal = URI_RACINE_STOCKAGE_LOCAL . $cheminDossier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
 
                 creerDossier($cheminDossierAttenteConversion, false);
                 creerDossier($cheminDossierCoursConversion, false);
                 creerDossier($cheminDossierAttenteUpload, false);
+                creerDossier($cheminDossierStockageLocal, false);
 
                 //Téléchargement du fichier distant
                 $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
@@ -208,37 +210,26 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 // Conversion et fusion
                 traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $video[MTD_DUREE_REELLE]);
                 fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUpload, $nomFichier);
-/*
-                $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
 
-                // **Export dans stockage local**
-                $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-                $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
+                //La vidéo a été compressée, on force son extension
+                $nomFichier = forcerExtensionMp4($nomFichier);
 
-                $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-                creerDossier($cheminFichierDestination, false, false);
-                creerDossier($dossierVideo, false);
+                //On déplace la vidéo dans le stockage local
+                rename($cheminDossierAttenteUpload.$nomFichier, $cheminDossierStockageLocal.$nomFichier);
 
-                copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
-
-                // **Miniature**
-                $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-                copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
-
-                // **Nettoyage**
-                unlink($cheminCompletFichierSource);
-                unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
+                // On génère la miniature de la vidéo
+                $miniature = genererMiniature($cheminDossierStockageLocal.$nomFichier, $video[MTD_DUREE]);
 
                 // **Stockage de l'URI**
-                if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
-                    $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
-                }
-                $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+                /*if (strpos($cheminDossierStockageLocal, URI_RACINE_STOCKAGE_LOCAL) === 0) {
+                    $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
+                }*/
+                $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
 
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                ajouterLog(LOG_INFORM, "La vidéo" . $video[MTD_TITRE] . " a été transférée avec succès");*/
+                ajouterLog(LOG_INFORM, "La vidéo" . $nomFichier . " a été transférée avec succès");
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
