@@ -659,6 +659,11 @@ function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
 
+
+ /**
+ * \fn controleurcreateDBDumpLauncher()
+ * \brief Appelle la fonction qui permet de vérifier si la connexion au serveur ftp est correcte
+ */
 function controleurVerifierFTP($ip, $ftp_user, $ftp_pass){
     return verifierFTP($ip, $ftp_user, $ftp_pass);
 }
