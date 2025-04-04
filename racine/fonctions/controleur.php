@@ -659,4 +659,7 @@ function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
     require_once '../ressources/Templates/popup.php';
 }
 
+function controleurVerifierFTP($ip, $ftp_user, $ftp_pass){
+    return verifierFTP($ip, $ftp_user, $ftp_pass);
+}
 ?>

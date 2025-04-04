@@ -198,5 +198,15 @@ function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $no
 	return $nomsVideos_NAS;
 }
 
+function verifierFTP($ip, $ftp_user, $ftp_pass){
+    $conn_id = @ftp_connect($ip);
+    if (!$conn_id) {
+        return false;
+    }
+    elseif (!@ftp_login($conn_id, $ftp_user, $ftp_pass)) {
+        return false;
+    }
+    return true;
+}
 
 ?>
