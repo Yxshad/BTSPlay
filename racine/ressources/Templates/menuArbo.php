@@ -10,12 +10,18 @@ $directory_local = __DIR__ . "/../../stockage";
         <div class="menuArbo local">
             <?php echo controleurArborescence($directory_local, ESPACE_LOCAL); ?>
         </div>
-        <div class="menuArbo PAD">
-            <?php echo controleurArborescence("", NAS_PAD); ?>
-        </div>
-        <div class="menuArbo ARCH">
-            <?php echo controleurArborescence("", NAS_ARCH); ?>
-        </div>
+
+        <?php if (controleurVerifierFTP(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD)) {
+            echo '<div class="menuArbo PAD">';
+            echo controleurArborescence("", NAS_PAD);
+            echo '</div>';
+        } ?>
+
+        <?php if (controleurVerifierFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH)) {
+            echo '<div class="menuArbo ARCH">';
+            echo controleurArborescence("", NAS_ARCH);
+            echo '</div>';
+        } ?>
     </div>
 
     <div class="radio">
@@ -24,16 +30,19 @@ $directory_local = __DIR__ . "/../../stockage";
             <input type="radio" name="a" id="local">
         </label>
 
-        <label>
-            NAS PAD
-            <input type="radio" name="a" id="PAD">
-        </label>
+        <?php if (controleurVerifierFTP(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD)) { ?>
+            <label>
+                NAS PAD
+                <input type="radio" name="a" id="PAD">
+            </label>
+        <?php } ?>
 
-        <label>
-            NAS ARCH
-            <input type="radio" name="a" id="ARCH">
-        </label>
-        
+        <?php if (controleurVerifierFTP(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH)) { ?>
+            <label>
+                NAS ARCH
+                <input type="radio" name="a" id="ARCH">
+            </label>
+        <?php } ?>
     </div>
 
     <button onclick="ouvrirMenuArbo()">
