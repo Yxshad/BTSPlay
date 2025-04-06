@@ -215,25 +215,28 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 //La vidéo a été compressée, on force son extension
                 $nomFichier = forcerExtensionMp4($nomFichier);
 
+                $cheminfichierAttenteUpload = $cheminDossierAttenteUpload . $nomFichier;
+                $cheminfichierStockageLocal = $cheminDossierStockageLocal . $nomFichier;
+
                 //On déplace la vidéo dans le stockage local
-                rename($cheminDossierAttenteUpload.$nomFichier, $cheminDossierStockageLocal.$nomFichier);
+                rename($cheminfichierAttenteUpload, $cheminfichierStockageLocal);
 
-                // On génère la miniature de la vidéo
-                $miniature = genererMiniature($cheminDossierStockageLocal.$nomFichier, $video[MTD_DUREE]);
+                //On génère la miniature de la vidéo
+                $miniature = genererMiniature($cheminfichierStockageLocal, $video[MTD_DUREE]);
 
-                // On met l'URI du stockage local dans les métadonnées à insérer en base
+                //On met l'URI du stockage local dans les métadonnées à insérer en base
                 $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
                 $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
 
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                //Nétoyage  des dossiers -- ICI supprimer tous les dossiers de l'arbo !
+                //Nétoyage  des dossiers
                 rmdir($cheminDossierAttenteConversion);
                 rmdir($cheminDossierCoursConversion);
                 rmdir($cheminDossierAttenteUpload);
 
-                ajouterLog(LOG_INFORM, "La vidéo " . $nomFichier . " a été transférée avec succès");
+                ajouterLog(LOG_INFORM, "La vidéo " . $nomFichier . " a été transférée avec succès.");
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
@@ -246,6 +249,9 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
         }
     }
+    //Suppression des dossiers temporaires
+
+
     ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé. Le processus de transfert des vidéos est terminé.");
 }
 ?>
