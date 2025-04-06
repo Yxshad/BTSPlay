@@ -95,10 +95,12 @@ function recupererTailleFichier($video, $cheminFichier){
 function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $duree){
 
     $total = formaterDuree($duree);
-    $nomFichierSortie = forcerExtensionMp4($nomFichier); //Vidéo de sortie (compressée) forcée à l'extension mp4
 
     // Vérifier si la durée totale est inférieure à 100 secondes
     if ($total < 100) {
+
+        $nomFichierSortie = forcerExtensionMp4($nomFichier); //Vidéo de sortie (compressée) forcée à l'extension mp4
+
         $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
                 " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
@@ -120,6 +122,9 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
         //Pour une vidéo longue, supérieure à 100 secondes
         $segmentDuration = $total / 100;
 
+        //Vidéo de sortie (compressée) forcée à l'extension mp4
+        $nomFichierSortie = recupererNomFichierSansExtension($nomFichier);
+
         // 3. Générer les points de coupure
         $cutPoints = '';
         for ($i = 0; $i < 100; $i++) {
@@ -138,19 +143,18 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
                       " -c:v libx264 -pix_fmt yuv420p -crf 24 -preset ultrafast" .
                       " -vf yadif" .
                       " -c:a aac -b:a 128k -ac 2 " .
-                      " -map 0:v:0 -map 0:a:0" .
-                      $cheminDossierCoursConversion . $nomFichierSortie;
+                      " -map 0:v:0 -map 0:a:0 " .
+                      $cheminDossierCoursConversion . $nomFichierSortie."_part_%03d.mp4";
     
         // Exécuter la commande de découpage
         exec($decoupeCommand, $output, $return_var);
         if ($return_var == 1) {
             ajouterLog(LOG_CRITICAL, "Erreur lors de la conversion de la partie ". $i ." de la vidéo " .
-            $chemin_fichier_origine . " : " . implode("\n", $output));
+            $nomFichier . " : " . implode("\n", $output));
             //exit();
-        }else{
-            // on ne supprime la vidéo de base que quand la vidéo a bien été compressée
-            unlink($cheminDossierAttenteConversion . $nomFichier);
-        }  
+        }
+        //On supprime la vidéo de base
+        unlink($cheminDossierAttenteConversion . $nomFichier);   
     }
 }
 
@@ -212,7 +216,6 @@ function genererMiniature($video, $duree){
     $nomFichier = recupererNomFichierSansExtension($nomFichier);
     $videoSansExtension = $cheminFichier.$nomFichier;
     $miniature = $videoSansExtension . SUFFIXE_MINIATURE_VIDEO;
-
     $command = URI_FFMPEG . " -i " . $video . 
                " -ss " . $timecode . 
                " -vframes 1 " . 
@@ -222,9 +225,13 @@ function genererMiniature($video, $duree){
                $miniature;
         
     exec($command, $output, $returnVar);
-    ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
-    $miniature = basename($miniature);
-    return $miniature;
+    if ($return_var == 1) {
+        ajouterLog(LOG_CRITICAL, "Erreur lors de la génération de la miniature de la vidéo " .
+        $nomFichier . " : " . implode("\n", $output));
+    }
+    else{
+        ajouterLog(LOG_SUCCESS, "Miniature de la vidéo $video générée avec succès.");
+    }
 }
 
 /**

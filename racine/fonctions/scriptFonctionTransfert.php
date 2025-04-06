@@ -222,7 +222,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 rename($cheminfichierAttenteUpload, $cheminfichierStockageLocal);
 
                 //On génère la miniature de la vidéo
-                $miniature = genererMiniature($cheminfichierStockageLocal, $video[MTD_DUREE]);
+                genererMiniature($cheminfichierStockageLocal, $video[MTD_DUREE]);
 
                 //On met l'URI du stockage local dans les métadonnées à insérer en base
                 $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
@@ -237,7 +237,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 rmdir($cheminDossierCoursConversion);
                 rmdir($cheminDossierAttenteUpload);
 
-                ajouterLog(LOG_INFORM, "La vidéo " . $nomFichier . " a été transférée avec succès.");
+                ajouterLog(LOG_SUCCESS, "La vidéo " . $nomFichier . " a été transférée avec succès.");
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);

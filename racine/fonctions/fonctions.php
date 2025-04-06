@@ -425,6 +425,7 @@ function listerFichiersRecursif($chemin) {
             
             //Retirer "_parts" pour les chemins des vidéos en cours de conversion
             $cheminNormalise =  preg_replace('#/(.+?)_parts/#', '/$1/', $cheminRelatif);
+            $cheminNormalise = preg_replace('#/(.+?)_part_\d{1,3}#', '/$1', $cheminNormalise);
 
             $fichiers[$cheminNormalise] = $cheminComplet;
         }
