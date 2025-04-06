@@ -70,7 +70,7 @@ function verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server){
     $fichierTransferable = true;
 
     //1. Vérifier que le fichier est une vidéo
-    if($cheminFichier == "./" || $nomFichier == '.'
+    if($cheminFichier == './' || $nomFichier == '.'
     || $nomFichier == '..' || !isVideo($nomFichier)){
         $fichierTransferable = false;
 	}
@@ -78,17 +78,17 @@ function verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server){
     //2. Vérifier que le fichier ne contient pas de caractères spéciaux
     if(!verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)){
         $fichierTransferable = false;
-        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . "contient des caractères spéciaux. Son transfert est ignoré.");
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " contient des caractères spéciaux. Son transfert est ignoré.");
     }
 
     //3. Vérifier que l'extension du fichier correspond au serveur NAS qui lui est associé (.mxf pour PAD / .mp4 pour ARCH)
-    $extensionFichier = recupererExtensionFichier($nomFichier)
+    $extensionFichier = recupererExtensionFichier($nomFichier);
 
     if(($ftp_server == NAS_PAD && $extensionFichier != "mxf")
     || ($ftp_server == NAS_ARCH && $extensionFichier != "mp4")){
         $fichierTransferable = false;
-        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " a une extension incorrecte par rapport
-        au serveur NAS " . $ftp_server . ". Son transfert est ignoré.");
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " a une extension incorrecte par
+        rapport au serveur NAS " . $ftp_server . ". Son transfert est ignoré.");
     }
 
     return $fichierTransferable;
