@@ -227,11 +227,12 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 //On met l'URI du stockage local dans les métadonnées à insérer en base
                 $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
                 $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
+                $video[MTD_TITRE] = $nomFichier;
 
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                //Nétoyage  des dossiers
+                //Nétoyage  des dossiers. Si un fichier se trouve dans un dossier, celui-ci n'est pas supprimé.
                 rmdir($cheminDossierAttenteConversion);
                 rmdir($cheminDossierCoursConversion);
                 rmdir($cheminDossierAttenteUpload);
