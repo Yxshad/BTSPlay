@@ -401,6 +401,12 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 	return $cheminFichierStockageLocal;
 }
 
+/**
+ * \fn listerFichiersRecursif($chemin)
+ * \brief Fonction qui permet de trouver tous les fichiers situés dans les sous-dossiers d'un dossier
+ * \param chemin - Répertoire parent à analyser
+ * \return fichiers - la liste des fichiers retournés
+ */
 function listerFichiersRecursif($chemin) {
     $fichiers = [];
     $iterator = new RecursiveIteratorIterator(
@@ -429,6 +435,7 @@ function listerFichiersRecursif($chemin) {
 /**
  * \fn scanDossierDecoupeVideo()
  * \brief Fonction qui permet d'afficher les vidéos en cours de transfert
+ * Il y a une priorité. Quand des vidéos sont à la fois dans deux dossiers, on affiche qu'une seule présence dans un dossier
  */
 function scanDossierDecoupeVideo() {
     $videosDownload = listerFichiersRecursif(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION);
@@ -459,8 +466,6 @@ function scanDossierDecoupeVideo() {
             'status' => "En cours d'upload"
         ];
     }
-
-    ajouterLog(LOG_FAIL, print_r($videosFusionnees, true));
 
     $resultat = [];
     foreach ($videosFusionnees as $cheminNormalise => $infos) {
