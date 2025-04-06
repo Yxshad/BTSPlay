@@ -427,6 +427,12 @@ function listerFichiersRecursif($chemin) {
             $cheminNormalise =  preg_replace('#/(.+?)_parts/#', '/$1/', $cheminRelatif);
             $cheminNormalise = preg_replace('#/(.+?)_part_\d{1,3}#', '/$1', $cheminNormalise);
 
+            $nomFichier = basename($cheminNormalise);
+            $cheminFichier = dirname($cheminNormalise) . '/';
+            $nomFichier = recupererNomFichierSansExtension($nomFichier);
+
+            $cheminNormalise = $cheminFichier . $nomFichier;
+
             $fichiers[$cheminNormalise] = $cheminComplet;
         }
     }
