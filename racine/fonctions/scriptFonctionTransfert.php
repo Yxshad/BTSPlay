@@ -251,8 +251,48 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
         }
     }
     //Suppression des dossiers temporaires
-
+    supprimerDossiersVides(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION);
+    supprimerDossiersVides(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION);
+    supprimerDossiersVides(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD);
 
     ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé. Le processus de transfert des vidéos est terminé.");
 }
+
+/**
+ * \fn supprimerDossiersVides($dossierParent)
+ * \brief Supprime tous les sous-dossiers d'un répertoire parent si ceux ci ne contiennent pas de vidéo
+ * \param dossierParent - Dossier parent à partir duquel les sous-dossier seront supprimés
+ */
+function supprimerDossiersVides($dossierParent) {
+    $elements = array_diff(scandir($dossierParent), ['.', '..']);
+    foreach ($elements as $nomElement) {
+        $cheminDossier = $dossierParent . DIRECTORY_SEPARATOR . $nomElement;
+        if (is_dir($cheminDossier)) {
+            $sousElements = array_diff(scandir($cheminDossier), ['.', '..']);
+            $contientFichier = false;
+            foreach ($sousElements as $sousElement) {
+                $cheminComplet = $cheminDossier . DIRECTORY_SEPARATOR . $sousElement;
+                if (is_file($cheminComplet)) {
+                    $contientFichier = true;
+                    break;
+                }
+            }
+            if (!$contientFichier) {
+                // Supprimer les éventuels sous-dossiers vides
+                foreach ($sousElements as $sousElement) {
+                    $cheminSous = $cheminDossier . DIRECTORY_SEPARATOR . $sousElement;
+                    if (is_dir($cheminSous)) {
+                        rmdir($cheminSous); // supprime si vide
+                    }
+                }
+                rmdir($cheminDossier);
+                echo "Supprimé : $cheminDossier\n";
+            } else {
+                echo "Conservé (contient fichier) : $cheminDossier\n";
+            }
+        }
+    }
+}
+
+
 ?>
