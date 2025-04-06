@@ -402,36 +402,88 @@ function trouverCheminEspaceLocalVideo($cheminFichier, $nomFichier){
 }
 
 /**
+ * \fn listerFichiersRecursif($chemin)
+ * \brief Fonction qui permet de trouver tous les fichiers situés dans les sous-dossiers d'un dossier
+ * \param chemin - Répertoire parent à analyser
+ * \return fichiers - la liste des fichiers retournés
+ */
+function listerFichiersRecursif($chemin) {
+    $fichiers = [];
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($chemin, FilesystemIterator::SKIP_DOTS)
+    );
+    foreach ($iterator as $fichier) {
+        if (
+            $fichier->isFile() &&
+            $fichier->getFilename() !== '.gitkeep' &&
+            $fichier->getFilename() !== 'file_list.txt'
+        ) {
+            $cheminComplet = $fichier->getPathname();
+
+            // Créer un chemin relatif pour avoir une clé standard
+            $cheminRelatif = str_replace($chemin . DIRECTORY_SEPARATOR, '', $cheminComplet);
+            
+            //Retirer "_parts" pour les chemins des vidéos en cours de conversion
+            $cheminNormalise =  preg_replace('#/(.+?)_parts/#', '/$1/', $cheminRelatif);
+            $cheminNormalise = preg_replace('#/(.+?)_part_\d{1,3}#', '/$1', $cheminNormalise);
+
+            $nomFichier = basename($cheminNormalise);
+            $cheminFichier = dirname($cheminNormalise) . '/';
+            $nomFichier = recupererNomFichierSansExtension($nomFichier);
+
+            $cheminNormalise = $cheminFichier . $nomFichier;
+
+            $fichiers[$cheminNormalise] = $cheminComplet;
+        }
+    }
+    return $fichiers;
+}
+
+/**
  * \fn scanDossierDecoupeVideo()
- * \brief Fonction qui permet à la page transferts.php de savoir quels videos sont en train de se faire découper
+ * \brief Fonction qui permet d'afficher les vidéos en cours de transfert
+ * Il y a une priorité. Quand des vidéos sont à la fois dans deux dossiers, on affiche qu'une seule présence dans un dossier
  */
 function scanDossierDecoupeVideo() {
-    $listeVideoDownload = array_diff(scandir(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION), ['.', '..','.gitkeep']);
-    $listeVideoConversion = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION), ['.', '..','.gitkeep']);
-    $listeVideoUpload = array_diff(scandir(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD), ['.', '..','.gitkeep']);
-	
-    $listeVideoDownload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoDownload);
-    $listeVideoConversion = array_map(function($e) { return substr($e, 0, -10); }, $listeVideoConversion);
-    $listeVideoUpload = array_map(function($e) { return substr($e, 0, -4); }, $listeVideoUpload);
+    $videosDownload = listerFichiersRecursif(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION);
+    $videosConversion = listerFichiersRecursif(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION);
+    $videosUpload = listerFichiersRecursif(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD);
 
-    $listeVideo = array_unique(array_merge($listeVideoDownload, $listeVideoConversion, $listeVideoUpload));
+    // Fusion avec priorité : Upload > Conversion > Download
+    $videosFusionnees = [];
 
-    $result = [];
-    foreach ($listeVideo as $video) {
-        if (in_array($video, $listeVideoUpload)) {
-            $status = "En cours d'upload";
-        } elseif (in_array($video, $listeVideoConversion)) {
-            $status = "En cours de conversion";
-        } else {
-            $status = "En cours de téléchargement";
-        }
-        $result[] = [
-            'nomVideo' => $video,
-            'poidsVideo' => recupererTailleFichier($video, null),
-            'status' => $status
+    foreach ($videosDownload as $cheminNormalise => $cheminComplet) {
+        $cheminNormalise = str_replace(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION, '', $cheminNormalise);
+        $videosFusionnees[$cheminNormalise] = [
+            'chemin' => $cheminComplet,
+            'status' => "En cours de téléchargement"
         ];
     }
-    echo json_encode($result);
+    foreach ($videosConversion as $cheminNormalise => $cheminComplet) {
+        $cheminNormalise = str_replace(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION, '', $cheminNormalise);
+        $videosFusionnees[$cheminNormalise] = [
+            'chemin' => $cheminComplet,
+            'status' => "En cours de conversion"
+        ];
+    }
+    foreach ($videosUpload as $cheminNormalise => $cheminComplet) {
+        $cheminNormalise = str_replace(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, '', $cheminNormalise);
+        $videosFusionnees[$cheminNormalise] = [
+            'chemin' => $cheminComplet,
+            'status' => "En cours d'upload"
+        ];
+    }
+
+    $resultat = [];
+    foreach ($videosFusionnees as $cheminNormalise => $infos) {
+        $resultat[] = [
+            'nomVideo' => basename($cheminNormalise),
+            'cheminComplet' => $infos['chemin'],
+            'poidsVideo' => recupererTailleFichier($infos['chemin'], null),
+            'status' => $infos['status']
+        ];
+    }
+    echo json_encode($resultat);
 }
 
 /**

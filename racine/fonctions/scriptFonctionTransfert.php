@@ -175,57 +175,69 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $video = $COLLECT_STOCK_LOCAL[$j];
                 //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " travaille sur la vidéo : " . $video[MTD_TITRE]);
 
-                // **Téléchargement**
-                $cheminFichierDestination = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $video[MTD_TITRE];
-
                 if (!empty($video[MTD_URI_NAS_ARCH])) {
                     $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
-                    $cheminFichierSource = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
+                    $cheminFichierSourceDistant = $video[MTD_URI_NAS_ARCH] . $video[MTD_TITRE];
                 } elseif (!empty($video[MTD_URI_NAS_PAD])) {
                     $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
-                    $cheminFichierSource = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
+                    $cheminFichierSourceDistant = $video[MTD_URI_NAS_PAD] . $video[MTD_TITRE];
                 } else {
                     ajouterLog(LOG_FAIL, "Erreur, la vidéo " . $video[MTD_TITRE] . " n'est présente dans aucun NAS.");
                     exit(0);
                 }
 
-                telechargerFichier($conn_id, $cheminFichierDestination, $cheminFichierSource);
+                $nomFichierSansExtension = recupererNomFichierSansExtension($video[MTD_TITRE]);
+                $nomFichier = $video[MTD_TITRE];
+
+                //Création de tous les dossiers
+                $cheminDossier = $video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD];
+
+                $cheminDossierAttenteConversion = URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '/';
+                $cheminDossierCoursConversion = URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION . $cheminDossier . $nomFichierSansExtension . '_parts/';
+                $cheminDossierAttenteUpload = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $cheminDossier . $nomFichierSansExtension . '/';
+                $cheminDossierStockageLocal = URI_RACINE_STOCKAGE_LOCAL . $cheminDossier . PREFIXE_DOSSIER_VIDEO . $nomFichierSansExtension . '/';
+
+                $cheminfichierAttenteConversion = $cheminDossierAttenteConversion . $nomFichier;
+
+                creerDossier($cheminDossierAttenteConversion, false);
+                creerDossier($cheminDossierCoursConversion, false);
+                creerDossier($cheminDossierAttenteUpload, false);
+                creerDossier($cheminDossierStockageLocal, false);
+
+                //Téléchargement du fichier distant
+                telechargerFichier($conn_id, $cheminfichierAttenteConversion, $cheminFichierSourceDistant);
                 ftp_close($conn_id);
 
-                // **Découpe / Conversion / Fusion**
-                traiterVideo($video[MTD_TITRE], $video[MTD_DUREE_REELLE]);
-                fusionnerVideo($video[MTD_TITRE]);
+                // Conversion et fusion
+                traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConversion, $nomFichier, $video[MTD_DUREE_REELLE]);
+                fusionnerVideo($cheminDossierCoursConversion, $cheminDossierAttenteUpload, $nomFichier);
 
-                $video[MTD_TITRE] = forcerExtensionMp4($video[MTD_TITRE]);
+                //La vidéo a été compressée, on force son extension
+                $nomFichier = forcerExtensionMp4($nomFichier);
 
-                // **Export dans stockage local**
-                $cheminCompletFichierSource = URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $video[MTD_TITRE];
-                $cheminFichierDestination = URI_RACINE_STOCKAGE_LOCAL . ($video[MTD_URI_NAS_ARCH] ?? $video[MTD_URI_NAS_PAD]);
+                $cheminfichierAttenteUpload = $cheminDossierAttenteUpload . $nomFichier;
+                $cheminfichierStockageLocal = $cheminDossierStockageLocal . $nomFichier;
 
-                $dossierVideo = $cheminFichierDestination . PREFIXE_DOSSIER_VIDEO . recupererNomFichierSansExtension($video[MTD_TITRE]) . '/';
-                creerDossier($cheminFichierDestination, false, false);
-                creerDossier($dossierVideo, false);
+                //On déplace la vidéo dans le stockage local
+                rename($cheminfichierAttenteUpload, $cheminfichierStockageLocal);
 
-                copy($cheminCompletFichierSource, $dossierVideo . $video[MTD_TITRE]);
+                //On génère la miniature de la vidéo
+                genererMiniature($cheminfichierStockageLocal, $video[MTD_DUREE]);
 
-                // **Miniature**
-                $miniature = genererMiniature($cheminCompletFichierSource, $video[MTD_DUREE]);
-                copy(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature, $dossierVideo . $miniature);
-
-                // **Nettoyage**
-                unlink($cheminCompletFichierSource);
-                unlink(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD . $miniature);
-
-                // **Stockage de l'URI**
-                if (strpos($dossierVideo, URI_RACINE_STOCKAGE_LOCAL) === 0) {
-                    $dossierVideo = substr($dossierVideo, strlen(URI_RACINE_STOCKAGE_LOCAL));
-                }
-                $video[MTD_URI_STOCKAGE_LOCAL] = $dossierVideo;
+                //On met l'URI du stockage local dans les métadonnées à insérer en base
+                $cheminDossierStockageLocal = substr($cheminDossierStockageLocal, strlen(URI_RACINE_STOCKAGE_LOCAL));
+                $video[MTD_URI_STOCKAGE_LOCAL] = $cheminDossierStockageLocal;
+                $video[MTD_TITRE] = $nomFichier;
 
                 //Insertion de la vidéo dans la base de données
                 insertionDonneesTechniques($video);
 
-                ajouterLog(LOG_INFORM, "La vidéo" . $video[MTD_TITRE] . " a été transférée avec succès");
+                //Nétoyage  des dossiers. Si un fichier se trouve dans un dossier, celui-ci n'est pas supprimé.
+                rmdir($cheminDossierAttenteConversion);
+                rmdir($cheminDossierCoursConversion);
+                rmdir($cheminDossierAttenteUpload);
+
+                ajouterLog(LOG_SUCCESS, "La vidéo " . $nomFichier . " a été transférée avec succès.");
             }
             //ajouterLog(LOG_INFORM, "Le fils PID " . getmypid() . " termine.");
             exit(0);
@@ -238,7 +250,45 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
             $PIDsEnfants = array_diff($PIDsEnfants, [$pidTermine]);
         }
     }
+    //Suppression des dossiers temporaires
+    supprimerDossiersVides(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION);
+    supprimerDossiersVides(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION);
+    supprimerDossiersVides(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD);
+
     ajouterLog(LOG_INFORM, "Tous les processus fils ont terminé. Le processus de transfert des vidéos est terminé.");
-    return $COLLECT_STOCK_LOCAL;
 }
+
+/**
+ * \fn supprimerDossiersVides($dossierParent)
+ * \brief Supprime tous les sous-dossiers d'un répertoire parent si ceux ci ne contiennent pas de vidéo
+ * \param dossierParent - Dossier parent à partir duquel les sous-dossier seront supprimés
+ */
+function supprimerDossiersVides($dossierParent) {
+    $elements = array_diff(scandir($dossierParent), ['.', '..']);
+    foreach ($elements as $nomElement) {
+        $cheminDossier = $dossierParent . DIRECTORY_SEPARATOR . $nomElement;
+        if (is_dir($cheminDossier)) {
+            $sousElements = array_diff(scandir($cheminDossier), ['.', '..']);
+            $contientFichier = false;
+            foreach ($sousElements as $sousElement) {
+                $cheminComplet = $cheminDossier . DIRECTORY_SEPARATOR . $sousElement;
+                if (is_file($cheminComplet)) {
+                    $contientFichier = true;
+                    break;
+                }
+            }
+            if (!$contientFichier) {
+                // Supprimer les éventuels sous-dossiers vides
+                foreach ($sousElements as $sousElement) {
+                    $cheminSous = $cheminDossier . DIRECTORY_SEPARATOR . $sousElement;
+                    if (is_dir($cheminSous)) {
+                        rmdir($cheminSous); // supprime si vide
+                    }
+                }
+                rmdir($cheminDossier);
+            }
+        }
+    }
+}
+
 ?>
