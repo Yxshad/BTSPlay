@@ -198,5 +198,19 @@ function recupererNomsVideosNAS($ftp_server, $ftp_user, $ftp_pass, $URI_NAS, $no
 	return $nomsVideos_NAS;
 }
 
+ /**
+ * \fn verifierFTP($ip, $ftp_user, $ftp_pass)
+ * \brief Fonction qui retourne true si la connexion FTP s'est établie sans problème.
+ */
+function verifierFTP($ip, $ftp_user, $ftp_pass){
+    $conn_id = @ftp_connect($ip);
+    if (!$conn_id) {
+        return false;
+    }
+    elseif (!@ftp_login($conn_id, $ftp_user, $ftp_pass)) {
+        return false;
+    }
+    return true;
+}
 
 ?>
