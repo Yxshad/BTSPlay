@@ -53,7 +53,7 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $U
         $nomFichier = basename($cheminFichierComplet);
 		$cheminFichier = dirname($cheminFichierComplet) . '/';
 
-        if(verifierFichierTransferable($cheminFichier, $nomFichier)){
+        if(verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server)){
             // Si le fichier n'est pas présent en base
             if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
                 //RECUPERATION VIA LECTURE FTP
@@ -66,7 +66,7 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $U
 	return $COLLECT_NAS;
 }
 
-function verifierFichierTransferable($cheminFichier, $nomFichier){
+function verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server){
     $fichierTransferable = true;
 
     //1. Vérifier que le fichier est une vidéo
@@ -78,15 +78,21 @@ function verifierFichierTransferable($cheminFichier, $nomFichier){
     //2. Vérifier que le fichier ne contient pas de caractères spéciaux
     if(!verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)){
         $fichierTransferable = false;
-        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichierComplet . "contient des caractères spéciaux. Son transfert est ignoré.");
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . "contient des caractères spéciaux. Son transfert est ignoré.");
     }
 
     //3. Vérifier que l'extension du fichier correspond au serveur NAS qui lui est associé (.mxf pour PAD / .mp4 pour ARCH)
+    $extensionFichier = recupererExtensionFichier($nomFichier)
 
+    if(($ftp_server == NAS_PAD && $extensionFichier != "mxf")
+    || ($ftp_server == NAS_ARCH && $extensionFichier != "mp4")){
+        $fichierTransferable = false;
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " a une extension incorrecte par rapport
+        au serveur NAS " . $ftp_server . ". Son transfert est ignoré.");
+    }
 
     return $fichierTransferable;
 }
-
 
 /**
  * \fn remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOCK_LOCAL)
