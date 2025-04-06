@@ -286,13 +286,9 @@ function supprimerDossiersVides($dossierParent) {
                     }
                 }
                 rmdir($cheminDossier);
-                echo "Supprimé : $cheminDossier\n";
-            } else {
-                echo "Conservé (contient fichier) : $cheminDossier\n";
             }
         }
     }
 }
-
 
 ?>
