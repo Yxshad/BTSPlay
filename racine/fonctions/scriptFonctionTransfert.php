@@ -230,7 +230,7 @@ function alimenterStockageLocal($COLLECT_STOCK_LOCAL) {
                 $video[MTD_TITRE] = $nomFichier;
 
                 //Insertion de la vidéo dans la base de données
-                insertionDonneesTechniques($video);
+                //insertionDonneesTechniques($video);
 
                 //Nétoyage  des dossiers. Si un fichier se trouve dans un dossier, celui-ci n'est pas supprimé.
                 rmdir($cheminDossierAttenteConversion);
