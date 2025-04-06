@@ -87,7 +87,7 @@
                             </button>
                             <div id="overlay" style="display : none">
                                 <div class="loader"></div>
-                                <p>Téléchargement en cours...</p>
+                                <p>Téléchargement en cours. Veuillez rafraîchir la page à la fin du téléchargement</p>
                             </div>
                             <?php
                         }
