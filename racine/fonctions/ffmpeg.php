@@ -53,24 +53,45 @@ function recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $che
  * \param fichier - Nom du fichier
  * \return liste - Liste des métadonnées techniques de la vidéo
  */
-
  // #RISQUE : Changment des REGEX selon les vidéos
-function recupererMetadonnees($meta, $fichier){
-    preg_match("/'[^']*\/(.*)'/",$meta,$nom);
-    preg_match("/(\d+(.\d+)?)(?= fps)/", $meta, $fps);
-    preg_match("/(\d{2,4}x\d{2,4})/", $meta, $resolution);
-    preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}.\d{2})/", $meta, $duree);
-    preg_match("/(?<=DAR )([0-9]+:[0-9]+)/", $meta, $format);
-    // #RISQUE : Attention aux duree des vidéos qui varient selon l'extension-  J'ai arrondi mais solution partiellement viable
-    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]); //Arrondir pour ne pas tenir compte des centièmes
-    $liste = [MTD_TITRE => $fichier,
-                MTD_FPS => $fps[0],
-                MTD_RESOLUTION => $resolution[0],
-                MTD_DUREE => $dureeFormatee,
-                MTD_DUREE_REELLE => $duree[1],
-                MTD_FORMAT => $format[1]
-                ];
+ function recupererMetadonnees($meta, $fichier) {
+
+    preg_match("/'[^']*\/(.*)'/", $meta, $nom);
+    preg_match("/(\d+(?:\.\d+)?)(?= fps)/", $meta, $fps);
+    preg_match("/(\d{2,4})x(\d{2,4})/", $meta, $resolution); // resolution[0] = full, [1]=w, [2]=h
+    preg_match("/(?<=Duration: )(\d{2}:\d{2}:\d{2}\.\d{2})/", $meta, $duree);
+    preg_match("/DAR (\d+:\d+)/", $meta, $format);
+
+    $dureeFormatee = preg_replace('/\.\d+/', '', $duree[1]);
+
+    // Si le format (DAR) est manquant, on le déduit de la résolution
+    if (!isset($format[1])) {
+        $width = (int)$resolution[1];
+        $height = (int)$resolution[2];
+        $gcd = gcd($width, $height);
+        $format[1] = ($gcd > 0) ? ($width / $gcd) . ':' . ($height / $gcd) : 'inconnu';
+    }
+
+    $liste = [
+        MTD_TITRE => $fichier,
+        MTD_FPS => $fps[0],
+        MTD_RESOLUTION => $resolution[0],
+        MTD_DUREE => $dureeFormatee,
+        MTD_DUREE_REELLE => $duree[1],
+        MTD_FORMAT => $format[1]
+    ];
+
     return $liste;
+}
+
+// Fonction utilitaire pour simplifier un ratio
+function gcd($a, $b) {
+    while ($b != 0) {
+        $temp = $b;
+        $b = $a % $b;
+        $a = $temp;
+    }
+    return $a;
 }
 
 /**
@@ -102,8 +123,8 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
         $nomFichierSortie = forcerExtensionMp4($nomFichier); //Vidéo de sortie (compressée) forcée à l'extension mp4
 
         $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
-                " -c:v libx264 -preset ultrafast -crf 35 " .  // CRF élevé pour réduire la qualité vidéo
-                "-c:a aac -b:a 64k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
+                " -c:v libx264 -preset ultrafast -crf 24 " .  // CRF élevé pour réduire la qualité vidéo
+                "-c:a aac -b:a 128k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 " -movflags +faststart " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
                 $cheminDossierCoursConversion . $nomFichierSortie;
