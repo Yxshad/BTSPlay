@@ -14,7 +14,6 @@ fonctionTransfert();
  * Alimente aussi la base de données avec les métadonnées techniques des vidéos transférées 
  */
 function fonctionTransfert(){
-    
 	ajouterLog(LOG_INFORM, "Lancement de la fonction de transfert.");
 	$COLLECT_PAD = [];
 	$COLLECT_ARCH = [];
@@ -54,27 +53,45 @@ function recupererCollectNAS($ftp_server, $ftp_user, $ftp_pass, $COLLECT_NAS, $U
         $nomFichier = basename($cheminFichierComplet);
 		$cheminFichier = dirname($cheminFichierComplet) . '/';
 
-        //Si le fichier est une vidéo avec l'extension mxf ou mp4
-		if($cheminFichier != "./" && $nomFichier !== '.'
-        && $nomFichier !== '..' && isVideo($nomFichier)){
-            //Vérifier que la vidéo ne contient pas certains caractères spéciaux
-            if(verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)){
-                // Si le fichier n'est pas présent en base
-                if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
-                    //RECUPERATION VIA LECTURE FTP
-                    $listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
-                    $COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
-                }
+        if(verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server)){
+            // Si le fichier n'est pas présent en base
+            if (!verifierFichierPresentEnBase($cheminFichier, $nomFichier)) {
+                //RECUPERATION VIA LECTURE FTP
+                $listeMetadonneesVideos = recupererMetadonneesVideoViaFTP($ftp_server, $ftp_user, $ftp_pass, $cheminFichier, $nomFichier);
+                $COLLECT_NAS[] = array_merge($listeMetadonneesVideos, [MTD_URI => $cheminFichier]);
             }
-            else{
-                ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichierComplet . "contient des caractères spéciaux. Son transfert est ignoré.");
-            }
-		}
+        }
     }
 	ftp_close($conn_id);
 	return $COLLECT_NAS;
 }
 
+function verifierFichierTransferable($cheminFichier, $nomFichier, $ftp_server){
+    $fichierTransferable = true;
+
+    //1. Vérifier que le fichier est une vidéo
+    if($cheminFichier == './' || $nomFichier == '.'
+    || $nomFichier == '..' || !isVideo($nomFichier)){
+        $fichierTransferable = false;
+	}
+
+    //2. Vérifier que le fichier ne contient pas de caractères spéciaux
+    if(!verifierNomVideoAbsenceCaracteresSpeciaux($nomFichier)){
+        $fichierTransferable = false;
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " contient des caractères spéciaux. Son transfert est ignoré.");
+    }
+
+    //3. Vérifier que l'extension du fichier correspond au serveur NAS qui lui est associé (.mxf pour PAD / .mp4 pour ARCH)
+    $extensionFichier = recupererExtensionFichier($nomFichier);
+
+    if(($ftp_server == NAS_PAD && $extensionFichier != "mxf")
+    || ($ftp_server == NAS_ARCH && $extensionFichier != "mp4")){
+        $fichierTransferable = false;
+        ajouterLog(LOG_FAIL, "La vidéo " . $cheminFichier.$nomFichier . " a une extension incorrecte par rapport au serveur NAS " . $ftp_server . ". Son transfert est ignoré.");
+    }
+
+    return $fichierTransferable;
+}
 
 /**
  * \fn remplirCOLLECT_STOCK_LOCAL(&$COLLECT_PAD, &$COLLECT_ARCH, $COLLECT_STOCK_LOCAL)
