@@ -432,8 +432,12 @@ function listerFichiersRecursif($chemin) {
             $nomFichier = recupererNomFichierSansExtension($nomFichier);
 
             $cheminNormalise = $cheminFichier . $nomFichier;
-
-            $fichiers[$cheminNormalise] = $cheminComplet;
+            if (array_key_exists($cheminNormalise, $fichiers)) {
+                $fichiers[$cheminNormalise][1] += 1;
+            }
+            else{
+                $fichiers[$cheminNormalise] = [$cheminNormalise, 1];
+            }
         }
     }
     return $fichiers;
@@ -455,22 +459,25 @@ function scanDossierDecoupeVideo() {
     foreach ($videosDownload as $cheminNormalise => $cheminComplet) {
         $cheminNormalise = str_replace(URI_VIDEOS_A_CONVERTIR_EN_ATTENTE_DE_CONVERSION, '', $cheminNormalise);
         $videosFusionnees[$cheminNormalise] = [
-            'chemin' => $cheminComplet,
-            'status' => "En cours de téléchargement"
+            'chemin' => $cheminComplet[0],
+            'status' => "En cours de téléchargement",
+            'pourcentage' => 0
         ];
     }
     foreach ($videosConversion as $cheminNormalise => $cheminComplet) {
         $cheminNormalise = str_replace(URI_VIDEOS_A_UPLOAD_EN_COURS_DE_CONVERSION, '', $cheminNormalise);
         $videosFusionnees[$cheminNormalise] = [
-            'chemin' => $cheminComplet,
-            'status' => "En cours de conversion"
+            'chemin' => $cheminComplet[0],
+            'status' => "En cours de conversion",
+            'pourcentage' => $cheminComplet[1]
         ];
     }
     foreach ($videosUpload as $cheminNormalise => $cheminComplet) {
         $cheminNormalise = str_replace(URI_VIDEOS_A_UPLOAD_EN_ATTENTE_UPLOAD, '', $cheminNormalise);
         $videosFusionnees[$cheminNormalise] = [
-            'chemin' => $cheminComplet,
-            'status' => "En cours d'upload"
+            'chemin' => $cheminComplet[0],
+            'status' => "En cours d'upload",
+            'pourcentage' => 0
         ];
     }
 
@@ -480,7 +487,8 @@ function scanDossierDecoupeVideo() {
             'nomVideo' => basename($cheminNormalise),
             'cheminComplet' => $infos['chemin'],
             'poidsVideo' => recupererTailleFichier($infos['chemin'], null),
-            'status' => $infos['status']
+            'status' => $infos['status'],
+            'pourcentage' => $infos['pourcentage']
         ];
     }
     echo json_encode($resultat);
