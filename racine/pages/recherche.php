@@ -11,8 +11,10 @@
         $prof = (isset($_GET["prof"])) ? $_GET["prof"] : null ;
         $description = (isset($_GET["description"])) ? $_GET["description"] : null ;
         $projet = (isset($_GET["projet"])) ? $_GET["projet"] : null ;
+        $participants = (isset($_GET["participants"])) ? explode(", ", $_GET["participants"]) : null ;
+        $roles = (isset($_GET["roles"])) ? explode(", ", $_GET["roles"]) : null ;
 
-        $medias = faireRechercheAvance($prof, $description, $projet);
+        $medias = faireRechercheAvance($prof, $description, $projet, $participants, $roles);
     }
     $listeProf = getAllProfesseursReferent();
     $listeProjet = getAllProjet();
@@ -56,7 +58,8 @@
                             }
                         ?>
                     </select>
-                        <input type="text" name="participant" id="a">
+                        <input type="text" name="participants" id="tagify-1">
+                        <input type="text" name="roles" id="tagify-2">
                     </div>
                 </div>
                 <input type="submit" value="Rechercher" id="Valider">
@@ -84,11 +87,9 @@
             <?php }
         ?>
         <script>
-            alert('ok');
             document.addEventListener("DOMContentLoaded", function () {
-                document.querySelectorAll("#a").forEach(function (input) {
-                    initTagify("#" + input.id);
-                });
+                initTagify("#tagify-1");
+                initTagify("#tagify-2");
             });
         </script>
 </body>
