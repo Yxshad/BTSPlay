@@ -1416,12 +1416,13 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null)
         $conditions[] = "description LIKE '%$description%'";
     }
     if ($projet) {
-        $conditions[] = "projet = '$projet'";
+        $conditions[] = "projet IN (SELECT id FROM Projet WHERE intitule = '$projet');";
     }
     // Ajout des conditions si elles existent
     if (!empty($conditions)) {
         $requete .= " WHERE " . implode(" AND ", $conditions);
     }
+    echo $requete;
     try{
         $sql = $connexion->prepare($requete);
         $sql->execute();

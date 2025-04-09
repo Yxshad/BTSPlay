@@ -1,8 +1,13 @@
 <?php
     require_once "../fonctions/controleur.php";
+
+    //recherche basique
     if (isset($_GET["motCle"])) {
         $medias = faireRecherche($_GET["motCle"], false);
-    }else{
+    }
+    
+    //recherche avancée
+    else{
         $prof = (isset($_GET["prof"])) ? $_GET["prof"] : null ;
         $description = (isset($_GET["description"])) ? $_GET["description"] : null ;
         $projet = (isset($_GET["projet"])) ? $_GET["projet"] : null ;
