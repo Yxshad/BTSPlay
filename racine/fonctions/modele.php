@@ -1422,7 +1422,6 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null)
     if (!empty($conditions)) {
         $requete .= " WHERE " . implode(" AND ", $conditions);
     }
-    echo $requete;
     try{
         $sql = $connexion->prepare($requete);
         $sql->execute();

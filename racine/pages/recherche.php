@@ -28,6 +28,8 @@
     <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/recherche.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
+    <link rel="stylesheet" href="../ressources/lib/Tagify/tagify.css">
+    <script src="../ressources/lib/Tagify/tagify.js"></script>
     <title>Recherche</title>
 </head>
 <body>
@@ -54,6 +56,8 @@
                             }
                         ?>
                     </select>
+                        <input type="text" name="participant" id="a">
+                    </div>
                 </div>
                 <input type="submit" value="Rechercher" id="Valider">
             </div>
@@ -79,5 +83,13 @@
                 </div>
             <?php }
         ?>
+        <script>
+            alert('ok');
+            document.addEventListener("DOMContentLoaded", function () {
+                document.querySelectorAll("#a").forEach(function (input) {
+                    initTagify("#" + input.id);
+                });
+            });
+        </script>
 </body>
 </html>
