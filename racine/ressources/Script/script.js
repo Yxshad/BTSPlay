@@ -145,10 +145,10 @@ function scanDossierDecoupeVideo() {
     const xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         const videos = JSON.parse(this.responseText);
-        const lignesContainer = document.querySelector('#transfert .lignes');
+        let lignesContainer = document.querySelector('#transfert .lignes');
         lignesContainer.innerHTML = '';
         videos.forEach(video => {
-            const ligne = document.createElement('div');
+            let ligne = document.createElement('div');
             ligne.classList.add('ligne');
             ligne.innerHTML = `
                 <div class="info">
@@ -159,8 +159,8 @@ function scanDossierDecoupeVideo() {
                         <p class="nomVideo">${video.nomVideo}</p>
                     </div>
                 </div>
-                <div class="progress">${video.status}</div>
-            `;
+                <div class="progress">${video.status == "En cours de conversion" && video.pourcentage != 1 ? video.status + " : " + video.pourcentage + "%" : video.status}</div>`;
+                
             lignesContainer.appendChild(ligne);
         });
     };
