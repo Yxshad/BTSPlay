@@ -159,7 +159,7 @@ function scanDossierDecoupeVideo() {
                         <p class="nomVideo">${video.nomVideo}</p>
                     </div>
                 </div>
-                <div class="progress">${video.status == "En cours de conversion" && video.pourcentage != 1 ? video.pourcentage + "%" : video.status}</div>`;
+                <div class="progress">${video.status == "En cours de conversion" && video.pourcentage != 1 ? video.status + " : " + video.pourcentage + "%" : video.status}</div>`;
                 
             lignesContainer.appendChild(ligne);
         });
