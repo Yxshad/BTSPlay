@@ -667,4 +667,41 @@ function chargerPopup($nouveauTitre = null, $nouveauTexte = null){
 function controleurVerifierFTP($ip, $ftp_user, $ftp_pass){
     return verifierFTP($ip, $ftp_user, $ftp_pass);
 }
+
+function controleurPreparerAffectations($roles, $participants){
+    $affectations = null;
+    if ($roles != null && $participants != null) {
+        $affectations = [];
+
+        foreach ($roles as $index => $roleArr) {
+            $roleString = (is_array($roleArr) && isset($roleArr[0])) ? $roleArr[0] : '';
+            $nomString = (isset($participants[$index]) && is_array($participants[$index]) && isset($participants[$index][0]) && trim($participants[$index][0]) !== '') ? $participants[$index][0] : '';
+
+            // Si aucun participant n'est défini, on attribue "n'importe"
+            if ($nomString === '') {
+                $nomString = 'none';
+            }
+
+            // Si le rôle est vide
+            if (trim($roleString) === '') {
+                // Si un nom est défini, on l'affecte à un rôle libre
+                $affectations[] = [$nomString => 'none'];
+                continue;
+            }
+
+            // Traitement des rôles et des noms
+            $listeRoles = array_map('trim', explode(',', $roleString));
+
+            $participantsArray = explode(', ', $nomString);
+            foreach ($participantsArray as $participant) {
+                // On parcourt chaque rôle et on l'affecte au participant (ici, "n’importe" s'il n'y a pas de nom)
+                foreach ($listeRoles as $role) {
+                    $affectations[] = [$participant => $role];
+                }
+            }
+        }
+    }
+
+    return $affectations;
+}
 ?>

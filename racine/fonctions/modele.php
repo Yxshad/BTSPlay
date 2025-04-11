@@ -1405,26 +1405,55 @@ function faireRecherche($motsClefs){
     } 
 }
 
-function faireRechercheAvance($prof = null, $description = null, $projet = null, $affectations){
+function faireRechercheAvance($prof = null, $description = null, $projet = null, $affectations = null){
     $connexion = connexionBD();
-    $requete = "SELECT * FROM Media";
-    $conditions = [];
+    $requete = "SELECT DISTINCT Media.* FROM Media
+                JOIN Participer ON Media.id = Participer.idMedia
+                JOIN Role ON Participer.idRole = Role.id
+                JOIN Etudiant ON Etudiant.id = Participer.idEtudiant
+                JOIN Projet ON Projet.id = Media.projet
+                WHERE 1=1 ";
+
     if ($prof) {
-        $conditions[] = "professeurReferent = '$prof'";
+        $requete .= "AND Media.professeurReferent = '$prof' ";
     }
     if ($description) {
-        $conditions[] = "description LIKE '%$description%'";
+        $requete .= "AND Media.description LIKE '%$description%' ";
     }
     if ($projet) {
-        $conditions[] = "projet IN (SELECT id FROM Projet WHERE intitule = '$projet');";
+        $requete .= "AND Projet.intitule = '$projet' ";
+    }
+    if($affectations){
+        foreach ($affectations as $affectation) {
+            foreach ($affectation as $personne => $role) {
+
+                echo "<br/><br/><br/>";
+                print_r($personne);
+                echo "<br/><br/><br/>";
+
+
+                $sousRequete = "AND Media.id IN (
+                                SELECT DISTINCT Participer.idMedia 
+                                FROM Participer 
+                                JOIN Role ON Participer.idRole = Role.id 
+                                JOIN Etudiant ON Etudiant.id = Participer.idEtudiant
+                                WHERE 1=1 "; 
+
+                if($personne != "none"){
+                    $sousRequete .= "AND Etudiant.nomComplet = '$personne' ";
+                }
+                if ($role != "none") {
+                    $sousRequete .= "AND Role.libelle = '$role'";
+                }
+
+                $sousRequete .= ")";
+
+                $requete .= $sousRequete;
+            }
+        }
     }
 
-    // Ajout des conditions si elles existent
-    if (!empty($conditions)) {
-        $requete .= " WHERE " . implode(" AND ", $conditions);
-    }
-
-    //echo $requete;
+    echo $requete;
 
     try{
         $sql = $connexion->prepare($requete);
