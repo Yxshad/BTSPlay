@@ -1405,7 +1405,7 @@ function faireRecherche($motsClefs){
     } 
 }
 
-function faireRechercheAvance($prof = null, $description = null, $projet = null, $participants = null, $roles = null){
+function faireRechercheAvance($prof = null, $description = null, $projet = null, $affectations){
     $connexion = connexionBD();
     $requete = "SELECT * FROM Media";
     $conditions = [];
@@ -1418,23 +1418,13 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null,
     if ($projet) {
         $conditions[] = "projet IN (SELECT id FROM Projet WHERE intitule = '$projet');";
     }
-    if ($participants) {
-        foreach ($participants as $participant) {
-            $conditions[] = "Media.id IN (SELECT Participer.idMedia FROM Participer JOIN Etudiant ON Etudiant.id = Participer.idEtudiant WHERE Etudiant.nomComplet = '$participant')";
-        }
-    }
-    if ($roles) {
-        foreach ($roles as $role) {
-            $conditions[] = "Media.id IN (SELECT Participer.idRole FROM Participer JOIN Role ON Role.id = Participer.idEtudiant WHERE Role.libelle = '$participant')";
-        }
-    }
 
     // Ajout des conditions si elles existent
     if (!empty($conditions)) {
         $requete .= " WHERE " . implode(" AND ", $conditions);
     }
 
-    echo $requete;
+    //echo $requete;
 
     try{
         $sql = $connexion->prepare($requete);

@@ -1,4 +1,7 @@
 <?php
+
+    //PROMOTION A FAIRE !
+
     require_once "../fonctions/controleur.php";
 
     //recherche basique
@@ -11,10 +14,46 @@
         $prof = (isset($_GET["prof"])) ? $_GET["prof"] : null ;
         $description = (isset($_GET["description"])) ? $_GET["description"] : null ;
         $projet = (isset($_GET["projet"])) ? $_GET["projet"] : null ;
-        $participants = (isset($_GET["participants"])) ? explode(", ", $_GET["participants"]) : null ;
-        $roles = (isset($_GET["roles"])) ? explode(", ", $_GET["roles"]) : null ;
+        $roles = (isset($_GET["roles"])) ? $_GET["roles"] : null ;
+        $participants = (isset($_GET["participants"])) ? $_GET["participants"] : null ;
 
-        $medias = faireRechercheAvance($prof, $description, $projet, $participants, $roles);
+        print_r($roles);
+        echo "<br/>";
+        print_r($participants);
+        echo "<br/>";
+
+        $affectations = [];
+
+        foreach ($roles as $index => $roleArr) {
+            $roleString = (is_array($roleArr) && isset($roleArr[0])) ? $roleArr[0] : '';
+            $nomString = (isset($participants[$index]) && is_array($participants[$index]) && isset($participants[$index][0]) && trim($participants[$index][0]) !== '') ? $participants[$index][0] : '';
+
+            // Si aucun participant n'est défini, on attribue "n'importe"
+            if ($nomString === '') {
+                $nomString = 'Affectation libre';
+            }
+
+            // Si le rôle est vide
+            if (trim($roleString) === '') {
+                // Si un nom est défini, on l'affecte à un rôle libre
+                $affectations[] = [$nomString => 'Affectation libre'];
+                continue;
+            }
+
+            // Traitement des rôles et des noms
+            $listeRoles = array_map('trim', explode(',', $roleString));
+
+            $participantsArray = explode(', ', $nomString);
+            foreach ($participantsArray as $participant) {
+                // On parcourt chaque rôle et on l'affecte au participant (ici, "n’importe" s'il n'y a pas de nom)
+                foreach ($listeRoles as $role) {
+                    $affectations[] = [$participant => $role];
+                }
+            }
+        }
+
+        $medias = faireRechercheAvance($prof, $description, $projet, $affectations);
+
     }
     $listeProf = getAllProfesseursReferent();
     $listeProjet = getAllProjet();
@@ -58,12 +97,12 @@
                             }
                         ?>
                     </select>
-                        <input type="text" name="participants" id="tagify-1">
-                        <input type="text" name="roles" id="tagify-2">
+
                     </div>
                 </div>
                 <input type="submit" value="Rechercher" id="Valider">
             </div>
+            <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
         </form>
     </div>
     <div class="resultsContainer">
@@ -88,8 +127,23 @@
         ?>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                initTagify("#tagify-1");
-                initTagify("#tagify-2");
+                let index = 0;
+                document.getElementById("add-role").addEventListener("click", function() {
+                    let container = document.querySelector(".filtrage form");
+                    
+                    let newRoleDiv = document.createElement("div.role-acteur");
+
+                    newRoleDiv.innerHTML = `
+                        <input type="text" id="role_${index}" name="roles[${index}][]">
+                        <input type="text" id="participant_${index}" name="participants[${index}][]">
+                    `;
+                    
+                    container.insertBefore(newRoleDiv, container.children[container.childElementCount -1]);
+
+                    initTagify(`#role_${index}`);
+                    initTagify(`#participant_${index}`);
+                    index++;
+                });
             });
         </script>
 </body>
