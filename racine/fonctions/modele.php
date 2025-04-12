@@ -1378,6 +1378,11 @@ function getAllProfesseursReferent(){
     }   
 }
 
+/**
+ * \fn faireRecherche($motsClefs)
+ * \brief Récupère toutes les vidéos ayant le mot clef qui apparait dans les champs mtd_tech_titre, description, Professeur.nom, Professeur.prenom, projet et promotion
+ * \param motsClefs - Liste de mots à rechercher dans les champs de la base de données
+ */
 function faireRecherche($motsClefs){
     //préparation de la requête
     $connexion = connexionBD();
@@ -1405,12 +1410,18 @@ function faireRecherche($motsClefs){
     } 
 }
 
-function faireRechercheAvance($prof = null, $description = null, $projet = null, $affectations = null){
+/**
+ * \fn faireRechercheAvance($prof = null, $description = null, $projet = null, $promotion = null, $affectations = null)
+ * \brief Récupère toutes les vidéos ayant tout les champs avec les mêmes valeurs que ce fournit en paramètre 
+ * \param prof - L'identifiant du professeur qui a participé à la vidéo
+ * \param description - Chaine de charactères qui doit être inclus dans les vidéos retournées
+ * \param projet - Chaine de charactères qui doit correspondre aux projet des vidéos retournées
+ * \param promotion - Chaine de charactères du champs promotion des vidéos retournées
+ * \param affectations - Liste d'array avec de participants et de roles
+ */
+function faireRechercheAvance($prof = null, $description = null, $projet = null, $promotion = null, $affectations = null){
     $connexion = connexionBD();
     $requete = "SELECT DISTINCT Media.* FROM Media
-                JOIN Participer ON Media.id = Participer.idMedia
-                JOIN Role ON Participer.idRole = Role.id
-                JOIN Etudiant ON Etudiant.id = Participer.idEtudiant
                 JOIN Projet ON Projet.id = Media.projet
                 WHERE 1=1 ";
 
@@ -1423,6 +1434,11 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null,
     if ($projet) {
         $requete .= "AND Projet.intitule = '$projet' ";
     }
+    if($promotion){
+        $requete .= "AND Media.promotion = '$promotion' ";
+    }
+
+
     if($affectations){
         foreach ($affectations as $affectation) {
             foreach ($affectation as $personne => $role) {
@@ -1452,8 +1468,6 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null,
             }
         }
     }
-
-    echo $requete;
 
     try{
         $sql = $connexion->prepare($requete);

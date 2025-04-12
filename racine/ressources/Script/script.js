@@ -641,3 +641,31 @@ function modifierParametres(event){
 function reloading(){
     window.location.reload();
 }
+
+function gererFiltres(){
+    let index = 0;
+    
+    document.getElementById("add-role").addEventListener("click", function() {
+        let container = document.querySelector(".filtrage form");
+        
+        let newRoleDiv = document.createElement("div");
+        newRoleDiv.classList.add("role-acteur");
+
+        newRoleDiv.innerHTML = `
+            <input type="text" placeholder="roles" class="tagify" id="role_${index}" name="roles[${index}][]">
+            <input type="text" placeholder="participants" class="tagify" id="participant_${index}" name="participants[${index}][]">
+        `;
+        
+        container.insertBefore(newRoleDiv, container.children[container.childElementCount]);
+
+        initTagify(`#role_${index}`);
+        initTagify(`#participant_${index}`);
+        index++;
+    });
+
+    document.querySelector('.btn-afficher-filtres').addEventListener('click', function(event){
+        event.preventDefault();
+        document.querySelector('.filtrage').classList.toggle('ouvert');
+        document.querySelector('.btn-afficher-filtres').classList.toggle('ouvert');
+    });
+}

@@ -668,6 +668,13 @@ function controleurVerifierFTP($ip, $ftp_user, $ftp_pass){
     return verifierFTP($ip, $ftp_user, $ftp_pass);
 }
 
+
+ /**
+ * \fn controleurPreparerAffectations($roles, $participants)
+ * \brief Formate les arrays roles et participants pour avoir une liste d'array participant => role pour la recherche avancée
+ * \param roles - Liste de string et d'array
+ * \param participants - Liste de de string et d'array 
+ */
 function controleurPreparerAffectations($roles, $participants){
     $affectations = null;
     if ($roles != null && $participants != null) {

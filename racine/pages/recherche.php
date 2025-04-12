@@ -1,7 +1,4 @@
 <?php
-
-    //PROMOTION A FAIRE !
-
     require_once "../fonctions/controleur.php";
 
     //recherche basique
@@ -14,12 +11,13 @@
         $prof = (isset($_GET["prof"])) ? $_GET["prof"] : null ;
         $description = (isset($_GET["description"])) ? $_GET["description"] : null ;
         $projet = (isset($_GET["projet"])) ? $_GET["projet"] : null ;
+        $promotion = (isset($_GET["promotion"])) ? $_GET["promotion"] : null ;
 
         $roles = (isset($_GET["roles"])) ? $_GET["roles"] : null ;
         $participants = (isset($_GET["participants"])) ? $_GET["participants"] : null ;
         $affectations = controleurPreparerAffectations($roles, $participants);
 
-        $medias = faireRechercheAvance($prof, $description, $projet, $affectations);
+        $medias = faireRechercheAvance($prof, $description, $projet, $promotion, $affectations);
 
     }
     $listeProf = getAllProfesseursReferent();
@@ -45,7 +43,7 @@
 
     <div class="filtrage">
         <form action="#" method="get">
-            <input placeholder="Rechercher dans la description" type="text" name="description">
+            <input placeholder="Rechercher dans la description" type="text" name="description" class="description">
             <div>
                 <div class="selects">
                     <select name="prof" id="">
@@ -64,14 +62,23 @@
                             }
                         ?>
                     </select>
-
-                    </div>
+                    <input type="text" placeholder="promotion">
                 </div>
-                <input type="submit" value="Rechercher" id="Valider">
+                
+                
             </div>
-            <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
+            
         </form>
+        <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
+        <input type="submit" value="Rechercher" id="Valider">
     </div>
+    <a href="#" class="btn-afficher-filtres">
+        <svg fill="#000" viewBox="0 0 16 16">
+            <path fill-rule="evenodd" d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"></path>
+        </svg>
+    </a>
+
+
     <div class="resultsContainer">
         <?php
             foreach($medias as $media){ ?>
@@ -94,23 +101,7 @@
         ?>
         <script>
             document.addEventListener("DOMContentLoaded", function () {
-                let index = 0;
-                document.getElementById("add-role").addEventListener("click", function() {
-                    let container = document.querySelector(".filtrage form");
-                    
-                    let newRoleDiv = document.createElement("div.role-acteur");
-
-                    newRoleDiv.innerHTML = `
-                        <input type="text" id="role_${index}" name="roles[${index}][]">
-                        <input type="text" id="participant_${index}" name="participants[${index}][]">
-                    `;
-                    
-                    container.insertBefore(newRoleDiv, container.children[container.childElementCount -1]);
-
-                    initTagify(`#role_${index}`);
-                    initTagify(`#participant_${index}`);
-                    index++;
-                });
+                gererFiltres();
             });
         </script>
 </body>
