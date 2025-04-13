@@ -656,7 +656,7 @@ function gererFiltres(){
             <input type="text" placeholder="participants" class="tagify" id="participant_${index}" name="participants[${index}][]">
         `;
         
-        container.insertBefore(newRoleDiv, container.children[container.childElementCount]);
+        container.insertBefore(newRoleDiv, container.children[container.childElementCount-2]);
 
         initTagify(`#role_${index}`);
         initTagify(`#participant_${index}`);

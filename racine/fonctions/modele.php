@@ -757,11 +757,9 @@ function getURISVideo($idVideo)
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($infosVideo) {
-        ajouterLog(LOG_INFORM, "ok");
         return $infosVideo;
        } 
        else {
-        ajouterLog(LOG_INFORM, "pas ok");
            return false;
        }
    }
@@ -1442,12 +1440,6 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null,
     if($affectations){
         foreach ($affectations as $affectation) {
             foreach ($affectation as $personne => $role) {
-
-                echo "<br/><br/><br/>";
-                print_r($personne);
-                echo "<br/><br/><br/>";
-
-
                 $sousRequete = "AND Media.id IN (
                                 SELECT DISTINCT Participer.idMedia 
                                 FROM Participer 

@@ -31,7 +31,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" href="../ressources/Images/favicon_BTS_Play.png" type="image/png">
     <link href="../ressources/Style/main.css" rel="stylesheet">
-    <link href="../ressources/Style/menuFiltres.css" rel="stylesheet">
     <link href="../ressources/Style/recherche.css" rel="stylesheet">
     <script src="../ressources/Script/script.js"></script>
     <link rel="stylesheet" href="../ressources/lib/Tagify/tagify.css">
@@ -63,14 +62,11 @@
                         ?>
                     </select>
                     <input type="text" placeholder="promotion">
-                </div>
-                
-                
+                </div>    
             </div>
-            
+            <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
+            <input type="submit" value="Rechercher" id="Valider">
         </form>
-        <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
-        <input type="submit" value="Rechercher" id="Valider">
     </div>
     <a href="#" class="btn-afficher-filtres">
         <svg fill="#000" viewBox="0 0 16 16">
