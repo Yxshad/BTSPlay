@@ -1440,12 +1440,6 @@ function faireRechercheAvance($prof = null, $description = null, $projet = null,
     if($affectations){
         foreach ($affectations as $affectation) {
             foreach ($affectation as $personne => $role) {
-
-                echo "<br/><br/><br/>";
-                print_r($personne);
-                echo "<br/><br/><br/>";
-
-
                 $sousRequete = "AND Media.id IN (
                                 SELECT DISTINCT Participer.idMedia 
                                 FROM Participer 
