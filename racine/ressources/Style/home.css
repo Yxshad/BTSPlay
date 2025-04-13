@@ -1,3 +1,7 @@
+:root{
+    overflow: scroll;
+}
+
 .sliderVideo, .sliderVideoProjet{
     overflow-x: hidden;
     position: relative;
