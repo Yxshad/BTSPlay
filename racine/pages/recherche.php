@@ -62,14 +62,11 @@
                         ?>
                     </select>
                     <input type="text" placeholder="promotion">
-                </div>
-                
-                
+                </div>    
             </div>
-            
+            <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
+            <input type="submit" value="Rechercher" id="Valider">
         </form>
-        <button type="button" id="add-role" class="form-button">Ajouter un rôle</button>
-        <input type="submit" value="Rechercher" id="Valider">
     </div>
     <a href="#" class="btn-afficher-filtres">
         <svg fill="#000" viewBox="0 0 16 16">
