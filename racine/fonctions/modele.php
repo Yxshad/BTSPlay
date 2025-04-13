@@ -757,11 +757,9 @@ function getURISVideo($idVideo)
        $infosVideo = $requeteVid->fetch(PDO::FETCH_ASSOC);
        $connexion = null;
        if ($infosVideo) {
-        ajouterLog(LOG_INFORM, "ok");
         return $infosVideo;
        } 
        else {
-        ajouterLog(LOG_INFORM, "pas ok");
            return false;
        }
    }

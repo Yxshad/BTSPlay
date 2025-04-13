@@ -1,5 +1,5 @@
 :root{
-    overflow: scroll;
+    overflow-y :scroll;
 }
 
 .sliderVideo, .sliderVideoProjet{
@@ -14,6 +14,7 @@
 
 .sliderVideoProjet{
     border-top: 1px solid #CCC;
+    overflow-y: hidden;
 }
 
 a:hover{
@@ -38,10 +39,6 @@ a:hover{
 .swiper-slide a:hover .miniature{
     border-radius: 0;
     opacity: 0.8;
-}
-
-.swiper-wrapper{
-    overflow: hidden
 }
 
 .swiper-button-next,
