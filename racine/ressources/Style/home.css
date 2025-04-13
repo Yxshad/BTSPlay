@@ -36,6 +36,10 @@ a:hover{
     opacity: 0.8;
 }
 
+.swiper-wrapper{
+    overflow: hidden
+}
+
 .swiper-button-next,
 .swiper-button-prev{
     background: #fff7;

@@ -1378,6 +1378,11 @@ function getAllProfesseursReferent(){
     }   
 }
 
+/**
+ * \fn faireRecherche($motsClefs)
+ * \brief Récupère toutes les vidéos ayant le mot clef qui apparait dans les champs mtd_tech_titre, description, Professeur.nom, Professeur.prenom, projet et promotion
+ * \param motsClefs - Liste de mots à rechercher dans les champs de la base de données
+ */
 function faireRecherche($motsClefs){
     //préparation de la requête
     $connexion = connexionBD();
@@ -1405,23 +1410,65 @@ function faireRecherche($motsClefs){
     } 
 }
 
-function faireRechercheAvance($prof = null, $description = null, $projet = null){
+/**
+ * \fn faireRechercheAvance($prof = null, $description = null, $projet = null, $promotion = null, $affectations = null)
+ * \brief Récupère toutes les vidéos ayant tout les champs avec les mêmes valeurs que ce fournit en paramètre 
+ * \param prof - L'identifiant du professeur qui a participé à la vidéo
+ * \param description - Chaine de charactères qui doit être inclus dans les vidéos retournées
+ * \param projet - Chaine de charactères qui doit correspondre aux projet des vidéos retournées
+ * \param promotion - Chaine de charactères du champs promotion des vidéos retournées
+ * \param affectations - Liste d'array avec de participants et de roles
+ */
+function faireRechercheAvance($prof = null, $description = null, $projet = null, $promotion = null, $affectations = null){
     $connexion = connexionBD();
-    $requete = "SELECT * FROM Media";
-    $conditions = [];
+    $requete = "SELECT DISTINCT Media.* FROM Media
+                JOIN Projet ON Projet.id = Media.projet
+                WHERE 1=1 ";
+
     if ($prof) {
-        $conditions[] = "professeurReferent = '$prof'";
+        $requete .= "AND Media.professeurReferent = '$prof' ";
     }
     if ($description) {
-        $conditions[] = "description LIKE '%$description%'";
+        $requete .= "AND Media.description LIKE '%$description%' ";
     }
     if ($projet) {
-        $conditions[] = "projet = '$projet'";
+        $requete .= "AND Projet.intitule = '$projet' ";
     }
-    // Ajout des conditions si elles existent
-    if (!empty($conditions)) {
-        $requete .= " WHERE " . implode(" AND ", $conditions);
+    if($promotion){
+        $requete .= "AND Media.promotion = '$promotion' ";
     }
+
+
+    if($affectations){
+        foreach ($affectations as $affectation) {
+            foreach ($affectation as $personne => $role) {
+
+                echo "<br/><br/><br/>";
+                print_r($personne);
+                echo "<br/><br/><br/>";
+
+
+                $sousRequete = "AND Media.id IN (
+                                SELECT DISTINCT Participer.idMedia 
+                                FROM Participer 
+                                JOIN Role ON Participer.idRole = Role.id 
+                                JOIN Etudiant ON Etudiant.id = Participer.idEtudiant
+                                WHERE 1=1 "; 
+
+                if($personne != "none"){
+                    $sousRequete .= "AND Etudiant.nomComplet = '$personne' ";
+                }
+                if ($role != "none") {
+                    $sousRequete .= "AND Role.libelle = '$role'";
+                }
+
+                $sousRequete .= ")";
+
+                $requete .= $sousRequete;
+            }
+        }
+    }
+
     try{
         $sql = $connexion->prepare($requete);
         $sql->execute();
