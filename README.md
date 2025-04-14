@@ -18,5 +18,3 @@
 - MARTIN Solène
 
 Contact : nconguisti@iutbayonne.univ-pau.fr
-
- **⚠️ Projet en cours de développement, veuillez patienter... ⚠️**
