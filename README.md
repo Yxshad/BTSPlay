@@ -17,4 +17,4 @@
 - MARRIER Axel
 - MARTIN Solène
 
-Contact : nconguisti@iutbayonne.univ-pau.fr
+Contact : nicolas.conguisti1@gmail.com
