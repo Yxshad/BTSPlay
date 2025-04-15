@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : mar. 11 fév. 2025 à 17:25
+-- Généré le : dim. 23 mars 2025 à 23:57
 -- Version du serveur : 5.7.44
 -- Version de PHP : 8.2.26
 
@@ -21,26 +21,20 @@ SET time_zone = "+00:00";
 -- Base de données : `mydatabase`
 --
 
-DROP TABLE IF EXISTS `Autorisation`;
-DROP TABLE IF EXISTS `Participer`;
-DROP TABLE IF EXISTS `Media`;
-DROP TABLE IF EXISTS `Professeur`;
-DROP TABLE IF EXISTS `Projet`;
-DROP TABLE IF EXISTS `Role`;
-DROP TABLE IF EXISTS `Etudiant`;
-
 -- --------------------------------------------------------
 
 --
 -- Structure de la table `Autorisation`
 --
 
-CREATE TABLE `Autorisation` (
+DROP TABLE IF EXISTS `Autorisation`;
+CREATE TABLE IF NOT EXISTS `Autorisation` (
   `professeur` varchar(100) NOT NULL,
   `modifier` tinyint(1) NOT NULL DEFAULT '0',
   `supprimer` tinyint(1) NOT NULL DEFAULT '0',
   `diffuser` tinyint(1) NOT NULL DEFAULT '0',
-  `administrer` tinyint(1) NOT NULL DEFAULT '0'
+  `administrer` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`professeur`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -72,9 +66,11 @@ INSERT INTO `Autorisation` (`professeur`, `modifier`, `supprimer`, `diffuser`, `
 -- Structure de la table `Etudiant`
 --
 
-CREATE TABLE `Etudiant` (
-  `id` int(11) NOT NULL,
-  `nomComplet` varchar(100) NOT NULL
+DROP TABLE IF EXISTS `Etudiant`;
+CREATE TABLE IF NOT EXISTS `Etudiant` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `nomComplet` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -83,12 +79,14 @@ CREATE TABLE `Etudiant` (
 -- Structure de la table `Media`
 --
 
-CREATE TABLE `Media` (
-  `id` int(11) NOT NULL,
+DROP TABLE IF EXISTS `Media`;
+CREATE TABLE IF NOT EXISTS `Media` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `projet` int(11) DEFAULT NULL,
   `professeurReferent` varchar(300) DEFAULT NULL,
-  `promotion` varchar(50) DEFAULT NULL,
+  `promotion` varchar(300) DEFAULT NULL,
   `description` varchar(800) DEFAULT NULL,
+  `theme` varchar(300) DEFAULT NULL,
   `URI_NAS_PAD` varchar(200) DEFAULT NULL,
   `URI_NAS_ARCH` varchar(200) DEFAULT NULL,
   `URI_STOCKAGE_LOCAL` varchar(200) DEFAULT NULL,
@@ -98,9 +96,11 @@ CREATE TABLE `Media` (
   `mtd_tech_fps` varchar(200) NOT NULL,
   `mtd_tech_format` varchar(200) NOT NULL,
   `date_creation` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `date_modification` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  KEY `fk_projet` (`projet`),
+  KEY `fk_professeur` (`professeurReferent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 
@@ -108,10 +108,14 @@ CREATE TABLE `Media` (
 -- Structure de la table `Participer`
 --
 
-CREATE TABLE `Participer` (
+DROP TABLE IF EXISTS `Participer`;
+CREATE TABLE IF NOT EXISTS `Participer` (
   `idMedia` int(11) NOT NULL,
   `idEtudiant` int(11) NOT NULL,
-  `idRole` int(11) NOT NULL
+  `idRole` int(11) NOT NULL,
+  PRIMARY KEY (`idMedia`,`idEtudiant`,`idRole`),
+  KEY `fk_Etudiant` (`idEtudiant`),
+  KEY `fk_role` (`idRole`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -120,12 +124,14 @@ CREATE TABLE `Participer` (
 -- Structure de la table `Professeur`
 --
 
-CREATE TABLE `Professeur` (
+DROP TABLE IF EXISTS `Professeur`;
+CREATE TABLE IF NOT EXISTS `Professeur` (
   `identifiant` varchar(100) NOT NULL,
   `nom` varchar(50) NOT NULL,
   `prenom` varchar(50) NOT NULL,
   `motdepasse` varchar(255) NOT NULL,
-  `role` varchar(15) DEFAULT NULL
+  `role` varchar(15) DEFAULT NULL,
+  PRIMARY KEY (`identifiant`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -157,11 +163,12 @@ INSERT INTO `Professeur` (`identifiant`, `nom`, `prenom`, `motdepasse`, `role`) 
 -- Structure de la table `Projet`
 --
 
-CREATE TABLE `Projet` (
-  `id` int(11) NOT NULL,
-  `intitule` varchar(50) DEFAULT NULL
+DROP TABLE IF EXISTS `Projet`;
+CREATE TABLE IF NOT EXISTS `Projet` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `intitule` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 
 -- --------------------------------------------------------
 
@@ -169,97 +176,12 @@ CREATE TABLE `Projet` (
 -- Structure de la table `Role`
 --
 
-CREATE TABLE `Role` (
-  `id` int(11) NOT NULL,
-  `libelle` varchar(50) NOT NULL
+DROP TABLE IF EXISTS `Role`;
+CREATE TABLE IF NOT EXISTS `Role` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(50) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Déchargement des données de la table `Role`
---
-
-INSERT INTO `Role` (`id`, `libelle`) VALUES
-(1, 'Cadreur'),
-(2, 'Réalisateur'),
-(3, 'Responsable Son');
-
---
--- Index pour les tables déchargées
---
-
---
--- Index pour la table `Autorisation`
---
-ALTER TABLE `Autorisation`
-  ADD PRIMARY KEY (`professeur`);
-
---
--- Index pour la table `Etudiant`
---
-ALTER TABLE `Etudiant`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `Media`
---
-ALTER TABLE `Media`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_projet` (`projet`),
-  ADD KEY `fk_professeur` (`professeurReferent`);
-
---
--- Index pour la table `Participer`
---
-ALTER TABLE `Participer`
-  ADD PRIMARY KEY (`idMedia`,`idEtudiant`,`idRole`),
-  ADD KEY `fk_Etudiant` (`idEtudiant`),
-  ADD KEY `fk_role` (`idRole`);
-
---
--- Index pour la table `Professeur`
---
-ALTER TABLE `Professeur`
-  ADD PRIMARY KEY (`identifiant`);
-
---
--- Index pour la table `Projet`
---
-ALTER TABLE `Projet`
-  ADD PRIMARY KEY (`id`);
-
---
--- Index pour la table `Role`
---
-ALTER TABLE `Role`
-  ADD PRIMARY KEY (`id`);
-
---
--- AUTO_INCREMENT pour les tables déchargées
---
-
---
--- AUTO_INCREMENT pour la table `Etudiant`
---
-ALTER TABLE `Etudiant`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT pour la table `Media`
---
-ALTER TABLE `Media`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
-
---
--- AUTO_INCREMENT pour la table `Projet`
---
-ALTER TABLE `Projet`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
-
---
--- AUTO_INCREMENT pour la table `Role`
---
-ALTER TABLE `Role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Contraintes pour les tables déchargées
@@ -282,9 +204,9 @@ ALTER TABLE `Media`
 -- Contraintes pour la table `Participer`
 --
 ALTER TABLE `Participer`
-  ADD CONSTRAINT `fk_Etudiant` FOREIGN KEY (`idEtudiant`) REFERENCES `Etudiant` (`id`),
-  ADD CONSTRAINT `fk_media` FOREIGN KEY (`idMedia`) REFERENCES `Media` (`id`),
-  ADD CONSTRAINT `fk_role` FOREIGN KEY (`idRole`) REFERENCES `Role` (`id`);
+  ADD CONSTRAINT `fk_Etudiant` FOREIGN KEY (`idEtudiant`) REFERENCES `Etudiant` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_media` FOREIGN KEY (`idMedia`) REFERENCES `Media` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_role` FOREIGN KEY (`idRole`) REFERENCES `Role` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

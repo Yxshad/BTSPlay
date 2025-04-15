@@ -1,0 +1,80 @@
+Modification nécessaires dans les fonctions listerFichiersCompletFTP et controleurArborescence.
+
+function listerFichiersCompletFTP($conn_id, $repertoire) {
+    $pile = [$repertoire];
+    $fichiersComplet = [];
+    while (!empty($pile)) {
+        $dossierCourant = array_pop($pile); 
+        $elements = ftp_nlist($conn_id, $dossierCourant);
+        foreach ($elements as $element) {
+            // Vérifier si le répertoire courant est la racine
+            if ($dossierCourant === '/') {
+                // Si on est à la racine, on enlève le slash initial du fichier
+                $elementComplet = ltrim($element, '/');
+            }
+            else {
+                $elementComplet = $element;
+            }
+            $nomFichier = basename($elementComplet);
+
+            if ($nomFichier === '.' || $nomFichier === '..') {
+                continue;
+            }
+            //Si c'est un fichier
+            if(isVideo($nomFichier)){
+                $fichiersComplet[] = $elementComplet;
+            }
+            //si c'est un dossier
+            else{
+                $pile[] = $elementComplet;
+            }
+        }
+    }
+    return $fichiersComplet;
+}
+function controleurArborescence($directory, $ftp_server){
+    if($ftp_server == NAS_PAD || $ftp_server == NAS_ARCH){
+        if ($ftp_server == NAS_PAD) {
+            $conn_id = connexionFTP_NAS(NAS_PAD, LOGIN_NAS_PAD, PASSWORD_NAS_PAD);
+        } else {
+            $conn_id = connexionFTP_NAS(NAS_ARCH, LOGIN_NAS_ARCH, PASSWORD_NAS_ARCH);
+        }
+        $fichiers_NAS = ftp_nlist($conn_id, $directory);
+        foreach ($fichiers_NAS as $item) {
+            if ($item !== '.' && $item !== '..' && $item !== '.gitkeep') {
+                $path = $item;
+                $item = basename($item);
+                
+                //Pour savoir si l'item est un dossier, on regarde si il contient un point ou non.
+                if (!str_contains($path, '.')) {
+                    afficherDossier($path, $item);
+                } elseif (isVideo($item)) {
+                    $directory_id = dirname($path) . '/';
+                    $item_id = forcerExtensionMP4($item);
+                    $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
+                    afficherVideo($path, $item, $id);
+                } else {
+                    afficherFichier($path, $item);
+                }
+            }
+        }
+        ftp_close($conn_id);
+    } else {
+        $itemsLocal = scandir($directory);
+        foreach ($itemsLocal as $item) {
+            if ($item !== '.' && $item !== '..' && $item !== '.gitkeep') {
+                $path = $directory . '/' . $item;
+                if (is_dir($path)) {
+                    afficherDossier($path, $item);
+                } elseif (isVideo($item)) {
+                    preg_match("/(?<=stockage\/).*/", $directory, $matches);
+                    $directory_id = $matches[0] . "/";
+                    $id = getIdVideoURIetTitre($directory_id, $item, $ftp_server);
+                    afficherVideo($path, $item, $id);
+                } else {
+                    afficherFichier($path, $item);
+                }
+            }
+        }
+    }    
+}
