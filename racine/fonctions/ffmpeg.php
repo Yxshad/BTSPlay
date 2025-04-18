@@ -125,7 +125,7 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
         $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
                 " -c:v libx264 -preset ultrafast -crf 24 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 128k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
-                " -movflags +faststart " .                   // Optimisation pour le streaming
+                " -movflags + medium " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
                 $cheminDossierCoursConversion . $nomFichierSortie;
         exec($command . " 2>&1", $output, $return_var);
@@ -161,7 +161,7 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
                       " -reset_timestamps 1" .
                       " -segment_format mp4" .
                       " -movflags +faststart" .
-                      " -c:v libx264 -pix_fmt yuv420p -crf 24 -preset ultrafast" .
+                      " -c:v libx264 -pix_fmt yuv420p -crf 10 -preset medium" .
                       " -vf yadif" .
                       " -c:a aac -b:a 128k -ac 2 " .
                       " -map 0:v:0 -map 0:a:0 " .
