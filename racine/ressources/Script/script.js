@@ -415,31 +415,30 @@ function validerURI(inputId) {
 
 // Met en première lettre capitale les chaines de caractères
 function capitalizeWords(str) {
-    return str.replace(/\b\w/g, char => char.toUpperCase());
+    return str.replace(/([^\s-])([^\s]*)/g, (match, firstChar, rest) => {
+        return firstChar.toLocaleUpperCase('fr-FR') + rest.toLowerCase();
+    });
 }
 
 // Gère les paramètres plugin de tags Tagify
 function initTagify(selector) {
     let input = document.querySelector(selector);
     let tagify = new Tagify(input, {
+        transformTag: tagData => tagData,
         enforceWhitelist: false,
         delimiters: ",",
         maxTags: 10,
         trim: true
     });
-
-    // Avant d'ajouter un tag, on corrige la capitalisation
+    
     tagify.on('add', function(e) {
         let formattedValue = capitalizeWords(e.detail.data.value);
         e.detail.data.value = formattedValue;
-
-        // Mise à jour manuelle du tag pour afficher la version corrigée
         tagify.replaceTag(e.detail.tag, { value: formattedValue });
     });
 
-    // Avant l’envoi du formulaire, convertir les tags en une chaîne propre
     input.closest("form").addEventListener("submit", function () {
-        let tags = tagify.value.map(tag => capitalizeWords(tag.value)).join(", ");
+        let tags = tagify.value.map(tag => tag.value).join(", ");
         input.value = tags;
     });
 }
