@@ -258,9 +258,7 @@ function controleurVerifierVideoParametre(){
 function controleurIdentifierUtilisateur($loginUser, $passwordUser){
 
     $passwordHache = hash('sha256', $passwordUser);
-
-    ajouterLog(LOG_FAIL, "$passwordHache");
-
+    
     //regarder si login + mdp en base, récupérer le rôle si trouvé. Sinon, message d'erreur
     $role = connexionProfesseur($loginUser, $passwordHache);
 
