@@ -42,7 +42,9 @@ CREATE TABLE IF NOT EXISTS `Autorisation` (
 --
 
 INSERT INTO `Autorisation` (`professeur`, `modifier`, `supprimer`, `diffuser`, `administrer`) VALUES
-('pmartin', 1, 1, 1, 1);
+('pmartin', 1, 1, 1, 1),
+('support', 1, 1, 1, 1),
+('support2', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
