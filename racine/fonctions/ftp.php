@@ -26,7 +26,7 @@ function connexionFTP_NAS($ftp_server, $ftp_user, $ftp_pass){
         exit();
     }
     #PROD : À DECOMMENTER LORS DU PASSAGE EN PROD
-    //ftp_pasv($conn_id, true);
+    ftp_pasv($conn_id, true);
     return $conn_id;
 }
 
@@ -137,37 +137,34 @@ function creerDossierFTP($conn_id, $cheminDossier) {
 function listerFichiersCompletFTP($conn_id, $repertoire) {
     $pile = [$repertoire];
     $fichiersComplet = [];
-    // #PROD, on ne récupère que les 2 premiers fichiers pour ne pas surcharger - À DECOMMENTER LORS DES TESTS EN PROD
-    //while (!empty($pile) && count($fichiersComplet) < 2){
     while (!empty($pile)) {
         $dossierCourant = array_pop($pile); 
         $elements = ftp_nlist($conn_id, $dossierCourant);
         foreach ($elements as $element) {
-
             // Vérifier si le répertoire courant est la racine
             if ($dossierCourant === '/') {
                 // Si on est à la racine, on enlève le slash initial du fichier
                 $elementComplet = ltrim($element, '/');
             }
             else {
-                // Si ce n'est pas la racine, on concatène le dossier courant avec le fichier
-                $elementComplet = rtrim($dossierCourant, '/') . '/' . ltrim($element, '/');
+                $elementComplet = $element;
             }
             $nomFichier = basename($elementComplet);
 
             if ($nomFichier === '.' || $nomFichier === '..') {
                 continue;
             }
-
-            if (ftp_size($conn_id, $elementComplet) == -1) {
-                $pile[] = $elementComplet;
-            }
-            else {
+            //Si c'est un fichier
+            if(isVideo($nomFichier)){
                 $fichiersComplet[] = $elementComplet;
+            }
+            //si c'est un dossier
+            else{
+                $pile[] = $elementComplet;
             }
         }
     }
-        return $fichiersComplet;
+    return $fichiersComplet;
 }
 
 

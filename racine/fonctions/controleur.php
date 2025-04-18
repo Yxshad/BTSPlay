@@ -593,11 +593,13 @@ function controleurArborescence($directory, $ftp_server){
         $fichiers_NAS = ftp_nlist($conn_id, $directory);
         foreach ($fichiers_NAS as $item) {
             if ($item !== '.' && $item !== '..' && $item !== '.gitkeep') {
-                $path = $directory . '/' . $item;
-                if (@ftp_chdir($conn_id, $path)) {
+                $path = $item;
+                $item = basename($item);
+                //Pour savoir si l'item est un dossier, on regarde si il contient un point ou non.
+                if (!str_contains($path, '.')) {
                     afficherDossier($path, $item);
                 } elseif (isVideo($item)) {
-                    $directory_id = substr($directory, 1) . '/';
+                    $directory_id = dirname($path) . '/';
                     $item_id = forcerExtensionMP4($item);
                     $id = getIdVideoURIetTitre($directory_id, $item_id, $ftp_server);
                     afficherVideo($path, $item, $id);
