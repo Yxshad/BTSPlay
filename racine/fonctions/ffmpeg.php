@@ -123,7 +123,7 @@ function traiterVideo($cheminDossierAttenteConversion, $cheminDossierCoursConver
         $nomFichierSortie = forcerExtensionMp4($nomFichier); //Vidéo de sortie (compressée) forcée à l'extension mp4
 
         $command = URI_FFMPEG." -i " . $cheminDossierAttenteConversion . $nomFichier .
-                " -c:v libx264 -preset ultrafast -crf 24 " .  // CRF élevé pour réduire la qualité vidéo
+                " -c:v libx264 -preset ultrafast -crf 10 " .  // CRF élevé pour réduire la qualité vidéo
                 "-c:a aac -b:a 128k -ac 2 -threads " . NB_MAX_SOUS_PROCESSUS_TRANSFERT .            // Bitrate audio réduit à 64 kbps, limité à 2 threads
                 " -movflags + medium " .                   // Optimisation pour le streaming
                 "-vf format=yuv420p " .
