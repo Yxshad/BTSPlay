@@ -9,7 +9,8 @@ services:
         - ./PHP/racine:/var/www/html
         - ./PHP/apachedefaultconf:/etc/apache2/sites-available
         - ./PHP/php.ini:/usr/local/etc/php/php.ini
-        - ./PHP/stockage/:/var/www/html/stockage
+        - K:/BTSPlay_stockage/stockage/:/var/www/html/stockage
+        - K:/BTSPlay_stockage/videos/:/var/www/html/videos
       environment:
         - PUBLICHOST=localhost
       ports:

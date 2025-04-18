@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : mysql
--- Généré le : dim. 23 mars 2025 à 23:57
+-- Généré le : dim. 18 avril 2025 à 23:57
 -- Version du serveur : 5.7.44
 -- Version de PHP : 8.2.26
 
@@ -42,23 +42,7 @@ CREATE TABLE IF NOT EXISTS `Autorisation` (
 --
 
 INSERT INTO `Autorisation` (`professeur`, `modifier`, `supprimer`, `diffuser`, `administrer`) VALUES
-('amakdessi', 0, 0, 0, 0),
-('blagoarde', 0, 0, 0, 0),
-('claplace', 0, 0, 0, 0),
-('flafittehoussat', 0, 0, 0, 0),
-('gberthome', 0, 0, 0, 0),
-('jlmathieu', 0, 0, 0, 0),
-('jmjeault', 0, 0, 0, 0),
-('jmlamagnere', 0, 0, 0, 0),
-('jrlafourcade', 0, 0, 0, 0),
-('llagoardesegot', 0, 0, 0, 0),
-('lmariesainte', 0, 0, 0, 0),
-('nconguisti', 1, 1, 1, 1),
-('plucu', 0, 0, 0, 0),
-('pverdier', 0, 0, 0, 0),
-('schareyron', 0, 0, 0, 0),
-('slescoulier', 0, 0, 0, 0),
-('smartin', 1, 1, 1, 1);
+('pmartin', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -139,23 +123,9 @@ CREATE TABLE IF NOT EXISTS `Professeur` (
 --
 
 INSERT INTO `Professeur` (`identifiant`, `nom`, `prenom`, `motdepasse`, `role`) VALUES
-('amakdessi', 'MAKDESSI', 'Aurélia', 'ca665281ccbbf4c28959d40437617a681d6d6f7088e71997ba6fbfc9e887d09b', 'Professeur'),
-('blagoarde', 'LAGOARDE', 'Beñat', '80a52be04dcfde4543a339650213e8b28be32d4e99ccef9fb1a87cf192e1ff5f', 'Professeur'),
-('claplace', 'LAPLACE', 'Christophe', '81e234882ad395d8452fc392423af728f3d2a757e4ed46f1379fa8ce8b69562f', 'Professeur'),
-('flafittehoussat', 'LAFITTE-HOUSSAT', 'François', '5000575b3421b9d731484fdbbdc42819fe851d36df7fc421ef3f5f236a6bbc85', 'Professeur'),
-('gberthome', 'BERTHOME', 'Gilles', '55184f0f32987091611a6356d91377fc071762c84928a89476a088e1fb813af3', 'Professeur'),
-('jlmathieu', 'MATHIEU', 'Jean-Luc', '6f0a4134ceed36a892514fffd50b01704dc703e75c5ba3ea160a773382a3300c', 'Professeur'),
-('jmjeault', 'JEAULT', 'Jean-Michel', 'ff2f99f2c0825a9d5795bfd6dfc34985e779c0c4f0379ece35191424132eadcc', 'Professeur'),
-('jmlamagnere', 'LAMAGNERE', 'Jean-Michel', '94f89a938f13131c33c3e51106f81463bfa5c7fcad5bf911ab8c76fd7bc39f82', 'Professeur'),
-('jrlafourcade', 'LAFOURCADE', 'Jean-Robert', 'f9ba07f33a2f948cfcdd4fd88566116c8d459868b73fefc94e33e66d9a3328a6', 'Professeur'),
-('llagoardesegot', 'LAGOARDE SEGOT', 'Lison', 'aaff1c6c3a015682d1f312bebcd6e8287ef03d1fbf83b783ba431beb03d1c9a7', 'Professeur'),
-('lmariesainte', 'MARIE SAINTE', 'Luc', '0273b8998352c94f3c52a9fb95b0e86aff8ee28f0b966ceb9e89152261d03ee0', 'Professeur'),
-('nconguisti', 'CONGUISTI', 'Nicolas', '4c5cddb7859b93eebf26c551518c021a31fa0013b2c03afa5b541cbc8bd079a6', 'Administrateur'),
-('plucu', 'LUCU', 'Pascal', 'bb9bd039139a013c3b32923a80c0b7281c7de4dee780e011067c8cd4c3a01c1a', 'Professeur'),
-('pverdier', 'VERDIER', 'Pascal', '3ba03ab1d3dd55b1d8fd836a71b916d560fba8fa595ede55b47c34a4cba72dfe', 'Professeur'),
-('schareyron', 'CHAREYRON', 'Sophie', '1ee641b706e1da6c74b0b61938fde85318b64641b0192332bb8a2eb17e09a4a4', 'Professeur'),
-('slescoulier', 'LESCOULIER', 'Serge', '4400c8bae84ecc59b13ccb5ff8bd2fad3e4b2660ac4a9b5b22e08f939da0ea22', 'Professeur'),
-('smartin', 'MARTIN', 'Solene', 'ac320379ddef12cb1c7a662727e57271b2558d8e192516eb541b9008b0941133', 'Professeur');
+('support', 'BTSPLAY', 'SUPPORT', '4c5cddb7859b93eebf26c551518c021a31fa0013b2c03afa5b541cbc8bd079a6', 'Administrateur'),
+('support2', 'BTSPLAY', 'SUPPORT', 'ac320379ddef12cb1c7a662727e57271b2558d8e192516eb541b9008b0941133', 'Professeur'),
+('pmartin', 'MARTIN', 'Philippe', '71b1d1e9f0b39e425780225cf28917f6c0bed87be91f2eaac053529b685101af', 'Administrateur');
 
 -- --------------------------------------------------------
 
