@@ -21,7 +21,7 @@ function listerFichiersCompletFTP($conn_id, $repertoire) {
                 continue;
             }
             //Si c'est un fichier
-            if(isVideo($nomFichier)){
+            if(str_contains($elementComplet, '.')){
                 $fichiersComplet[] = $elementComplet;
             }
             //si c'est un dossier
